@@ -86,3 +86,16 @@ TEST_CASE("En passant square", "[FENString][Validity]") {
     // TODO: does not check, if the rank matches the player color!
 }
 
+TEST_CASE("Valid FEN strings", "[FENString][Validity]") {
+    CHECK_NOTHROW(FenString{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"});
+    CHECK_NOTHROW(FenString{"8/8/8/8/8/8/8/8 w - - 0 1"});
+
+    // 1. e4
+    CHECK_NOTHROW(FenString{"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"});
+    // 1. ... c5
+    CHECK_NOTHROW(FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"});
+    // 2. Nf3
+    CHECK_NOTHROW(FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"});
+
+    CHECK_NOTHROW(FenString{"4k3/8/8/8/8/8/4P3/4K3 w - - 5 39"});
+}
