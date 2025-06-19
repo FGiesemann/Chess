@@ -42,6 +42,9 @@ public:
  * character a..h.
  */
 struct File {
+    static constexpr int min_file = 1;
+    static constexpr int max_file = 8;
+
     /**
      * \brief A file from its name.
      *
@@ -66,7 +69,7 @@ struct File {
      * The name of the file is a character in the range a..h.
      * \return The name of the file.
      */
-    char name() const;
+    auto name() const -> char;
 };
 
 /**
@@ -75,6 +78,9 @@ struct File {
  * A rank is a row on the board. It can be specified by a number 1..8.
  */
 struct Rank {
+    static constexpr int min_rank = 1;
+    static constexpr int max_rank = 8;
+
     /**
      * \brief A rank from its number.
      *

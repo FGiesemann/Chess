@@ -1,8 +1,8 @@
 Checks: '-*,
          bugprone-*,
-         modernize-use-nullptr,
-         readability-make-member-const,
-         performance-for-range-loop,
-         cppcoreguidelines-pro-type-member-init,
+         modernize-*,
+         readability-*,
+         performance-*,
+         cppcoreguidelines-*,
          misc-macro-parentheses'
 WarningsAsErrors: ''
