@@ -140,7 +140,31 @@ auto check_en_passant_target_square(const std::string &fen_string, size_t pos) -
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
-    return pos;
+    if (fen_string[pos] == '-') {
+        if (pos + 1 >= fen_string.length()) {
+            throw InvalidFen{"Unexpected end of FEN string"};
+        }
+        if (fen_string[pos + 1] != ' ') {
+            throw InvalidFen{"Invalid en passant target square in FEN string"};
+        }
+        return pos + 2;
+    }
+    if (fen_string[pos] < 'a' || fen_string[pos] > 'h') {
+        throw InvalidFen{"Invalid en passant target square in FEN string"};
+    }
+    if (pos + 1 >= fen_string.length()) {
+        throw InvalidFen{"Unexpected end of FEN string"};
+    }
+    if (fen_string[pos + 1] != '3' && fen_string[pos + 1] != '6') {
+        throw InvalidFen{"Invalid en passant target square in FEN string"};
+    }
+    if (pos + 2 >= fen_string.length()) {
+        throw InvalidFen{"Unexpected end of FEN string"};
+    }
+    if (fen_string[pos + 2] != ' ') {
+        throw InvalidFen{"Invalid en passant target square in FEN string"};
+    }
+    return pos + 3;
 }
 
 auto check_halfmove_clock(const std::string &fen_string, size_t pos) -> size_t {
