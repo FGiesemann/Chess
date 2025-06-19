@@ -5,4 +5,4 @@ Checks: '-*,
          performance-for-range-loop,
          cppcoreguidelines-pro-type-member-init,
          misc-macro-parentheses'
-WarningsAsErrors: '' # Keine Checks als Fehler behandeln, standardmäßig
+WarningsAsErrors: ''
