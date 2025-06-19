@@ -106,10 +106,17 @@ auto check_piece_placement(const std::string &fen_string) -> size_t {
 }
 
 auto check_side_to_move(const std::string &fen_string, size_t pos) -> size_t {
-    if (pos >= fen_string.length()) {
+    if (pos + 1 > fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
-    return pos;
+    const char color = fen_string[pos];
+    if (color != 'w' && color != 'b') {
+        throw InvalidFen{"Invalid side to move in FEN string"};
+    }
+    if (fen_string[pos + 1] != ' ') {
+        throw InvalidFen{"Invalid side to move in FEN string"};
+    }
+    return pos + 2;
 }
 
 auto check_castling_availability(const std::string &fen_string, size_t pos) -> size_t {
