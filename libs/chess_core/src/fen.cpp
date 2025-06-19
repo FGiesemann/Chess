@@ -26,53 +26,83 @@ auto FenString::startingPosition() -> FenString {
 
 namespace detail {
 
-auto invalid_piece_letter(char c) -> bool {
-    return c != 'r' && c != 'n' && c != 'b' && c != 'q' && c != 'k' && c != 'p' && c != 'R' && c != 'N' && c != 'B' && c != 'Q' && c != 'K' && c != 'P';
+auto invalid_piece_letter(char piece) -> bool {
+    return piece != 'r' && piece != 'n' && piece != 'b' && piece != 'q' && piece != 'k' && piece != 'p' && piece != 'R' && piece != 'N' && piece != 'B' && piece != 'Q' && piece != 'K' && piece != 'P';
 }
 
-auto check_piece_placement(const std::string &fen_string) -> size_t {
+class PieceValidityChecker {
+public:
+    PieceValidityChecker(const std::string &fen_string) : length{fen_string.length()} {
+        while (pos < length) {
+            if (fen_string[pos] == ' ') {
+                check_end_of_piece_placement();
+                ++pos;
+                return;
+            }
+            if (fen_string[pos] == '/') {
+                switch_to_next_rank();
+            } else if (std::isdigit(fen_string[pos]) != 0) {
+                handle_digit(fen_string[pos]);
+            } else {
+                check_piece_letter(fen_string[pos]);
+            }
+            if (file > ranks) {
+                throw InvalidFen{"Invalid FEN string: too many files"};
+            }
+            ++pos;
+        }
+    }
+
+    [[nodiscard]] auto position() const -> size_t { return pos; }
+private:
+    static constexpr int ranks = 8;
     size_t pos{0};
     int rank{0};
     int file{0};
     bool number_last{false};
-    while (pos < fen_string.length()) {
-        if (fen_string[pos] == '/') {
-            if (file != 8) {
-                throw InvalidFen{"Invalid FEN string: missing files"};
-            }
-            ++rank;
-            file = 0;
-            number_last = false;
-            if (rank > 7) {
-                throw InvalidFen{"Too many ranks in FEN string"};
-            }
-        } else if (std::isdigit(fen_string[pos])) {
-            if (number_last) {
-                throw InvalidFen{"Invalid FEN string: two consecutive numbers"};
-            }
-            number_last = true;
-            file += fen_string[pos] - '0';
-        } else if (fen_string[pos] == ' ') {
-            if (rank != 7) {
-                throw InvalidFen{"Invalid FEN string: missing ranks"};
-            } else if (file != 8) {
-                throw InvalidFen{"Invalid FEN string: missing files"};
-            } else {
-                return pos + 1;
-            }
-        } else {
-            if (invalid_piece_letter(fen_string[pos])) {
-                throw InvalidFen{"Invalid piece type in FEN string"};
-            }
-            ++file;
-            number_last = false;
+    size_t length{};
+
+    void check_end_of_piece_placement() const {
+        if (rank != ranks - 1) {
+            throw InvalidFen{"Invalid FEN string: missing ranks"};
         }
-        if (file > 8) {
-            throw InvalidFen{"Invalid FEN string: too many files"};
+        if (file != ranks) {
+            throw InvalidFen{"Invalid FEN string: missing files"};
         }
-        ++pos;
     }
-    return pos;
+
+    void switch_to_next_rank() {
+        if (file != ranks) {
+            throw InvalidFen{"Invalid FEN string: missing files"};
+        }
+        ++rank;
+        file = 0;
+        number_last = false;
+        if (rank >= ranks) {
+            throw InvalidFen{"Too many ranks in FEN string"};
+        }
+    }
+
+    void handle_digit(char digit) {
+        if (number_last) {
+            throw InvalidFen{"Invalid FEN string: two consecutive numbers"};
+        }
+        number_last = true;
+        file += digit - '0';
+    }
+
+    void check_piece_letter(char piece) {
+        if (invalid_piece_letter(piece)) {
+            throw InvalidFen{"Invalid piece type in FEN string"};
+        }
+        ++file;
+        number_last = false;
+    }
+};
+
+auto check_piece_placement(const std::string &fen_string) -> size_t {
+    PieceValidityChecker checker{fen_string};
+    return checker.position();
 }
 
 auto check_side_to_move(const std::string &fen_string, size_t pos) -> size_t {
