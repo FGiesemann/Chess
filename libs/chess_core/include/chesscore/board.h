@@ -26,8 +26,8 @@ enum class Color { White, Black };
  * A piece is described by its type and color.
  */
 struct Piece {
-    PieceType type; //< Type of the piece.
-    Color color;    //< Color of the piece.
+    PieceType type; ///< Type of the piece.
+    Color color;    ///< Color of the piece.
 };
 
 class OutOfRange : public ChessException {
@@ -58,7 +58,7 @@ struct File {
      */
     explicit File(int file);
 
-    int file; //< The file number (1..8).
+    int file; ///< The file number (1..8).
 
     /**
      * \brief Returns the file as a character.
@@ -82,7 +82,7 @@ struct Rank {
      * \param rank A number in the range 1..8.
      */
     explicit Rank(int rank);
-    int rank; //< The rank number (1..8).
+    int rank; ///< The rank number (1..8).
 };
 
 /**
