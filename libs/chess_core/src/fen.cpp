@@ -171,7 +171,16 @@ auto check_halfmove_clock(const std::string &fen_string, size_t pos) -> size_t {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
-    return pos;
+    while (pos < fen_string.length() && fen_string[pos] != ' ') {
+        if (std::isdigit(fen_string[pos]) == 0) {
+            throw InvalidFen{"Invalid halfmove clock in FEN string"};
+        }
+        ++pos;
+    }
+    if (fen_string[pos] != ' ') {
+        throw InvalidFen{"Invalid halfmove clock in FEN string"};
+    }
+    return pos + 1;
 }
 
 auto check_fullmove_number(const std::string &fen_string, size_t pos) -> void {

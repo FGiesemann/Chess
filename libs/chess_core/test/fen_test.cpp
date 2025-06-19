@@ -86,6 +86,19 @@ TEST_CASE("En passant square", "[FENString][Validity]") {
     // TODO: does not check, if the rank matches the player color!
 }
 
+TEST_CASE("Halfmove clock", "[FENString][Validity]") {
+    CHECK(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 53) == 55);
+    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 0 1", 22) == 24);
+    CHECK(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 26 1", 53) == 56);
+    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 2 1", 22) == 24);
+    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 236 1", 22) == 26);
+
+    CHECK_THROWS_AS(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - x 1", 53), InvalidFen);  // non-digit
+    CHECK_THROWS_AS(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 3_ 1", 53), InvalidFen); // non-digit
+    CHECK_THROWS_AS(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 3_ 1", 53), InvalidFen); // non-digit
+    CHECK_THROWS_AS(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 31", 53), InvalidFen);   // unexpected end of FEN
+}
+
 TEST_CASE("Valid FEN strings", "[FENString][Validity]") {
     CHECK_NOTHROW(FenString{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"});
     CHECK_NOTHROW(FenString{"8/8/8/8/8/8/8/8 w - - 0 1"});
