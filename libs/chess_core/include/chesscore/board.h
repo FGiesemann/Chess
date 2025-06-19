@@ -30,15 +30,59 @@ struct Piece {
     Color color;    //< Color of the piece.
 };
 
-class InvalidSquare : public ChessException {
+class OutOfRange : public ChessException {
 public:
-    InvalidSquare(bool rank_invalid, bool file_invalid);
+    OutOfRange(const std::string &message) : ChessException{message} {}
+};
 
-    bool is_rank_invalid() const { return m_rank_invalid; }
-    bool is_file_invalid() const { return m_file_invalid; }
-private:
-    bool m_rank_invalid;
-    bool m_file_invalid;
+/**
+ * \brief A file (column) on the board.
+ *
+ * A file is a column on the board. It can be specified by a number 1..8 or by a
+ * character a..h.
+ */
+struct File {
+    /**
+     * \brief A file from its name.
+     *
+     * The name is a character in the range a..h.
+     * \param file A character in the range a..h
+     */
+    explicit File(char file);
+
+    /**
+     * \brief A file from its number.
+     *
+     * The file is specified as a number in the range 1..8.
+     * \param file A number in the range 1..8.
+     */
+    explicit File(int file);
+
+    int file; //< The file number (1..8).
+
+    /**
+     * \brief Returns the file as a character.
+     *
+     * The name of the file is a character in the range a..h.
+     * \return The name of the file.
+     */
+    char name() const;
+};
+
+/**
+ * \brief A rank (row) on the board.
+ *
+ * A rank is a row on the board. It can be specified by a number 1..8.
+ */
+struct Rank {
+    /**
+     * \brief A rank from its number.
+     *
+     * The rank is a number in the range 1..8.
+     * \param rank A number in the range 1..8.
+     */
+    explicit Rank(int rank);
+    int rank; //< The rank number (1..8).
 };
 
 /**
@@ -46,38 +90,9 @@ private:
  *
  * Each square is identified by its file (the column) and the rank (the row).
  */
-class Square {
-public:
-    /**
-     * \brief Define a square by its file and rank.
-     *
-     * File and rank are numbers from 1 to 8 (inclusive).
-     *
-     * \param file File (column) of the square in the range 1..8.
-     * \param rank Rank (row) of the square in the range 1..8.
-     * \throws InvalidSquare if the file or rank is out of range.
-     * \return A square with the given file and rank.
-     */
-    static Square from_coords(int file, int rank);
-
-    /**
-     * \brief Define a square by its file and rank.
-     *
-     * The file is given as a letter from a to h, the rank is given as a number
-     * from 1 to 8.
-     *
-     * \param file File (column) of the square as a letter 'a'..'h' (case insensitive).
-     * \param rank Rank (row) of the square as a number 1..8.
-     * \throws InvalidSquare if the file or rank is out of range.
-     * \return A square with the given file and rank.
-     */
-    static Square from_coords(char file, int rank);
-
-    char rank_name() const;
-private:
-    Square(int file, int rank);
-    int m_file;
-    int m_rank;
+struct Square {
+    File file;
+    Rank rank;
 };
 
 /**
