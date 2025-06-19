@@ -74,4 +74,18 @@ TEST_CASE("Coordinates Checks") {
         CHECK_THROWS_AS(Rank(0), OutOfRange);
         CHECK_THROWS_AS(Rank(9), OutOfRange);
     }
+
+    SECTION("Comparison operators") {
+        CHECK(File(1) == File(1));
+        CHECK(File(1) != File(2));
+        CHECK(Rank(1) == Rank(1));
+        CHECK(Rank(2) != Rank(1));
+    }
+
+    SECTION("Square comparisons") {
+        CHECK(Square(File(1), Rank(1)) == Square(File(1), Rank(1)));
+        CHECK(Square(File(1), Rank(1)) != Square(File(2), Rank(1)));
+        CHECK(Square(File(1), Rank(1)) != Square(File(1), Rank(2)));
+        CHECK(Square(File(1), Rank(1)) != Square(File(2), Rank(2)));
+    }
 }

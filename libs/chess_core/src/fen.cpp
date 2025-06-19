@@ -10,18 +10,21 @@
 
 namespace chesscore {
 
-FenString::FenString() : fen_string{empty_fen} {}
+FenString::FenString() : FenString{std::string{empty_fen}} {}
 
-FenString::FenString(const std::string &fen_string) : fen_string{fen_string} {
+FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
     size_t pos = detail::check_piece_placement(fen_string);
-    pos = detail::check_side_to_move(fen_string, pos);
-    pos = detail::check_castling_availability(fen_string, pos);
-    pos = detail::check_en_passant_target_square(fen_string, pos);
-    pos = detail::check_halfmove_clock(fen_string, pos);
-    detail::check_fullmove_number(fen_string, pos);
+    const auto side = detail::check_side_to_move(fen_string, pos);
+    m_side_to_move = side.first;
+    pos = detail::check_castling_availability(fen_string, side.second);
+    const auto en_p = detail::check_en_passant_target_square(fen_string, pos);
+    m_en_passant = en_p.first;
+    const auto half = detail::check_halfmove_clock(fen_string, en_p.second);
+    m_halfmove_clock = half.first;
+    m_fullmove_number = detail::check_fullmove_number(fen_string, half.second);
 }
 
-auto FenString::startingPosition() -> FenString {
+auto FenString::starting_position() -> FenString {
     return FenString{std::string{starting_position_fen}};
 }
 
@@ -101,12 +104,12 @@ private:
     }
 };
 
-auto check_piece_placement(const std::string &fen_string) -> size_t {
+auto check_piece_placement(const std::string &fen_string) -> std::size_t {
     PieceValidityChecker checker{fen_string};
     return checker.position();
 }
 
-auto check_side_to_move(const std::string &fen_string, size_t pos) -> size_t {
+auto check_side_to_move(const std::string &fen_string, std::size_t pos) -> std::pair<Color, std::size_t> {
     if (pos + 1 > fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
@@ -117,10 +120,10 @@ auto check_side_to_move(const std::string &fen_string, size_t pos) -> size_t {
     if (fen_string[pos + 1] != ' ') {
         throw InvalidFen{"Invalid side to move in FEN string"};
     }
-    return pos + 2;
+    return std::make_pair(color == 'w' ? Color::White : Color::Black, pos + 2);
 }
 
-auto check_castling_availability(const std::string &fen_string, size_t pos) -> size_t {
+auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::size_t {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
@@ -136,7 +139,7 @@ auto check_castling_availability(const std::string &fen_string, size_t pos) -> s
     return pos + castling_string.length() + 1;
 }
 
-auto check_en_passant_target_square(const std::string &fen_string, size_t pos) -> size_t {
+auto check_en_passant_target_square(const std::string &fen_string, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t> {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
@@ -147,15 +150,17 @@ auto check_en_passant_target_square(const std::string &fen_string, size_t pos) -
         if (fen_string[pos + 1] != ' ') {
             throw InvalidFen{"Invalid en passant target square in FEN string"};
         }
-        return pos + 2;
+        return std::make_pair(std::nullopt, pos + 2);
     }
-    if (fen_string[pos] < 'a' || fen_string[pos] > 'h') {
+    const char file = fen_string[pos];
+    if (file < 'a' || file > 'h') {
         throw InvalidFen{"Invalid en passant target square in FEN string"};
     }
     if (pos + 1 >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
-    if (fen_string[pos + 1] != '3' && fen_string[pos + 1] != '6') {
+    const char rank = fen_string[pos + 1];
+    if (rank != '3' && rank != '6') {
         throw InvalidFen{"Invalid en passant target square in FEN string"};
     }
     if (pos + 2 >= fen_string.length()) {
@@ -164,13 +169,14 @@ auto check_en_passant_target_square(const std::string &fen_string, size_t pos) -
     if (fen_string[pos + 2] != ' ') {
         throw InvalidFen{"Invalid en passant target square in FEN string"};
     }
-    return pos + 3;
+    return std::make_pair(Square{.file = File{file}, .rank = Rank{rank - '1' + 1}}, pos + 3);
 }
 
-auto check_halfmove_clock(const std::string &fen_string, size_t pos) -> size_t {
+auto check_halfmove_clock(const std::string &fen_string, std::size_t pos) -> std::pair<int, std::size_t> {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
+    size_t start{pos};
     while (pos < fen_string.length() && fen_string[pos] != ' ') {
         if (std::isdigit(fen_string[pos]) == 0) {
             throw InvalidFen{"Invalid halfmove clock in FEN string"};
@@ -180,19 +186,21 @@ auto check_halfmove_clock(const std::string &fen_string, size_t pos) -> size_t {
     if (fen_string[pos] != ' ') {
         throw InvalidFen{"Invalid halfmove clock in FEN string"};
     }
-    return pos + 1;
+    return std::make_pair(std::stoi(fen_string.substr(start, pos - start)), pos + 1);
 }
 
-auto check_fullmove_number(const std::string &fen_string, size_t pos) -> void {
+auto check_fullmove_number(const std::string &fen_string, size_t pos) -> int {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
+    size_t start{pos};
     while (pos < fen_string.length()) {
         if (std::isdigit(fen_string[pos]) == 0) {
             throw InvalidFen{"Invalid fullmove number in FEN string"};
         }
         ++pos;
     }
+    return std::stoi(fen_string.substr(start, pos - start));
 }
 
 } // namespace detail

@@ -10,11 +10,21 @@
 using namespace chesscore;
 
 TEST_CASE("Empty FEN string", "[FENString][Init]") {
-    CHECK(FenString{}.str() == "8/8/8/8/8/8/8/8 w - - 0 1");
+    FenString empty_board{};
+    CHECK(empty_board.str() == "8/8/8/8/8/8/8/8 w - - 0 1");
+    CHECK(empty_board.side_to_move() == Color::White);
+    CHECK(empty_board.en_passant_square() == std::nullopt);
+    CHECK(empty_board.halfmove_clock() == 0);
+    CHECK(empty_board.fullmove_number() == 1);
 }
 
 TEST_CASE("Starting position FEN string", "[FENString][Init]") {
-    CHECK(FenString::startingPosition().str() == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    FenString starting_position{FenString::starting_position()};
+    CHECK(starting_position.str() == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    CHECK(starting_position.side_to_move() == Color::White);
+    CHECK(starting_position.en_passant_square() == std::nullopt);
+    CHECK(starting_position.halfmove_clock() == 0);
+    CHECK(starting_position.fullmove_number() == 1);
 }
 
 TEST_CASE("Piece placement", "[FENString][Validity]") {
@@ -49,9 +59,9 @@ TEST_CASE("Piece placement", "[FENString][Validity]") {
 }
 
 TEST_CASE("Side to move", "[FENString][Validity]") {
-    CHECK(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 44) == 46);
-    CHECK(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", 44) == 46);
-    CHECK(detail::check_side_to_move("8/8/8/8/8/8/8/8 w - - 0 1", 16) == 18);
+    CHECK(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 44) == std::make_pair(Color::White, 46));
+    CHECK(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", 44) == std::make_pair(Color::Black, 46));
+    CHECK(detail::check_side_to_move("8/8/8/8/8/8/8/8 w - - 0 1", 16) == std::make_pair(Color::White, 18));
 
     // Invalid side to move
     CHECK_THROWS_AS(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR x KQkq - 0 1", 44), InvalidFen);  // invalid color
@@ -72,10 +82,10 @@ TEST_CASE("Castling availability", "[FENString][Validity]") {
 }
 
 TEST_CASE("En passant square", "[FENString][Validity]") {
-    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 51) == 53);
-    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", 20) == 22);
-    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", 51) == 54);
-    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 b - f3 0 1", 20) == 23);
+    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 51) == std::make_pair(std::nullopt, 53));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", 20) == std::make_pair(std::nullopt, 22));
+    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", 51) == std::make_pair(Square{File{'c'}, Rank{6}}, 54));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 b - f3 0 1", 20) == std::make_pair(Square{File{'f'}, Rank{3}}, 23));
 
     CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq t 0 1", 51), InvalidFen);   // invalid character
     CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e 0 1", 51), InvalidFen);   // incomplete
@@ -87,11 +97,11 @@ TEST_CASE("En passant square", "[FENString][Validity]") {
 }
 
 TEST_CASE("Halfmove clock", "[FENString][Validity]") {
-    CHECK(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 53) == 55);
-    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 0 1", 22) == 24);
-    CHECK(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 26 1", 53) == 56);
-    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 2 1", 22) == 24);
-    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 236 1", 22) == 26);
+    CHECK(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 53) == std::make_pair(0, 55));
+    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 0 1", 22) == std::make_pair(0, 24));
+    CHECK(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 26 1", 53) == std::make_pair(26, 56));
+    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 2 1", 22) == std::make_pair(2, 24));
+    CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 236 1", 22) == std::make_pair(236, 26));
 
     CHECK_THROWS_AS(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - x 1", 53), InvalidFen);  // non-digit
     CHECK_THROWS_AS(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 3_ 1", 53), InvalidFen); // non-digit
@@ -110,15 +120,30 @@ TEST_CASE("Full move number", "[FENString][Validity]") {
 }
 
 TEST_CASE("Valid FEN strings", "[FENString][Validity]") {
-    CHECK_NOTHROW(FenString{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"});
-    CHECK_NOTHROW(FenString{"8/8/8/8/8/8/8/8 w - - 0 1"});
-
     // 1. e4
-    CHECK_NOTHROW(FenString{"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"});
+    FenString fen;
+    CHECK_NOTHROW(fen = FenString("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"));
+    CHECK(fen.side_to_move() == Color::Black);
+    CHECK(fen.en_passant_square() == Square{File{'e'}, Rank{3}});
+    CHECK(fen.halfmove_clock() == 0);
+    CHECK(fen.fullmove_number() == 1);
     // 1. ... c5
-    CHECK_NOTHROW(FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"});
-    // 2. Nf3
-    CHECK_NOTHROW(FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"});
+    CHECK_NOTHROW(fen = FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"});
+    CHECK(fen.side_to_move() == Color::White);
+    CHECK(fen.en_passant_square() == Square{File{'c'}, Rank{6}});
+    CHECK(fen.halfmove_clock() == 0);
+    CHECK(fen.fullmove_number() == 2);
 
-    CHECK_NOTHROW(FenString{"4k3/8/8/8/8/8/4P3/4K3 w - - 5 39"});
+    // 2. Nf3
+    CHECK_NOTHROW(fen = FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"});
+    CHECK(fen.side_to_move() == Color::Black);
+    CHECK_FALSE(fen.en_passant_square().has_value());
+    CHECK(fen.halfmove_clock() == 1);
+    CHECK(fen.fullmove_number() == 2);
+
+    CHECK_NOTHROW(fen = FenString{"4k3/8/8/8/8/8/4P3/4K3 w - - 5 39"});
+    CHECK(fen.side_to_move() == Color::White);
+    CHECK_FALSE(fen.en_passant_square().has_value());
+    CHECK(fen.halfmove_clock() == 5);
+    CHECK(fen.fullmove_number() == 39);
 }

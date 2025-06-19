@@ -46,6 +46,8 @@ struct File {
      * \return The name of the file.
      */
     [[nodiscard]] auto name() const -> char;
+
+    friend auto operator==(const File &lhs, const File &rhs) -> bool { return lhs.file == rhs.file; }
 };
 
 /**
@@ -65,6 +67,8 @@ struct Rank {
      */
     explicit Rank(int rank);
     int rank; ///< The rank number (1..8).
+
+    friend auto operator==(const Rank &lhs, const Rank &rhs) -> bool { return lhs.rank == rhs.rank; }
 };
 
 /**
@@ -75,6 +79,8 @@ struct Rank {
 struct Square {
     File file;
     Rank rank;
+
+    friend auto operator==(const Square &lhs, const Square &rhs) -> bool { return lhs.file == rhs.file && lhs.rank == rhs.rank; }
 };
 
 } // namespace chesscore
