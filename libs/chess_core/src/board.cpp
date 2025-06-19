@@ -11,7 +11,7 @@ namespace chesscore {
 
 File::File(char file) : file{static_cast<int>(std::tolower(file) - 'a') + 1} {
     if (file < File::min_file || file > File::max_file) {
-        throw OutOfRange{"File must be between 1 and 8"};
+        throw OutOfRange{"File must be between 'a' and 'h'"};
     }
 }
 

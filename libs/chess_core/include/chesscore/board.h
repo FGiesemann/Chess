@@ -48,8 +48,9 @@ struct File {
     /**
      * \brief A file from its name.
      *
-     * The name is a character in the range a..h.
-     * \param file A character in the range a..h
+     * The name is a character in the range a..h. The name is case insensitive,
+     * so 'A'..'H' are also valid.
+     * \param file A character in the range a..h (case insensitive).
      */
     explicit File(char file);
 
