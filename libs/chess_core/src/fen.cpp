@@ -5,6 +5,7 @@
 
 #include "chesscore/fen.h"
 
+#include <array>
 #include <cctype>
 
 namespace chesscore {
@@ -123,7 +124,16 @@ auto check_castling_availability(const std::string &fen_string, size_t pos) -> s
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
-    return pos;
+    const auto next_space = fen_string.find(' ', pos);
+    if (next_space == std::string::npos) {
+        throw InvalidFen{"Unexpected end of FEN string"};
+    }
+    const auto castling_string = fen_string.substr(pos, next_space - pos);
+    static const std::array<std::string, 16> valid_castlings{"KQkq", "KQk", "KQq", "KQ", "Kkq", "Kk", "Kq", "K", "Qkq", "Qk", "Qq", "Q", "kq", "k", "q", "-"};
+    if (std::ranges::find(valid_castlings, castling_string) == std::end(valid_castlings)) {
+        throw InvalidFen{"Invalid castling availability in FEN string"};
+    }
+    return pos + castling_string.length() + 1;
 }
 
 auto check_en_passant_target_square(const std::string &fen_string, size_t pos) -> size_t {

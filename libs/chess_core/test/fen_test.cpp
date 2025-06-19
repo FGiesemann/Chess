@@ -60,3 +60,13 @@ TEST_CASE("Side to move", "[FENString][Validity]") {
     // Invalid start pos
     CHECK_THROWS_AS(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", 34), InvalidFen);
 }
+
+TEST_CASE("Castling availability", "[FENString][Validity]") {
+    CHECK(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 46) == 51);
+    CHECK(detail::check_castling_availability("8/8/8/8/8/8/8/8 w - - 0 1", 18) == 20);
+
+    // Invalid castling specification
+    CHECK_THROWS_AS(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KPkq - 0 1", 45), InvalidFen);  // invalid piece
+    CHECK_THROWS_AS(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkqk - 0 1", 45), InvalidFen); // too many pieces
+    CHECK_THROWS_AS(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KkQq - 0 1", 45), InvalidFen);  // invalid order
+}
