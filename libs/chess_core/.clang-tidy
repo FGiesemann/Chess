@@ -2,7 +2,7 @@ Checks: '-*,
          bugprone-*,
          modernize-*,
          readability-*,
-         performance-*,
+         performance-*,-performance-enum-size,
          cppcoreguidelines-*,
          misc-macro-parentheses'
 WarningsAsErrors: ''

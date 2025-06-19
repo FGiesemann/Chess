@@ -19,6 +19,11 @@ private:
     std::string message;
 };
 
+class OutOfRange : public ChessException {
+public:
+    OutOfRange(const std::string &message) : ChessException{message} {}
+};
+
 } // namespace chesscore
 
 #endif

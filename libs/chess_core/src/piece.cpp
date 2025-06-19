@@ -3,4 +3,4 @@
  * Data structures and algorithms for chess                                   *
  * ************************************************************************** */
 
-#include "chesscore/board.h"
+#include "chesscore/piece.h"
