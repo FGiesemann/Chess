@@ -99,6 +99,16 @@ TEST_CASE("Halfmove clock", "[FENString][Validity]") {
     CHECK_THROWS_AS(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 31", 53), InvalidFen);   // unexpected end of FEN
 }
 
+TEST_CASE("Full move number", "[FENString][Validity]") {
+    CHECK_NOTHROW(detail::check_fullmove_number("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 55));
+    CHECK_NOTHROW(detail::check_fullmove_number("8/8/8/8/8/8/8/8 w - - 0 1", 24));
+
+    CHECK_THROWS_AS(detail::check_fullmove_number("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 g", 55), InvalidFen);    // non-digit
+    CHECK_THROWS_AS(detail::check_fullmove_number("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 ", 55), InvalidFen);     // missing number
+    CHECK_THROWS_AS(detail::check_fullmove_number("8/8/8/8/8/8/8/8 w - - 0 1 ", 24), InvalidFen);                                  // FEN string too long
+    CHECK_THROWS_AS(detail::check_fullmove_number("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 46", 55), InvalidFen); // FEN string too long
+}
+
 TEST_CASE("Valid FEN strings", "[FENString][Validity]") {
     CHECK_NOTHROW(FenString{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"});
     CHECK_NOTHROW(FenString{"8/8/8/8/8/8/8/8 w - - 0 1"});

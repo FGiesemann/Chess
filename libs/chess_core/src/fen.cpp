@@ -187,6 +187,12 @@ auto check_fullmove_number(const std::string &fen_string, size_t pos) -> void {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
+    while (pos < fen_string.length()) {
+        if (std::isdigit(fen_string[pos]) == 0) {
+            throw InvalidFen{"Invalid fullmove number in FEN string"};
+        }
+        ++pos;
+    }
 }
 
 } // namespace detail
