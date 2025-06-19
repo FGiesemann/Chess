@@ -1,5 +1,5 @@
 add_executable(chesscore_tests
-    board_test.cpp
+    coordinate_test.cpp
 )
 
 target_link_libraries(chesscore_tests PRIVATE chesscore)

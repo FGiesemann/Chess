@@ -8,8 +8,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_testing()
 find_package(Catch2 3 REQUIRED)
-include(CTest)
-set(CTEST_OUTPUT_ON_FAILURE TRUE)
 add_subdirectory(test)
 
 option(ENABLE_CLANG_TIDY "Enable Clang-Tidy code analysis during build" OFF)
