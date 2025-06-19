@@ -1,3 +1,8 @@
+/* ************************************************************************** *
+ * Chess Core                                                                 *
+ * Data structures and algorithms for chess                                   *
+ * ************************************************************************** */
+
 #include <catch2/catch_all.hpp>
 
 #include "chesscore/board.h"

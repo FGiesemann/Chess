@@ -33,6 +33,7 @@ endif()
 
 add_library(chesscore
     src/chesscore.cpp
+    src/fen.cpp
     src/board.cpp
 )
 target_include_directories(chesscore PUBLIC include)
