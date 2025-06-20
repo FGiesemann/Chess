@@ -50,8 +50,7 @@ namespace detail {
 auto check_piece_placement(const std::string &fen_string) -> std::size_t;
 auto check_side_to_move(const std::string &fen_string, std::size_t pos) -> std::pair<Color, std::size_t>;
 auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::pair<CastlingAvailability, std::size_t>;
-// TODO: check dependent on side_to_move
-auto check_en_passant_target_square(const std::string &fen_string, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t>;
+auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t>;
 auto check_halfmove_clock(const std::string &fen_string, std::size_t pos) -> std::pair<int, std::size_t>;
 auto check_fullmove_number(const std::string &fen_string, std::size_t pos) -> int;
 

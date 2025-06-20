@@ -18,7 +18,7 @@ FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
     m_side_to_move = side.first;
     const auto castling = detail::check_castling_availability(fen_string, side.second);
     m_castling_availability = castling.first;
-    const auto en_p = detail::check_en_passant_target_square(fen_string, castling.second);
+    const auto en_p = detail::check_en_passant_target_square(fen_string, m_side_to_move, castling.second);
     m_en_passant = en_p.first;
     const auto half = detail::check_halfmove_clock(fen_string, en_p.second);
     m_halfmove_clock = half.first;
@@ -159,7 +159,7 @@ auto check_castling_availability(const std::string &fen_string, std::size_t pos)
     return std::make_pair(ability, pos + castling_string.length() + 1);
 }
 
-auto check_en_passant_target_square(const std::string &fen_string, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t> {
+auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t> {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
@@ -180,7 +180,7 @@ auto check_en_passant_target_square(const std::string &fen_string, std::size_t p
         throw InvalidFen{"Unexpected end of FEN string"};
     }
     const char rank = fen_string[pos + 1];
-    if (rank != '3' && rank != '6') {
+    if ((player_to_move == Color::White && rank != '6') || (player_to_move == Color::Black && rank != '3')) {
         throw InvalidFen{"Invalid en passant target square in FEN string"};
     }
     if (pos + 2 >= fen_string.length()) {

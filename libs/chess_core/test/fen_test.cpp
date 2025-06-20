@@ -82,18 +82,17 @@ TEST_CASE("Castling availability", "[FENString][Validity]") {
 }
 
 TEST_CASE("En passant square", "[FENString][Validity]") {
-    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 51) == std::make_pair(std::nullopt, 53));
-    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", 20) == std::make_pair(std::nullopt, 22));
-    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", 51) == std::make_pair(Square{File{'c'}, Rank{6}}, 54));
-    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 b - f3 0 1", 20) == std::make_pair(Square{File{'f'}, Rank{3}}, 23));
+    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Color::White, 51) == std::make_pair(std::nullopt, 53));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", Color::White, 20) == std::make_pair(std::nullopt, 22));
+    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", Color::White, 51) == std::make_pair(Square{File{'c'}, Rank{6}}, 54));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 b - f3 0 1", Color::Black, 20) == std::make_pair(Square{File{'f'}, Rank{3}}, 23));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - f6 0 1", Color::White, 20) == std::make_pair(Square{File{'f'}, Rank{6}}, 23));
 
-    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq t 0 1", 51), InvalidFen);   // invalid character
-    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e 0 1", 51), InvalidFen);   // incomplete
-    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq n3 0 1", 51), InvalidFen);  // invalid file
-    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c4 0 1", 51), InvalidFen);  // invalid rank
-    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c3w 0 1", 51), InvalidFen); // too long
-
-    // TODO: does not check, if the rank matches the player color!
+    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq t 0 1", Color::White, 51), InvalidFen);   // invalid character
+    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e 0 1", Color::White, 51), InvalidFen);   // incomplete
+    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq n3 0 1", Color::White, 51), InvalidFen);  // invalid file
+    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c4 0 1", Color::White, 51), InvalidFen);  // invalid rank
+    CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c3w 0 1", Color::White, 51), InvalidFen); // too long
 }
 
 TEST_CASE("Halfmove clock", "[FENString][Validity]") {
