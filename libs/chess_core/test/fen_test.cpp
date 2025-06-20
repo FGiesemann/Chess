@@ -28,10 +28,13 @@ TEST_CASE("Starting position FEN string", "[FENString][Init]") {
 }
 
 TEST_CASE("Piece placement", "[FENString][Validity]") {
-    CHECK(detail::check_piece_placement("8/8/8/8/8/8/8/8 w - - 0 1") == 16);
-    CHECK(detail::check_piece_placement("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") == 44);
-    CHECK(detail::check_piece_placement("rnbqkbnr/ppppppp1/p7/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") == 45);
-    CHECK(detail::check_piece_placement("rnbqkbnr/ppppppp1/6p1/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") == 46);
+    static const PiecePlacement pieces_a = placement_from_string("RNBQKBNRPPPPPPPP________________________p_______ppppppp_rnbqkbnr");
+    static const PiecePlacement pieces_b = placement_from_string("RNBQKBNRPPPPPPPP______________________________p_ppppppp_rnbqkbnr");
+
+    CHECK(detail::check_piece_placement("8/8/8/8/8/8/8/8 w - - 0 1") == std::make_pair(PiecePlacement{}, 16));
+    CHECK(detail::check_piece_placement("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") == std::make_pair(starting_piece_placement(), 44));
+    CHECK(detail::check_piece_placement("rnbqkbnr/ppppppp1/p7/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") == std::make_pair(pieces_a, 45));
+    CHECK(detail::check_piece_placement("rnbqkbnr/ppppppp1/6p1/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") == std::make_pair(pieces_b, 46));
 
     // invalid piece types
     CHECK_THROWS_AS(detail::check_piece_placement("rnbqXbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"), InvalidFen);

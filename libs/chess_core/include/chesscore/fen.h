@@ -30,6 +30,7 @@ public:
     static auto starting_position() -> FenString;
     auto str() const -> std::string { return m_fen_string; }
 
+    auto piece_placement() const -> const PiecePlacement & { return m_piece_placement; }
     auto side_to_move() const -> Color { return m_side_to_move; }
     auto castling_availability() const -> CastlingAvailability { return m_castling_availability; }
     auto en_passant_square() const -> std::optional<Square> { return m_en_passant; }
@@ -38,6 +39,7 @@ public:
 private:
     std::string m_fen_string;
 
+    PiecePlacement m_piece_placement;
     Color m_side_to_move;
     CastlingAvailability m_castling_availability;
     std::optional<Square> m_en_passant;
@@ -47,7 +49,7 @@ private:
 
 namespace detail {
 
-auto check_piece_placement(const std::string &fen_string) -> std::size_t;
+auto check_piece_placement(const std::string &fen_string) -> std::pair<PiecePlacement, std::size_t>;
 auto check_side_to_move(const std::string &fen_string, std::size_t pos) -> std::pair<Color, std::size_t>;
 auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::pair<CastlingAvailability, std::size_t>;
 auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t>;

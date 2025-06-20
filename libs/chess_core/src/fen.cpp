@@ -13,8 +13,9 @@ namespace chesscore {
 FenString::FenString() : FenString{std::string{empty_fen}} {}
 
 FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
-    size_t pos = detail::check_piece_placement(fen_string);
-    const auto side = detail::check_side_to_move(fen_string, pos);
+    const auto place = detail::check_piece_placement(fen_string);
+    m_piece_placement = place.first;
+    const auto side = detail::check_side_to_move(fen_string, place.second);
     m_side_to_move = side.first;
     const auto castling = detail::check_castling_availability(fen_string, side.second);
     m_castling_availability = castling.first;
@@ -59,6 +60,7 @@ public:
     }
 
     [[nodiscard]] auto position() const -> size_t { return pos; }
+    [[nodiscard]] auto placement() const -> PiecePlacement { return piece_placement; }
 private:
     static constexpr int ranks = 8;
     size_t pos{0};
@@ -66,6 +68,7 @@ private:
     int file{0};
     bool number_last{false};
     size_t length{};
+    PiecePlacement piece_placement;
 
     void check_end_of_piece_placement() const {
         if (rank != ranks - 1) {
@@ -100,14 +103,18 @@ private:
         if (invalid_piece_letter(piece)) {
             throw InvalidFen{"Invalid piece type in FEN string"};
         }
+        if (file < ranks && rank < ranks) {
+            std::size_t rank_offset{((ranks - 1) - rank) * static_cast<std::size_t>(ranks)};
+            piece_placement.at(rank_offset + file) = piece_from_fen_letter(piece);
+        }
         ++file;
         number_last = false;
     }
 };
 
-auto check_piece_placement(const std::string &fen_string) -> std::size_t {
+auto check_piece_placement(const std::string &fen_string) -> std::pair<PiecePlacement, std::size_t> {
     PieceValidityChecker checker{fen_string};
-    return checker.position();
+    return std::make_pair(checker.placement(), checker.position());
 }
 
 auto check_side_to_move(const std::string &fen_string, std::size_t pos) -> std::pair<Color, std::size_t> {
