@@ -30,6 +30,36 @@ struct Piece {
     Color color;    ///< Color of the piece.
 };
 
+/**
+ * \brief Describes the availability of castling for each player.
+ */
+struct CastlingAvailability {
+    bool white_kingside{false};  ///< White can castle on the kingside.
+    bool white_queenside{false}; ///< White can castle on the queenside.
+    bool black_kingside{false};  ///< Black can castle on the kingside.
+    bool black_queenside{false}; ///< Black can castle on the queenside.
+
+    friend auto operator==(const CastlingAvailability &lhs, const CastlingAvailability &rhs) -> bool = default;
+
+    auto operator[](char piece) const -> bool {
+        switch (piece) {
+        case 'K':
+            return white_kingside;
+        case 'Q':
+            return white_queenside;
+        case 'k':
+            return black_kingside;
+        case 'q':
+            return black_queenside;
+        default:
+            return false;
+        }
+    }
+
+    static auto all() -> CastlingAvailability { return CastlingAvailability{true, true, true, true}; }
+    static auto none() -> CastlingAvailability { return CastlingAvailability{false, false, false, false}; }
+};
+
 } // namespace chesscore
 
 #endif

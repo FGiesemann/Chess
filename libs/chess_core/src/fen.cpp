@@ -16,8 +16,9 @@ FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
     size_t pos = detail::check_piece_placement(fen_string);
     const auto side = detail::check_side_to_move(fen_string, pos);
     m_side_to_move = side.first;
-    pos = detail::check_castling_availability(fen_string, side.second);
-    const auto en_p = detail::check_en_passant_target_square(fen_string, pos);
+    const auto castling = detail::check_castling_availability(fen_string, side.second);
+    m_castling_availability = castling.first;
+    const auto en_p = detail::check_en_passant_target_square(fen_string, castling.second);
     m_en_passant = en_p.first;
     const auto half = detail::check_halfmove_clock(fen_string, en_p.second);
     m_halfmove_clock = half.first;
@@ -123,7 +124,7 @@ auto check_side_to_move(const std::string &fen_string, std::size_t pos) -> std::
     return std::make_pair(color == 'w' ? Color::White : Color::Black, pos + 2);
 }
 
-auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::size_t {
+auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::pair<CastlingAvailability, std::size_t> {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
@@ -136,7 +137,26 @@ auto check_castling_availability(const std::string &fen_string, std::size_t pos)
     if (std::ranges::find(valid_castlings, castling_string) == std::end(valid_castlings)) {
         throw InvalidFen{"Invalid castling availability in FEN string"};
     }
-    return pos + castling_string.length() + 1;
+    CastlingAvailability ability{};
+    for (size_t i = 0; i < castling_string.length(); ++i) {
+        switch (castling_string[i]) {
+        case 'K':
+            ability.white_kingside = true;
+            break;
+        case 'Q':
+            ability.white_queenside = true;
+            break;
+        case 'k':
+            ability.black_kingside = true;
+            break;
+        case 'q':
+            ability.black_queenside = true;
+            break;
+        default:
+            break;
+        }
+    }
+    return std::make_pair(ability, pos + castling_string.length() + 1);
 }
 
 auto check_en_passant_target_square(const std::string &fen_string, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t> {

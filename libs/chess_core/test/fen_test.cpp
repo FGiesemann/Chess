@@ -72,8 +72,8 @@ TEST_CASE("Side to move", "[FENString][Validity]") {
 }
 
 TEST_CASE("Castling availability", "[FENString][Validity]") {
-    CHECK(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 46) == 51);
-    CHECK(detail::check_castling_availability("8/8/8/8/8/8/8/8 w - - 0 1", 18) == 20);
+    CHECK(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 46) == std::make_pair(CastlingAvailability::all(), 51));
+    CHECK(detail::check_castling_availability("8/8/8/8/8/8/8/8 w - - 0 1", 18) == std::make_pair(CastlingAvailability::none(), 20));
 
     // Invalid castling specification
     CHECK_THROWS_AS(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KPkq - 0 1", 45), InvalidFen);  // invalid piece
@@ -124,12 +124,14 @@ TEST_CASE("Valid FEN strings", "[FENString][Validity]") {
     FenString fen;
     CHECK_NOTHROW(fen = FenString("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"));
     CHECK(fen.side_to_move() == Color::Black);
+    CHECK(fen.castling_availability() == CastlingAvailability::all());
     CHECK(fen.en_passant_square() == Square{File{'e'}, Rank{3}});
     CHECK(fen.halfmove_clock() == 0);
     CHECK(fen.fullmove_number() == 1);
     // 1. ... c5
     CHECK_NOTHROW(fen = FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"});
     CHECK(fen.side_to_move() == Color::White);
+    CHECK(fen.castling_availability() == CastlingAvailability::all());
     CHECK(fen.en_passant_square() == Square{File{'c'}, Rank{6}});
     CHECK(fen.halfmove_clock() == 0);
     CHECK(fen.fullmove_number() == 2);
@@ -137,12 +139,14 @@ TEST_CASE("Valid FEN strings", "[FENString][Validity]") {
     // 2. Nf3
     CHECK_NOTHROW(fen = FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"});
     CHECK(fen.side_to_move() == Color::Black);
+    CHECK(fen.castling_availability() == CastlingAvailability::all());
     CHECK_FALSE(fen.en_passant_square().has_value());
     CHECK(fen.halfmove_clock() == 1);
     CHECK(fen.fullmove_number() == 2);
 
     CHECK_NOTHROW(fen = FenString{"4k3/8/8/8/8/8/4P3/4K3 w - - 5 39"});
     CHECK(fen.side_to_move() == Color::White);
+    CHECK(fen.castling_availability() == CastlingAvailability::none());
     CHECK_FALSE(fen.en_passant_square().has_value());
     CHECK(fen.halfmove_clock() == 5);
     CHECK(fen.fullmove_number() == 39);
