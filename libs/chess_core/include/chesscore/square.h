@@ -17,8 +17,8 @@ namespace chesscore {
  * character a..h.
  */
 struct File {
-    static constexpr int min_file = 1;
-    static constexpr int max_file = 8;
+    static constexpr int min_file = 1; ///< The minimum allowed file number.
+    static constexpr int max_file = 8; ///< The maximum allowed file number.
 
     /**
      * \brief A file from its name.
@@ -47,6 +47,15 @@ struct File {
      */
     [[nodiscard]] auto name() const -> char;
 
+    /**
+     * \brief Equality comparison for files.
+     *
+     * Compare two file numbers for equality. They are equal, if they represent
+     * the same file.
+     * @param lhs Left-hand side of the comparison.
+     * @param rhs Right-hand side of the comparison.
+     * @return Equality of the two files.
+     */
     friend auto operator==(const File &lhs, const File &rhs) -> bool { return lhs.file == rhs.file; }
 };
 
@@ -56,8 +65,8 @@ struct File {
  * A rank is a row on the board. It can be specified by a number 1..8.
  */
 struct Rank {
-    static constexpr int min_rank = 1;
-    static constexpr int max_rank = 8;
+    static constexpr int min_rank = 1; ///< The minimum allowed rank number.
+    static constexpr int max_rank = 8; ///< The maximum allowed rank number.
 
     /**
      * \brief A rank from its number.
@@ -68,6 +77,15 @@ struct Rank {
     explicit Rank(int rank);
     int rank; ///< The rank number (1..8).
 
+    /**
+     * \brief Equality comparison for ranks.
+     *
+     * Compare two rank numbers for equality. They are equal, if they represent
+     * the same rank.
+     * @param lhs Left-hand side of the comparison.
+     * @param rhs Right-hand side of the comparison.
+     * @return Equality of the two ranks.
+     */
     friend auto operator==(const Rank &lhs, const Rank &rhs) -> bool { return lhs.rank == rhs.rank; }
 };
 
@@ -77,9 +95,18 @@ struct Rank {
  * Each square is identified by its file (the column) and the rank (the row).
  */
 struct Square {
-    File file;
-    Rank rank;
+    File file; ///< The file (column) of the square.
+    Rank rank; ///< The rank (row) of the square.
 
+    /**
+     * \brief Equality comparison for square positions.
+     *
+     * Compare two square positions for equality. They are equal, if their files
+     * and ranks are equal.
+     * @param lhs Left-hand side of the comparison.
+     * @param rhs Right-hand side of the comparison.
+     * @return Equality of the two square positions.
+     */
     friend auto operator==(const Square &lhs, const Square &rhs) -> bool { return lhs.file == rhs.file && lhs.rank == rhs.rank; }
 };
 

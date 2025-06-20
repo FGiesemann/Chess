@@ -9,8 +9,8 @@
 
 namespace chesscore {
 
-auto piece_type_from_char(char piece_type) -> PieceType {
-    switch (std::tolower(piece_type)) {
+auto piece_type_from_char(char letter) -> PieceType {
+    switch (std::tolower(letter)) {
     case 'r':
         return PieceType::Rook;
     case 'n':
@@ -24,7 +24,7 @@ auto piece_type_from_char(char piece_type) -> PieceType {
     case 'p':
         return PieceType::Pawn;
     default:
-        throw ChessException("Invalid piece type: " + std::string{piece_type});
+        throw ChessException("Invalid piece type: " + std::string{letter});
     }
 }
 
