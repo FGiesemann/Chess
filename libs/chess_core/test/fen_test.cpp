@@ -87,9 +87,9 @@ TEST_CASE("Castling availability", "[FENString][Validity]") {
 TEST_CASE("En passant square", "[FENString][Validity]") {
     CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Color::White, 51) == std::make_pair(std::nullopt, 53));
     CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", Color::White, 20) == std::make_pair(std::nullopt, 22));
-    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", Color::White, 51) == std::make_pair(Square{File{'c'}, Rank{6}}, 54));
-    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 b - f3 0 1", Color::Black, 20) == std::make_pair(Square{File{'f'}, Rank{3}}, 23));
-    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - f6 0 1", Color::White, 20) == std::make_pair(Square{File{'f'}, Rank{6}}, 23));
+    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", Color::White, 51) == std::make_pair(Square::C6, 54));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 b - f3 0 1", Color::Black, 20) == std::make_pair(Square::F3, 23));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - f6 0 1", Color::White, 20) == std::make_pair(Square::F6, 23));
 
     CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq t 0 1", Color::White, 51), InvalidFen);   // invalid character
     CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e 0 1", Color::White, 51), InvalidFen);   // incomplete
@@ -127,14 +127,14 @@ TEST_CASE("Valid FEN strings", "[FENString][Validity]") {
     CHECK_NOTHROW(fen = FenString("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"));
     CHECK(fen.side_to_move() == Color::Black);
     CHECK(fen.castling_availability() == CastlingAvailability::all());
-    CHECK(fen.en_passant_square() == Square{File{'e'}, Rank{3}});
+    CHECK(fen.en_passant_square() == Square::E3);
     CHECK(fen.halfmove_clock() == 0);
     CHECK(fen.fullmove_number() == 1);
     // 1. ... c5
     CHECK_NOTHROW(fen = FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"});
     CHECK(fen.side_to_move() == Color::White);
     CHECK(fen.castling_availability() == CastlingAvailability::all());
-    CHECK(fen.en_passant_square() == Square{File{'c'}, Rank{6}});
+    CHECK(fen.en_passant_square() == Square::C6);
     CHECK(fen.halfmove_clock() == 0);
     CHECK(fen.fullmove_number() == 2);
 
