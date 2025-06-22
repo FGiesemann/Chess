@@ -13,6 +13,7 @@ add_library(chesscore
     src/chesscore.cpp
     src/fen.cpp
     src/piece.cpp
+    src/position.cpp
     src/square.cpp
 )
 target_include_directories(chesscore PUBLIC include)
