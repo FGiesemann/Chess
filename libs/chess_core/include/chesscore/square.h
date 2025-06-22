@@ -130,14 +130,78 @@ struct Square {
      */
     friend auto operator==(const Square &lhs, const Square &rhs) -> bool { return lhs.file == rhs.file && lhs.rank == rhs.rank; }
 
-    static const Square A1, A2, A3, A4, A5, A6, A7, A8;
-    static const Square B1, B2, B3, B4, B5, B6, B7, B8;
-    static const Square C1, C2, C3, C4, C5, C6, C7, C8;
-    static const Square D1, D2, D3, D4, D5, D6, D7, D8;
-    static const Square E1, E2, E3, E4, E5, E6, E7, E8;
-    static const Square F1, F2, F3, F4, F5, F6, F7, F8;
-    static const Square G1, G2, G3, G4, G5, G6, G7, G8;
-    static const Square H1, H2, H3, H4, H5, H6, H7, H8;
+    ///@{
+    /**
+     * \name Squares on a chess board
+     * \brief Pre-defined square positions on a chess board.
+     *
+     * The square names correspond with the default naming of chess boards.
+     */
+    static const Square A1; ///< The square A1.
+    static const Square A2; ///< The square A2.
+    static const Square A3; ///< The square A3.
+    static const Square A4; ///< The square A4.
+    static const Square A5; ///< The square A5.
+    static const Square A6; ///< The square A6.
+    static const Square A7; ///< The square A7.
+    static const Square A8; ///< The square A8.
+    static const Square B1; ///< The square B1.
+    static const Square B2; ///< The square B2.
+    static const Square B3; ///< The square B3.
+    static const Square B4; ///< The square B4.
+    static const Square B5; ///< The square B5.
+    static const Square B6; ///< The square B6.
+    static const Square B7; ///< The square B7.
+    static const Square B8; ///< The square B8.
+    static const Square C1; ///< The square C1.
+    static const Square C2; ///< The square C2.
+    static const Square C3; ///< The square C3.
+    static const Square C4; ///< The square C4.
+    static const Square C5; ///< The square C5.
+    static const Square C6; ///< The square C6.
+    static const Square C7; ///< The square C7.
+    static const Square C8; ///< The square C8.
+    static const Square D1; ///< The square D1.
+    static const Square D2; ///< The square D2.
+    static const Square D3; ///< The square D3.
+    static const Square D4; ///< The square D4.
+    static const Square D5; ///< The square D5.
+    static const Square D6; ///< The square D6.
+    static const Square D7; ///< The square D7.
+    static const Square D8; ///< The square D8.
+    static const Square E1; ///< The square E1.
+    static const Square E2; ///< The square E2.
+    static const Square E3; ///< The square E3.
+    static const Square E4; ///< The square E4.
+    static const Square E5; ///< The square E5.
+    static const Square E6; ///< The square E6.
+    static const Square E7; ///< The square E7.
+    static const Square E8; ///< The square E8.
+    static const Square F1; ///< The square F1.
+    static const Square F2; ///< The square F2.
+    static const Square F3; ///< The square F3.
+    static const Square F4; ///< The square F4.
+    static const Square F5; ///< The square F5.
+    static const Square F6; ///< The square F6.
+    static const Square F7; ///< The square F7.
+    static const Square F8; ///< The square F8.
+    static const Square G1; ///< The square G1.
+    static const Square G2; ///< The square G2.
+    static const Square G3; ///< The square G3.
+    static const Square G4; ///< The square G4.
+    static const Square G5; ///< The square G5.
+    static const Square G6; ///< The square G6.
+    static const Square G7; ///< The square G7.
+    static const Square G8; ///< The square G8.
+    static const Square H1; ///< The square H1.
+    static const Square H2; ///< The square H2.
+    static const Square H3; ///< The square H3.
+    static const Square H4; ///< The square H4.
+    static const Square H5; ///< The square H5.
+    static const Square H6; ///< The square H6.
+    static const Square H7; ///< The square H7.
+    static const Square H8; ///< The square H8.
+    ///@}
 };
 
 } // namespace chesscore

@@ -54,8 +54,23 @@ struct Piece {
      */
     friend auto operator==(const Piece &lhs, const Piece &rhs) -> bool = default;
 
-    static const Piece WhitePawn, WhiteRook, WhiteKnight, WhiteBishop, WhiteQueen, WhiteKing;
-    static const Piece BlackPawn, BlackRook, BlackKnight, BlackBishop, BlackQueen, BlackKing;
+    ///@{
+    /**
+     * Predefined chess pieces.
+     */
+    static const Piece WhitePawn;   ///< A white pawn.
+    static const Piece WhiteRook;   ///< A white rook.
+    static const Piece WhiteKnight; ///< A white knight.
+    static const Piece WhiteBishop; ///< A white bishop.
+    static const Piece WhiteQueen;  ///< A white queen.
+    static const Piece WhiteKing;   ///<  A white king.
+    static const Piece BlackPawn;   ///< A black pawn.
+    static const Piece BlackRook;   ///< A black rook.
+    static const Piece BlackKnight; ///< A black knight.
+    static const Piece BlackBishop; ///< A black bishop.
+    static const Piece BlackQueen;  ///< A black queen.
+    static const Piece BlackKing;   ///< A black king.
+    ///@}
 };
 
 /**
