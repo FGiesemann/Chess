@@ -56,7 +56,8 @@ struct Piece {
 
     ///@{
     /**
-     * Predefined chess pieces.
+     * \name Predefined chess pieces.
+     * \brief A set of pre-defines chess pieces for each player.
      */
     static const Piece WhitePawn;   ///< A white pawn.
     static const Piece WhiteRook;   ///< A white rook.
