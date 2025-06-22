@@ -54,4 +54,18 @@ auto starting_piece_placement() -> PiecePlacement {
     return placement_from_string("RNBQKBNRPPPPPPPP________________________________pppppppprnbqkbnr");
 }
 
+const Piece Piece::WhitePawn{.type = PieceType::Pawn, .color = Color::White};
+const Piece Piece::WhiteRook{.type = PieceType::Rook, .color = Color::White};
+const Piece Piece::WhiteKnight{.type = PieceType::Knight, .color = Color::White};
+const Piece Piece::WhiteBishop{.type = PieceType::Bishop, .color = Color::White};
+const Piece Piece::WhiteQueen{.type = PieceType::Queen, .color = Color::White};
+const Piece Piece::WhiteKing{.type = PieceType::King, .color = Color::White};
+
+const Piece Piece::BlackPawn{.type = PieceType::Pawn, .color = Color::Black};
+const Piece Piece::BlackRook{.type = PieceType::Rook, .color = Color::Black};
+const Piece Piece::BlackKnight{.type = PieceType::Knight, .color = Color::Black};
+const Piece Piece::BlackBishop{.type = PieceType::Bishop, .color = Color::Black};
+const Piece Piece::BlackQueen{.type = PieceType::Queen, .color = Color::Black};
+const Piece Piece::BlackKing{.type = PieceType::King, .color = Color::Black};
+
 } // namespace chesscore

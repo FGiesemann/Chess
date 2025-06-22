@@ -53,6 +53,9 @@ struct Piece {
      * @return Equality of the pieces.
      */
     friend auto operator==(const Piece &lhs, const Piece &rhs) -> bool = default;
+
+    static const Piece WhitePawn, WhiteRook, WhiteKnight, WhiteBishop, WhiteQueen, WhiteKing;
+    static const Piece BlackPawn, BlackRook, BlackKnight, BlackBishop, BlackQueen, BlackKing;
 };
 
 /**
