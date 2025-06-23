@@ -15,6 +15,24 @@ TEST_CASE("Empty bitmap", "[Bitmap][Basic]") {
     CHECK_FALSE(bitmap.get(Square::C5));
 }
 
+TEST_CASE("Bitmap Init", "[Bitmap][Basic]") {
+    Bitmap bitmap{Square::C5};
+    CHECK_FALSE(bitmap.empty());
+    CHECK(bitmap.get(Square::C5));
+    CHECK_FALSE(bitmap.get(Square::C4));
+
+    Bitmap bitmap2{0b10000000'00000000'00000000'00000000'00000000'00000000'00000000'00000000ull};
+    CHECK_FALSE(bitmap2.empty());
+    CHECK(bitmap2.get(Square::A1));
+
+    bitmap2 = Bitmap{0b10000000'00000001'00000000'00000001'00010000'00000000'00000000'00000000ull};
+    CHECK_FALSE(bitmap2.empty());
+    CHECK(bitmap2.get(Square::A1));
+    CHECK(bitmap2.get(Square::H2));
+    CHECK(bitmap2.get(Square::H4));
+    CHECK(bitmap2.get(Square::D5));
+}
+
 TEST_CASE("Bitmap Set, clear", "[Bitmap][Basic]") {
     Bitmap bitmap{};
     bitmap.set(Square::C5);
@@ -59,4 +77,33 @@ TEST_CASE("Multiple suqares", "[Bitmap][Basic]") {
     CHECK(bitmap.get(Square::G1));
     CHECK_FALSE(bitmap.get(Square::H8));
     CHECK_FALSE(bitmap.get(Square::A1));
+}
+
+TEST_CASE("Bitmap comparison", "[Bitmap][Operators]") {
+    Bitmap bitmap1{};
+    Bitmap bitmap2{};
+
+    CHECK(bitmap1 == bitmap2);
+    bitmap1.set(Square::C5);
+    CHECK_FALSE(bitmap1 == bitmap2);
+    bitmap2.toggle(Square::C5);
+    CHECK(bitmap1 == bitmap2);
+    bitmap1.clear(Square::C5);
+    CHECK_FALSE(bitmap1 == bitmap2);
+    bitmap2.clear(Square::C5);
+    CHECK(bitmap1 == bitmap2);
+}
+
+TEST_CASE("Bitmap bitwise operators", "[Bitmap][Operators]") {
+    Bitmap bitmap1{0x10'02'00'00'40'00'00'00ull};
+    Bitmap bitmap2{0x08'00'04'00'41'00'80'00ull};
+
+    auto bitmap3 = bitmap1 & bitmap2;
+    CHECK(bitmap3.bits() == 0x00'00'00'00'40'00'00'00ull);
+    bitmap3 = bitmap1 | bitmap2;
+    CHECK(bitmap3.bits() == 0x18'02'04'00'41'00'80'00ull);
+    bitmap3 = bitmap1 ^ bitmap2;
+    CHECK(bitmap3.bits() == 0x18'02'04'00'01'00'80'00ull);
+    bitmap3 = ~bitmap1;
+    CHECK(bitmap3.bits() == 0xEF'FD'FF'FF'BF'FF'FF'FFull);
 }
