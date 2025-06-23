@@ -21,11 +21,11 @@ TEST_CASE("Bitmap Init", "[Bitmap][Basic]") {
     CHECK(bitmap.get(Square::C5));
     CHECK_FALSE(bitmap.get(Square::C4));
 
-    Bitmap bitmap2{0b10000000'00000000'00000000'00000000'00000000'00000000'00000000'00000000ull};
+    Bitmap bitmap2{0b10000000'00000000'00000000'00000000'00000000'00000000'00000000'00000000ULL};
     CHECK_FALSE(bitmap2.empty());
     CHECK(bitmap2.get(Square::A1));
 
-    bitmap2 = Bitmap{0b10000000'00000001'00000000'00000001'00010000'00000000'00000000'00000000ull};
+    bitmap2 = Bitmap{0b10000000'00000001'00000000'00000001'00010000'00000000'00000000'00000000ULL};
     CHECK_FALSE(bitmap2.empty());
     CHECK(bitmap2.get(Square::A1));
     CHECK(bitmap2.get(Square::H2));
@@ -95,15 +95,15 @@ TEST_CASE("Bitmap comparison", "[Bitmap][Operators]") {
 }
 
 TEST_CASE("Bitmap bitwise operators", "[Bitmap][Operators]") {
-    Bitmap bitmap1{0x10'02'00'00'40'00'00'00ull};
-    Bitmap bitmap2{0x08'00'04'00'41'00'80'00ull};
+    Bitmap bitmap1{0x10'02'00'00'40'00'00'00ULL};
+    Bitmap bitmap2{0x08'00'04'00'41'00'80'00ULL};
 
     auto bitmap3 = bitmap1 & bitmap2;
-    CHECK(bitmap3.bits() == 0x00'00'00'00'40'00'00'00ull);
+    CHECK(bitmap3.bits() == 0x00'00'00'00'40'00'00'00ULL);
     bitmap3 = bitmap1 | bitmap2;
-    CHECK(bitmap3.bits() == 0x18'02'04'00'41'00'80'00ull);
+    CHECK(bitmap3.bits() == 0x18'02'04'00'41'00'80'00ULL);
     bitmap3 = bitmap1 ^ bitmap2;
-    CHECK(bitmap3.bits() == 0x18'02'04'00'01'00'80'00ull);
+    CHECK(bitmap3.bits() == 0x18'02'04'00'01'00'80'00ULL);
     bitmap3 = ~bitmap1;
-    CHECK(bitmap3.bits() == 0xEF'FD'FF'FF'BF'FF'FF'FFull);
+    CHECK(bitmap3.bits() == 0xEF'FD'FF'FF'BF'FF'FF'FFULL);
 }

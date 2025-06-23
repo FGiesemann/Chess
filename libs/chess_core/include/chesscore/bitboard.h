@@ -43,7 +43,7 @@ public:
 private:
     std::uint64_t m_bits{};
 
-    static constexpr auto bit_mask(int index) -> std::uint64_t { return 1ull << (63 - index); }
+    static constexpr auto bit_mask(int index) -> std::uint64_t { return 1ULL << (63 - index); }
 };
 
 constexpr auto operator|(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
