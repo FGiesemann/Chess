@@ -196,7 +196,7 @@ auto check_en_passant_target_square(const std::string &fen_string, Color player_
     if (fen_string[pos + 2] != ' ') {
         throw InvalidFen{"Invalid en passant target square in FEN string"};
     }
-    return std::make_pair(Square{.file = File{file}, .rank = Rank{rank - '1' + 1}}, pos + 3);
+    return std::make_pair(Square{File{file}, Rank{rank - '1' + 1}}, pos + 3);
 }
 
 auto check_halfmove_clock(const std::string &fen_string, std::size_t pos) -> std::pair<int, std::size_t> {

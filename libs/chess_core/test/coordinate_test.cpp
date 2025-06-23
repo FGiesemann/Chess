@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Coordinates Checks") {
+TEST_CASE("Coordinates Checks", "[Square]") {
     SECTION("File from character (lower case)") {
         CHECK(File('a').file == 1);
         CHECK(File('b').file == 2);
@@ -88,4 +88,33 @@ TEST_CASE("Coordinates Checks") {
         CHECK(Square(File(1), Rank(1)) != Square(File(1), Rank(2)));
         CHECK(Square(File(1), Rank(1)) != Square(File(2), Rank(2)));
     }
+}
+
+TEST_CASE("Defined Squares", "[Square]") {
+    CHECK(Square::A1.file().file == 1);
+    CHECK(Square::A1.rank().rank == 1);
+    CHECK(Square::A1.file().name() == 'a');
+
+    CHECK(Square::A8.file().file == 1);
+    CHECK(Square::A8.rank().rank == 8);
+
+    CHECK(Square::B1.file().file == 2);
+    CHECK(Square::B1.rank().rank == 1);
+    CHECK(Square::B8.file().file == 2);
+    CHECK(Square::B8.rank().rank == 8);
+
+    CHECK(Square::H1.file().file == 8);
+    CHECK(Square::H1.rank().rank == 1);
+    CHECK(Square::H8.file().file == 8);
+    CHECK(Square::H8.rank().rank == 8);
+}
+
+TEST_CASE("Square index", "[Square]") {
+    CHECK(Square::A1.index() == 0);
+    CHECK(Square::B1.index() == 1);
+    CHECK(Square::H1.index() == 7);
+    CHECK(Square::A2.index() == 8);
+    CHECK(Square::H2.index() == 15);
+    CHECK(Square::A8.index() == 56);
+    CHECK(Square::H8.index() == 63);
 }

@@ -115,9 +115,13 @@ struct Rank {
  *
  * Each square is identified by its file (the column) and the rank (the row).
  */
-struct Square {
-    File file; ///< The file (column) of the square.
-    Rank rank; ///< The rank (row) of the square.
+class Square {
+public:
+    Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{(m_rank.rank - 1) * 8 + m_file.file - 1} {}
+
+    auto file() const -> const File & { return m_file; }
+    auto rank() const -> const Rank & { return m_rank; }
+    auto index() const -> int { return m_index; }
 
     /**
      * \brief Equality comparison for square positions.
@@ -128,7 +132,7 @@ struct Square {
      * @param rhs Right-hand side of the comparison.
      * @return Equality of the two square positions.
      */
-    friend auto operator==(const Square &lhs, const Square &rhs) -> bool { return lhs.file == rhs.file && lhs.rank == rhs.rank; }
+    friend auto operator==(const Square &lhs, const Square &rhs) -> bool { return lhs.file() == rhs.file() && lhs.rank() == rhs.rank(); }
 
     ///@{
     /**
@@ -202,6 +206,10 @@ struct Square {
     static const Square H7; ///< The square H7.
     static const Square H8; ///< The square H8.
     ///@}
+private:
+    File m_file;   ///< The file (column) of the square.
+    Rank m_rank;   ///< The rank (row) of the square.
+    int m_index{}; ///< The linear index of the square.
 };
 
 } // namespace chesscore
