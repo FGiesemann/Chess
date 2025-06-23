@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(ENABLE_CLANG_TIDY "Enable Clang-Tidy code analysis during build" OFF)
 
 add_library(chesscore
+    src/bitboard.cpp
     src/board.cpp
     src/chesscore.cpp
     src/fen.cpp

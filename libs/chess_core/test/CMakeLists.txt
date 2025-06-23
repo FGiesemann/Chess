@@ -1,4 +1,5 @@
 add_executable(chesscore_tests
+    bitboard_test.cpp
     coordinate_test.cpp
     fen_test.cpp
 )
