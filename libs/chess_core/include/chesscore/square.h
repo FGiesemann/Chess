@@ -117,10 +117,38 @@ struct Rank {
  */
 class Square {
 public:
+    /**
+     * \brief Construct a new Square object with a given coordinates.
+     *
+     * A square is defined by its file (column) and rank (row).
+     * \param file The file (column) of the square.
+     * \param rank The rank (row) of the square.
+     */
     Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{(m_rank.rank - 1) * 8 + m_file.file - 1} {}
 
+    /**
+     * \brief Access the file of the square.
+     *
+     * The file (column) of the square.
+     * \return The file.
+     */
     auto file() const -> const File & { return m_file; }
+
+    /**
+     * \brief Access the rank of the square.
+     *
+     * The rank (row) of the square.
+     * \return The rank.
+     */
     auto rank() const -> const Rank & { return m_rank; }
+
+    /**
+     * \brief Gives a linear index for the square.
+     *
+     * The suqares are indexed from 0 to 63, starting with A1 = 0, B1 = 1, ...,
+     * H8 = 63.
+     * \return Linear index of the square.
+     */
     auto index() const -> int { return m_index; }
 
     /**
