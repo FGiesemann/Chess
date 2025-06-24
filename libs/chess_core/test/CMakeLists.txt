@@ -3,6 +3,7 @@ add_executable(chesscore_tests
     data/fen_test.cpp
     
     bitboard/bitmap_test.cpp
+    bitboard/bitboard_test.cpp
 )
 
 target_link_libraries(chesscore_tests PRIVATE chesscore)

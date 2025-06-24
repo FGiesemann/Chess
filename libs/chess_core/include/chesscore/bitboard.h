@@ -6,8 +6,11 @@
 #ifndef CHESSCORE_BITBOARD_H
 #define CHESSCORE_BITBOARD_H
 
+#include <array>
 #include <cstdint>
 
+#include "chesscore/board.h"
+#include "chesscore/piece.h"
 #include "chesscore/square.h"
 
 namespace chesscore {
@@ -189,6 +192,43 @@ constexpr auto operator~(const Bitmap &bitmap) -> Bitmap {
     Bitmap result{~bitmap.bits()};
     return result;
 }
+
+/**
+ * \brief A bitboard stores the placement of pieces on the board.
+ *
+ * The bitboard contains Bitmaps that describe the placement of figures on the
+ * chess board.
+ */
+class Bitboard {
+public:
+    auto empty() const -> bool;
+    auto has_piece(const PieceType &piece_type) const -> bool;
+    auto has_piece(const Piece &piece) const -> bool;
+    auto has_piece(const Color &color) const -> bool;
+    auto set_piece(const Piece &piece, const Square &square) -> void;
+    auto get_piece(const Square &square) const -> std::optional<Piece>;
+    auto clear_square(const Square &square) -> void;
+    auto set_from_fen(const FenString &fen) -> void;
+    auto calculate_hash_component() const -> uint64_t;
+private:
+    std::array<Bitmap, 12> m_bitmaps{};
+    Bitmap m_white_pieces{};
+    Bitmap m_black_pieces{};
+    Bitmap m_all_pieces{};
+
+    auto bitmap_index(const Piece &piece) const -> size_t {
+        const auto type_index = static_cast<std::underlying_type_t<PieceType>>(piece.type);
+        const auto color_offset = (piece.color == Color::White) ? 0 : 6;
+        return type_index + color_offset;
+    }
+
+    auto bitmap(const Piece &piece) const -> const Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
+    auto bitmap(const Piece &piece) -> Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
+    auto bitmap(const Color &color) const -> const Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
+    auto bitmap(const Color &color) -> Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
+};
+
+static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");
 
 } // namespace chesscore
 

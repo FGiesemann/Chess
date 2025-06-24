@@ -18,14 +18,18 @@ namespace chesscore {
  *
  */
 template<typename T>
-concept Board = requires(T board, Square s, Piece p, /* const Move &m,*/ const FenString &fen) {
+concept Board = requires(T board, const T board_c, const Square &square, const Piece &piece, const PieceType &piece_type, const Color &color, /* const Move &move,*/ const FenString &fen) {
+    { board_c.empty() } -> std::same_as<bool>;
+    { board_c.has_piece(piece_type) } -> std::same_as<bool>;
+    { board_c.has_piece(piece) } -> std::same_as<bool>;
+    { board_c.has_piece(color) } -> std::same_as<bool>;
+    { board.set_piece(piece, square) } -> std::same_as<void>;
+    { board_c.get_piece(square) } -> std::same_as<std::optional<Piece>>;
+    { board.clear_square(square) } -> std::same_as<void>;
     { board.set_from_fen(fen) } -> std::same_as<void>;
-    //{ board.makeMove(m) } -> std::same_as<void>;
-    //{ board.unmakeMove(m) } -> std::same_as<void>;
-    { board.getPieceOnSquare(s) } -> std::same_as<Piece>;
-    { board.setPieceOnSquare(s, p) } -> std::same_as<void>;
-    { board.clearSquare(s) } -> std::same_as<void>;
-    { board.calculateZobristHashComponent() } -> std::same_as<uint64_t>;
+    //{ board.make_move(move) } -> std::same_as<void>;
+    //{ board.unmake_move(move) } -> std::same_as<void>;
+    { board_c.calculate_hash_component() } -> std::same_as<uint64_t>; /* TODO: return type: Hash-Type */
 };
 
 } // namespace chesscore
