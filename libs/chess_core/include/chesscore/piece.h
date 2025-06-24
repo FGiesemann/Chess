@@ -19,6 +19,15 @@ namespace chesscore {
 enum class PieceType { Pawn, Rook, Knight, Bishop, Queen, King };
 
 /**
+ * \brief Give a piece type from an index.
+ *
+ * The piece types are ordered as Pawn, Rook, Knight, Bishop, Queen, King.
+ * \param index The index.
+ * \return Piece type corresponding to the index.
+ */
+auto piece_type_from_index(int index) -> PieceType;
+
+/**
  * \brief Converts a character to a piece type.
  *
  * Converts a character as it may appear in a FEN string (r, n, b, q, k, p) to
