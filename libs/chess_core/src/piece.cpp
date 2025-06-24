@@ -10,22 +10,10 @@
 namespace chesscore {
 
 auto piece_type_from_index(int index) -> PieceType {
-    switch (index) {
-    case 0:
-        return PieceType::Pawn;
-    case 1:
-        return PieceType::Rook;
-    case 2:
-        return PieceType::Knight;
-    case 3:
-        return PieceType::Bishop;
-    case 4:
-        return PieceType::Queen;
-    case 5:
-        return PieceType::King;
-    default:
-        throw ChessException("Invalid piece type index: " + std::to_string(index));
+    if (index >= 0 && index < piece_type_count) {
+        return static_cast<PieceType>(index);
     }
+    throw ChessException("Invalid piece type index: " + std::to_string(index));
 }
 
 auto piece_type_from_char(char letter) -> PieceType {

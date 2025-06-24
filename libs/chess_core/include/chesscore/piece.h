@@ -18,6 +18,8 @@ namespace chesscore {
  */
 enum class PieceType { Pawn, Rook, Knight, Bishop, Queen, King };
 
+static constexpr int piece_type_count = 6;
+
 /**
  * \brief Give a piece type from an index.
  *
@@ -82,6 +84,11 @@ struct Piece {
     static const Piece BlackKing;   ///< A black king.
     ///@}
 };
+
+static constexpr int min_white_piece_index = 0;
+static constexpr int max_white_piece_index = 5;
+static constexpr int min_black_piece_index = 6;
+static constexpr int max_black_piece_index = 11;
 
 /**
  * \brief Converts a character to a piece.
