@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Empty FEN string", "[FENString][Init]") {
+TEST_CASE("Data.FEN.Empty FEN string", "[FENString][Init]") {
     FenString empty_board{};
     CHECK(empty_board.str() == "8/8/8/8/8/8/8/8 w - - 0 1");
     CHECK(empty_board.side_to_move() == Color::White);
@@ -18,7 +18,7 @@ TEST_CASE("Empty FEN string", "[FENString][Init]") {
     CHECK(empty_board.fullmove_number() == 1);
 }
 
-TEST_CASE("Starting position FEN string", "[FENString][Init]") {
+TEST_CASE("Data.FEN.Starting position FEN string", "[FENString][Init]") {
     FenString starting_position{FenString::starting_position()};
     CHECK(starting_position.str() == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     CHECK(starting_position.side_to_move() == Color::White);
@@ -27,7 +27,7 @@ TEST_CASE("Starting position FEN string", "[FENString][Init]") {
     CHECK(starting_position.fullmove_number() == 1);
 }
 
-TEST_CASE("Piece placement", "[FENString][Validity]") {
+TEST_CASE("Data.FEN.Piece placement", "[FENString][Validity]") {
     static const PiecePlacement pieces_a = placement_from_string("RNBQKBNRPPPPPPPP________________________p_______ppppppp_rnbqkbnr");
     static const PiecePlacement pieces_b = placement_from_string("RNBQKBNRPPPPPPPP______________________________p_ppppppp_rnbqkbnr");
 
@@ -61,7 +61,7 @@ TEST_CASE("Piece placement", "[FENString][Validity]") {
     CHECK_THROWS_AS(detail::check_piece_placement("rnbqkbnr/pp21ppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"), InvalidFen);   // two adjecent numbers
 }
 
-TEST_CASE("Side to move", "[FENString][Validity]") {
+TEST_CASE("Data.FEN.Side to move", "[FENString][Validity]") {
     CHECK(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 44) == std::make_pair(Color::White, 46));
     CHECK(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", 44) == std::make_pair(Color::Black, 46));
     CHECK(detail::check_side_to_move("8/8/8/8/8/8/8/8 w - - 0 1", 16) == std::make_pair(Color::White, 18));
@@ -74,7 +74,7 @@ TEST_CASE("Side to move", "[FENString][Validity]") {
     CHECK_THROWS_AS(detail::check_side_to_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", 34), InvalidFen);
 }
 
-TEST_CASE("Castling availability", "[FENString][Validity]") {
+TEST_CASE("Data.FEN.Castling availability", "[FENString][Validity]") {
     CHECK(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 46) == std::make_pair(CastlingAvailability::all(), 51));
     CHECK(detail::check_castling_availability("8/8/8/8/8/8/8/8 w - - 0 1", 18) == std::make_pair(CastlingAvailability::none(), 20));
 
@@ -84,7 +84,7 @@ TEST_CASE("Castling availability", "[FENString][Validity]") {
     CHECK_THROWS_AS(detail::check_castling_availability("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KkQq - 0 1", 45), InvalidFen);  // invalid order
 }
 
-TEST_CASE("En passant square", "[FENString][Validity]") {
+TEST_CASE("Data.FEN.En passant square", "[FENString][Validity]") {
     CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Color::White, 51) == std::make_pair(std::nullopt, 53));
     CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", Color::White, 20) == std::make_pair(std::nullopt, 22));
     CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", Color::White, 51) == std::make_pair(Square::C6, 54));
@@ -98,7 +98,7 @@ TEST_CASE("En passant square", "[FENString][Validity]") {
     CHECK_THROWS_AS(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c3w 0 1", Color::White, 51), InvalidFen); // too long
 }
 
-TEST_CASE("Halfmove clock", "[FENString][Validity]") {
+TEST_CASE("Data.FEN.Halfmove clock", "[FENString][Validity]") {
     CHECK(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 53) == std::make_pair(0, 55));
     CHECK(detail::check_halfmove_clock("8/8/8/8/8/8/8/8 w - - 0 1", 22) == std::make_pair(0, 24));
     CHECK(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 26 1", 53) == std::make_pair(26, 56));
@@ -111,7 +111,7 @@ TEST_CASE("Halfmove clock", "[FENString][Validity]") {
     CHECK_THROWS_AS(detail::check_halfmove_clock("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 31", 53), InvalidFen);   // unexpected end of FEN
 }
 
-TEST_CASE("Full move number", "[FENString][Validity]") {
+TEST_CASE("Data.FEN.Full move number", "[FENString][Validity]") {
     CHECK_NOTHROW(detail::check_fullmove_number("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 55));
     CHECK_NOTHROW(detail::check_fullmove_number("8/8/8/8/8/8/8/8 w - - 0 1", 24));
 
@@ -121,7 +121,7 @@ TEST_CASE("Full move number", "[FENString][Validity]") {
     CHECK_THROWS_AS(detail::check_fullmove_number("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 46", 55), InvalidFen); // FEN string too long
 }
 
-TEST_CASE("Valid FEN strings", "[FENString][Validity]") {
+TEST_CASE("Data.FEN.Valid FEN strings", "[FENString][Validity]") {
     // 1. e4
     FenString fen;
     CHECK_NOTHROW(fen = FenString("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"));

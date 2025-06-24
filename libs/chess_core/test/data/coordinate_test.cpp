@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Coordinates Checks", "[Square]") {
+TEST_CASE("Data.Coords.Coordinates Checks", "[Square]") {
     SECTION("File from character (lower case)") {
         CHECK(File('a').file == 1);
         CHECK(File('b').file == 2);
@@ -90,7 +90,7 @@ TEST_CASE("Coordinates Checks", "[Square]") {
     }
 }
 
-TEST_CASE("Defined Squares", "[Square]") {
+TEST_CASE("Data.Coords.Defined Squares", "[Square]") {
     CHECK(Square::A1.file().file == 1);
     CHECK(Square::A1.rank().rank == 1);
     CHECK(Square::A1.file().name() == 'a');
@@ -109,7 +109,7 @@ TEST_CASE("Defined Squares", "[Square]") {
     CHECK(Square::H8.rank().rank == 8);
 }
 
-TEST_CASE("Square index", "[Square]") {
+TEST_CASE("Data.Coords.Square index", "[Square]") {
     CHECK(Square::A1.index() == 0);
     CHECK(Square::B1.index() == 1);
     CHECK(Square::H1.index() == 7);

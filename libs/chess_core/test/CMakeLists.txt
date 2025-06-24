@@ -1,7 +1,8 @@
 add_executable(chesscore_tests
-    bitboard_test.cpp
-    coordinate_test.cpp
-    fen_test.cpp
+    data/coordinate_test.cpp
+    data/fen_test.cpp
+    
+    bitboard/bitmap_test.cpp
 )
 
 target_link_libraries(chesscore_tests PRIVATE chesscore)
