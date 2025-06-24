@@ -23,6 +23,10 @@ auto Bitboard::has_piece(const Color &color) const -> bool {
     return !bitmap(color).empty();
 }
 
+auto Bitboard::has_piece(const Square &square) const -> bool {
+    return m_all_pieces.get(square);
+}
+
 auto Bitboard::set_piece(const Piece &piece, const Square &square) -> void {
     bitmap(piece).set(square);
     m_all_pieces.set(square);

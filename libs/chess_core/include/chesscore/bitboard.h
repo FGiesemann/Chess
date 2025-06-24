@@ -205,6 +205,7 @@ public:
     auto has_piece(const PieceType &piece_type) const -> bool;
     auto has_piece(const Piece &piece) const -> bool;
     auto has_piece(const Color &color) const -> bool;
+    auto has_piece(const Square &square) const -> bool;
     auto set_piece(const Piece &piece, const Square &square) -> void;
     auto get_piece(const Square &square) const -> std::optional<Piece>;
     auto clear_square(const Square &square) -> void;

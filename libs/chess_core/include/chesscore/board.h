@@ -23,6 +23,7 @@ concept Board = requires(T board, const T board_c, const Square &square, const P
     { board_c.has_piece(piece_type) } -> std::same_as<bool>;
     { board_c.has_piece(piece) } -> std::same_as<bool>;
     { board_c.has_piece(color) } -> std::same_as<bool>;
+    { board_c.has_piece(square) } -> std::same_as<bool>;
     { board.set_piece(piece, square) } -> std::same_as<void>;
     { board_c.get_piece(square) } -> std::same_as<std::optional<Piece>>;
     { board.clear_square(square) } -> std::same_as<void>;
