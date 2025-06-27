@@ -28,6 +28,7 @@ auto Bitboard::has_piece(const Square &square) const -> bool {
 }
 
 auto Bitboard::set_piece(const Piece &piece, const Square &square) -> void {
+    clear_square(square);
     bitmap(piece).set(square);
     m_all_pieces.set(square);
     bitmap(piece.color).set(square);

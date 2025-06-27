@@ -39,6 +39,17 @@ TEST_CASE("Bitboard.Bitboard.Set", "[Bitboard][Init]") {
     CHECK_FALSE(bitboard.has_piece(Piece::WhiteBishop));
     CHECK(bitboard.has_piece(Color::Black));
     CHECK(bitboard.has_piece(Piece::BlackBishop));
+
+    // replace WhiteKnight with a WhitePawn
+    bitboard.set_piece(Piece::WhitePawn, Square::A1);
+    CHECK(bitboard.has_piece(Piece::WhitePawn));
+    CHECK(bitboard.has_piece(PieceType::Pawn));
+    CHECK(bitboard.has_piece(Color::White));
+    CHECK_FALSE(bitboard.has_piece(Piece::WhiteKnight));
+    CHECK_FALSE(bitboard.has_piece(PieceType::Knight));
+    CHECK(bitboard.has_piece(Piece::BlackBishop));
+    CHECK(bitboard.has_piece(PieceType::Bishop));
+    CHECK(bitboard.has_piece(Color::Black));
 }
 
 TEST_CASE("Bitboard.Bitboard.Get", "[Bitboard][Init]") {
