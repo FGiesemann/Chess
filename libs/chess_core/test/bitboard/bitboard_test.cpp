@@ -97,3 +97,46 @@ TEST_CASE("Bitboard.Bitboard.Clear", "[Bitboard][Init]") {
     CHECK_FALSE(bitboard.has_piece(Square::F3));
     CHECK(bitboard.empty());
 }
+
+TEST_CASE("Bitboard.Bitboard.FromFEN", "[Bitboard][Init]") {
+    Bitboard empty_bitboard{FenString{}};
+    CHECK(empty_bitboard.empty());
+    CHECK_FALSE(empty_bitboard.has_piece(PieceType::Pawn));
+    CHECK_FALSE(empty_bitboard.has_piece(Piece::WhiteKnight));
+    CHECK_FALSE(empty_bitboard.has_piece(Color::Black));
+
+    Bitboard start_cfg_bitboard{FenString{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}};
+    CHECK_FALSE(start_cfg_bitboard.empty());
+    CHECK(start_cfg_bitboard.get_piece(Square::A1) == Piece::WhiteRook);
+    CHECK(start_cfg_bitboard.get_piece(Square::B1) == Piece::WhiteKnight);
+    CHECK(start_cfg_bitboard.get_piece(Square::C1) == Piece::WhiteBishop);
+    CHECK(start_cfg_bitboard.get_piece(Square::D1) == Piece::WhiteQueen);
+    CHECK(start_cfg_bitboard.get_piece(Square::E1) == Piece::WhiteKing);
+    CHECK(start_cfg_bitboard.get_piece(Square::F1) == Piece::WhiteBishop);
+    CHECK(start_cfg_bitboard.get_piece(Square::G1) == Piece::WhiteKnight);
+    CHECK(start_cfg_bitboard.get_piece(Square::H1) == Piece::WhiteRook);
+
+    CHECK(start_cfg_bitboard.get_piece(Square::A2) == Piece::WhitePawn);
+    CHECK(start_cfg_bitboard.get_piece(Square::B2) == Piece::WhitePawn);
+    CHECK(start_cfg_bitboard.get_piece(Square::C2) == Piece::WhitePawn);
+    CHECK(start_cfg_bitboard.get_piece(Square::H2) == Piece::WhitePawn);
+
+    CHECK_FALSE(start_cfg_bitboard.get_piece(Square::A3).has_value());
+    CHECK_FALSE(start_cfg_bitboard.get_piece(Square::B4).has_value());
+    CHECK_FALSE(start_cfg_bitboard.get_piece(Square::D5).has_value());
+    CHECK_FALSE(start_cfg_bitboard.get_piece(Square::F6).has_value());
+
+    CHECK(start_cfg_bitboard.get_piece(Square::A7) == Piece::BlackPawn);
+    CHECK(start_cfg_bitboard.get_piece(Square::B7) == Piece::BlackPawn);
+    CHECK(start_cfg_bitboard.get_piece(Square::F7) == Piece::BlackPawn);
+    CHECK(start_cfg_bitboard.get_piece(Square::H7) == Piece::BlackPawn);
+
+    CHECK(start_cfg_bitboard.get_piece(Square::A8) == Piece::BlackRook);
+    CHECK(start_cfg_bitboard.get_piece(Square::B8) == Piece::BlackKnight);
+    CHECK(start_cfg_bitboard.get_piece(Square::C8) == Piece::BlackBishop);
+    CHECK(start_cfg_bitboard.get_piece(Square::D8) == Piece::BlackQueen);
+    CHECK(start_cfg_bitboard.get_piece(Square::E8) == Piece::BlackKing);
+    CHECK(start_cfg_bitboard.get_piece(Square::F8) == Piece::BlackBishop);
+    CHECK(start_cfg_bitboard.get_piece(Square::G8) == Piece::BlackKnight);
+    CHECK(start_cfg_bitboard.get_piece(Square::H8) == Piece::BlackRook);
+}

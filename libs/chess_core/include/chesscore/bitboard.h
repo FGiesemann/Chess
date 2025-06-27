@@ -201,15 +201,100 @@ constexpr auto operator~(const Bitmap &bitmap) -> Bitmap {
  */
 class Bitboard {
 public:
+    Bitboard() = default;
+
+    /**
+     * \brief Create a board with pieces described by a FEN string.
+     *
+     * Sets the pieces on the board according to the figure placement part of a
+     * FEN string.
+     * \param fen The FEN string.
+     */
+    explicit Bitboard(const FenString &fen);
+
+    /**
+     * \brief Check if the bitboard is empty.
+     *
+     * An empty bitboard has no pieces on it.
+     * \return If the bitboard is empty.
+     */
     auto empty() const -> bool;
+
+    /**
+     * \brief Check if the bitboard has a piece of a certain type.
+     *
+     * Checks, if there is a piece of the given piece type on the board. For
+     * checking a piece with a certain color, use the has_piece(Color)
+     * \param piece_type The piece type.
+     * \return If there is a piece of the given type on the board.
+     */
     auto has_piece(const PieceType &piece_type) const -> bool;
+
+    /**
+     * \brief Check if the bitboard has a piece of a certain color.
+     *
+     * Checks, if there is a piece of the given color on the board. For only
+     * checking the piece type ignoring the color, use the has_piece(PieceType).
+     * \param piece The piece to check.
+     * \return If there is a piece of the given color on the board.
+     */
     auto has_piece(const Piece &piece) const -> bool;
+
+    /**
+     * \brief Check if the bitboard has a piece of a certain color.
+     *
+     * Checks if any piece of the given color is on the board.
+     * \param color The color to check.
+     * \return If there is a piece of the given color on the board.
+     */
     auto has_piece(const Color &color) const -> bool;
+
+    /**
+     * \brief Check if the bitboard has a piece on a certain square.
+     *
+     * Checks a given suqare for a piece.
+     * \param square The square to check.
+     * \return If there is a piece on the given square.
+     */
     auto has_piece(const Square &square) const -> bool;
+
+    /**
+     * \brief Put a piece on the board.
+     *
+     * Places the given piece on the given square. If the square is already
+     * occupied, the new piece replaces the previous one.
+     * \param piece The piece to place.
+     * \param square The square to place the piece on.
+     */
     auto set_piece(const Piece &piece, const Square &square) -> void;
+
+    /**
+     * \brief Get the piece on the given square.
+     *
+     * Retrieves the piece on the given square. If there is no piece on the
+     * square, an empty optional is returned.
+     * \param square The square to get the piece from.
+     * \return The piece on the square or an empty optional.
+     */
     auto get_piece(const Square &square) const -> std::optional<Piece>;
+
+    /**
+     * \brief Remove a piece from the board.
+     *
+     * Removes a piece from the given square. If there is no piece on the given
+     * square, nothing happens.
+     * \param square The square to clear.
+     */
     auto clear_square(const Square &square) -> void;
-    auto set_from_fen(const FenString &fen) -> void;
+
+    /**
+     * \brief Calculates the position hash value.
+     *
+     * The total hash value for a chess position is a combination of the hash
+     * component for the pieces with additional information. This computes the
+     * hash component for the piece placement.
+     * \return Hash component for the piece placement.
+     */
     auto calculate_hash_component() const -> uint64_t;
 private:
     std::array<Bitmap, 12> m_bitmaps{};

@@ -7,6 +7,19 @@
 
 namespace chesscore {
 
+Bitboard::Bitboard(const FenString &fen) {
+    const auto &placements{fen.piece_placement()};
+    for (int rank{Rank::min_rank}; rank <= Rank::max_rank; ++rank) {
+        for (int file{File::min_file}; file <= File::max_file; ++file) {
+            const auto square = Square{rank, file};
+            const auto piece{placements[square.index()]};
+            if (piece) {
+                set_piece(piece.value(), square);
+            }
+        }
+    }
+}
+
 auto Bitboard::empty() const -> bool {
     return m_all_pieces.empty();
 }
@@ -58,8 +71,6 @@ auto Bitboard::clear_square(const Square &square) -> void {
     m_black_pieces &= remove_from_square;
     m_all_pieces &= remove_from_square;
 }
-
-auto Bitboard::set_from_fen([[maybe_unused]] const FenString &fen) -> void {}
 
 auto Bitboard::calculate_hash_component() const -> uint64_t {
     // TODO
