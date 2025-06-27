@@ -46,11 +46,22 @@ auto Bitboard::get_piece(const Square &square) const -> std::optional<Piece> {
     return {};
 }
 
-auto Bitboard::clear_square([[maybe_unused]] const Square &square) -> void {}
+auto Bitboard::clear_square(const Square &square) -> void {
+    const auto remove_from_square = ~Bitmap{square};
+
+    for (auto &bitmap : m_bitmaps) {
+        bitmap &= remove_from_square;
+    }
+
+    m_white_pieces &= remove_from_square;
+    m_black_pieces &= remove_from_square;
+    m_all_pieces &= remove_from_square;
+}
 
 auto Bitboard::set_from_fen([[maybe_unused]] const FenString &fen) -> void {}
 
 auto Bitboard::calculate_hash_component() const -> uint64_t {
+    // TODO
     return {};
 }
 

@@ -46,6 +46,12 @@ TEST_CASE("Bitboard.Bitboard.Get", "[Bitboard][Init]") {
     bitboard.set_piece(Piece::BlackBishop, Square::E2);
     bitboard.set_piece(Piece::WhiteKnight, Square::A1);
 
+    CHECK(bitboard.has_piece(Square::E2));
+    CHECK(bitboard.has_piece(Square::A1));
+    CHECK_FALSE(bitboard.has_piece(Square::A2));
+    CHECK_FALSE(bitboard.has_piece(Square::F3));
+    CHECK_FALSE(bitboard.has_piece(Square::H7));
+
     const auto p1 = bitboard.get_piece(Square::E2);
     REQUIRE(p1.has_value());
     CHECK(p1 == Piece::BlackBishop);
@@ -56,4 +62,27 @@ TEST_CASE("Bitboard.Bitboard.Get", "[Bitboard][Init]") {
 
     const auto p3 = bitboard.get_piece(Square::A2);
     CHECK_FALSE(p3.has_value());
+}
+
+TEST_CASE("Bitboard.Bitboard.Clear", "[Bitboard][Init]") {
+    Bitboard bitboard{};
+    bitboard.set_piece(Piece::BlackBishop, Square::E2);
+    bitboard.set_piece(Piece::WhiteKnight, Square::A1);
+    bitboard.set_piece(Piece::WhiteRook, Square::F3);
+
+    bitboard.clear_square(Square::E2);
+    CHECK_FALSE(bitboard.has_piece(Square::E2));
+    CHECK(bitboard.has_piece(Square::A1));
+    CHECK(bitboard.has_piece(Square::F3));
+
+    bitboard.clear_square(Square::A1);
+    CHECK_FALSE(bitboard.has_piece(Square::E2));
+    CHECK_FALSE(bitboard.has_piece(Square::A1));
+    CHECK(bitboard.has_piece(Square::F3));
+
+    bitboard.clear_square(Square::F3);
+    CHECK_FALSE(bitboard.has_piece(Square::E2));
+    CHECK_FALSE(bitboard.has_piece(Square::A1));
+    CHECK_FALSE(bitboard.has_piece(Square::F3));
+    CHECK(bitboard.empty());
 }
