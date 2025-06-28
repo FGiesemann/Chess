@@ -61,6 +61,11 @@ struct Move {
      */
     auto is_promotion() const -> bool { return promoted.has_value(); }
 
+    /**
+     * \brief If this is a double-stop of a pawn.
+     *
+     * \return If the move is a double-step of a pawn.
+     */
     auto is_double_step() const -> bool { return piece.type == PieceType::Pawn && std::abs(from.rank().rank - to.rank().rank) == 2 && from.file().file == to.file().file; }
 };
 

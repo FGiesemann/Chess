@@ -162,12 +162,12 @@ struct CastlingRights {
     friend auto operator==(const CastlingRights &lhs, const CastlingRights &rhs) -> bool = default;
 
     /**
-     * \brief Get the castling availability for a a player.
+     * \brief Get the castling rights for a a player.
      *
-     * Query the castling availability for a player and a side
-     * (kingside/queenside). The letter given has the same meaning as in a FEN
-     * string. (K = kingside castling of the white king, q = queenside castling
-     * of the black king, ...)
+     * Query the castling rights for a player and a side (kingside/queenside).
+     * The letter given has the same meaning as in a FEN string. (K = kingside
+     * castling of the white king, q = queenside castling of the black king,
+     * ...)
      * \param piece The castling type as described above.
      * @return If the castling right is available.
      */
@@ -186,6 +186,16 @@ struct CastlingRights {
         }
     }
 
+    /**
+     * \brief Get the castling rights for a a player.
+     *
+     * Query the castling rights for a player and a side (kingside/queenside).
+     * The letter given has the same meaning as in a FEN string. (K = kingside
+     * castling of the white king, q = queenside castling of the black king,
+     * ...)
+     * \param piece The castling type as described above.
+     * @return If the castling right is available.
+     */
     auto operator[](char piece) -> bool & {
         switch (piece) {
         case 'K':
