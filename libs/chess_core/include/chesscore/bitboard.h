@@ -10,6 +10,7 @@
 #include <cstdint>
 
 #include "chesscore/board.h"
+#include "chesscore/fen.h"
 #include "chesscore/piece.h"
 #include "chesscore/square.h"
 

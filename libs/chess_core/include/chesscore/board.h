@@ -7,11 +7,14 @@
 #define CHESSCORE_BOARD_H
 
 #include "chesscore/chesscore.h"
-#include "chesscore/fen.h"
 #include "chesscore/piece.h"
-#include "chesscore/square.h"
 
 namespace chesscore {
+
+class Square;
+enum class PieceType;
+enum class Color;
+class FenString;
 
 /**
  * \brief A board describes the placement of pieces on a chess board.
