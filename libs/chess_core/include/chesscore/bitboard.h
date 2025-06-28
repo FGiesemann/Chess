@@ -12,6 +12,7 @@
 
 #include "chesscore/board.h"
 #include "chesscore/fen.h"
+#include "chesscore/move.h"
 #include "chesscore/piece.h"
 #include "chesscore/square.h"
 
@@ -288,6 +289,25 @@ public:
      * \param square The square to clear.
      */
     auto clear_square(const Square &square) -> void;
+
+    /**
+     * \brief Make a move.
+     *
+     * Assumes, that the given move is valid in the current position. No checks
+     * are performed!
+     * \param move The move to apply in the current position.
+     */
+    auto make_move(const Move &move) -> void;
+
+    /**
+     * \brief Reverses a move.
+     *
+     * Recreates the state of the position before the move was made. This only
+     * works, if the given move was the last move applied to the board. No
+     * validity checks are performed!
+     * \param move The move to undo.
+     */
+    auto unmake_move(const Move &move) -> void;
 
     /**
      * \brief Calculates the position hash value.

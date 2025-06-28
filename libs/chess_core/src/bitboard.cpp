@@ -51,7 +51,8 @@ auto Bitboard::get_piece(const Square &square) const -> std::optional<Piece> {
     if (!m_all_pieces.get(square)) {
         return {};
     }
-    const auto [min_index, max_index] = (m_white_pieces.get(square)) ? std::make_pair(min_white_piece_index, max_white_piece_index) : std::make_pair(min_black_piece_index, max_black_piece_index);
+    const auto [min_index, max_index] =
+        (m_white_pieces.get(square)) ? std::make_pair(min_white_piece_index, max_white_piece_index) : std::make_pair(min_black_piece_index, max_black_piece_index);
     for (auto i = min_index; i <= max_index; ++i) {
         if (m_bitmaps.at(i).get(square)) {
             return Piece{.type = static_cast<PieceType>(i - min_index), .color = (i <= max_white_piece_index) ? Color::White : Color::Black};
@@ -71,6 +72,10 @@ auto Bitboard::clear_square(const Square &square) -> void {
     m_black_pieces &= remove_from_square;
     m_all_pieces &= remove_from_square;
 }
+
+auto Bitboard::make_move([[maybe_unused]] const Move &move) -> void {}
+
+auto Bitboard::unmake_move([[maybe_unused]] const Move &move) -> void {}
 
 auto Bitboard::calculate_hash_component() const -> uint64_t {
     // TODO
