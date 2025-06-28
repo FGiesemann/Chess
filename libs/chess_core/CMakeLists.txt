@@ -28,6 +28,7 @@ add_library(chesscore
     src/board.cpp
     src/chesscore.cpp
     src/fen.cpp
+    src/move.cpp
     src/piece.cpp
     src/position.cpp
     src/square.cpp
