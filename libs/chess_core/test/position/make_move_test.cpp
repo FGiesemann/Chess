@@ -11,7 +11,7 @@
 using namespace chesscore;
 
 TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
-    Position<Bitboard> position{FenString{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}};
+    Position<Bitboard> position{FenString::starting_position()};
 
     Move m1{
         .from = Square::E2,
@@ -25,8 +25,8 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m1);
-    // CHECK_FALSE(position.board().get_piece(Square::E2).has_value());
-    // CHECK(position.board().get_piece(Square::E4) == Piece::WhitePawn);
+    CHECK_FALSE(position.board().get_piece(Square::E2).has_value());
+    CHECK(position.board().get_piece(Square::E4) == Piece::WhitePawn);
     CHECK(position.castling_rights() == CastlingRights::all());
     CHECK(position.side_to_move() == Color::Black);
     CHECK(position.en_passant_target() == Square::E3);
@@ -45,8 +45,8 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m2);
-    // CHECK_FALSE(position.board().get_piece(Square::D7).has_value());
-    // CHECK(position.board().get_piece(Square::D5) == Piece::BlackPawn);
+    CHECK_FALSE(position.board().get_piece(Square::D7).has_value());
+    CHECK(position.board().get_piece(Square::D5) == Piece::BlackPawn);
     CHECK(position.castling_rights() == CastlingRights::all());
     CHECK(position.side_to_move() == Color::White);
     CHECK(position.en_passant_target() == Square::D6);
@@ -65,8 +65,8 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m3);
-    // CHECK_FALSE(position.board().get_piece(Square::F1).has_value());
-    // CHECK(position.board().get_piece(Square::C4) == Piece::WhiteBishop);
+    CHECK_FALSE(position.board().get_piece(Square::F1).has_value());
+    CHECK(position.board().get_piece(Square::C4) == Piece::WhiteBishop);
     CHECK(position.castling_rights() == CastlingRights::all());
     CHECK(position.side_to_move() == Color::Black);
     CHECK_FALSE(position.en_passant_target().has_value());
@@ -85,8 +85,8 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m4);
-    // CHECK_FALSE(position.board().get_piece(Square::E8).has_value());
-    // CHECK(position.board().get_piece(Square::D7) == Piece::BlackKing);
+    CHECK_FALSE(position.board().get_piece(Square::E8).has_value());
+    CHECK(position.board().get_piece(Square::D7) == Piece::BlackKing);
     CHECK(position.castling_rights()['K']);
     CHECK(position.castling_rights()['Q']);
     CHECK_FALSE(position.castling_rights()['k']);
@@ -108,8 +108,8 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m5);
-    // CHECK_FALSE(position.board().get_piece(Square::G1).has_value());
-    // CHECK(position.board().get_piece(Square::F3) == Piece::WhiteKnight);
+    CHECK_FALSE(position.board().get_piece(Square::G1).has_value());
+    CHECK(position.board().get_piece(Square::F3) == Piece::WhiteKnight);
     CHECK(position.castling_rights()['K']);
     CHECK(position.castling_rights()['Q']);
     CHECK_FALSE(position.castling_rights()['k']);
@@ -131,8 +131,8 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m6);
-    // CHECK_FALSE(position.board().get_piece(Square::D5).has_value());
-    // CHECK(position.board().get_piece(Square::C4) == Piece::BlackPawn);
+    CHECK_FALSE(position.board().get_piece(Square::D5).has_value());
+    CHECK(position.board().get_piece(Square::C4) == Piece::BlackPawn);
     CHECK(position.castling_rights()['K']);
     CHECK(position.castling_rights()['Q']);
     CHECK_FALSE(position.castling_rights()['k']);
@@ -154,10 +154,10 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m7);
-    // CHECK_FALSE(position.board().get_piece(Square::E1).has_value());
-    // CHECK(position.board().get_piece(Square::G1) == Piece::WhiteKing);
-    // CHECK_FALSE(position.board().get_piece(Square::H1).has_value());
-    // CHECK(position.board().get_piece(Square::F1) == Piece::WhiteRook);
+    CHECK_FALSE(position.board().get_piece(Square::E1).has_value());
+    CHECK(position.board().get_piece(Square::G1) == Piece::WhiteKing);
+    CHECK_FALSE(position.board().get_piece(Square::H1).has_value());
+    CHECK(position.board().get_piece(Square::F1) == Piece::WhiteRook);
     CHECK_FALSE(position.castling_rights()['K']);
     CHECK_FALSE(position.castling_rights()['Q']);
     CHECK_FALSE(position.castling_rights()['k']);
