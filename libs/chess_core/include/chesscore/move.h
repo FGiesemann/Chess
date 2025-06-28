@@ -38,6 +38,14 @@ struct Move {
     size_t halfmove_clock_before;          ///< Halfmove clock before the move.
 
     /**
+     * \brief If the move is a castling move.
+     *
+     * A castling move is detected, when a King moves two squares to the side.
+     * \return If this is a castling move.
+     */
+    auto is_castling() const -> bool { return piece.type == PieceType::King && from.rank() == to.rank() && std::abs(from.file().file - to.file().file) == 2; }
+
+    /**
      * \brief If the move is a capture.
      *
      * This is a convenience function to check if the move is a capture.
@@ -52,6 +60,8 @@ struct Move {
      * \return If the move is a promotion.
      */
     auto is_promotion() const -> bool { return promoted.has_value(); }
+
+    auto is_double_step() const -> bool { return piece.type == PieceType::Pawn && std::abs(from.rank().rank - to.rank().rank) == 2 && from.file().file == to.file().file; }
 };
 
 } // namespace chesscore

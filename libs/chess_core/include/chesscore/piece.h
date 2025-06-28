@@ -47,6 +47,10 @@ auto piece_type_from_char(char letter) -> PieceType;
  */
 enum class Color { White, Black };
 
+inline auto other_color(Color color) -> Color {
+    return color == Color::White ? Color::Black : Color::White;
+}
+
 /**
  * \brief A game piece.
  *
@@ -167,7 +171,7 @@ struct CastlingRights {
      * \param piece The castling type as described above.
      * @return If the castling right is available.
      */
-    auto operator[](char piece) const -> bool {
+    auto operator[](char piece) const -> const bool & {
         switch (piece) {
         case 'K':
             return white_kingside;
@@ -179,6 +183,21 @@ struct CastlingRights {
             return black_queenside;
         default:
             return false;
+        }
+    }
+
+    auto operator[](char piece) -> bool & {
+        switch (piece) {
+        case 'K':
+            return white_kingside;
+        case 'Q':
+            return white_queenside;
+        case 'k':
+            return black_kingside;
+        case 'q':
+            return black_queenside;
+        default:
+            throw OutOfRange("Invalid castling type");
         }
     }
 

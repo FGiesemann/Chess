@@ -92,6 +92,31 @@ public:
      * \return The possible en-passant target square.
      */
     auto en_passant_target() const -> std::optional<Square> { return m_en_passant_target; }
+
+    /**
+     * \brief Perform a move.
+     *
+     * Applies the given move in the current position. The move is assumed to be
+     * valid in the current position. No validity cheks are performed!
+     * \param move The move to apply.
+     */
+    auto make_move(const Move &move) -> void;
+
+    void updateFullmoveNumber();
+
+    void updateHalfmoveClock(const chesscore::Move &move);
+
+    void updateEnPassant(const chesscore::Move &move);
+
+    /**
+     * \brief Undo a move.
+     *
+     * Reverts the position back to the state before the move was made. This
+     * only works, if the move was the last move made in this position. No
+     * validity checks are performed!
+     * \param move The move to undo.
+     */
+    auto unmake_move(const Move &move) -> void;
 private:
     BoardT m_board{};                                         ///< Current placement of pieces on the board.
     Color m_side_to_move{Color::White};                       ///< The player who moves next.
@@ -99,7 +124,82 @@ private:
     size_t m_halfmove_clock{0};                               ///< Half-move clock for the fifty-move rule.
     CastlingRights m_castling_rights{CastlingRights::none()}; ///< Castling rights.
     std::optional<Square> m_en_passant_target{};              ///< A possible en passant target square.
+
+    void updateCastlingRights(const chesscore::Move &move);
 };
+
+template<Board BoardT>
+auto Position<BoardT>::make_move(const Move &move) -> void {
+    m_board.make_move(move);
+    updateFullmoveNumber();
+    updateHalfmoveClock(move);
+    updateEnPassant(move);
+    updateCastlingRights(move);
+    m_side_to_move = other_color(m_side_to_move);
+}
+
+template<Board BoardT>
+void Position<BoardT>::updateFullmoveNumber() {
+    if (m_side_to_move == Color::Black) {
+        m_fullmove_number++;
+    }
+}
+
+template<Board BoardT>
+void Position<BoardT>::updateHalfmoveClock(const chesscore::Move &move) {
+    if (move.is_capture() || move.piece.type == PieceType::Pawn) {
+        m_halfmove_clock = 0;
+    } else {
+        m_halfmove_clock++;
+    }
+}
+
+template<Board BoardT>
+void Position<BoardT>::updateEnPassant(const chesscore::Move &move) {
+    if (move.piece.type == PieceType::Pawn && move.is_double_step()) {
+        if (move.from.rank().rank > move.to.rank().rank) {
+            m_en_passant_target = Square{File{move.from.file().file}, Rank{move.from.rank().rank - 1}};
+        } else {
+            m_en_passant_target = Square{File{move.from.file().file}, Rank{move.from.rank().rank + 1}};
+        }
+    } else {
+        m_en_passant_target.reset();
+    }
+}
+
+template<Board BoardT>
+void Position<BoardT>::updateCastlingRights(const chesscore::Move &move) {
+    if (move.piece == Piece::WhiteKing) {
+        m_castling_rights['K'] = false;
+        m_castling_rights['Q'] = false;
+    } else if (move.piece == Piece::WhiteRook) {
+        if (move.from == Square::H1) {
+            m_castling_rights['K'] = false;
+        } else if (move.from == Square::A1) {
+            m_castling_rights['Q'] = false;
+        }
+    } else if (move.piece == Piece::BlackKing) {
+        m_castling_rights['k'] = false;
+        m_castling_rights['q'] = false;
+    } else if (move.piece == Piece::BlackRook) {
+        if (move.from == Square::H8) {
+            m_castling_rights['k'] = false;
+        } else if (move.from == Square::A8) {
+            m_castling_rights['q'] = false;
+        }
+    } else if (move.is_capture() && move.to == Square::A1) {
+        m_castling_rights['Q'] = false;
+    } else if (move.is_capture() && move.to == Square::H1) {
+        m_castling_rights['K'] = false;
+    } else if (move.is_capture() && move.to == Square::A8) {
+        m_castling_rights['q'] = false;
+    } else if (move.is_capture() && move.to == Square::H8) {
+        m_castling_rights['k'] = false;
+    }
+}
+
+template<Board BoardT>
+auto Position<BoardT>::unmake_move(const Move &move) -> void {}
 
 } // namespace chesscore
 
