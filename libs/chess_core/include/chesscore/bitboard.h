@@ -2,6 +2,7 @@
  * Chess Core                                                                 *
  * Data structures and algorithms for chess                                   *
  * ************************************************************************** */
+/** \file */
 
 #ifndef CHESSCORE_BITBOARD_H
 #define CHESSCORE_BITBOARD_H
