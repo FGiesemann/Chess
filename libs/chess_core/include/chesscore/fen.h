@@ -9,7 +9,6 @@
 
 #include "chesscore/chesscore.h"
 #include "chesscore/piece.h"
-#include "chesscore/position.h"
 #include "chesscore/square.h"
 
 #include <optional>

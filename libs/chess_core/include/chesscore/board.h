@@ -24,7 +24,7 @@ class FenString;
 template<typename T>
 concept Board = requires(T board, const T board_c, const Square &square, const Piece &piece, const PieceType &piece_type, const Color &color, /* const Move &move,*/ const FenString &fen) {
     std::is_default_constructible_v<T>;
-    requires std::is_constructible_v<T, const FenString &>;
+    std::is_constructible_v<T, const FenString &>;
     { board_c.empty() } -> std::same_as<bool>;
     { board_c.has_piece(piece_type) } -> std::same_as<bool>;
     { board_c.has_piece(piece) } -> std::same_as<bool>;
