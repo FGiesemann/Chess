@@ -105,7 +105,7 @@ auto piece_from_fen_letter(char letter) -> Piece;
 /**
  * \brief Describes the availability of castling for each player.
  */
-struct CastlingAvailability {
+struct CastlingRights {
     bool white_kingside{false};  ///< White can castle on the kingside.
     bool white_queenside{false}; ///< White can castle on the queenside.
     bool black_kingside{false};  ///< Black can castle on the kingside.
@@ -120,7 +120,7 @@ struct CastlingAvailability {
      * \param rhs Right-hand side of the comparison.
      * \return Equality of the two objects.
      */
-    friend auto operator==(const CastlingAvailability &lhs, const CastlingAvailability &rhs) -> bool = default;
+    friend auto operator==(const CastlingRights &lhs, const CastlingRights &rhs) -> bool = default;
 
     /**
      * \brief Get the castling availability for a a player.
@@ -152,14 +152,14 @@ struct CastlingAvailability {
      *
      * \return Object that has all the castling rights.
      */
-    static auto all() -> CastlingAvailability { return CastlingAvailability{true, true, true, true}; }
+    static auto all() -> CastlingRights { return CastlingRights{true, true, true, true}; }
 
     /**
      * \brief Generate an object with no castling rights.
      *
      * \return Object that has no castling rights.
      */
-    static auto none() -> CastlingAvailability { return CastlingAvailability{false, false, false, false}; }
+    static auto none() -> CastlingRights { return CastlingRights{false, false, false, false}; }
 };
 
 /**

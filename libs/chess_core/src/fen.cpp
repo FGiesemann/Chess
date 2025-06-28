@@ -131,7 +131,7 @@ auto check_side_to_move(const std::string &fen_string, std::size_t pos) -> std::
     return std::make_pair(color == 'w' ? Color::White : Color::Black, pos + 2);
 }
 
-auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::pair<CastlingAvailability, std::size_t> {
+auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::pair<CastlingRights, std::size_t> {
     if (pos >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
@@ -144,7 +144,7 @@ auto check_castling_availability(const std::string &fen_string, std::size_t pos)
     if (std::ranges::find(valid_castlings, castling_string) == std::end(valid_castlings)) {
         throw InvalidFen{"Invalid castling availability in FEN string"};
     }
-    CastlingAvailability ability{};
+    CastlingRights ability{};
     for (size_t i = 0; i < castling_string.length(); ++i) {
         switch (castling_string[i]) {
         case 'K':

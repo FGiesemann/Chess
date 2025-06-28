@@ -100,7 +100,7 @@ public:
      * FEN string.
      * \return The castling availabilities.
      */
-    auto castling_availability() const -> CastlingAvailability { return m_castling_availability; }
+    auto castling_availability() const -> CastlingRights { return m_castling_availability; }
 
     /**
      * \brief The en passant target square.
@@ -131,7 +131,7 @@ private:
 
     PiecePlacement m_piece_placement;
     Color m_side_to_move;
-    CastlingAvailability m_castling_availability;
+    CastlingRights m_castling_availability;
     std::optional<Square> m_en_passant;
     int m_halfmove_clock;
     int m_fullmove_number;
@@ -141,7 +141,7 @@ namespace detail {
 
 auto check_piece_placement(const std::string &fen_string) -> std::pair<PiecePlacement, std::size_t>;
 auto check_side_to_move(const std::string &fen_string, std::size_t pos) -> std::pair<Color, std::size_t>;
-auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::pair<CastlingAvailability, std::size_t>;
+auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::pair<CastlingRights, std::size_t>;
 auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t>;
 auto check_halfmove_clock(const std::string &fen_string, std::size_t pos) -> std::pair<int, std::size_t>;
 auto check_fullmove_number(const std::string &fen_string, std::size_t pos) -> int;
