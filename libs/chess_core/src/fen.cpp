@@ -18,7 +18,7 @@ FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
     const auto side = detail::check_side_to_move(fen_string, place.second);
     m_side_to_move = side.first;
     const auto castling = detail::check_castling_availability(fen_string, side.second);
-    m_castling_availability = castling.first;
+    m_castling_rights = castling.first;
     const auto en_p = detail::check_en_passant_target_square(fen_string, m_side_to_move, castling.second);
     m_en_passant = en_p.first;
     const auto half = detail::check_halfmove_clock(fen_string, en_p.second);
@@ -33,7 +33,8 @@ auto FenString::starting_position() -> FenString {
 namespace detail {
 
 auto invalid_piece_letter(char piece) -> bool {
-    return piece != 'r' && piece != 'n' && piece != 'b' && piece != 'q' && piece != 'k' && piece != 'p' && piece != 'R' && piece != 'N' && piece != 'B' && piece != 'Q' && piece != 'K' && piece != 'P';
+    return piece != 'r' && piece != 'n' && piece != 'b' && piece != 'q' && piece != 'k' && piece != 'p' && piece != 'R' && piece != 'N' && piece != 'B' && piece != 'Q' &&
+           piece != 'K' && piece != 'P';
 }
 
 class PieceValidityChecker {

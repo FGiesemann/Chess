@@ -29,8 +29,9 @@ public:
     InvalidFen(const std::string &message) : ChessException("Invalid FEN string: " + message) {}
 };
 
-static constexpr std::string_view empty_fen = "8/8/8/8/8/8/8/8 w - - 0 1";                                            ///< FEN string for an empy board.
-static constexpr std::string_view starting_position_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; ///< FEN string for the starting configuration of a chess game.
+static constexpr std::string_view empty_fen = "8/8/8/8/8/8/8/8 w - - 0 1"; ///< FEN string for an empy board.
+static constexpr std::string_view starting_position_fen =
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; ///< FEN string for the starting configuration of a chess game.
 
 /**
  * \brief Interpreter for FEN strings.
@@ -95,13 +96,13 @@ public:
     auto side_to_move() const -> Color { return m_side_to_move; }
 
     /**
-     * \brief The castling availabilitiy.
+     * \brief The castling rights.
      *
-     * Access the castling availabilities for both players as extracted from the
-     * FEN string.
-     * \return The castling availabilities.
+     * Access the castling rights for both players as extracted from the FEN
+     * string.
+     * \return The castling rights.
      */
-    auto castling_availability() const -> CastlingRights { return m_castling_availability; }
+    auto castling_rights() const -> CastlingRights { return m_castling_rights; }
 
     /**
      * \brief The en passant target square.
@@ -132,7 +133,7 @@ private:
 
     PiecePlacement m_piece_placement;
     Color m_side_to_move;
-    CastlingRights m_castling_availability;
+    CastlingRights m_castling_rights;
     std::optional<Square> m_en_passant;
     int m_halfmove_clock;
     int m_fullmove_number;

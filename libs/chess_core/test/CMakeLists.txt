@@ -5,6 +5,8 @@ add_executable(chesscore_tests
     
     bitboard/bitmap_test.cpp
     bitboard/bitboard_test.cpp
+
+    position/position_test.cpp
 )
 
 target_link_libraries(chesscore_tests PRIVATE chesscore)
