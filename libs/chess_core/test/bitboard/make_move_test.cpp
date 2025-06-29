@@ -172,3 +172,21 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
     CHECK_FALSE(board4.get_piece(Square::A8).has_value());
     CHECK(board4.get_piece(Square::D8) == Piece::BlackRook);
 }
+
+TEST_CASE("Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
+    Bitboard board{FenString{"8/8/8/8/4Pp2/8/8/8 b - e3 0 1"}};
+
+    Move capture_en_passant{
+        .from = Square::F4,
+        .to = Square::E3,
+        .piece = Piece::BlackPawn,
+        .captured{Piece::WhitePawn},
+        .capturing_en_passant = true,
+        .castling_rights_before{CastlingRights::none()},
+        .halfmove_clock_before = 0
+    };
+    board.make_move(capture_en_passant);
+    CHECK_FALSE(board.get_piece(Square::F4).has_value());
+    CHECK_FALSE(board.get_piece(Square::E4).has_value());
+    CHECK(board.get_piece(Square::E3) == Piece::BlackPawn);
+}

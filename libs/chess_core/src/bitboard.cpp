@@ -83,6 +83,9 @@ auto Bitboard::make_move(const Move &move) -> void {
     if (move.is_castling()) {
         move_castling_rook(move);
     }
+    if (move.capturing_en_passant) {
+        clear_square(Square{move.to.file(), move.from.rank()});
+    }
 }
 
 void Bitboard::move_castling_rook(const chesscore::Move &move) {
