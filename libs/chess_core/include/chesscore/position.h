@@ -102,12 +102,6 @@ public:
      */
     auto make_move(const Move &move) -> void;
 
-    void updateFullmoveNumber();
-
-    void updateHalfmoveClock(const chesscore::Move &move);
-
-    void updateEnPassant(const chesscore::Move &move);
-
     /**
      * \brief Undo a move.
      *
@@ -125,7 +119,14 @@ private:
     CastlingRights m_castling_rights{CastlingRights::none()}; ///< Castling rights.
     std::optional<Square> m_en_passant_target{};              ///< A possible en passant target square.
 
-    void updateCastlingRights(const chesscore::Move &move);
+    auto updateCastlingRights(const Move &move) -> void;
+    auto updateFullmoveNumber() -> void;
+    auto updateHalfmoveClock(const Move &move) -> void;
+    auto updateEnPassant(const Move &move) -> void;
+    auto resetFullmoveNumber(const Move &move) -> void;
+    auto resetHalfmoveClock(const Move &move) -> void;
+    auto resetEnPassant(const Move &move) -> void;
+    auto resetCastlingRights(const Move &move) -> void;
 };
 
 template<Board BoardT>
@@ -146,7 +147,7 @@ void Position<BoardT>::updateFullmoveNumber() {
 }
 
 template<Board BoardT>
-void Position<BoardT>::updateHalfmoveClock(const chesscore::Move &move) {
+void Position<BoardT>::updateHalfmoveClock(const Move &move) {
     if (move.is_capture() || move.piece.type == PieceType::Pawn) {
         m_halfmove_clock = 0;
     } else {
@@ -155,7 +156,7 @@ void Position<BoardT>::updateHalfmoveClock(const chesscore::Move &move) {
 }
 
 template<Board BoardT>
-void Position<BoardT>::updateEnPassant(const chesscore::Move &move) {
+void Position<BoardT>::updateEnPassant(const Move &move) {
     if (move.piece.type == PieceType::Pawn && move.is_double_step()) {
         if (move.from.rank().rank > move.to.rank().rank) {
             m_en_passant_target = Square{File{move.from.file().file}, Rank{move.from.rank().rank - 1}};
@@ -168,7 +169,7 @@ void Position<BoardT>::updateEnPassant(const chesscore::Move &move) {
 }
 
 template<Board BoardT>
-void Position<BoardT>::updateCastlingRights(const chesscore::Move &move) {
+void Position<BoardT>::updateCastlingRights(const Move &move) {
     if (move.piece == Piece::WhiteKing) {
         m_castling_rights['K'] = false;
         m_castling_rights['Q'] = false;
@@ -199,7 +200,40 @@ void Position<BoardT>::updateCastlingRights(const chesscore::Move &move) {
 }
 
 template<Board BoardT>
-auto Position<BoardT>::unmake_move(const Move &move) -> void {}
+auto Position<BoardT>::unmake_move(const Move &move) -> void {
+    m_board.unmake_move(move);
+    resetFullmoveNumber(move);
+    resetHalfmoveClock(move);
+    resetEnPassant(move);
+    resetCastlingRights(move);
+    m_side_to_move = other_color(m_side_to_move);
+}
+
+template<Board BoardT>
+auto Position<BoardT>::resetFullmoveNumber(const Move &move) -> void {
+    if (m_side_to_move == Color::White) {
+        m_fullmove_number--;
+    }
+}
+
+template<Board BoardT>
+auto Position<BoardT>::resetHalfmoveClock(const Move &move) -> void {
+    m_halfmove_clock = move.halfmove_clock_before;
+}
+
+template<Board BoardT>
+auto Position<BoardT>::resetEnPassant(const Move &move) -> void {
+    if (move.capturing_en_passant) {
+        m_en_passant_target = move.from;
+    } else {
+        m_en_passant_target.reset();
+    }
+}
+
+template<Board BoardT>
+auto Position<BoardT>::resetCastlingRights(const Move &move) -> void {
+    m_castling_rights = move.castling_rights_before;
+}
 
 } // namespace chesscore
 

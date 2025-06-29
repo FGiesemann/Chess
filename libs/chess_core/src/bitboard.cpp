@@ -99,6 +99,7 @@ void Bitboard::move_castling_rook(const chesscore::Move &move) {
         set_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'D'}, move.to.rank()}); // place rook on d-file
     }
 }
+
 auto Bitboard::unmake_move([[maybe_unused]] const Move &move) -> void {}
 
 auto Bitboard::calculate_hash_component() const -> uint64_t {
