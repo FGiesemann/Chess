@@ -49,7 +49,7 @@ TEST_CASE("Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
 
     CHECK(position.fullmove_number() == 9);
     CHECK(position.halfmove_clock() == 18);
-    CHECK(position.en_passant_target().value() == Square::B3);
+    CHECK(position.en_passant_target().value_or(Square::A1) == Square::B3);
     CHECK_FALSE(position.castling_rights()['K']);
     CHECK_FALSE(position.castling_rights()['Q']);
     CHECK_FALSE(position.castling_rights()['k']);
@@ -62,7 +62,7 @@ TEST_CASE("Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
     position.unmake_move(m);
     CHECK(position.fullmove_number() == 9);
     CHECK(position.halfmove_clock() == 18);
-    CHECK(position.en_passant_target().value() == Square::B3);
+    CHECK(position.en_passant_target().value_or(Square::A1) == Square::B3);
     CHECK_FALSE(position.castling_rights()['K']);
     CHECK_FALSE(position.castling_rights()['Q']);
     CHECK_FALSE(position.castling_rights()['k']);
