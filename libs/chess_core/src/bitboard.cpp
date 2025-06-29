@@ -81,11 +81,11 @@ auto Bitboard::make_move(const Move &move) -> void {
         set_piece(move.piece, move.to);
     }
     if (move.is_castling()) {
-        handleCastling(move);
+        move_castling_rook(move);
     }
 }
 
-void Bitboard::handleCastling(const chesscore::Move &move) {
+void Bitboard::move_castling_rook(const chesscore::Move &move) {
     if (move.from.file().file < move.to.file().file) {
         // Kingside castling
         clear_square(Square{File{'H'}, move.to.rank()});                                                         // remove rook
