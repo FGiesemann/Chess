@@ -125,3 +125,40 @@ TEST_CASE("Bitboard.Bitboard.UnmakeMove.Castling", "[Bitboard][UnmakeMove]") {
     CHECK_FALSE(board4.get_piece(Square::D8).has_value());
 }
 
+TEST_CASE("Bitboard.Bitboard.UnmakeMove.Promotion", "[Bitboard][UnmakeMove]") {
+    FenString fen{"5r2/4P3/8/8/8/8/8/8 w - - 0 1"};
+    Bitboard board1{fen};
+    Bitboard board2{fen};
+
+    Move m1{
+        .from = Square::E7,
+        .to = Square::E8,
+        .piece = Piece::WhitePawn,
+        .promoted{Piece::WhiteQueen},
+        .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
+    };
+    board1.make_move(m1);
+    board1.unmake_move(m1);
+    CHECK(board1.get_piece(Square::E7) == Piece::WhitePawn);
+    CHECK_FALSE(board1.get_piece(Square::E8).has_value());
+
+    Move m2{
+        .from = Square::E7,
+        .to = Square::F8,
+        .piece = Piece::WhitePawn,
+        .captured{Piece::BlackRook},
+        .promoted{Piece::WhiteQueen},
+        .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
+    };
+    board2.make_move(m2);
+    CHECK(board2.get_piece(Square::F8) == Piece::WhiteQueen);
+    CHECK_FALSE(board2.get_piece(Square::E7).has_value());
+    CHECK_FALSE(board2.get_piece(Square::E8).has_value());
+    board2.unmake_move(m2);
+    CHECK(board2.get_piece(Square::E7) == Piece::WhitePawn);
+    CHECK(board2.get_piece(Square::F8) == Piece::BlackRook);
+    CHECK_FALSE(board2.get_piece(Square::E8).has_value());
+}
+
