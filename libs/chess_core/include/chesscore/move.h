@@ -11,6 +11,7 @@
 
 #include "chesscore/chesscore.h"
 #include "chesscore/piece.h"
+#include "chesscore/position_types.h"
 #include "chesscore/square.h"
 
 namespace chesscore {

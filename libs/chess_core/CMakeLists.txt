@@ -31,6 +31,7 @@ add_library(chesscore
     src/move.cpp
     src/piece.cpp
     src/position.cpp
+    src/position_types.cpp
     src/square.cpp
 )
 target_include_directories(chesscore PUBLIC include)
