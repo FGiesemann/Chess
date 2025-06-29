@@ -18,9 +18,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::E2,
         .to = Square::E4,
         .piece = Piece::WhitePawn,
-        .captured{},
-        .promoted{},
-        .en_passant{Square::E3},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -33,9 +30,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::D7,
         .to = Square::D5,
         .piece = Piece::BlackPawn,
-        .captured{},
-        .promoted{},
-        .en_passant{Square::D6},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -47,9 +41,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::F1,
         .to = Square::C4,
         .piece = Piece::WhiteBishop,
-        .captured{},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -61,9 +52,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::E8,
         .to = Square::D7,
         .piece = Piece::BlackKing,
-        .captured{},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -75,9 +63,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::G1,
         .to = Square::F3,
         .piece = Piece::WhiteKnight,
-        .captured{},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -90,8 +75,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .to = Square::C4,
         .piece = Piece::BlackPawn,
         .captured{Piece::WhiteBishop},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -103,9 +86,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::E1,
         .to = Square::G1,
         .piece = Piece::WhiteKing,
-        .captured{},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -123,9 +103,7 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Promotion", "[Bitboard][MakeMove]") {
         .from = Square::F7,
         .to = Square::F8,
         .piece = Piece::WhitePawn,
-        .captured{},
         .promoted{Piece::WhiteQueen},
-        .en_passant{},
         .castling_rights_before{CastlingRights::none()},
         .halfmove_clock_before = 0,
     };
@@ -145,9 +123,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
         .from = Square::E1,
         .to = Square::G1,
         .piece = Piece::WhiteKing,
-        .captured{},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -155,9 +130,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
         .from = Square::E1,
         .to = Square::C1,
         .piece = Piece::WhiteKing,
-        .captured{},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -165,9 +137,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
         .from = Square::E8,
         .to = Square::G8,
         .piece = Piece::BlackKing,
-        .captured{},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };
@@ -175,9 +144,6 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
         .from = Square::E8,
         .to = Square::C8,
         .piece = Piece::BlackKing,
-        .captured{},
-        .promoted{},
-        .en_passant{},
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
     };

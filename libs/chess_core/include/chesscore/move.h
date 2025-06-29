@@ -22,18 +22,13 @@ namespace chesscore {
  * game position before the move, so that the move can easily be reversed.
  */
 struct Move {
-    Square from;                   ///< From where the piece is moved.
-    Square to;                     ///< To where the piece is moved.
-    Piece piece;                   ///< Which piece is moving.
-    std::optional<Piece> captured; ///< If the move captures a piece, this is the captured piece.
-    std::optional<Piece> promoted; ///< If the move promotes a piece, this is the promoted piece.
-    /**
-     * \brief The square that can be targeted with capturing en passant.
-     *
-     * If this move is a double step of a pawn, this is the square that the pawn
-     * stepped over.
-     */
-    std::optional<Square> en_passant;
+    Square from;                      ///< From where the piece is moved.
+    Square to;                        ///< To where the piece is moved.
+    Piece piece;                      ///< Which piece is moving.
+    std::optional<Piece> captured{};  ///< If the move captures a piece, this is the captured piece.
+    bool capturing_en_passant{false}; ///< If this move is capturing en passant
+    std::optional<Piece> promoted{};  ///< If the move promotes a piece, this is the promoted piece.
+
     CastlingRights castling_rights_before; ///< Castling rights before the move.
     size_t halfmove_clock_before;          ///< Halfmove clock before the move.
 
