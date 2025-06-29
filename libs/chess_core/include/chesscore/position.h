@@ -223,8 +223,8 @@ auto Position<BoardT>::resetHalfmoveClock(const Move &move) -> void {
 
 template<Board BoardT>
 auto Position<BoardT>::resetEnPassant(const Move &move) -> void {
-    if (move.capturing_en_passant) {
-        m_en_passant_target = move.from;
+    if (move.en_passant_target_before.has_value()) {
+        m_en_passant_target = move.en_passant_target_before;
     } else {
         m_en_passant_target.reset();
     }

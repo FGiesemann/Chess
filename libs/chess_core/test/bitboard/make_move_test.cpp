@@ -32,6 +32,7 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .piece = Piece::BlackPawn,
         .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .en_passant_target_before = Square::E3,
     };
     board.make_move(m2);
     CHECK_FALSE(board.get_piece(Square::D7).has_value());
@@ -183,7 +184,8 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
         .captured{Piece::WhitePawn},
         .capturing_en_passant = true,
         .castling_rights_before{CastlingRights::none()},
-        .halfmove_clock_before = 0
+        .halfmove_clock_before = 0,
+        .en_passant_target_before = Square::E3
     };
     board1.make_move(b_capture_en_passant);
     CHECK_FALSE(board1.get_piece(Square::F4).has_value());
@@ -198,7 +200,8 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
         .captured{Piece::BlackPawn},
         .capturing_en_passant = true,
         .castling_rights_before{CastlingRights::none()},
-        .halfmove_clock_before = 0
+        .halfmove_clock_before = 0,
+        .en_passant_target_before = Square::B6
     };
     board2.make_move(w_capture_en_passant);
     CHECK_FALSE(board2.get_piece(Square::A5).has_value());

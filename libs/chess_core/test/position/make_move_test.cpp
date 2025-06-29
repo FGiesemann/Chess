@@ -19,6 +19,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
         .piece = Piece::WhitePawn,
         .castling_rights_before{position.castling_rights()},
         .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
     };
 
     position.make_move(m1);
@@ -36,6 +37,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
         .piece = Piece::BlackPawn,
         .castling_rights_before{position.castling_rights()},
         .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
     };
 
     position.make_move(m2);
@@ -53,6 +55,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
         .piece = Piece::WhiteBishop,
         .castling_rights_before{position.castling_rights()},
         .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
     };
 
     position.make_move(m3);
@@ -70,6 +73,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
         .piece = Piece::BlackKing,
         .castling_rights_before{position.castling_rights()},
         .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
     };
 
     position.make_move(m4);
@@ -90,6 +94,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
         .piece = Piece::WhiteKnight,
         .castling_rights_before{position.castling_rights()},
         .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
     };
 
     position.make_move(m5);
@@ -111,6 +116,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
         .captured{Piece::WhiteBishop},
         .castling_rights_before{position.castling_rights()},
         .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
     };
 
     position.make_move(m6);
@@ -131,6 +137,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
         .piece = Piece::WhiteKing,
         .castling_rights_before{position.castling_rights()},
         .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
     };
 
     position.make_move(m7);

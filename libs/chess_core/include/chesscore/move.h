@@ -29,8 +29,9 @@ struct Move {
     bool capturing_en_passant{false}; ///< If this move is capturing en passant
     std::optional<Piece> promoted{};  ///< If the move promotes a piece, this is the promoted piece.
 
-    CastlingRights castling_rights_before; ///< Castling rights before the move.
-    size_t halfmove_clock_before;          ///< Halfmove clock before the move.
+    CastlingRights castling_rights_before;            ///< Castling rights before the move.
+    size_t halfmove_clock_before;                     ///< Halfmove clock before the move.
+    std::optional<Square> en_passant_target_before{}; ///< En passant target square before the move.
 
     /**
      * \brief If the move is a castling move.
