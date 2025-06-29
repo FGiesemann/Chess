@@ -312,16 +312,14 @@ public:
     /**
      * \brief Generate all legal moves.
      *
-     * Generate a list of all legal moves for the current position and the given
-     * player. Additional information that is usually managed in the Position is
-     * needed to generate the moves, such as castling rights and the en passant
+     * Generate a list of all legal moves for the current position. The function
+     * needs additional information of the current position, such as the player
+     * to move next, the available castling rights and the en-passant target
      * square.
-     * \param side_to_move The player to generate the moves for.
-     * \param castling_rights The castling rights for the position.
-     * \param en_passant_square The en passant square for the position, if any.
+     * \param state State of the current position.
      * \return A list of all legal moves for the given position and player.
      */
-    auto all_legal_moves(const Color &side_to_move, const CastlingRights &castling_rights, const std::optional<Square> &en_passant_square) const -> std::vector<Move>;
+    auto all_legal_moves(const PositionState &state) const -> std::vector<Move>;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};

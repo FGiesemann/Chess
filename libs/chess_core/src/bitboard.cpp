@@ -129,9 +129,7 @@ auto Bitboard::reset_castling_rook(const Move &move) -> void {
     }
 }
 
-auto Bitboard::all_legal_moves(
-    [[maybe_unused]] const Color &side_to_move, [[maybe_unused]] const CastlingRights &castling_rights, [[maybe_unused]] const std::optional<Square> &en_passant_square
-) const -> std::vector<Move> {
+auto Bitboard::all_legal_moves([[maybe_unused]] const PositionState &state) const -> std::vector<Move> {
     return {};
 }
 

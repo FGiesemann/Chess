@@ -12,6 +12,7 @@
 #include "chesscore/chesscore.h"
 #include "chesscore/move.h"
 #include "chesscore/piece.h"
+#include "chesscore/position_types.h"
 
 namespace chesscore {
 
@@ -27,7 +28,7 @@ class FenString;
 template<typename T>
 concept Board = requires(
     T board, const T board_c, const Square &square, const Piece &piece, const PieceType &piece_type, const Color &color, const Move &move, const FenString &fen,
-    const std::optional<Square> &en_passant_square, const CastlingRights &castling_rights
+    const PositionState &state
 ) {
     std::is_default_constructible_v<T>;
     std::is_constructible_v<T, const FenString &>;
@@ -41,7 +42,7 @@ concept Board = requires(
     { board.clear_square(square) } -> std::same_as<void>;
     { board.make_move(move) } -> std::same_as<void>;
     { board.unmake_move(move) } -> std::same_as<void>;
-    { board_c.all_legal_moves(color, castling_rights, en_passant_square) } -> std::same_as<std::vector<Move>>;
+    { board_c.all_legal_moves(state) } -> std::same_as<std::vector<Move>>;
     // { board_c.calculate_hash_component() } -> std::same_as<uint64_t>; /* TODO: return type: Hash-Type */
 };
 
