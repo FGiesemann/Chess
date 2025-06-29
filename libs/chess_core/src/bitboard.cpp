@@ -75,7 +75,7 @@ auto Bitboard::clear_square(const Square &square) -> void {
 
 auto Bitboard::make_move(const Move &move) -> void {
     clear_square(move.from);
-    if (move.is_promotion()) {
+    if (move.promoted) {
         set_piece(move.promoted.value(), move.to);
     } else {
         set_piece(move.piece, move.to);
