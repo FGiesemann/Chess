@@ -308,16 +308,6 @@ public:
      * \param move The move to undo.
      */
     auto unmake_move(const Move &move) -> void;
-
-    /**
-     * \brief Calculates the position hash value.
-     *
-     * The total hash value for a chess position is a combination of the hash
-     * component for the pieces with additional information. This computes the
-     * hash component for the piece placement.
-     * \return Hash component for the piece placement.
-     */
-    auto calculate_hash_component() const -> uint64_t;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};

@@ -129,9 +129,4 @@ auto Bitboard::reset_castling_rook(const Move &move) -> void {
     }
 }
 
-auto Bitboard::calculate_hash_component() const -> uint64_t {
-    // TODO
-    return {};
-}
-
 } // namespace chesscore

@@ -37,7 +37,7 @@ concept Board =
         { board.clear_square(square) } -> std::same_as<void>;
         { board.make_move(move) } -> std::same_as<void>;
         { board.unmake_move(move) } -> std::same_as<void>;
-        { board_c.calculate_hash_component() } -> std::same_as<uint64_t>; /* TODO: return type: Hash-Type */
+        // { board_c.calculate_hash_component() } -> std::same_as<uint64_t>; /* TODO: return type: Hash-Type */
     };
 
 } // namespace chesscore
