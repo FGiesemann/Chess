@@ -334,6 +334,8 @@ private:
     auto bitmap(const Piece &piece) -> Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
     auto bitmap(const Color &color) const -> const Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
     auto bitmap(const Color &color) -> Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
+
+    void handleCastling(const chesscore::Move &move);
 };
 
 static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");
