@@ -88,7 +88,7 @@ auto Bitboard::make_move(const Move &move) -> void {
     }
 }
 
-void Bitboard::move_castling_rook(const chesscore::Move &move) {
+void Bitboard::move_castling_rook(const Move &move) {
     if (move.from.file().file < move.to.file().file) {
         // Kingside castling
         clear_square(Square{File{'H'}, move.to.rank()});                                                         // remove rook
@@ -100,7 +100,34 @@ void Bitboard::move_castling_rook(const chesscore::Move &move) {
     }
 }
 
-auto Bitboard::unmake_move([[maybe_unused]] const Move &move) -> void {}
+auto Bitboard::unmake_move(const Move &move) -> void {
+    set_piece(move.piece, move.from);
+    if (move.captured) {
+        if (move.capturing_en_passant) {
+            set_piece(move.captured.value(), Square{move.to.file(), move.from.rank()});
+            clear_square(move.to);
+        } else {
+            set_piece(move.captured.value(), move.to);
+        }
+    } else {
+        clear_square(move.to);
+    }
+    if (move.is_castling()) {
+        reset_castling_rook(move);
+    }
+}
+
+auto Bitboard::reset_castling_rook(const Move &move) -> void {
+    if (move.from.file().file < move.to.file().file) {
+        // Kingside castling
+        clear_square(Square{File{'F'}, move.from.rank()});                                                         // remove rook
+        set_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'H'}, move.from.rank()}); // place rook on h-file
+    } else {
+        // Queenside castling
+        clear_square(Square{File{'D'}, move.from.rank()});                                                         // remove rook
+        set_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'A'}, move.from.rank()}); // place rook on a-file
+    }
+}
 
 auto Bitboard::calculate_hash_component() const -> uint64_t {
     // TODO
