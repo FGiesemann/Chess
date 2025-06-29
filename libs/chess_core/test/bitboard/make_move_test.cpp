@@ -11,7 +11,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Bitboard.Bitboard.MakeMove", "[Bitboard][MakeMove]") {
+TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
     Bitboard board{FenString::starting_position()};
 
     Move m1{
@@ -114,4 +114,22 @@ TEST_CASE("Bitboard.Bitboard.MakeMove", "[Bitboard][MakeMove]") {
     CHECK(board.get_piece(Square::G1) == Piece::WhiteKing);
     CHECK_FALSE(board.get_piece(Square::H1).has_value());
     CHECK(board.get_piece(Square::F1) == Piece::WhiteRook);
+}
+
+TEST_CASE("Bitboard.Bitboard.MakeMove.Promotion", "[Bitboard][MakeMove]") {
+    Bitboard board{FenString{"2kr4/p4P1p/1p6/8/2B3b1/2N2N2/PP1P2PP/2B1K3 w - - 0 1"}};
+
+    Move m{
+        .from = Square::F7,
+        .to = Square::F8,
+        .piece = Piece::WhitePawn,
+        .captured{},
+        .promoted{Piece::WhiteQueen},
+        .en_passant{},
+        .castling_rights_before{CastlingRights::none()},
+        .halfmove_clock_before = 0,
+    };
+    board.make_move(m);
+    CHECK_FALSE(board.get_piece(Square::F7).has_value());
+    CHECK(board.get_piece(Square::F8) == Piece::WhiteQueen);
 }

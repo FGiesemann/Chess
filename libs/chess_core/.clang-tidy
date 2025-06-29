@@ -4,5 +4,6 @@ Checks: '-*,
          readability-*,
          performance-*,-performance-enum-size,
          cppcoreguidelines-*,
-         misc-macro-parentheses'
+         misc-macro-parentheses,
+         -cppcoreguidelines-pro-bounds-constant-array-index'
 WarningsAsErrors: ''

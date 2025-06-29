@@ -75,7 +75,11 @@ auto Bitboard::clear_square(const Square &square) -> void {
 
 auto Bitboard::make_move(const Move &move) -> void {
     clear_square(move.from);
-    set_piece(move.piece, move.to);
+    if (move.is_promotion()) {
+        set_piece(move.promoted.value(), move.to);
+    } else {
+        set_piece(move.piece, move.to);
+    }
     if (move.is_castling()) {
         if (move.from.file().file < move.to.file().file) {
             // Kingside castling
