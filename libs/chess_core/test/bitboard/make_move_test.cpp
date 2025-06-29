@@ -174,9 +174,9 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
 }
 
 TEST_CASE("Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
-    Bitboard board{FenString{"8/8/8/8/4Pp2/8/8/8 b - e3 0 1"}};
+    Bitboard board1{FenString{"8/8/8/8/4Pp2/8/8/8 b - e3 0 1"}};
 
-    Move capture_en_passant{
+    Move b_capture_en_passant{
         .from = Square::F4,
         .to = Square::E3,
         .piece = Piece::BlackPawn,
@@ -185,8 +185,23 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
         .castling_rights_before{CastlingRights::none()},
         .halfmove_clock_before = 0
     };
-    board.make_move(capture_en_passant);
-    CHECK_FALSE(board.get_piece(Square::F4).has_value());
-    CHECK_FALSE(board.get_piece(Square::E4).has_value());
-    CHECK(board.get_piece(Square::E3) == Piece::BlackPawn);
+    board1.make_move(b_capture_en_passant);
+    CHECK_FALSE(board1.get_piece(Square::F4).has_value());
+    CHECK_FALSE(board1.get_piece(Square::E4).has_value());
+    CHECK(board1.get_piece(Square::E3) == Piece::BlackPawn);
+
+    Bitboard board2{FenString{"8/8/8/Pp6/8/8/8/8 w - b6 0 1"}};
+    Move w_capture_en_passant{
+        .from = Square::A5,
+        .to = Square::B6,
+        .piece = Piece::WhitePawn,
+        .captured{Piece::BlackPawn},
+        .capturing_en_passant = true,
+        .castling_rights_before{CastlingRights::none()},
+        .halfmove_clock_before = 0
+    };
+    board2.make_move(w_capture_en_passant);
+    CHECK_FALSE(board2.get_piece(Square::A5).has_value());
+    CHECK_FALSE(board2.get_piece(Square::B5).has_value());
+    CHECK(board2.get_piece(Square::B6) == Piece::WhitePawn);
 }
