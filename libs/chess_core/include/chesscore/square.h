@@ -36,7 +36,7 @@ struct File {
      * so 'A'..'H' are also valid.
      * \param file A character in the range a..h (case insensitive).
      */
-    constexpr File(char file) : file{static_cast<int>(detail::charToLower(file) - 'a') + 1} {
+    constexpr File(char in_file) : file{static_cast<int>(detail::charToLower(in_file) - 'a') + 1} {
         if (this->file < File::min_file || this->file > File::max_file) {
             throw OutOfRange{"File must be between 'a' and 'h'"};
         }
@@ -48,7 +48,7 @@ struct File {
      * The file is specified as a number in the range 1..8.
      * \param file A number in the range 1..8.
      */
-    constexpr File(int file) : file{file} {
+    constexpr File(int in_file) : file{in_file} {
         if (file < File::min_file || file > File::max_file) {
             throw OutOfRange{"File must be between 1 and 8"};
         }
@@ -91,7 +91,7 @@ struct Rank {
      * The rank is a number in the range 1..8.
      * \param rank A number in the range 1..8.
      */
-    constexpr Rank(int rank) : rank{rank} {
+    constexpr Rank(int in_rank) : rank{in_rank} {
         if (rank < Rank::min_rank || rank > Rank::max_rank) {
             throw OutOfRange{"Rank must be between 1 and 8"};
         }
@@ -125,7 +125,7 @@ public:
      * \param file The file (column) of the square.
      * \param rank The rank (row) of the square.
      */
-    Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{(m_rank.rank - 1) * 8 + m_file.file - 1} {}
+    constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{(m_rank.rank - 1) * 8 + m_file.file - 1} {}
 
     /**
      * \brief Access the file of the square.
@@ -133,7 +133,7 @@ public:
      * The file (column) of the square.
      * \return The file.
      */
-    auto file() const -> const File & { return m_file; }
+    constexpr auto file() const -> const File & { return m_file; }
 
     /**
      * \brief Access the rank of the square.
@@ -141,7 +141,7 @@ public:
      * The rank (row) of the square.
      * \return The rank.
      */
-    auto rank() const -> const Rank & { return m_rank; }
+    constexpr auto rank() const -> const Rank & { return m_rank; }
 
     /**
      * \brief Gives a linear index for the square.
@@ -150,7 +150,7 @@ public:
      * H8 = 63.
      * \return Linear index of the square.
      */
-    auto index() const -> int { return m_index; }
+    constexpr auto index() const -> int { return m_index; }
 
     /**
      * \brief Equality comparison for square positions.

@@ -53,7 +53,7 @@ struct CastlingRights {
         case 'q':
             return black_queenside;
         default:
-            return false;
+            throw OutOfRange("Invalid castling type");
         }
     }
 

@@ -5,6 +5,7 @@
 
 #include "chesscore/fen.h"
 
+#include <algorithm>
 #include <array>
 #include <cctype>
 
