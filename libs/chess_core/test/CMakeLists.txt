@@ -17,5 +17,10 @@ add_executable(chesscore_tests
 target_link_libraries(chesscore_tests PRIVATE chesscore)
 target_link_libraries(chesscore_tests PRIVATE Catch2::Catch2WithMain)
 
+# Disable warnings for braced scalar initialization in Clang (erroneous warning for designated initializers)
+target_compile_options(chesscore_tests PRIVATE
+    $<$<CXX_COMPILER_ID:Clang>:-Wno-braced-scalar-init>
+)
+
 include(Catch)
 catch_discover_tests(chesscore_tests)

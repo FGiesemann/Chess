@@ -120,7 +120,7 @@ public:
      * Access the value of the halfmove clock as extracted from the FEN string.
      * \return The value of the halfmove clock.
      */
-    auto halfmove_clock() const -> size_t { return m_halfmove_clock; }
+    auto halfmove_clock() const -> int { return m_halfmove_clock; }
 
     /**
      * \brief The fullmove number.
@@ -128,7 +128,7 @@ public:
      * Access the fullmove number as extracted from the FEN string.
      * \return The fullmove number.
      */
-    auto fullmove_number() const -> size_t { return m_fullmove_number; }
+    auto fullmove_number() const -> int { return m_fullmove_number; }
 private:
     std::string m_fen_string;
 

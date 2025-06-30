@@ -22,7 +22,7 @@ public:
      *
      * \param message A message describing the error.
      */
-    ChessException(const std::string &message) : m_message{message} {};
+    ChessException(const std::string &message) : m_message{message} {}
 
     /**
      * \brief The message stored in the exception.

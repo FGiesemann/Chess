@@ -99,8 +99,8 @@ struct CastlingRights {
 
 struct PositionState {
     Color side_to_move{Color::White};                       ///< The player who moves next.
-    size_t fullmove_number{1};                              ///< Number of the next move.
-    size_t halfmove_clock{0};                               ///< Half-move clock for the fifty-move rule.
+    int fullmove_number{1};                                 ///< Number of the next move.
+    int halfmove_clock{0};                                  ///< Half-move clock for the fifty-move rule.
     CastlingRights castling_rights{CastlingRights::none()}; ///< Castling rights.
     std::optional<Square> en_passant_target{};              ///< A possible en passant target square.
 };

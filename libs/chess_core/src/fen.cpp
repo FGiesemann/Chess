@@ -31,7 +31,7 @@ auto FenString::starting_position() -> FenString {
     return FenString{std::string{starting_position_fen}};
 }
 
-namespace detail {
+namespace {
 
 auto invalid_piece_letter(char piece) -> bool {
     return piece != 'r' && piece != 'n' && piece != 'b' && piece != 'q' && piece != 'k' && piece != 'p' && piece != 'R' && piece != 'N' && piece != 'B' && piece != 'Q' &&
@@ -64,10 +64,10 @@ public:
     [[nodiscard]] auto position() const -> size_t { return pos; }
     [[nodiscard]] auto placement() const -> PiecePlacement { return piece_placement; }
 private:
-    static constexpr int ranks = 8;
+    static constexpr size_t ranks{8U};
     size_t pos{0};
-    int rank{0};
-    int file{0};
+    size_t rank{0U};
+    size_t file{0U};
     bool number_last{false};
     size_t length{};
     PiecePlacement piece_placement;
@@ -98,7 +98,7 @@ private:
             throw InvalidFen{"Invalid FEN string: two consecutive numbers"};
         }
         number_last = true;
-        file += digit - '0';
+        file += static_cast<size_t>(digit - '0');
     }
 
     void check_piece_letter(char piece) {
@@ -106,13 +106,17 @@ private:
             throw InvalidFen{"Invalid piece type in FEN string"};
         }
         if (file < ranks && rank < ranks) {
-            std::size_t rank_offset{((ranks - 1) - rank) * static_cast<std::size_t>(ranks)};
+            std::size_t rank_offset{((ranks - 1) - rank) * ranks};
             piece_placement.at(rank_offset + file) = piece_from_fen_letter(piece);
         }
         ++file;
         number_last = false;
     }
 };
+
+} // namespace
+
+namespace detail {
 
 auto check_piece_placement(const std::string &fen_string) -> std::pair<PiecePlacement, std::size_t> {
     PieceValidityChecker checker{fen_string};

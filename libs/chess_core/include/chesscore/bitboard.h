@@ -146,7 +146,7 @@ public:
 private:
     std::uint64_t m_bits{};
 
-    static constexpr auto bit_mask(int index) -> std::uint64_t { return 1ULL << (63 - index); }
+    static constexpr auto bit_mask(size_t index) -> std::uint64_t { return 1ULL << (63U - index); }
 };
 
 /**
@@ -327,8 +327,8 @@ private:
     Bitmap m_all_pieces{};
 
     auto bitmap_index(const Piece &piece) const -> size_t {
-        const auto type_index = static_cast<std::underlying_type_t<PieceType>>(piece.type);
-        const auto color_offset = (piece.color == Color::White) ? 0 : 6;
+        const auto type_index = static_cast<unsigned int>(piece.type);
+        const auto color_offset = (piece.color == Color::White) ? 0U : 6U;
         return type_index + color_offset;
     }
 

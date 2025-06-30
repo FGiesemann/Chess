@@ -90,10 +90,10 @@ struct Piece {
     ///@}
 };
 
-static constexpr int min_white_piece_index = 0;
-static constexpr int max_white_piece_index = 5;
-static constexpr int min_black_piece_index = 6;
-static constexpr int max_black_piece_index = 11;
+static constexpr size_t min_white_piece_index{0U};
+static constexpr size_t max_white_piece_index{5U};
+static constexpr size_t min_black_piece_index{6U};
+static constexpr size_t max_black_piece_index{11U};
 
 /**
  * \brief Converts a character to a piece.

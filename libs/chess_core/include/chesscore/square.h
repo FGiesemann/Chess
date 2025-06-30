@@ -13,7 +13,7 @@ namespace chesscore {
 
 namespace detail {
 
-constexpr auto charToLower(const unsigned char character) -> unsigned char {
+constexpr auto charToLower(const char character) -> char {
     return (character >= 'A' && character <= 'Z') ? character + ('a' - 'A') : character;
 }
 
@@ -34,7 +34,7 @@ struct File {
      *
      * The name is a character in the range a..h. The name is case insensitive,
      * so 'A'..'H' are also valid.
-     * \param file A character in the range a..h (case insensitive).
+     * \param in_file A character in the range a..h (case insensitive).
      */
     constexpr File(char in_file) : file{static_cast<int>(detail::charToLower(in_file) - 'a') + 1} {
         if (this->file < File::min_file || this->file > File::max_file) {
@@ -46,7 +46,7 @@ struct File {
      * \brief A file from its number.
      *
      * The file is specified as a number in the range 1..8.
-     * \param file A number in the range 1..8.
+     * \param in_file A number in the range 1..8.
      */
     constexpr File(int in_file) : file{in_file} {
         if (file < File::min_file || file > File::max_file) {
@@ -89,7 +89,7 @@ struct Rank {
      * \brief A rank from its number.
      *
      * The rank is a number in the range 1..8.
-     * \param rank A number in the range 1..8.
+     * \param in_rank A number in the range 1..8.
      */
     constexpr Rank(int in_rank) : rank{in_rank} {
         if (rank < Rank::min_rank || rank > Rank::max_rank) {
@@ -125,7 +125,7 @@ public:
      * \param file The file (column) of the square.
      * \param rank The rank (row) of the square.
      */
-    constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{(m_rank.rank - 1) * 8 + m_file.file - 1} {}
+    constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{static_cast<size_t>((m_rank.rank - 1) * 8 + m_file.file - 1)} {}
 
     /**
      * \brief Access the file of the square.
@@ -150,7 +150,7 @@ public:
      * H8 = 63.
      * \return Linear index of the square.
      */
-    constexpr auto index() const -> int { return m_index; }
+    constexpr auto index() const -> size_t { return m_index; }
 
     /**
      * \brief Equality comparison for square positions.
@@ -236,9 +236,9 @@ public:
     static const Square H8; ///< The square H8.
     ///@}
 private:
-    File m_file;   ///< The file (column) of the square.
-    Rank m_rank;   ///< The rank (row) of the square.
-    int m_index{}; ///< The linear index of the square.
+    File m_file;      ///< The file (column) of the square.
+    Rank m_rank;      ///< The rank (row) of the square.
+    size_t m_index{}; ///< The linear index of the square.
 };
 
 } // namespace chesscore

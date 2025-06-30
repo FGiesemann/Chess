@@ -69,14 +69,14 @@ public:
      * number increases, after Black plays.
      * \return The fullmove number.
      */
-    auto fullmove_number() const -> size_t { return m_state.fullmove_number; }
+    auto fullmove_number() const -> int { return m_state.fullmove_number; }
 
     /**
      * \brief The halfmove clock.
      *
      * \return The halfmove clock.
      */
-    auto halfmove_clock() const -> size_t { return m_state.halfmove_clock; }
+    auto halfmove_clock() const -> int { return m_state.halfmove_clock; }
 
     /**
      * \brief The current castling rights.
@@ -211,7 +211,7 @@ auto Position<BoardT>::unmake_move(const Move &move) -> void {
 
 template<Board BoardT>
 auto Position<BoardT>::resetFullmoveNumber(const Move &move) -> void {
-    if (m_state.side_to_move == Color::White) {
+    if (move.piece.color == Color::Black) {
         m_state.fullmove_number--;
     }
 }
