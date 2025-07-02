@@ -9,7 +9,7 @@
 #include <sstream>
 #include <string>
 
-#include "chesscore/bitboard.h"
+#include "chesscore/bitmap.h"
 
 auto display_board(const chesscore::Bitmap &bitmap) -> void {
     std::cout << "  a b c d e f g h\n";

@@ -31,6 +31,7 @@ endfunction()
 
 add_library(chesscore
     src/bitboard.cpp
+    src/bitmap.cpp
     src/board.cpp
     src/chesscore.cpp
     src/fen.cpp
