@@ -146,7 +146,7 @@ public:
 private:
     std::uint64_t m_bits{};
 
-    static constexpr auto bit_mask(size_t index) -> std::uint64_t { return 1ULL << (63U - index); }
+    static constexpr auto bit_mask(size_t index) -> std::uint64_t { return 1ULL << index; }
 };
 
 /**
