@@ -20,7 +20,7 @@ auto display_board(const chesscore::Bitmap &bitmap) -> void {
             if (bitmap.get(square)) {
                 std::cout << 'X';
             } else {
-                std::cout << '.';
+                std::cout << "·";
             }
             std::cout << ' ';
         }
