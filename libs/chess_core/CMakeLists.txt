@@ -47,6 +47,8 @@ enable_testing()
 find_package(Catch2 3 REQUIRED)
 add_subdirectory(test)
 
+add_subdirectory(tools)
+
 install(TARGETS chesscore)
 
 find_package(Doxygen)

@@ -1,0 +1,8 @@
+add_executable(bitmap_tool
+    bitmap_tool.cpp
+)
+
+target_link_libraries(bitmap_tool
+    PRIVATE
+    chesscore
+)
