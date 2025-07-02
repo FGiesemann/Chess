@@ -77,6 +77,8 @@ auto main() -> int {
             std::cout << "Commands:\n"
                       << "  <square> - Toggle the square (e.g., e4)\n"
                       << "  0x<hex> - Set the bitmap from a hexadecimal string (e.g., 0x0000000000000000)\n"
+                      << "  < <num>  - shift bits left by <num> (e.g., < 2)\n"
+                      << "  > <num>  - shift bits right by <num> (e.g., > 2)\n"
                       << "  c        - Clear the bitmap\n"
                       << "  q        - Quit the program\n"
                       << "  h        - Show this help message\n\n";
@@ -87,6 +89,23 @@ auto main() -> int {
         } else if (input.starts_with("0x")) {
             std::string hex_input = input.substr(2);
             bitmap = chesscore::Bitmap{std::stoull(hex_input, nullptr, 16)};
+        }
+        if (input.starts_with("<")) {
+            std::string num_str = input.substr(1);
+            try {
+                int num = std::stoi(num_str);
+                bitmap <<= num;
+            } catch (const std::invalid_argument &) {
+                std::cout << "Invalid number for left shift.\n";
+            }
+        } else if (input.starts_with(">")) {
+            std::string num_str = input.substr(1);
+            try {
+                int num = std::stoi(num_str);
+                bitmap >>= num;
+            } catch (const std::invalid_argument &) {
+                std::cout << "Invalid number for right shift.\n";
+            }
         } else {
             if (input.length() == 2 && input[0] >= 'a' && input[0] <= 'h' && input[1] >= '1' && input[1] <= '8') {
                 int file = input[0] - 'a' + 1;

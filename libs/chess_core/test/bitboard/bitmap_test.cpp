@@ -107,3 +107,12 @@ TEST_CASE("Bitboard.Bitmap.Bitwise operators", "[Bitmap][Operators]") {
     bitmap3 = ~bitmap1;
     CHECK(bitmap3.bits() == 0xEF'FD'FF'FF'BF'FF'FF'FFULL);
 }
+
+TEST_CASE("Bitboard.Bitmap.Shift operators", "[Bitmap][Operators]") {
+    Bitmap bitmap{0x10'02'00'80'40'70'FF'00ULL};
+
+    auto bitmap2 = bitmap << 1;
+    CHECK(bitmap2.bits() == 0x20'04'01'00'80'E1'FE'00ULL);
+    bitmap2 = bitmap >> 1;
+    CHECK(bitmap2.bits() == 0x08'01'00'40'20'38'7F'80ULL);
+}

@@ -137,6 +137,30 @@ public:
     }
 
     /**
+     * \brief Shift bits to the left.
+     *
+     * Shifts the bits of the bitmap to the left (MSB) by the given amount.
+     * \param amount The amount to shift.
+     * \return The shifted bitmap.
+     */
+    constexpr auto operator<<=(const int &amount) -> Bitmap & {
+        m_bits <<= amount;
+        return *this;
+    }
+
+    /**
+     * \brief Shift bits to the right.
+     *
+     * Shifts the bits of the bitmap to the right (LSB) by the given amount.
+     * \param amount The amount to shift.
+     * \return The shifted bitmap.
+     */
+    constexpr auto operator>>=(const int &amount) -> Bitmap & {
+        m_bits >>= amount;
+        return *this;
+    }
+
+    /**
      * \brief Direct access to the unerlying bits.
      *
      * This gives the 64 bits in a 64-bit unsigned integer.
@@ -182,6 +206,34 @@ constexpr auto operator&(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
 constexpr auto operator^(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
     Bitmap result{lhs};
     result ^= rhs;
+    return result;
+}
+
+/**
+ * \brief Shift bits to the left.
+ *
+ * Shifts the bits of the bitmap to the left (MSB) by the given amount.
+ * \param bitmap The bitmap.
+ * \param amount Amount to shift.
+ * \return The shifted Bitmap.
+ */
+constexpr auto operator<<(const Bitmap &bitmap, const int &amount) -> Bitmap {
+    Bitmap result{bitmap};
+    result <<= amount;
+    return result;
+}
+
+/**
+ * \brief Shift bits to the right.
+ *
+ * Shifts the bits of the bitmap to the right (LSB) by the given amount.
+ * \param bitmap The bitmap.
+ * \param amount Amount to shift.
+ * \return The shifted Bitmap.
+ */
+constexpr auto operator>>(const Bitmap &bitmap, const int &amount) -> Bitmap {
+    Bitmap result{bitmap};
+    result >>= amount;
     return result;
 }
 
