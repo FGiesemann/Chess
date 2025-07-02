@@ -65,7 +65,7 @@ auto main() -> int {
     bool running = true;
     while (running) {
         display_board(bitmap);
-        std::cout << "\nBitmap: 0x" << as_hex(bitmap) << '\n';
+        std::cout << "\nBitmap: 0x" << as_hex(bitmap) << " (0x" << std::hex << std::setfill('0') << std::setw(16) << std::uppercase << bitmap.bits() << "ULL)\n";
         std::cout << "      : 0b" << as_bits(bitmap) << '\n';
         std::cout << "          HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA\n";
 
