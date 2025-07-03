@@ -5,6 +5,7 @@ add_executable(bitmap_tool
 target_link_libraries(bitmap_tool
     PRIVATE
     chesscore
+    chesscore_io
 )
 
 target_compile_options(bitmap_tool PRIVATE

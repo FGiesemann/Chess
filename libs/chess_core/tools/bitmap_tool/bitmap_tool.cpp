@@ -10,63 +10,16 @@
 #include <string>
 
 #include "chesscore/bitmap.h"
-
-auto display_board(const chesscore::Bitmap &bitmap) -> void {
-    std::cout << "  a b c d e f g h\n";
-    for (int rank = chesscore::Rank::max_rank; rank >= chesscore::Rank::min_rank; --rank) {
-        std::cout << rank << ' ';
-        for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
-            const chesscore::Square square{file, rank};
-            if (bitmap.get(square)) {
-                std::cout << 'X';
-            } else {
-                std::cout << "·";
-            }
-            std::cout << ' ';
-        }
-        std::cout << rank << '\n';
-    }
-    std::cout << "  a b c d e f g h\n";
-}
-
-auto as_hex(const chesscore::Bitmap &bitmap) -> std::string {
-    std::stringstream oss;
-    static constexpr int byte_count = 8;
-
-    for (int i = 0; i < byte_count; ++i) {
-        const auto byte = (bitmap.bits() >> (56 - i * 8)) & 0xff;
-        if (i > 0) {
-            oss << '\'';
-        }
-        oss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << byte;
-    }
-
-    return oss.str();
-}
-
-auto as_bits(const chesscore::Bitmap &bitmap) -> std::string {
-    std::stringstream oss;
-
-    static constexpr int square_count = 64;
-
-    for (int i = 0; i < square_count; ++i) {
-        if (i > 0 && i % chesscore::File::max_file == 0) {
-            oss << '\'';
-        }
-        oss << ((bitmap.bits() >> (square_count - 1 - i)) & 1);
-    }
-
-    return oss.str();
-}
+#include "chesscore_io/bitmap_io.h"
 
 auto main() -> int {
     chesscore::Bitmap bitmap{};
 
     bool running = true;
     while (running) {
-        display_board(bitmap);
-        std::cout << "\nBitmap: 0x" << as_hex(bitmap) << " (0x" << std::hex << std::setfill('0') << std::setw(16) << std::uppercase << bitmap.bits() << "ULL)\n";
-        std::cout << "      : 0b" << as_bits(bitmap) << '\n';
+        std::cout << bitmap;
+        std::cout << "\nBitmap: 0x" << as_grouped_hex(bitmap) << " (" << as_ull_hex(bitmap) << ")\n";
+        std::cout << "      : 0b" << as_grouped_bits(bitmap) << '\n';
         std::cout << "          HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA\n";
 
         std::cout << "\nInput: ";
