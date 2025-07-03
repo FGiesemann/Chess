@@ -3,13 +3,58 @@
  * Data structures and algorithms for chess                                   *
  * ************************************************************************** */
 
-#include "bigmap.h"
+#include <cstdint>
 #include <iostream>
+
+#include "bigmap.h"
 
 namespace chesscore::table_gen {
 
+const std::bitset<pattern_width * pattern_width> knight_pattern{
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000101000000000001000100000000000000000000"
+    "000001000100000000000101000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+};
+
+Bigmap::Bigmap(const Pattern &pattern) {
+    for (std::size_t row = 0; row < pattern_width; ++row) {
+        for (std::size_t col = 0; col < pattern_width; ++col) {
+            const std::size_t pattern_index{row * pattern_width + col};
+            if (pattern[pattern_index]) {
+                m_bits[index(row, col)] = true;
+            }
+        }
+    }
+}
+
+auto Bigmap::shift(ShiftDirection dir) -> void {
+    switch (dir) {
+    case ShiftDirection::North:
+        m_bits <<= bigmap_width;
+        break;
+    case ShiftDirection::South:
+        m_bits >>= bigmap_width;
+        break;
+    case ShiftDirection::East:
+        m_bits <<= 1;
+        break;
+    case ShiftDirection::West:
+        m_bits >>= 1;
+        break;
+    default:
+        return;
+    }
+}
+
 auto Bigmap::extract_board() const -> Bitmap {
-    return {};
+    std::uint64_t bits{};
+
+    for (std::size_t row = 2 * overhang; row >= overhang; --row) {
+        for (std::size_t col = 2 * overhang; col >= overhang; --col) {
+            bits = (bits << 1) | (m_bits[index(row, col)] ? 1 : 0);
+        }
+    }
+
+    return Bitmap{bits};
 }
 
 auto Bigmap::inside_board(std::size_t row, std::size_t col) -> bool {
