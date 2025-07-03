@@ -13,7 +13,6 @@ namespace chesscore::table_gen {
 static constexpr std::size_t board_width{8};
 static constexpr std::size_t overhang{board_width - 1};
 static constexpr std::size_t bigmap_width{2 * overhang + board_width};
-static constexpr std::size_t a1_offset{overhang * bigmap_width};
 static constexpr std::size_t pattern_width{overhang + board_width};
 
 using Pattern = std::bitset<pattern_width * pattern_width>;
