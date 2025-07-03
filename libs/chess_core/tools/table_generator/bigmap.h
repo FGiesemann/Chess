@@ -18,6 +18,8 @@ static constexpr std::size_t pattern_width{overhang + board_width};
 using Pattern = std::bitset<pattern_width * pattern_width>;
 
 extern const Pattern knight_pattern;
+extern const Pattern bishop_pattern;
+extern const Pattern rook_pattern;
 
 enum class ShiftDirection { North, South, East, West };
 
