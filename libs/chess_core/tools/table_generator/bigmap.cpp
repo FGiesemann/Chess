@@ -58,6 +58,38 @@ const Pattern rook_pattern{"000000010000000"
                            "000000010000000"
                            "000000010000000"};
 
+const Pattern queen_pattern{"100000010000001"
+                            "010000010000010"
+                            "001000010000100"
+                            "000100010001000"
+                            "000010010010000"
+                            "000001010100000"
+                            "000000111000000"
+                            "111111101111111"
+                            "000000111000000"
+                            "000001010100000"
+                            "000010010010000"
+                            "000100010001000"
+                            "001000010000100"
+                            "010000010000010"
+                            "100000010000001"};
+
+const Pattern king_pattern{"000000000000000"
+                           "000000000000000"
+                           "000000000000000"
+                           "000000000000000"
+                           "000000000000000"
+                           "000000000000000"
+                           "000000111000000"
+                           "000000101000000"
+                           "000000111000000"
+                           "000000000000000"
+                           "000000000000000"
+                           "000000000000000"
+                           "000000000000000"
+                           "000000000000000"
+                           "000000000000000"};
+
 Bigmap::Bigmap(const Pattern &pattern) {
     for (std::size_t row = 0; row < pattern_width; ++row) {
         for (std::size_t col = 0; col < pattern_width; ++col) {
@@ -69,19 +101,19 @@ Bigmap::Bigmap(const Pattern &pattern) {
     }
 }
 
-auto Bigmap::shift(ShiftDirection dir) -> void {
+auto Bigmap::shift(ShiftDirection dir, std::size_t steps) -> void {
     switch (dir) {
     case ShiftDirection::North:
-        m_bits <<= bigmap_width;
+        m_bits <<= bigmap_width * steps;
         break;
     case ShiftDirection::South:
-        m_bits >>= bigmap_width;
+        m_bits >>= bigmap_width * steps;
         break;
     case ShiftDirection::East:
-        m_bits <<= 1;
+        m_bits <<= steps;
         break;
     case ShiftDirection::West:
-        m_bits >>= 1;
+        m_bits >>= steps;
         break;
     default:
         return;

@@ -3,6 +3,9 @@
  * Data structures and algorithms for chess                                   *
  * ************************************************************************** */
 
+#ifndef CHESSCORE_TABLE_GEN_BIGMAP_H
+#define CHESSCORE_TABLE_GEN_BIGMAP_H
+
 #include <bitset>
 #include <iosfwd>
 
@@ -20,6 +23,8 @@ using Pattern = std::bitset<pattern_width * pattern_width>;
 extern const Pattern knight_pattern;
 extern const Pattern bishop_pattern;
 extern const Pattern rook_pattern;
+extern const Pattern queen_pattern;
+extern const Pattern king_pattern;
 
 enum class ShiftDirection { North, South, East, West };
 
@@ -34,7 +39,7 @@ public:
     auto at(std::size_t row, std::size_t col) const -> bool { return m_bits[index(row, col)]; }
     auto operator[](std::size_t pos) -> Bitset::reference { return m_bits[pos]; }
 
-    auto shift(ShiftDirection dir) -> void;
+    auto shift(ShiftDirection dir, std::size_t steps = 1U) -> void;
 
     auto extract_board() const -> Bitmap;
     auto index(std::size_t row, std::size_t col) const -> std::size_t { return row * bigmap_width + col; }
@@ -46,3 +51,5 @@ private:
 auto operator<<(std::ostream &os, const Bigmap &bigmap) -> std::ostream &;
 
 } // namespace chesscore::table_gen
+
+#endif
