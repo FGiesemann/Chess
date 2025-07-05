@@ -63,7 +63,7 @@ public:
      * \param index Index of the element.
      * \return The element.
      */
-    constexpr auto operator[](const IndexT &index) -> const ElementT &
+    constexpr auto operator[](const IndexT &index) const -> const ElementT &
     requires std::is_integral<IndexT>::value
     {
         return m_data[index];
@@ -76,7 +76,7 @@ public:
      * \param index Index of the element.
      * \return The element.
      */
-    constexpr auto operator[](const IndexT &index) -> const ElementT &
+    constexpr auto operator[](const IndexT &index) const -> const ElementT &
     requires IndexType<IndexT>
     {
         return m_data[index.index()];

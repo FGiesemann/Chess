@@ -152,6 +152,8 @@ public:
      * \param state State of the current position.
      */
     auto all_knight_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};

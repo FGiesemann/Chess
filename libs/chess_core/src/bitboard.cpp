@@ -4,6 +4,7 @@
  * ************************************************************************** */
 
 #include "chesscore/bitboard.h"
+#include "chesscore/bitboard_tables.h"
 
 namespace chesscore {
 
@@ -136,7 +137,45 @@ auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
 }
 
 auto Bitboard::all_knight_moves([[maybe_unused]] MoveList &moves, const PositionState &state) const -> void {
-    [[maybe_unused]] Bitmap knights{bitmap(Piece{.type = PieceType::Knight, .color = state.side_to_move})};
+    const auto piece = Piece{.type = PieceType::Knight, .color = state.side_to_move};
+    Bitmap knights{bitmap(piece)};
+
+    Square pos{Square::A1};
+    while (!knights.empty()) {
+        const auto shift = knights.first_piece_index();
+        pos += shift;
+        knights >>= shift;
+
+        auto targets = knight_target_table[pos] & (~bitmap(state.side_to_move));
+        extract_moves(targets, pos, piece, state, moves);
+
+        pos += 1;
+        knights >>= 1;
+    }
+}
+
+auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
+    Square target_square{Square::A1};
+    while (!targets.empty()) {
+        const auto shift = targets.first_piece_index();
+        target_square += shift;
+        targets >>= shift;
+        moves.emplace_back(
+            Move{
+                .from = from,
+                .to = target_square,
+                .piece = piece,
+                .captured = get_piece(target_square),
+                .capturing_en_passant = false,
+                .promoted = {},
+                .castling_rights_before = state.castling_rights,
+                .halfmove_clock_before = state.halfmove_clock,
+                .en_passant_target_before = state.en_passant_target
+            }
+        );
+        target_square += 1;
+        targets >>= 1;
+    }
 }
 
 } // namespace chesscore

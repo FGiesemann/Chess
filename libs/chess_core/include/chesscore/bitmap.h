@@ -7,6 +7,8 @@
 #ifndef CHESSCORE_BITMAP_H
 #define CHESSCORE_BITMAP_H
 
+#include <bit>
+
 #include "chesscore/square.h"
 
 namespace chesscore {
@@ -160,6 +162,15 @@ public:
      * \return The bits in the bitmap.
      */
     constexpr auto bits() const -> std::uint64_t { return m_bits; }
+
+    /**
+     * \brief Returns the index of the first occupied square.
+     *
+     * Returns the index of the first occupied square on the board. The squares
+     * are enumerated A1, B1, ..., H8.
+     * \return The number of the first occupied square.
+     */
+    constexpr auto first_piece_index() const -> int { return std::countr_zero(m_bits); }
 private:
     std::uint64_t m_bits{};
 
