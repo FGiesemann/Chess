@@ -29,9 +29,10 @@ auto main() -> int {
         if (input == "h" || input == "H") {
             std::cout << "Commands:\n"
                       << "  <square> - Toggle the square (e.g., e4)\n"
-                      << "  0x<hex> - Set the bitmap from a hexadecimal string (e.g., 0x0000000000000000)\n"
-                      << "  < <num>  - shift bits left by <num> (e.g., < 2)\n"
-                      << "  > <num>  - shift bits right by <num> (e.g., > 2)\n"
+                      << "  0x<hex>  - Set the bitmap from a hexadecimal string (e.g., 0x0000000000000000)\n"
+                      << "  =<num>   - Set the bitmap from a decimal value\n"
+                      << "  <<num>   - shift bits left by <num> (e.g., < 2)\n"
+                      << "  ><num>   - shift bits right by <num> (e.g., > 2)\n"
                       << "  c        - Clear the bitmap\n"
                       << "  q        - Quit the program\n"
                       << "  h        - Show this help message\n\n";
@@ -43,7 +44,10 @@ auto main() -> int {
             std::string hex_input = input.substr(2);
             bitmap = chesscore::Bitmap{std::stoull(hex_input, nullptr, 16)};
         }
-        if (input.starts_with("<")) {
+        if (input.starts_with("=")) {
+            std::string dec_input = input.substr(1);
+            bitmap = chesscore::Bitmap{std::stoull(dec_input, nullptr, 10)};
+        } else if (input.starts_with("<")) {
             std::string num_str = input.substr(1);
             try {
                 int num = std::stoi(num_str);
