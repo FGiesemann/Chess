@@ -153,6 +153,27 @@ public:
      */
     auto all_knight_moves(MoveList &moves, const PositionState &state) const -> void;
 
+    /**
+     * \brief Generate all moves for all kings.
+     *
+     * Generates the possible moves for the king(s) of the player to move.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_king_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    /**
+     * \brief Extract moves from a target bitmap.
+     *
+     * Extracts the target sqaures from a given bitmap and generates moves from
+     * the given starting square with the given moving piece to all of them.
+     * Captures are automatically detected.
+     * \param targets Bitmap of target sqaures.
+     * \param from The starting square of all the moves.
+     * \param piece The moving piece.
+     * \param state State of the position.
+     * \param moves The list of moves to be filled.
+     */
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
 private:
     std::array<Bitmap, 12> m_bitmaps{};

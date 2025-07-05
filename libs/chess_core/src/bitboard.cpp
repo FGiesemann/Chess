@@ -133,10 +133,11 @@ auto Bitboard::reset_castling_rook(const Move &move) -> void {
 auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
     MoveList moves{};
     all_knight_moves(moves, state);
+    all_king_moves(moves, state);
     return moves;
 }
 
-auto Bitboard::all_knight_moves([[maybe_unused]] MoveList &moves, const PositionState &state) const -> void {
+auto Bitboard::all_knight_moves(MoveList &moves, const PositionState &state) const -> void {
     const auto piece = Piece{.type = PieceType::Knight, .color = state.side_to_move};
     Bitmap knights{bitmap(piece)};
 
@@ -151,6 +152,24 @@ auto Bitboard::all_knight_moves([[maybe_unused]] MoveList &moves, const Position
 
         pos += 1;
         knights >>= 1;
+    }
+}
+
+auto Bitboard::all_king_moves(MoveList &moves, const PositionState &state) const -> void {
+    const auto piece = Piece{.type = PieceType::King, .color = state.side_to_move};
+    Bitmap kings{bitmap(piece)};
+
+    Square pos{Square::A1};
+    while (!kings.empty()) {
+        const auto shift = kings.first_piece_index();
+        pos += shift;
+        kings >>= shift;
+
+        auto targets = king_target_table[pos] & (~bitmap(state.side_to_move));
+        extract_moves(targets, pos, piece, state, moves);
+
+        pos += 1;
+        kings >>= 1;
     }
 }
 

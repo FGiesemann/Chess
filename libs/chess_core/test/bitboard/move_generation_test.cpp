@@ -42,3 +42,29 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.Knight", "[Bitboard][MoveGeneration]
     CHECK(move_list_contains(moves2, Move{Square::G2, Square::E1, Piece::BlackKnight}));
     CHECK(move_list_contains(moves2, Move{Square::G2, Square::E3, Piece::BlackKnight, Piece::WhiteBishop}));
 }
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.King", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"8/1b1P4/2k5/8/5P2/5K2/4p3/8 w - - 0 1"}};
+    MoveList moves1{};
+    position1.board().all_king_moves(moves1, position1.state());
+    CHECK(moves1.size() == 7);
+    CHECK(move_list_contains(moves1, Move{Square::F3, Square::E4, Piece::WhiteKing}));
+    CHECK(move_list_contains(moves1, Move{Square::F3, Square::G4, Piece::WhiteKing}));
+    CHECK(move_list_contains(moves1, Move{Square::F3, Square::G3, Piece::WhiteKing}));
+    CHECK(move_list_contains(moves1, Move{Square::F3, Square::G2, Piece::WhiteKing}));
+    CHECK(move_list_contains(moves1, Move{Square::F3, Square::F2, Piece::WhiteKing}));
+    CHECK(move_list_contains(moves1, Move{Square::F3, Square::E2, Piece::WhiteKing, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves1, Move{Square::F3, Square::E3, Piece::WhiteKing}));
+
+    Position<Bitboard> position2{FenString{"8/1b1P4/2k5/8/5P2/5K2/4p3/8 b - - 0 1"}};
+    MoveList moves2{};
+    position2.board().all_king_moves(moves2, position2.state());
+    CHECK(moves2.size() == 7);
+    CHECK(move_list_contains(moves2, Move{Square::C6, Square::C7, Piece::BlackKing}));
+    CHECK(move_list_contains(moves2, Move{Square::C6, Square::D7, Piece::BlackKing, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves2, Move{Square::C6, Square::D6, Piece::BlackKing}));
+    CHECK(move_list_contains(moves2, Move{Square::C6, Square::D5, Piece::BlackKing}));
+    CHECK(move_list_contains(moves2, Move{Square::C6, Square::C5, Piece::BlackKing}));
+    CHECK(move_list_contains(moves2, Move{Square::C6, Square::B5, Piece::BlackKing}));
+    CHECK(move_list_contains(moves2, Move{Square::C6, Square::B6, Piece::BlackKing}));
+}
