@@ -14,7 +14,7 @@ auto generate_table(const std::string &name, const Pattern &pattern, std::ostrea
     const char row_name[] = "12345678";
     const char col_name[] = "ABCDEFGH";
     Bigmap bigmap{pattern};
-    os << "constexpr TargetTable " << name << "_target_table{\n";
+    os << "const TargetTable " << name << "_target_table{\n";
 
     for (std::size_t row = 0; row < board_width; ++row) {
         for (std::size_t col = 0; col < board_width; ++col) {
