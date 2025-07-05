@@ -129,8 +129,14 @@ auto Bitboard::reset_castling_rook(const Move &move) -> void {
     }
 }
 
-auto Bitboard::all_legal_moves([[maybe_unused]] const PositionState &state) const -> std::vector<Move> {
-    return {};
+auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
+    MoveList moves{};
+    all_knight_moves(moves, state);
+    return moves;
+}
+
+auto Bitboard::all_knight_moves([[maybe_unused]] MoveList &moves, const PositionState &state) const -> void {
+    [[maybe_unused]] Bitmap knights{bitmap(Piece{.type = PieceType::Knight, .color = state.side_to_move})};
 }
 
 } // namespace chesscore

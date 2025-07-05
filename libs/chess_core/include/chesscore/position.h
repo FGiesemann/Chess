@@ -115,6 +115,22 @@ public:
      * \param move The move to undo.
      */
     auto unmake_move(const Move &move) -> void;
+
+    /**
+     * \brief The current state of the position.
+     *
+     * \return State of the position.
+     */
+    auto state() const -> const PositionState & { return m_state; }
+
+    /**
+     * \brief Generate all legal moves.
+     *
+     * Generate a list of all legal moves from the current position for the
+     * player to move.
+     * \return A list of all legal moves for the given position.
+     */
+    auto all_legal_moves() const -> MoveList;
 private:
     BoardT m_board{};        ///< Current placement of pieces on the board.
     PositionState m_state{}; ///< The current state of the position.
@@ -233,6 +249,11 @@ auto Position<BoardT>::resetEnPassant(const Move &move) -> void {
 template<Board BoardT>
 auto Position<BoardT>::resetCastlingRights(const Move &move) -> void {
     m_state.castling_rights = move.castling_rights_before;
+}
+
+template<Board BoardT>
+auto Position<BoardT>::all_legal_moves() const -> MoveList {
+    return m_board.all_legal_moves(state());
 }
 
 } // namespace chesscore

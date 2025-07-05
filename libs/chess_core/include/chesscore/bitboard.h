@@ -142,7 +142,16 @@ public:
      * \param state State of the current position.
      * \return A list of all legal moves for the given position and player.
      */
-    auto all_legal_moves(const PositionState &state) const -> std::vector<Move>;
+    auto all_legal_moves(const PositionState &state) const -> MoveList;
+
+    /**
+     * \brief Generate all moves for all knights.
+     *
+     * Generates the possible moves for the knights of the player to move.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_knight_moves(MoveList &moves, const PositionState &state) const -> void;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};
