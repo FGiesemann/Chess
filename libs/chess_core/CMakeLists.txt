@@ -31,6 +31,7 @@ endfunction()
 
 add_library(chesscore
     src/bitboard.cpp
+    src/bitboard_tables.cpp
     src/bitmap.cpp
     src/board.cpp
     src/chesscore.cpp
@@ -40,6 +41,7 @@ add_library(chesscore
     src/position.cpp
     src/position_types.cpp
     src/square.cpp
+    src/table.cpp
 )
 target_include_directories(chesscore PUBLIC include)
 add_compiler_warnings(chesscore)
