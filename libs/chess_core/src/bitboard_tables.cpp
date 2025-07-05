@@ -342,4 +342,6 @@ const TargetTable king_target_table{
     Bitmap{0x40C0000000000000ULL}, // H8
 };
 
+const PieceTargetTables piece_target_tables{nullptr, &rook_target_table, &knight_target_table, &bishop_target_table, &queen_target_table, &king_target_table};
+
 } // namespace chesscore
