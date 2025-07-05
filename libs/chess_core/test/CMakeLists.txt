@@ -1,6 +1,7 @@
 add_executable(chesscore_tests
     data/coordinate_test.cpp
     data/fen_test.cpp
+    data/move_test.cpp
     data/piece_test.cpp
     
     bitboard/bitmap_test.cpp
