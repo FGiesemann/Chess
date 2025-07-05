@@ -194,6 +194,8 @@ private:
 
     void move_castling_rook(const Move &move);
     void reset_castling_rook(const Move &move);
+
+    auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
 };
 
 static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");

@@ -137,40 +137,30 @@ auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
     return moves;
 }
 
-auto Bitboard::all_knight_moves(MoveList &moves, const PositionState &state) const -> void {
-    const auto piece = Piece{.type = PieceType::Knight, .color = state.side_to_move};
-    Bitmap knights{bitmap(piece)};
+auto Bitboard::all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
+    const auto piece = Piece{.type = piece_type, .color = state.side_to_move};
+    Bitmap pieces{bitmap(piece)};
 
     Square pos{Square::A1};
-    while (!knights.empty()) {
-        const auto shift = knights.first_piece_index();
+    while (!pieces.empty()) {
+        const auto shift = pieces.first_piece_index();
         pos += shift;
-        knights >>= shift;
+        pieces >>= shift;
 
-        auto targets = knight_target_table[pos] & (~bitmap(state.side_to_move));
+        auto targets = get_target_table(piece_type)[pos] & (~bitmap(state.side_to_move));
         extract_moves(targets, pos, piece, state, moves);
 
         pos += 1;
-        knights >>= 1;
+        pieces >>= 1;
     }
 }
 
+auto Bitboard::all_knight_moves(MoveList &moves, const PositionState &state) const -> void {
+    all_stepping_moves(PieceType::Knight, moves, state);
+}
+
 auto Bitboard::all_king_moves(MoveList &moves, const PositionState &state) const -> void {
-    const auto piece = Piece{.type = PieceType::King, .color = state.side_to_move};
-    Bitmap kings{bitmap(piece)};
-
-    Square pos{Square::A1};
-    while (!kings.empty()) {
-        const auto shift = kings.first_piece_index();
-        pos += shift;
-        kings >>= shift;
-
-        auto targets = king_target_table[pos] & (~bitmap(state.side_to_move));
-        extract_moves(targets, pos, piece, state, moves);
-
-        pos += 1;
-        kings >>= 1;
-    }
+    all_stepping_moves(PieceType::King, moves, state);
 }
 
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {

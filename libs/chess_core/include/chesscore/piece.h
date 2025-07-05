@@ -19,6 +19,21 @@ namespace chesscore {
  */
 enum class PieceType { Pawn, Rook, Knight, Bishop, Queen, King };
 
+/**
+ * \brief Get the numeric index of a piece type.
+ *
+ * The piece types are enumerated pawn = 0, rook = 1, knight = 2, bishop = 3,
+ * queen = 4, king = 5.
+ * \param type The piece type.
+ * \return The numerix index of the piece type.
+ */
+inline auto get_index(const PieceType &type) -> std::size_t {
+    return static_cast<std::size_t>(type);
+}
+
+/**
+ * \brief Number of available piece types.
+ */
 static constexpr int piece_type_count = 6;
 
 /**
@@ -47,6 +62,13 @@ auto piece_type_from_char(char letter) -> PieceType;
  */
 enum class Color { White, Black };
 
+/**
+ * \brief Swap a color.
+ *
+ * Switches white to black and black to white.
+ * \param color The color to switch.
+ * \return The switched color.
+ */
 inline auto other_color(Color color) -> Color {
     return color == Color::White ? Color::Black : Color::White;
 }
@@ -90,10 +112,10 @@ struct Piece {
     ///@}
 };
 
-static constexpr size_t min_white_piece_index{0U};
-static constexpr size_t max_white_piece_index{5U};
-static constexpr size_t min_black_piece_index{6U};
-static constexpr size_t max_black_piece_index{11U};
+static constexpr size_t min_white_piece_index{0U};  ///< Index of the first white piece (white pawn)
+static constexpr size_t max_white_piece_index{5U};  ///< Index of the last white peice (white king)
+static constexpr size_t min_black_piece_index{6U};  ///< Index of the first black piece (black pawn)
+static constexpr size_t max_black_piece_index{11U}; ///< Index of the last black piece (black king)
 
 /**
  * \brief Converts a character to a piece.

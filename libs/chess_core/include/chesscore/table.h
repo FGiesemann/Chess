@@ -21,6 +21,11 @@ concept IndexType = requires(const T &i) {
     { i.index() } -> std::convertible_to<std::size_t>;
 };
 
+template<typename T>
+concept IndexConvertible = requires(const T &i) {
+    { get_index(i) } -> std::convertible_to<std::size_t>;
+};
+
 /**
  * \brief A table.
  *
@@ -80,6 +85,12 @@ public:
     requires IndexType<IndexT>
     {
         return m_data[index.index()];
+    }
+
+    constexpr auto operator[](const IndexT &index) const -> const ElementT &
+    requires IndexConvertible<IndexT>
+    {
+        return m_data[get_index(index)];
     }
 private:
     std::array<ElementT, Size> m_data;

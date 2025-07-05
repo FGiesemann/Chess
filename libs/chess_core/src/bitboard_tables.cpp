@@ -342,6 +342,9 @@ const TargetTable king_target_table{
     Bitmap{0x40C0000000000000ULL}, // H8
 };
 
-const PieceTargetTables piece_target_tables{nullptr, &rook_target_table, &knight_target_table, &bishop_target_table, &queen_target_table, &king_target_table};
+auto get_target_table(const PieceType &piece_type) -> const TargetTable & {
+    std::array<const TargetTable *, piece_type_count - 1> target_tables{&rook_target_table, &knight_target_table, &bishop_target_table, &queen_target_table, &king_target_table};
+    return *target_tables.at(get_index(piece_type) - 1);
+}
 
 } // namespace chesscore

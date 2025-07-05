@@ -22,9 +22,7 @@ extern const TargetTable rook_target_table;
 extern const TargetTable queen_target_table;
 extern const TargetTable king_target_table;
 
-using PieceTargetTables = Table<const TargetTable *, piece_type_count, PieceType>;
-
-extern const PieceTargetTables piece_target_tables;
+auto get_target_table(const PieceType &piece_type) -> const TargetTable &;
 
 } // namespace chesscore
 

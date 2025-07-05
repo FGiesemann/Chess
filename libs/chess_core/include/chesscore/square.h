@@ -191,7 +191,7 @@ public:
      * \return The new Square.
      */
     constexpr auto operator+=(int squares) -> Square & {
-        m_index = std::clamp(m_index + squares, 0ULL, 63ULL);
+        m_index = std::clamp(m_index + static_cast<std::size_t>(squares), 0ULL, 63ULL);
         m_file.file = m_index % 8 + 1;
         m_rank.rank = static_cast<int>(m_index / 8) + 1;
         return *this;
