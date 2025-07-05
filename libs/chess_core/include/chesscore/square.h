@@ -7,6 +7,8 @@
 #ifndef CHESSCORE_SQUARE_H
 #define CHESSCORE_SQUARE_H
 
+#include <algorithm>
+
 #include "chesscore/chesscore.h"
 
 namespace chesscore {
@@ -65,6 +67,20 @@ struct File {
     [[nodiscard]] auto name() const -> char;
 
     /**
+     * \brief Step to the right.
+     *
+     * Shifts the file to the right by the given amount. Increment uses
+     * wrap-around: If the file is moved over the edge, it "re-enters" from the
+     * other side.
+     * \param steps Number of fields to step to the right.
+     * \return The modified file.
+     */
+    constexpr auto operator+=(int steps) -> File & {
+        file = (file + steps - 1) % max_file + 1;
+        return *this;
+    }
+
+    /**
      * \brief Equality comparison for files.
      *
      * Compare two file numbers for equality. They are equal, if they represent
@@ -98,6 +114,19 @@ struct Rank {
     }
 
     int rank; ///< The rank number (1..8).
+
+    /**
+     * \brief Step up.
+     *
+     * Shifts the rank up by the given amount. Increment uses wrap-around: If
+     * the rank is moved over the edge, it "re-enters" from the other side.
+     * \param steps Number of fields to step up.
+     * \return The modified rank.
+     */
+    constexpr auto operator+=(int steps) -> Rank & {
+        rank = (rank + steps - 1) % max_rank + 1;
+        return *this;
+    }
 
     /**
      * \brief Equality comparison for ranks.
@@ -151,6 +180,22 @@ public:
      * \return Linear index of the square.
      */
     constexpr auto index() const -> size_t { return m_index; }
+
+    /**
+     * \brief Skip to the "next" square.
+     *
+     * Step from the current square to a following square. The sqaures are
+     * enumerated according to their linear index, i.e., A1, B1, ..., H8.
+     * If the step count is too big, this is set to the last Square H8.
+     * \param squares The number of squares to skip.
+     * \return The new Square.
+     */
+    constexpr auto operator+=(int squares) -> Square & {
+        m_index = std::clamp(m_index + squares, 0ULL, 63ULL);
+        m_file.file = m_index % 8 + 1;
+        m_rank.rank = static_cast<int>(m_index / 8) + 1;
+        return *this;
+    }
 
     /**
      * \brief Equality comparison for square positions.

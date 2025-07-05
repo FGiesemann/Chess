@@ -90,6 +90,62 @@ TEST_CASE("Data.Coords.Coordinates Checks", "[Square]") {
     }
 }
 
+TEST_CASE("Data.Coords.Increments", "[Square]") {
+    File file{'a'};
+    Rank rank{1};
+
+    Square square = Square::A1;
+
+    file += 0;
+    CHECK(file.file == 1);
+    file += 2;
+    CHECK(file.file == 3);
+    file += 1;
+    CHECK(file.file == 4);
+    file += 7;
+    CHECK(file.file == 3);
+
+    rank += 0;
+    CHECK(rank.rank == 1);
+    rank += 2;
+    CHECK(rank.rank == 3);
+    rank += 1;
+    CHECK(rank.rank == 4);
+    rank += 4;
+    CHECK(rank.rank == 8);
+    rank += 3;
+    CHECK(rank.rank == 3);
+
+    square += 0;
+    CHECK(square.file().file == 1);
+    CHECK(square.rank().rank == 1);
+    CHECK(square.index() == 0);
+    square += 1;
+    CHECK(square.file().file == 2);
+    CHECK(square.rank().rank == 1);
+    CHECK(square.index() == 1);
+    square += 7;
+    CHECK(square.file().file == 1);
+    CHECK(square.rank().rank == 2);
+    CHECK(square.index() == 8);
+    square += 19;
+    CHECK(square.file().file == 4);
+    CHECK(square.rank().rank == 4);
+    CHECK(square.index() == 27);
+    square += 22;
+    CHECK(square.file().file == 2);
+    CHECK(square.rank().rank == 7);
+    CHECK(square.index() == 49);
+    square += 3;
+    CHECK(square.file().file == 5);
+    CHECK(square.rank().rank == 7);
+    CHECK(square.index() == 52);
+    square += 15;
+    CHECK(square.file().file == 8);
+    CHECK(square.rank().rank == 8);
+    CHECK(square.index() == 63);
+}
+
 TEST_CASE("Data.Coords.Defined Squares", "[Square]") {
     CHECK(Square::A1.file().file == 1);
     CHECK(Square::A1.rank().rank == 1);
