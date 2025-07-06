@@ -103,7 +103,7 @@ const Pattern north_ray_pattern{"000000010000000"
                                 "000000000000000"
                                 "000000000000000"};
 
-const Pattern northeast_ray_pattern{"000000000000001"
+const Pattern northwest_ray_pattern{"000000000000001"
                                     "000000000000010"
                                     "000000000000100"
                                     "000000000001000"
@@ -119,7 +119,7 @@ const Pattern northeast_ray_pattern{"000000000000001"
                                     "000000000000000"
                                     "000000000000000"};
 
-const Pattern east_ray_pattern{"000000000000000"
+const Pattern west_ray_pattern{"000000000000000"
                                "000000000000000"
                                "000000000000000"
                                "000000000000000"
@@ -135,7 +135,7 @@ const Pattern east_ray_pattern{"000000000000000"
                                "000000000000000"
                                "000000000000000"};
 
-const Pattern southeast_ray_pattern{"000000000000000"
+const Pattern southwest_ray_pattern{"000000000000000"
                                     "000000000000000"
                                     "000000000000000"
                                     "000000000000000"
@@ -167,7 +167,7 @@ const Pattern south_ray_pattern{"000000000000000"
                                 "000000010000000"
                                 "000000010000000"};
 
-const Pattern southwest_ray_pattern{"000000000000000"
+const Pattern southeast_ray_pattern{"000000000000000"
                                     "000000000000000"
                                     "000000000000000"
                                     "000000000000000"
@@ -183,7 +183,7 @@ const Pattern southwest_ray_pattern{"000000000000000"
                                     "010000000000000"
                                     "100000000000000"};
 
-const Pattern west_ray_pattern{"000000000000000"
+const Pattern east_ray_pattern{"000000000000000"
                                "000000000000000"
                                "000000000000000"
                                "000000000000000"
@@ -199,7 +199,7 @@ const Pattern west_ray_pattern{"000000000000000"
                                "000000000000000"
                                "000000000000000"};
 
-const Pattern northwest_ray_pattern{"100000000000000"
+const Pattern northeast_ray_pattern{"100000000000000"
                                     "010000000000000"
                                     "001000000000000"
                                     "000100000000000"
