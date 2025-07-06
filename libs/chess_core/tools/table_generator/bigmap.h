@@ -10,21 +10,10 @@
 #include <iosfwd>
 
 #include "chesscore/bitmap.h"
+#include "dimensions.h"
+#include "patterns.h"
 
 namespace chesscore::table_gen {
-
-static constexpr std::size_t board_width{8};
-static constexpr std::size_t overhang{board_width - 1};
-static constexpr std::size_t bigmap_width{2 * overhang + board_width};
-static constexpr std::size_t pattern_width{overhang + board_width};
-
-using Pattern = std::bitset<pattern_width * pattern_width>;
-
-extern const Pattern knight_pattern;
-extern const Pattern bishop_pattern;
-extern const Pattern rook_pattern;
-extern const Pattern queen_pattern;
-extern const Pattern king_pattern;
 
 enum class ShiftDirection { North, South, East, West };
 

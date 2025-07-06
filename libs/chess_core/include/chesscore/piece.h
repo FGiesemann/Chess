@@ -163,6 +163,30 @@ auto placement_from_string(const std::string &str) -> PiecePlacement;
  */
 auto starting_piece_placement() -> PiecePlacement;
 
+/**
+ * \brief Compass directions.
+ *
+ * The 8 compass directions in which sliding pieces can move.
+ */
+enum class RayDirection { North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest };
+
+/**
+ * \brief Number of different compass directions.
+ */
+static constexpr std::size_t ray_direction_count{8U};
+
+/**
+ * \brief Get the numeric index of a compass direction.
+ *
+ * The compass directions are enumerated clockwise, starting with north = 0,
+ * north east = 1, ...
+ * \param type The compass direction.
+ * \return The numerix index of the compass direction.
+ */
+inline auto get_index(const RayDirection &direction) -> std::size_t {
+    return static_cast<std::size_t>(direction);
+}
+
 } // namespace chesscore
 
 #endif

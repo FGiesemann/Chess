@@ -22,7 +22,19 @@ extern const TargetTable rook_target_table;
 extern const TargetTable queen_target_table;
 extern const TargetTable king_target_table;
 
+extern const TargetTable north_ray_target_table;
+extern const TargetTable northeast_ray_target_table;
+extern const TargetTable east_ray_target_table;
+extern const TargetTable southeast_ray_target_table;
+extern const TargetTable south_ray_target_table;
+extern const TargetTable southwest_ray_target_table;
+extern const TargetTable west_ray_target_table;
+extern const TargetTable northwest_ray_target_table;
+
 auto get_target_table(const PieceType &piece_type) -> const TargetTable &;
+
+using RayTargetTable = Table<TargetTable, ray_direction_count, RayDirection>;
+extern const RayTargetTable ray_target_table;
 
 } // namespace chesscore
 
