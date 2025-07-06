@@ -68,3 +68,38 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.King (no check)", "[Bitboard][MoveGe
     CHECK(move_list_contains(moves2, Move{Square::C6, Square::B5, Piece::BlackKing}));
     CHECK(move_list_contains(moves2, Move{Square::C6, Square::B6, Piece::BlackKing}));
 }
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Ray N", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"8/5b2/2p1P2P/8/1pP2Rp1/6p1/3b4/8 w - - 0 1"}};
+    MoveList moves1{};
+    position1.board().all_moves_along_ray(Piece::WhiteRook, Square::F4, RayDirection::North, moves1, position1.state());
+    CHECK(moves1.size() == 3);
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F5, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F6, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F7, Piece::WhiteRook, Piece::BlackBishop}));
+}
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Ray W", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"8/5b2/2p1P2P/8/1pP2Rp1/6p1/3b4/8 w - - 0 1"}};
+    MoveList moves1{};
+    position1.board().all_moves_along_ray(Piece::WhiteRook, Square::F4, RayDirection::West, moves1, position1.state());
+    CHECK(moves1.size() == 2);
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::E4, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::D4, Piece::WhiteRook}));
+}
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Rook (no check)", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"8/5b2/2p1P2P/8/1pP2Rp1/6p1/3b4/8 w - - 0 1"}};
+    MoveList moves1{};
+    position1.board().all_sliding_moves(Piece::WhiteRook, Square::F4, moves1, position1.state());
+    CHECK(moves1.size() == 9);
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F1, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F2, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F3, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::G4, Piece::WhiteRook, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F5, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F6, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F7, Piece::WhiteRook, Piece::BlackBishop}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::E4, Piece::WhiteRook}));
+    CHECK(move_list_contains(moves1, Move{Square::F4, Square::D4, Piece::WhiteRook}));
+}

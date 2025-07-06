@@ -75,4 +75,21 @@ const Piece Piece::BlackBishop{.type = PieceType::Bishop, .color = Color::Black}
 const Piece Piece::BlackQueen{.type = PieceType::Queen, .color = Color::Black};
 const Piece Piece::BlackKing{.type = PieceType::King, .color = Color::Black};
 
+const PieceDirections piece_ray_directions{
+    std::uint8_t{0b0000'0000}, // Pawn
+    std::uint8_t{0b0101'0101}, // Rook
+    std::uint8_t{0b0000'0000}, // Knight
+    std::uint8_t{0b1010'1010}, // Bishop
+    std::uint8_t{0b1111'1111}, // Queen
+    std::uint8_t{0b0000'0000}, // King
+};
+
+auto operator&(std::uint8_t mask, RayDirection direction) -> bool {
+    return (mask & (1 << static_cast<std::underlying_type_t<RayDirection>>(direction))) != 0;
+}
+
+auto is_negative_direction(RayDirection direction) -> bool {
+    return (direction == RayDirection::SouthEast || direction == RayDirection::South, direction == RayDirection::SouthWest || direction == RayDirection::West);
+}
+
 } // namespace chesscore

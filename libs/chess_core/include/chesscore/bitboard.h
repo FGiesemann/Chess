@@ -163,6 +163,30 @@ public:
     auto all_king_moves(MoveList &moves, const PositionState &state) const -> void;
 
     /**
+     * \brief Generate all moves for a sliding piece.
+     *
+     * Generates the possible moves for a given sliding piece from the given
+     * starting square in te given position state.
+     * \param moving_piece The moving piece.
+     * \param start The square, where the piece starts.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void;
+
+    /**
+     * \brief Generate all moves along a single direction.
+     *
+     * Generates the moves for a sliding piece along a single sliding direction.
+     * \param moving_piece The moving piece.
+     * \param start Starting suqare of the piece.
+     * \param direction The ray direction.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_moves_along_ray(const Piece &moving_piece, const Square &start, const RayDirection &direction, MoveList &moves, const PositionState &state) const -> void;
+
+    /**
      * \brief Extract moves from a target bitmap.
      *
      * Extracts the target sqaures from a given bitmap and generates moves from

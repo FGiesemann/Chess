@@ -164,13 +164,26 @@ public:
     constexpr auto bits() const -> std::uint64_t { return m_bits; }
 
     /**
-     * \brief Returns the index of the first occupied square.
+     * \brief Returns the number of empty squares before the first piece.
      *
-     * Returns the index of the first occupied square on the board. The squares
-     * are enumerated A1, B1, ..., H8.
-     * \return The number of the first occupied square.
+     * The number of squares is counted from A1 (inclusive). That means, if a
+     * piece is on A1, this function returns 0. If a piece is on B1 (but not on
+     * A1), the function returns 1. For the first piece on D3, the function
+     * returns 19.
+     * \return The number of empty squares before the first piece is found.
      */
-    constexpr auto first_piece_index() const -> int { return std::countr_zero(m_bits); }
+    constexpr auto empty_squares_before() const -> int { return std::countr_zero(m_bits); }
+
+    /**
+     * \brief Returns the number of empty squares after the last piece.
+     *
+     * The number of squares is counted "backwards" from H8 up to the last piece
+     * on the board. That means, if a piece is on H8, this function returns 0.
+     * If a piece is on G8 (but not on H8), the function returns 1. For the last
+     * piece on C6, the function returns 21.
+     * \return The number of empty squares after the last piece is found.
+     */
+    constexpr auto empty_squares_after() const -> int { return std::countl_zero(m_bits); }
 private:
     std::uint64_t m_bits{};
 

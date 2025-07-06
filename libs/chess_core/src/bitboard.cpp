@@ -143,11 +143,11 @@ auto Bitboard::all_stepping_moves(PieceType piece_type, MoveList &moves, const P
 
     Square pos{Square::A1};
     while (!pieces.empty()) {
-        const auto shift = pieces.first_piece_index();
+        const auto shift = pieces.empty_squares_before();
         pos += shift;
         pieces >>= shift;
 
-        auto targets = get_target_table(piece_type)[pos] & (~bitmap(state.side_to_move));
+        auto targets = get_target_table(piece_type)[pos] & ~bitmap(state.side_to_move);
         extract_moves(targets, pos, piece, state, moves);
 
         pos += 1;
@@ -163,10 +163,30 @@ auto Bitboard::all_king_moves(MoveList &moves, const PositionState &state) const
     all_stepping_moves(PieceType::King, moves, state);
 }
 
+auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void {
+    const auto ray_directions_for_piece = piece_ray_directions[moving_piece.type];
+    for (auto direction : all_ray_directions) {
+        if (ray_directions_for_piece & direction) {
+            all_moves_along_ray(moving_piece, start, direction, moves, state);
+        }
+    }
+}
+
+auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &start, const RayDirection &direction, MoveList &moves, const PositionState &state) const -> void {
+    auto targets = ray_target_table[direction][start];
+    const auto blockers = targets & m_all_pieces;
+    if (!blockers.empty()) {
+        const auto blocker_square = Square::A1 + (is_negative_direction(direction) ? 63 - blockers.empty_squares_after() : blockers.empty_squares_before());
+        targets ^= ray_target_table[direction][blocker_square];
+    }
+    targets &= ~bitmap(state.side_to_move);
+    extract_moves(targets, start, moving_piece, state, moves);
+}
+
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
     Square target_square{Square::A1};
     while (!targets.empty()) {
-        const auto shift = targets.first_piece_index();
+        const auto shift = targets.empty_squares_before();
         target_square += shift;
         targets >>= shift;
         moves.emplace_back(

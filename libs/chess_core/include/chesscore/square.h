@@ -184,7 +184,7 @@ public:
     /**
      * \brief Skip to the "next" square.
      *
-     * Step from the current square to a following square. The sqaures are
+     * Step from the current square to a following square. The squares are
      * enumerated according to their linear index, i.e., A1, B1, ..., H8.
      * If the step count is too big, this is set to the last Square H8.
      * \param squares The number of squares to skip.
@@ -285,6 +285,16 @@ private:
     Rank m_rank;      ///< The rank (row) of the square.
     size_t m_index{}; ///< The linear index of the square.
 };
+
+/**
+ * \brief Skip to the "next" square.
+ *
+ * Step from the given square to a following square by the given amount.
+ * \param square The square to start from.
+ * \param squares The number of squares to skip.
+ * \return The new Square.
+ */
+auto operator+(const Square &square, int squares) -> Square;
 
 } // namespace chesscore
 

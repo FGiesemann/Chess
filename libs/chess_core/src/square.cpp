@@ -85,4 +85,10 @@ const Square Square::H7{File{'h'}, Rank{7}};
 const Square Square::H8{File{'h'}, Rank{8}};
 // NOLINTEND(readability-identifier-length,modernize-use-designated-initializers)
 
+auto operator+(const Square &square, int squares) -> Square {
+    Square result{square};
+    result += squares;
+    return result;
+}
+
 } // namespace chesscore
