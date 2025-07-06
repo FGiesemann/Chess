@@ -12,7 +12,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Bitboard.Bitboard.MoveGeneration.Knight", "[Bitboard][MoveGeneration]") {
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.Knight (no check)", "[Bitboard][MoveGeneration]") {
     Position<Bitboard> position1{FenString{"2k1n3/6N1/8/1P1b1r2/3P4/2N5/4q3/KP6 w - - 0 1"}};
     MoveList moves1{};
     position1.board().all_knight_moves(moves1, position1.state());
@@ -43,7 +43,7 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.Knight", "[Bitboard][MoveGeneration]
     CHECK(move_list_contains(moves2, Move{Square::G2, Square::E3, Piece::BlackKnight, Piece::WhiteBishop}));
 }
 
-TEST_CASE("Bitboard.Bitboard.MoveGeneration.King", "[Bitboard][MoveGeneration]") {
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.King (no check)", "[Bitboard][MoveGeneration]") {
     Position<Bitboard> position1{FenString{"8/1b1P4/2k5/8/5P2/5K2/4p3/8 w - - 0 1"}};
     MoveList moves1{};
     position1.board().all_king_moves(moves1, position1.state());
