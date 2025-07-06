@@ -115,3 +115,24 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Bishop (no check)", "[
     CHECK(move_list_contains(moves1, Move{Square::D2, Square::E3, Piece::BlackBishop}));
     CHECK(move_list_contains(moves1, Move{Square::D2, Square::F4, Piece::BlackBishop, Piece::WhiteRook}));
 }
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Queen (no check)", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"1q4pr/2P3p1/1np1brNR/8/2Q2Pp1/3p4/2P1P1bn/8 w - - 0 1"}};
+    MoveList moves1{};
+    position1.board().all_sliding_moves(Piece::WhiteQueen, Square::C4, moves1, position1.state());
+    CHECK(moves1.size() == 14);
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::A2, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::B3, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::D5, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::E6, Piece::WhiteQueen, Piece::BlackBishop}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::A6, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::B5, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::D3, Piece::WhiteQueen, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::A4, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::B4, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::D4, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::E4, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::C3, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::C5, Piece::WhiteQueen}));
+    CHECK(move_list_contains(moves1, Move{Square::C4, Square::C6, Piece::WhiteQueen, Piece::BlackPawn}));
+}
