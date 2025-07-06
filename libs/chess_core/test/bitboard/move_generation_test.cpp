@@ -103,3 +103,15 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Rook (no check)", "[Bi
     CHECK(move_list_contains(moves1, Move{Square::F4, Square::E4, Piece::WhiteRook}));
     CHECK(move_list_contains(moves1, Move{Square::F4, Square::D4, Piece::WhiteRook}));
 }
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Bishop (no check)", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"8/5b2/2p1P2P/8/1pP2Rp1/6p1/3b4/8 b - - 0 1"}};
+    MoveList moves1{};
+    position1.board().all_sliding_moves(Piece::BlackBishop, Square::D2, moves1, position1.state());
+    CHECK(moves1.size() == 5);
+    CHECK(move_list_contains(moves1, Move{Square::D2, Square::C3, Piece::BlackBishop}));
+    CHECK(move_list_contains(moves1, Move{Square::D2, Square::C1, Piece::BlackBishop}));
+    CHECK(move_list_contains(moves1, Move{Square::D2, Square::E1, Piece::BlackBishop}));
+    CHECK(move_list_contains(moves1, Move{Square::D2, Square::E3, Piece::BlackBishop}));
+    CHECK(move_list_contains(moves1, Move{Square::D2, Square::F4, Piece::BlackBishop, Piece::WhiteRook}));
+}
