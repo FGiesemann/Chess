@@ -146,6 +146,13 @@ TEST_CASE("Data.Coords.Increments", "[Square]") {
     CHECK(square.index() == 63);
 }
 
+TEST_CASE("Data.Coords.Decrements", "[Square]") {
+    CHECK(Square::A1 - 3 == Square::A1);
+    CHECK(Square::E5 - 2 == Square::C5);
+    CHECK(Square::F4 - 11 == Square::C3);
+    CHECK(Square::E6 - 22 == Square::G3);
+}
+
 TEST_CASE("Data.Coords.Defined Squares", "[Square]") {
     CHECK(Square::A1.file().file == 1);
     CHECK(Square::A1.rank().rank == 1);

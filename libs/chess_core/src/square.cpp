@@ -91,4 +91,10 @@ auto operator+(const Square &square, int squares) -> Square {
     return result;
 }
 
+auto operator-(const Square &square, int squares) -> Square {
+    Square result{square};
+    result -= squares;
+    return result;
+}
+
 } // namespace chesscore

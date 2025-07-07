@@ -198,6 +198,22 @@ public:
     }
 
     /**
+     * \brief Skip back to the "previous" square.
+     *
+     * Step from the current square to a previous square. The squares are
+     * enumerated according to their linear index, i.e., A1, B1, ..., H8.
+     * If the step count is too big, this is set to the first Square A1.
+     * \param squares The number of squares to skip.
+     * \return The new Square.
+     */
+    constexpr auto operator-=(int squares) -> Square & {
+        m_index = static_cast<std::size_t>(std::clamp(static_cast<int>(m_index) - squares, 0, 63));
+        m_file.file = m_index % 8 + 1;
+        m_rank.rank = static_cast<int>(m_index / 8) + 1;
+        return *this;
+    }
+
+    /**
      * \brief Equality comparison for square positions.
      *
      * Compare two square positions for equality. They are equal, if their files
@@ -295,6 +311,16 @@ private:
  * \return The new Square.
  */
 auto operator+(const Square &square, int squares) -> Square;
+
+/**
+ * \brief Skip to the "previous" square.
+ *
+ * Step from the given square to a previous square by the given amount.
+ * \param square The square to start from.
+ * \param squares The number of squares to skip.
+ * \return The new Square.
+ */
+auto operator-(const Square &square, int squares) -> Square;
 
 } // namespace chesscore
 
