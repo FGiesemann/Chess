@@ -89,7 +89,7 @@ auto operator&(std::uint8_t mask, RayDirection direction) -> bool {
 }
 
 auto is_negative_direction(RayDirection direction) -> bool {
-    return (direction == RayDirection::SouthEast || direction == RayDirection::South, direction == RayDirection::SouthWest || direction == RayDirection::West);
+    return (direction == RayDirection::SouthEast || direction == RayDirection::South || direction == RayDirection::SouthWest || direction == RayDirection::West);
 }
 
 } // namespace chesscore
