@@ -189,7 +189,7 @@ static constexpr std::array<RayDirection, ray_direction_count> all_ray_direction
  *
  * The compass directions are enumerated clockwise, starting with north = 0,
  * north east = 1, ...
- * \param type The compass direction.
+ * \param direction The compass direction.
  * \return The numerix index of the compass direction.
  */
 inline auto get_index(const RayDirection &direction) -> std::size_t {
