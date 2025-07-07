@@ -183,6 +183,17 @@ auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &star
     extract_moves(targets, start, moving_piece, state, moves);
 }
 
+auto Bitboard::all_pawn_moves([[maybe_unused]] MoveList &moves, const PositionState &state) const -> void {
+    auto pawns = bitmap(Piece{.type = PieceType::Pawn, .color = state.side_to_move});
+    if (state.side_to_move == Color::White) {
+        pawns <<= File::max_file;
+    } else {
+        pawns >>= File::max_file;
+    }
+    const auto targets = pawns & ~m_all_pieces;
+    extract_pawn_moves(targets, 1, state, moves);
+}
+
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
     Square target_square{Square::A1};
     while (!targets.empty()) {
@@ -204,6 +215,30 @@ auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &pi
         );
         target_square += 1;
         targets >>= 1;
+    }
+}
+
+void Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) {
+    Square target_square{Square::A1};
+    while (!targets.empty()) {
+        const auto shift = targets.empty_squares_before();
+        target_square += shift;
+        targets >>= shift + 1;
+        const auto source_square = state.side_to_move == Color::White ? (target_square - File::max_file * step_size) : (target_square + File::max_file * step_size);
+        moves.emplace_back(
+            Move{
+                .from = source_square,
+                .to = target_square,
+                .piece = Piece{.type = PieceType::Pawn, .color = state.side_to_move},
+                .captured = {},
+                .capturing_en_passant = false,
+                .promoted = {},
+                .castling_rights_before = state.castling_rights,
+                .halfmove_clock_before = state.halfmove_clock,
+                .en_passant_target_before = state.en_passant_target
+        }
+        );
+        target_square += 1;
     }
 }
 

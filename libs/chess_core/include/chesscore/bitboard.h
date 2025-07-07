@@ -187,6 +187,18 @@ public:
     auto all_moves_along_ray(const Piece &moving_piece, const Square &start, const RayDirection &direction, MoveList &moves, const PositionState &state) const -> void;
 
     /**
+     * \brief Generate all pawn moves for a player.
+     *
+     * Generates all the moves for all pawns of one player. This includes
+     *   - single step pawn pushes (including promotion),
+     *   - double step pawn pushes,
+     *   - captures by pawns (including en-passant captures)
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_pawn_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    /**
      * \brief Extract moves from a target bitmap.
      *
      * Extracts the target sqaures from a given bitmap and generates moves from
@@ -199,6 +211,8 @@ public:
      * \param moves The list of moves to be filled.
      */
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
+
+    static auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) -> void;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};

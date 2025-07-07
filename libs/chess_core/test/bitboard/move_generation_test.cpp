@@ -136,3 +136,27 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Queen (no check)", "[B
     CHECK(move_list_contains(moves1, Move{Square::C4, Square::C5, Piece::WhiteQueen}));
     CHECK(move_list_contains(moves1, Move{Square::C4, Square::C6, Piece::WhiteQueen, Piece::BlackPawn}));
 }
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.Pawn.Single Step", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"8/3p2p1/1p1p4/2p3Pp/P3Pp1P/2PP2p1/P2P4/8 w - - 0 1"}};
+    MoveList moves1;
+    position1.board().all_pawn_moves(moves1, position1.state());
+    CHECK(moves1.size() == 6);
+    CHECK(move_list_contains(moves1, Move{Square::A2, Square::A3, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::A4, Square::A5, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::C3, Square::C4, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::D3, Square::D4, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::E4, Square::E5, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::G5, Square::G6, Piece::WhitePawn}));
+
+    Position<Bitboard> position2{FenString{"8/3p2p1/1p1p4/2p3Pp/P3Pp1P/2PP2p1/P2P4/8 b - - 0 1"}};
+    MoveList moves2;
+    position2.board().all_pawn_moves(moves2, position2.state());
+    CHECK(moves2.size() == 6);
+    CHECK(move_list_contains(moves2, Move{Square::B6, Square::B5, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::C5, Square::C4, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::D6, Square::D5, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::F4, Square::F3, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::G7, Square::G6, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::G3, Square::G2, Piece::BlackPawn}));
+}
