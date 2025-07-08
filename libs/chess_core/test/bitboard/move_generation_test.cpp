@@ -160,3 +160,31 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.Pawn.Single Step", "[Bitboard][MoveG
     CHECK(move_list_contains(moves2, Move{Square::G7, Square::G6, Piece::BlackPawn}));
     CHECK(move_list_contains(moves2, Move{Square::G3, Square::G2, Piece::BlackPawn}));
 }
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.Pawn.Double Step", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"3b4/p1p1p1pp/3pn3/1p5r/1P5N/3B1P2/P2PP1PP/6Q1 w - - 0 1"}};
+    MoveList moves1;
+    position1.board().all_pawn_moves(moves1, position1.state());
+    CHECK(moves1.size() == 8);
+    CHECK(move_list_contains(moves1, Move{Square::A2, Square::A3, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::A2, Square::A4, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::E2, Square::E3, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::E2, Square::E4, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::F3, Square::F4, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::G2, Square::G3, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::G2, Square::G4, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::H2, Square::H3, Piece::WhitePawn}));
+
+    Position<Bitboard> position2{FenString{"3b4/p1p1p1pp/3pn3/1p5r/1P5N/3B1P2/P2PP1PP/6Q1 b - - 0 1"}};
+    MoveList moves2;
+    position2.board().all_pawn_moves(moves2, position2.state());
+    CHECK(moves2.size() == 8);
+    CHECK(move_list_contains(moves2, Move{Square::A7, Square::A6, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::A7, Square::A5, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::C7, Square::C6, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::C7, Square::C5, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::D6, Square::D5, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::G7, Square::G6, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::G7, Square::G5, Piece::BlackPawn}));
+    CHECK(move_list_contains(moves2, Move{Square::H7, Square::H6, Piece::BlackPawn}));
+}
