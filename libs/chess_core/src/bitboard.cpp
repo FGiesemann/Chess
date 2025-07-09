@@ -183,15 +183,28 @@ auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &star
     extract_moves(targets, start, moving_piece, state, moves);
 }
 
+auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
+    return side_to_move == Color::White ? pawn << File::max_file : pawn >> File::max_file;
+}
+
+auto filter_pawn_double_step_rank(const Bitmap &bitmap, Color side_to_move) -> Bitmap {
+    return bitmap &
+           (side_to_move == Color::White ? Bitmap::full_rank(Rank{Rank::white_pawn_double_step_rank + 1}) : Bitmap::full_rank(Rank{Rank::black_pawn_double_step_rank - 1}));
+}
+
+auto Bitboard::filter_occupied_squares(const Bitmap &bitmap) const -> Bitmap {
+    return bitmap & ~m_all_pieces;
+}
+
 auto Bitboard::all_pawn_moves([[maybe_unused]] MoveList &moves, const PositionState &state) const -> void {
     auto pawns = bitmap(Piece{.type = PieceType::Pawn, .color = state.side_to_move});
-    if (state.side_to_move == Color::White) {
-        pawns <<= File::max_file;
-    } else {
-        pawns >>= File::max_file;
-    }
-    const auto targets = pawns & ~m_all_pieces;
-    extract_pawn_moves(targets, 1, state, moves);
+    pawns = step_pawns(pawns, state.side_to_move);
+    pawns = filter_occupied_squares(pawns);
+    extract_pawn_moves(pawns, 1, state, moves);
+    pawns = filter_pawn_double_step_rank(pawns, state.side_to_move);
+    pawns = step_pawns(pawns, state.side_to_move);
+    pawns = filter_occupied_squares(pawns);
+    extract_pawn_moves(pawns, 2, state, moves);
 }
 
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {

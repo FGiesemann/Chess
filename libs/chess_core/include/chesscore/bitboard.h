@@ -197,22 +197,6 @@ public:
      * \param state State of the current position.
      */
     auto all_pawn_moves(MoveList &moves, const PositionState &state) const -> void;
-
-    /**
-     * \brief Extract moves from a target bitmap.
-     *
-     * Extracts the target sqaures from a given bitmap and generates moves from
-     * the given starting square with the given moving piece to all of them.
-     * Captures are automatically detected.
-     * \param targets Bitmap of target sqaures.
-     * \param from The starting square of all the moves.
-     * \param piece The moving piece.
-     * \param state State of the position.
-     * \param moves The list of moves to be filled.
-     */
-    auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
-
-    static auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) -> void;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};
@@ -229,11 +213,17 @@ private:
     auto bitmap(const Piece &piece) -> Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
     auto bitmap(const Color &color) const -> const Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
     auto bitmap(const Color &color) -> Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
+    auto bitmap(const Rank &rank) const -> Bitmap { return Bitmap::full_rank(rank); }
 
     void move_castling_rook(const Move &move);
     void reset_castling_rook(const Move &move);
 
+    auto filter_occupied_squares(const Bitmap &bitmap) const -> Bitmap;
+
     auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
+
+    auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
+    static auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) -> void;
 };
 
 static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");

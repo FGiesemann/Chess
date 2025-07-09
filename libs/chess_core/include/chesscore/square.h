@@ -101,6 +101,9 @@ struct Rank {
     static constexpr int min_rank = 1; ///< The minimum allowed rank number.
     static constexpr int max_rank = 8; ///< The maximum allowed rank number.
 
+    static constexpr int white_pawn_double_step_rank = 2; ///< The rank number from where white pawns can double step.
+    static constexpr int black_pawn_double_step_rank = 7; ///< The rank number from where black pawns can double step.
+
     /**
      * \brief A rank from its number.
      *
