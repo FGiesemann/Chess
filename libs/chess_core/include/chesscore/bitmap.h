@@ -45,16 +45,6 @@ public:
     explicit constexpr Bitmap(const std::uint64_t &bits) : m_bits{bits} {}
 
     /**
-     * \brief Create a bit map that covers a full rank.
-     *
-     * The bit map contains all the squares of one fill rank (row) on the chess
-     * board.
-     * \param rank The rank to cover.
-     * \return The generated bit map.
-     */
-    static constexpr auto full_rank(const Rank &rank) -> Bitmap { return Bitmap{std::uint64_t{0x00FFULL} << ((rank.rank - 1) * 8)}; }
-
-    /**
      * \brief Check if the bit map is empty.
      *
      * An empty bit map has no bits set.

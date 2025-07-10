@@ -92,6 +92,10 @@ struct File {
     friend auto operator==(const File &lhs, const File &rhs) -> bool { return lhs.file == rhs.file; }
 };
 
+static constexpr auto get_index(const File &file) -> int {
+    return file.file - 1;
+}
+
 /**
  * \brief A rank (row) on the board.
  *
@@ -142,6 +146,10 @@ struct Rank {
      */
     friend auto operator==(const Rank &lhs, const Rank &rhs) -> bool { return lhs.rank == rhs.rank; }
 };
+
+static constexpr auto get_index(const Rank &rank) -> int {
+    return rank.rank - 1;
+}
 
 /**
  * \brief A position on the board.

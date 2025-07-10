@@ -12,7 +12,7 @@
 #include "chesscore/square.h"
 #include "chesscore/table.h"
 
-namespace chesscore {
+namespace chesscore::bitmaps {
 
 using TargetTable = Table<Bitmap, 64, Square>;
 
@@ -36,6 +36,12 @@ auto get_target_table(const PieceType &piece_type) -> const TargetTable &;
 using RayTargetTable = Table<TargetTable, ray_direction_count, RayDirection>;
 extern const RayTargetTable ray_target_table;
 
-} // namespace chesscore
+using RankTable = Table<Bitmap, 8, Rank>;
+using FileTable = Table<Bitmap, 8, File>;
+
+extern const RankTable rank_table;
+extern const FileTable file_table;
+
+} // namespace chesscore::bitmaps
 
 #endif

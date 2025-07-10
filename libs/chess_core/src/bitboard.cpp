@@ -147,7 +147,7 @@ auto Bitboard::all_stepping_moves(PieceType piece_type, MoveList &moves, const P
         pos += shift;
         pieces >>= shift;
 
-        auto targets = get_target_table(piece_type)[pos] & ~bitmap(state.side_to_move);
+        auto targets = bitmaps::get_target_table(piece_type)[pos] & ~bitmap(state.side_to_move);
         extract_moves(targets, pos, piece, state, moves);
 
         pos += 1;
@@ -173,11 +173,11 @@ auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start,
 }
 
 auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &start, const RayDirection &direction, MoveList &moves, const PositionState &state) const -> void {
-    auto targets = ray_target_table[direction][start];
+    auto targets = bitmaps::ray_target_table[direction][start];
     const auto blockers = targets & m_all_pieces;
     if (!blockers.empty()) {
         const auto blocker_square = Square::A1 + (is_negative_direction(direction) ? 63 - blockers.empty_squares_after() : blockers.empty_squares_before());
-        targets ^= ray_target_table[direction][blocker_square];
+        targets ^= bitmaps::ray_target_table[direction][blocker_square];
     }
     targets &= ~bitmap(state.side_to_move);
     extract_moves(targets, start, moving_piece, state, moves);
@@ -189,7 +189,7 @@ auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
 
 auto filter_pawn_double_step_rank(const Bitmap &bitmap, Color side_to_move) -> Bitmap {
     return bitmap &
-           (side_to_move == Color::White ? Bitmap::full_rank(Rank{Rank::white_pawn_double_step_rank + 1}) : Bitmap::full_rank(Rank{Rank::black_pawn_double_step_rank - 1}));
+           (side_to_move == Color::White ? bitmaps::rank_table[Rank{Rank::white_pawn_double_step_rank + 1}] : bitmaps::rank_table[Rank{Rank::black_pawn_double_step_rank - 1}]);
 }
 
 auto Bitboard::filter_occupied_squares(const Bitmap &bitmap) const -> Bitmap {

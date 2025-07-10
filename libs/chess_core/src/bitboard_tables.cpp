@@ -5,7 +5,7 @@
 
 #include "chesscore/bitboard_tables.h"
 
-namespace chesscore {
+namespace chesscore::bitmaps {
 
 const TargetTable knight_target_table{
     Bitmap{0x0000000000020400ULL}, // A1
@@ -434,4 +434,14 @@ auto get_target_table(const PieceType &piece_type) -> const TargetTable & {
     return *target_tables.at(get_index(piece_type) - 1);
 }
 
-} // namespace chesscore
+const RankTable rank_table{
+    Bitmap{0x00000000000000FFULL}, Bitmap{0x000000000000FF00ULL}, Bitmap{0x0000000000FF0000ULL}, Bitmap{0x00000000FF000000ULL},
+    Bitmap{0x000000FF0000000ULL},  Bitmap{0x0000FF0000000000ULL}, Bitmap{0x00FF000000000000ULL}, Bitmap{0xFF00000000000000ULL},
+};
+
+const FileTable file_table{
+    Bitmap{0x0101010101010101ULL}, Bitmap{0x0202020202020202ULL}, Bitmap{0x0404040404040404ULL}, Bitmap{0x0808080808080808ULL},
+    Bitmap{0x1010101010101010ULL}, Bitmap{0x2020202020202020ULL}, Bitmap{0x4040404040404040ULL}, Bitmap{0x8080808080808080ULL},
+};
+
+} // namespace chesscore::bitmaps
