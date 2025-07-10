@@ -203,6 +203,8 @@ private:
     Bitmap m_black_pieces{};
     Bitmap m_all_pieces{};
 
+    enum class PawnCaptureDirection { West, East };
+
     auto bitmap_index(const Piece &piece) const -> size_t {
         const auto type_index = static_cast<unsigned int>(piece.type);
         const auto color_offset = (piece.color == Color::White) ? 0U : 6U;
@@ -223,6 +225,7 @@ private:
 
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
     static auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) -> void;
+    auto extract_pawn_captures(const Bitmap &targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void;
 };
 
 static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");

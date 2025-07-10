@@ -187,6 +187,14 @@ auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
     return side_to_move == Color::White ? pawn << File::max_file : pawn >> File::max_file;
 }
 
+auto shift_left(const Bitmap &bitmap) -> Bitmap {
+    return (bitmap & bitmaps::file_table[File::min_file]) >> 1;
+}
+
+auto shift_right(const Bitmap &bitmap) -> Bitmap {
+    return (bitmap & bitmaps::file_table[File::max_file]) << 1;
+}
+
 auto filter_pawn_double_step_rank(const Bitmap &bitmap, Color side_to_move) -> Bitmap {
     return bitmap &
            (side_to_move == Color::White ? bitmaps::rank_table[Rank{Rank::white_pawn_double_step_rank + 1}] : bitmaps::rank_table[Rank{Rank::black_pawn_double_step_rank - 1}]);
@@ -197,14 +205,24 @@ auto Bitboard::filter_occupied_squares(const Bitmap &bitmap) const -> Bitmap {
 }
 
 auto Bitboard::all_pawn_moves([[maybe_unused]] MoveList &moves, const PositionState &state) const -> void {
-    auto pawns = bitmap(Piece{.type = PieceType::Pawn, .color = state.side_to_move});
-    pawns = step_pawns(pawns, state.side_to_move);
-    pawns = filter_occupied_squares(pawns);
-    extract_pawn_moves(pawns, 1, state, moves);
-    pawns = filter_pawn_double_step_rank(pawns, state.side_to_move);
-    pawns = step_pawns(pawns, state.side_to_move);
-    pawns = filter_occupied_squares(pawns);
-    extract_pawn_moves(pawns, 2, state, moves);
+    const auto pawns = bitmap(Piece{.type = PieceType::Pawn, .color = state.side_to_move});
+    const auto pawns_advance1 = step_pawns(pawns, state.side_to_move);
+    const auto pawns_step1 = filter_occupied_squares(pawns_advance1);
+    extract_pawn_moves(pawns_step1, 1, state, moves);
+
+    const auto pawns_double_candidates = filter_pawn_double_step_rank(pawns_step1, state.side_to_move);
+    const auto pawns_advance2 = step_pawns(pawns_double_candidates, state.side_to_move);
+    const auto pawns_step2 = filter_occupied_squares(pawns_advance2);
+    extract_pawn_moves(pawns_step2, 2, state, moves);
+
+    const auto captureable_pieces =
+        state.en_passant_target.has_value() ? bitmap(other_color(state.side_to_move)) | Bitmap{state.en_passant_target.value()} : bitmap(other_color(state.side_to_move));
+    const auto pawns_NW = shift_left(pawns_advance1);
+    const auto pawns_capture_NW = pawns_NW & captureable_pieces;
+    extract_pawn_captures(pawns_capture_NW, PawnCaptureDirection::West, state, moves);
+    const auto pawns_NE = shift_right(pawns_advance1);
+    const auto pawns_capture_NE = pawns_NE & captureable_pieces;
+    extract_pawn_captures(pawns_capture_NE, PawnCaptureDirection::East, state, moves);
 }
 
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
@@ -254,5 +272,9 @@ void Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionS
         target_square += 1;
     }
 }
+
+auto Bitboard::extract_pawn_captures(
+    [[maybe_unused]] const Bitmap &targets, [[maybe_unused]] PawnCaptureDirection direction, [[maybe_unused]] const PositionState &state, [[maybe_unused]] MoveList &moves
+) const -> void {}
 
 } // namespace chesscore
