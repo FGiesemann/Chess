@@ -225,7 +225,7 @@ private:
 
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
     static auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) -> void;
-    auto extract_pawn_captures(const Bitmap &targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void;
+    auto extract_pawn_captures(Bitmap targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void;
 };
 
 static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");

@@ -188,11 +188,11 @@ auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
 }
 
 auto shift_left(const Bitmap &bitmap) -> Bitmap {
-    return (bitmap & bitmaps::file_table[File::min_file]) >> 1;
+    return (bitmap & ~bitmaps::file_table[File::min_file]) >> 1;
 }
 
 auto shift_right(const Bitmap &bitmap) -> Bitmap {
-    return (bitmap & bitmaps::file_table[File::max_file]) << 1;
+    return (bitmap & ~bitmaps::file_table[File::max_file]) << 1;
 }
 
 auto filter_pawn_double_step_rank(const Bitmap &bitmap, Color side_to_move) -> Bitmap {
@@ -273,8 +273,33 @@ void Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionS
     }
 }
 
-auto Bitboard::extract_pawn_captures(
-    [[maybe_unused]] const Bitmap &targets, [[maybe_unused]] PawnCaptureDirection direction, [[maybe_unused]] const PositionState &state, [[maybe_unused]] MoveList &moves
-) const -> void {}
+auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void {
+    Square target_square{Square::A1};
+    while (!targets.empty()) {
+        const auto shift = targets.empty_squares_before();
+        target_square += shift;
+        targets >>= shift + 1;
+        const auto source_square = Square{
+            File{direction == PawnCaptureDirection::East ? target_square.file().file - 1 : target_square.file().file + 1},
+            Rank{state.side_to_move == Color::White ? target_square.rank().rank - 1 : target_square.rank().rank + 1},
+        };
+        const auto captured = get_piece(target_square);
+        moves.emplace_back(
+            Move{
+                .from = source_square,
+                .to = target_square,
+                .piece = Piece{.type = PieceType::Pawn, .color = state.side_to_move},
+                .captured = captured.value_or(Piece{.type = PieceType::Pawn, .color = other_color(state.side_to_move)}
+                  ),
+                .capturing_en_passant = !captured.has_value(),
+                .promoted = {},
+                .castling_rights_before = state.castling_rights,
+                .halfmove_clock_before = state.halfmove_clock,
+                .en_passant_target_before = state.en_passant_target
+        }
+        );
+        target_square += 1;
+    }
+}
 
 } // namespace chesscore
