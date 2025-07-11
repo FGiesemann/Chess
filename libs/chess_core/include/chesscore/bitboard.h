@@ -219,7 +219,7 @@ private:
     void move_castling_rook(const Move &move);
     void reset_castling_rook(const Move &move);
 
-    auto filter_occupied_squares(const Bitmap &bitmap) const -> Bitmap;
+    auto remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap;
 
     auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
 
