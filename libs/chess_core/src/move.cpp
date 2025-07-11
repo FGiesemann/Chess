@@ -13,8 +13,30 @@ auto is_moving_same_piece(const Move &move1, const Move &move2) -> bool {
            move1.capturing_en_passant == move2.capturing_en_passant;
 }
 
+auto is_moving_same_piece_and_promotes(const Move &move1, const Move &move2, const Piece &promoted) -> bool {
+    return is_moving_same_piece(move1, move2) && move1.promoted == promoted;
+}
+
 auto BasicMoveCompare::operator()(const Move &move1, const Move &move2) -> bool {
     return is_moving_same_piece(move1, move2);
+}
+
+auto PromotionMoveCompare::operator()(const Move &move1, const Move &move2) -> bool {
+    return is_moving_same_piece_and_promotes(move1, move2, promoted);
+}
+
+auto move_list_contains_promotions(const MoveList &list, const Move &move) -> bool {
+    const auto color = other_color(move.piece.color);
+    return move_list_contains(
+               list, move,
+               PromotionMoveCompare{Piece{
+                   .type = PieceType::Rook,
+                   .color = color,
+               }}
+           ) &&
+           move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Knight, .color = color}}) &&
+           move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Bishop, .color = color}}) &&
+           move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Queen, .color = color}});
 }
 
 } // namespace chesscore

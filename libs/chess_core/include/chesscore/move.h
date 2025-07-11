@@ -77,6 +77,19 @@ struct Move {
 auto is_moving_same_piece(const Move &move1, const Move &move2) -> bool;
 
 /**
+ * \brief Partial comparison of two moves with check for promotion.
+ *
+ * The two moves are compared with the is_moving_same_piece function.
+ * Additionally, the first argument is checked, if it contains a promotion to
+ * the given piece.
+ * \param move1 The first move to compare.
+ * \param move2 The second move to compare.
+ * \param promoted The promoted piece.
+ * \return If the moves are equal according to the criteria above.
+ */
+auto is_moving_same_piece_and_promotes(const Move &move1, const Move &move2, const Piece &promoted) -> bool;
+
+/**
  * \brief Function object to compare moves.
  *
  * Compares moves according to the is_moving_same_piece function.
@@ -91,6 +104,33 @@ struct BasicMoveCompare {
      * \return If the moves are equal according to the is_moving_same_piece function.
      */
     auto operator()(const Move &move1, const Move &move2) -> bool;
+};
+
+/**
+ * \brief Function object to compare moves with check for promotion.
+ *
+ * Compares moves according to the is_moving_same_piece_and_promotes function.
+ */
+struct PromotionMoveCompare {
+    /**
+     * \brief Construct a compare object with a given promoted piece.
+     *
+     * \param promoted The promoted piece.
+     */
+    PromotionMoveCompare(const Piece &promoted) : promoted{promoted} {}
+
+    /**
+     * \brief Comparison of two moves.
+     *
+     * Compares two moves according to the is_moving_same_piece_and_promotes
+     * function.
+     * \param move1 The first move to compare.
+     * \param move2 The second move to compare.
+     * \return If the moves are equal according to the is_moving_same_piece_and_promotes function.
+     */
+    auto operator()(const Move &move1, const Move &move2) -> bool;
+
+    const Piece promoted; ///< The promoted piece.
 };
 
 /**
@@ -113,6 +153,18 @@ template<typename BinaryPred = BasicMoveCompare>
 auto move_list_contains(const MoveList &list, const Move &move, BinaryPred pred = BasicMoveCompare{}) -> bool {
     return std::any_of(list.begin(), list.end(), [&move, &pred](const Move &m) { return pred(m, move); });
 }
+
+/**
+ * \brief Checks if a move list contains a move with all promotions.
+ *
+ * Checks, if the list contains moves that correspond to the given move (via
+ * is_moving_same_piece function) and additionally promote to all four possible
+ * pieces (Rook, Knight, Bishop, Queen).
+ * \param list The list to check.
+ * \param move The move to find in the list.
+ * \return If the list contains a move with all promotions.
+ */
+auto move_list_contains_promotions(const MoveList &list, const Move &move) -> bool;
 
 } // namespace chesscore
 

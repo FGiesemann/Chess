@@ -222,3 +222,26 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.Pawn.Captures", "[Bitboard][MoveGene
     CHECK(move_list_contains(moves2, Move{Square::F4, Square::G3, Piece::BlackPawn, Piece::WhitePawn, true}));
     CHECK(move_list_contains(moves2, Move{Square::H4, Square::G3, Piece::BlackPawn, Piece::WhitePawn, true}));
 }
+
+TEST_CASE("Bitboard.Bitboard.MoveGeneration.Pawn.Promotions", "[Bitboard][MoveGeneration]") {
+    Position<Bitboard> position1{FenString{"R2r1N2/PPP1P3/6P1/8/8/p7/3pp2p/2n2R2 w - - 0 1"}};
+    MoveList moves1;
+    position1.board().all_pawn_moves(moves1, position1.state());
+    CHECK(moves1.size() == 21);
+    CHECK(move_list_contains_promotions(moves1, Move{Square::B7, Square::B8, Piece::WhitePawn}));
+    CHECK(move_list_contains_promotions(moves1, Move{Square::C7, Square::C8, Piece::WhitePawn}));
+    CHECK(move_list_contains_promotions(moves1, Move{Square::C7, Square::D8, Piece::WhitePawn, Piece::BlackRook}));
+    CHECK(move_list_contains_promotions(moves1, Move{Square::E7, Square::D8, Piece::WhitePawn, Piece::BlackRook}));
+    CHECK(move_list_contains_promotions(moves1, Move{Square::E7, Square::E8, Piece::WhitePawn}));
+    CHECK(move_list_contains(moves1, Move{Square::G6, Square::G7, Piece::WhitePawn}));
+
+    Position<Bitboard> position2{FenString{"R2r1N2/PPP1P3/6P1/8/8/p7/3pp2p/2n2R2 b - - 0 1"}};
+    MoveList moves2;
+    position2.board().all_pawn_moves(moves2, position2.state());
+    CHECK(moves2.size() == 17);
+    CHECK(move_list_contains(moves2, Move{Square::A3, Square::A2, Piece::BlackPawn}));
+    CHECK(move_list_contains_promotions(moves2, Move{Square::D2, Square::D1, Piece::BlackPawn}));
+    CHECK(move_list_contains_promotions(moves2, Move{Square::E2, Square::E1, Piece::BlackPawn}));
+    CHECK(move_list_contains_promotions(moves2, Move{Square::E2, Square::F1, Piece::BlackPawn, Piece::WhiteRook}));
+    CHECK(move_list_contains_promotions(moves2, Move{Square::H2, Square::H1, Piece::BlackPawn}));
+}

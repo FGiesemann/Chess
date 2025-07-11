@@ -200,6 +200,35 @@ auto filter_pawn_double_step_rank(const Bitmap &bitmap, Color side_to_move) -> B
            (side_to_move == Color::White ? bitmaps::rank_table[Rank{Rank::white_pawn_double_step_rank + 1}] : bitmaps::rank_table[Rank{Rank::black_pawn_double_step_rank - 1}]);
 }
 
+auto generate_pawn_move(
+    const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
+) -> void {
+    moves.emplace_back(
+        Move{
+            .from = source,
+            .to = target,
+            .piece = Piece{.type = PieceType::Pawn, .color = state.side_to_move},
+            .captured = captured,
+            .capturing_en_passant = en_passant,
+            .promoted = promoted,
+            .castling_rights_before = state.castling_rights,
+            .halfmove_clock_before = state.halfmove_clock,
+            .en_passant_target_before = state.en_passant_target
+        }
+    );
+}
+
+auto generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) -> void {
+    if (target.rank().rank == Rank::min_rank || target.rank().rank == Rank::max_rank) {
+        const auto color = other_color(state.side_to_move);
+        for (const auto &type : all_promotion_piece_types) {
+            generate_pawn_move(source, target, captured, en_passant, Piece{.type = type, .color = color}, state, moves);
+        }
+    } else {
+        generate_pawn_move(source, target, captured, en_passant, std::nullopt, state, moves);
+    }
+}
+
 auto Bitboard::filter_occupied_squares(const Bitmap &bitmap) const -> Bitmap {
     return bitmap & ~m_all_pieces;
 }
@@ -256,19 +285,7 @@ void Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionS
         target_square += shift;
         targets >>= shift + 1;
         const auto source_square = state.side_to_move == Color::White ? (target_square - File::max_file * step_size) : (target_square + File::max_file * step_size);
-        moves.emplace_back(
-            Move{
-                .from = source_square,
-                .to = target_square,
-                .piece = Piece{.type = PieceType::Pawn, .color = state.side_to_move},
-                .captured = {},
-                .capturing_en_passant = false,
-                .promoted = {},
-                .castling_rights_before = state.castling_rights,
-                .halfmove_clock_before = state.halfmove_clock,
-                .en_passant_target_before = state.en_passant_target
-        }
-        );
+        generate_pawn_moves(source_square, target_square, std::nullopt, false, state, moves);
         target_square += 1;
     }
 }
@@ -284,19 +301,8 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
             Rank{state.side_to_move == Color::White ? target_square.rank().rank - 1 : target_square.rank().rank + 1},
         };
         const auto captured = get_piece(target_square);
-        moves.emplace_back(
-            Move{
-                .from = source_square,
-                .to = target_square,
-                .piece = Piece{.type = PieceType::Pawn, .color = state.side_to_move},
-                .captured = captured.value_or(Piece{.type = PieceType::Pawn, .color = other_color(state.side_to_move)}
-                  ),
-                .capturing_en_passant = !captured.has_value(),
-                .promoted = {},
-                .castling_rights_before = state.castling_rights,
-                .halfmove_clock_before = state.halfmove_clock,
-                .en_passant_target_before = state.en_passant_target
-        }
+        generate_pawn_moves(
+            source_square, target_square, captured.value_or(Piece{.type = PieceType::Pawn, .color = other_color(state.side_to_move)}), !captured.has_value(), state, moves
         );
         target_square += 1;
     }

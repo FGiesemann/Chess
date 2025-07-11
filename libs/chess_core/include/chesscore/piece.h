@@ -38,6 +38,11 @@ inline auto get_index(const PieceType &type) -> std::size_t {
 static constexpr int piece_type_count = 6;
 
 /**
+ * \brief All the piece types that a pawn can promote into.
+ */
+static constexpr std::array<PieceType, 4> all_promotion_piece_types{PieceType::Rook, PieceType::Knight, PieceType::Bishop, PieceType::Queen};
+
+/**
  * \brief Give a piece type from an index.
  *
  * The piece types are ordered as Pawn, Rook, Knight, Bishop, Queen, King.
