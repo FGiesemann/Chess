@@ -90,7 +90,8 @@ public:
     constexpr auto operator[](const IndexT &index) const -> const ElementT &
     requires IndexConvertible<IndexT>
     {
-        return m_data[get_index(index)];
+        using UIndexT = std::make_unsigned_t<decltype(get_index(index))>;
+        return m_data[static_cast<UIndexT>(get_index(index))];
     }
 private:
     std::array<ElementT, Size> m_data;

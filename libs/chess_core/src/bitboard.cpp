@@ -8,6 +8,53 @@
 
 namespace chesscore {
 
+namespace {
+
+auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
+    return side_to_move == Color::White ? pawn << File::max_file : pawn >> File::max_file;
+}
+
+auto shift_left(const Bitmap &bitmap) -> Bitmap {
+    // we remove pieces from the a-file, so they don't "wrap around" when shifting
+    return (bitmap & ~bitmaps::file_table[File::min_file]) >> 1;
+}
+
+auto shift_right(const Bitmap &bitmap) -> Bitmap {
+    // we remove pieces from the h-file, so they don't "wrap around" when shifting
+    return (bitmap & ~bitmaps::file_table[File::max_file]) << 1;
+}
+
+auto generate_pawn_move(
+    const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
+) -> void {
+    moves.emplace_back(
+        Move{
+            .from = source,
+            .to = target,
+            .piece = Piece{.type = PieceType::Pawn, .color = state.side_to_move},
+            .captured = captured,
+            .capturing_en_passant = en_passant,
+            .promoted = promoted,
+            .castling_rights_before = state.castling_rights,
+            .halfmove_clock_before = state.halfmove_clock,
+            .en_passant_target_before = state.en_passant_target
+        }
+    );
+}
+
+auto generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) -> void {
+    if (target.rank().rank == Rank::min_rank || target.rank().rank == Rank::max_rank) {
+        const auto color = other_color(state.side_to_move);
+        for (const auto &type : all_promotion_piece_types) {
+            generate_pawn_move(source, target, captured, en_passant, Piece{.type = type, .color = color}, state, moves);
+        }
+    } else {
+        generate_pawn_move(source, target, captured, en_passant, std::nullopt, state, moves);
+    }
+}
+
+} // namespace
+
 Bitboard::Bitboard(const FenString &fen) {
     const auto &placements{fen.piece_placement()};
     for (int rank{Rank::min_rank}; rank <= Rank::max_rank; ++rank) {
@@ -181,49 +228,6 @@ auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &star
     }
     targets &= ~bitmap(state.side_to_move);
     extract_moves(targets, start, moving_piece, state, moves);
-}
-
-auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
-    return side_to_move == Color::White ? pawn << File::max_file : pawn >> File::max_file;
-}
-
-auto shift_left(const Bitmap &bitmap) -> Bitmap {
-    // we remove pieces from the a-file, so they don't "wrap around" when shifting
-    return (bitmap & ~bitmaps::file_table[File::min_file]) >> 1;
-}
-
-auto shift_right(const Bitmap &bitmap) -> Bitmap {
-    // we remove pieces from the h-file, so they don't "wrap around" when shifting
-    return (bitmap & ~bitmaps::file_table[File::max_file]) << 1;
-}
-
-auto generate_pawn_move(
-    const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
-) -> void {
-    moves.emplace_back(
-        Move{
-            .from = source,
-            .to = target,
-            .piece = Piece{.type = PieceType::Pawn, .color = state.side_to_move},
-            .captured = captured,
-            .capturing_en_passant = en_passant,
-            .promoted = promoted,
-            .castling_rights_before = state.castling_rights,
-            .halfmove_clock_before = state.halfmove_clock,
-            .en_passant_target_before = state.en_passant_target
-        }
-    );
-}
-
-auto generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) -> void {
-    if (target.rank().rank == Rank::min_rank || target.rank().rank == Rank::max_rank) {
-        const auto color = other_color(state.side_to_move);
-        for (const auto &type : all_promotion_piece_types) {
-            generate_pawn_move(source, target, captured, en_passant, Piece{.type = type, .color = color}, state, moves);
-        }
-    } else {
-        generate_pawn_move(source, target, captured, en_passant, std::nullopt, state, moves);
-    }
 }
 
 auto Bitboard::remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap {

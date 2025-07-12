@@ -115,9 +115,9 @@ struct PromotionMoveCompare {
     /**
      * \brief Construct a compare object with a given promoted piece.
      *
-     * \param promoted The promoted piece.
+     * \param promoted_piece The promoted piece.
      */
-    PromotionMoveCompare(const Piece &promoted) : promoted{promoted} {}
+    PromotionMoveCompare(const Piece &promoted_piece) : promoted{promoted_piece} {}
 
     /**
      * \brief Comparison of two moves.
