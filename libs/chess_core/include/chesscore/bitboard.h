@@ -219,6 +219,33 @@ public:
      * \return If the square would be under attack after the move.
      */
     auto would_be_attacked(const Square &square, Color attacker_color, const Move &move) const -> bool;
+
+    /**
+     * \brief Checks, if a square is attacked by a pawn.
+     *
+     * \param square The square to be checked.
+     * \param pawn_color Color of the attacking pawn.
+     * \return If the square is attacked by a pawn.
+     */
+    auto pawn_attacks(const Square &square, Color pawn_color) const -> bool;
+
+    /**
+     * \brief Checks, if a square is attacked by a knight.
+     *
+     * \param square The square to be checked.
+     * \param knight_color Color of the attacking knight.
+     * \return If the square is attacked by a knight.
+     */
+    auto knight_attacks(const Square &square, Color knight_color) const -> bool;
+
+    /**
+     * \brief Checks, if a square is attacked by a sliding piece.
+     *
+     * \param square The square to be checked.
+     * \param piece_color Color of the attacking sliding piece.
+     * \return If the square is attacked by a sliding piece.
+     */
+    auto sliding_piece_attacks(const Square &square, Color piece_color) const -> bool;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};

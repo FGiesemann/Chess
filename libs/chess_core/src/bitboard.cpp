@@ -258,14 +258,29 @@ auto Bitboard::is_attacked([[maybe_unused]] const Square &square, [[maybe_unused
     // - use "pawn_attack_table[color][square]" to find pawns that attack square
     // - use knight_moves[square] & m_knights[attacker_color] to find knights that attack square
     // - use ray checks from the square to detect sliding pieces that attack square
-    return false;
+    return pawn_attacks(square, attacker_color) || knight_attacks(square, attacker_color) || sliding_piece_attacks(square, attacker_color);
 }
 
 auto Bitboard::would_be_attacked(const Square &square, Color attacker_color, [[maybe_unused]] const Move &move) const -> bool {
-    // - Modify the necessary bitmasks used in is_attacked
+    // - Modify the necessary bitmasks used in is_attacked (or more precise sliding_piece_attacks)
     bool under_attack = is_attacked(square, attacker_color);
     // - Restore the bitmasks
     return under_attack;
+}
+
+auto Bitboard::pawn_attacks([[maybe_unused]] const Square &square, [[maybe_unused]] Color pawn_color) const -> bool {
+    // - use "pawn_attack_table[color][square]" to find pawns that attack square
+    return false;
+}
+
+auto Bitboard::knight_attacks([[maybe_unused]] const Square &square, [[maybe_unused]] Color knight_color) const -> bool {
+    // - use knight_moves[square] & m_knights[attacker_color] to find knights that attack square
+    return false;
+}
+
+auto Bitboard::sliding_piece_attacks([[maybe_unused]] const Square &square, [[maybe_unused]] Color piece_color) const -> bool {
+    // - use ray checks from the square to detect sliding pieces that attack square
+    return false;
 }
 
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
