@@ -12,6 +12,44 @@
 
 using namespace chesscore;
 
+TEST_CASE("Bitboard.Bitboard.IsAttacked.PawnAttacks", "[Bitboard][Attacks]") {
+    Bitboard board{FenString{"r1N5/1Ppp4/5p2/2N3b1/pP3P1R/4rPP1/1p1P4/b7 w - - 0 1"}};
+
+    CHECK(board.pawn_attacks(Square::A8, Color::White));
+    CHECK(board.pawn_attacks(Square::C8, Color::White));
+    CHECK(board.pawn_attacks(Square::B5, Color::White));
+    CHECK(board.pawn_attacks(Square::C5, Color::White));
+    CHECK(board.pawn_attacks(Square::D3, Color::White));
+    CHECK(board.pawn_attacks(Square::E3, Color::White));
+    CHECK(board.pawn_attacks(Square::F5, Color::White));
+    CHECK(board.pawn_attacks(Square::G5, Color::White));
+    CHECK(board.pawn_attacks(Square::F4, Color::White));
+    CHECK(board.pawn_attacks(Square::G4, Color::White));
+    CHECK(board.pawn_attacks(Square::F4, Color::White));
+    CHECK(board.pawn_attacks(Square::H4, Color::White));
+
+    CHECK(board.pawn_attacks(Square::B3, Color::Black));
+    CHECK(board.pawn_attacks(Square::A1, Color::Black));
+    CHECK(board.pawn_attacks(Square::C1, Color::Black));
+    CHECK(board.pawn_attacks(Square::B6, Color::Black));
+    CHECK(board.pawn_attacks(Square::D6, Color::Black));
+    CHECK(board.pawn_attacks(Square::C6, Color::Black));
+    CHECK(board.pawn_attacks(Square::E6, Color::Black));
+    CHECK(board.pawn_attacks(Square::E5, Color::Black));
+    CHECK(board.pawn_attacks(Square::G5, Color::Black));
+
+    CHECK_FALSE(board.pawn_attacks(Square::C2, Color::White));
+    CHECK_FALSE(board.pawn_attacks(Square::C2, Color::Black));
+    CHECK_FALSE(board.pawn_attacks(Square::B8, Color::White));
+    CHECK_FALSE(board.pawn_attacks(Square::B8, Color::Black));
+    CHECK_FALSE(board.pawn_attacks(Square::B3, Color::White));
+    CHECK_FALSE(board.pawn_attacks(Square::A5, Color::Black));
+}
+
+TEST_CASE("Bitboard.Bitboard.IsAttacked.KnightAttacks", "[Bitboard][Attacks]") {}
+
+TEST_CASE("Bitboard.Bitboard.IsAttacked.SlidingPieceAttacks", "[Bitboard][Attacks]") {}
+
 TEST_CASE("Bitboard.Bitboard.IsAttacked.ByWhite", "[Bitboard][Attacks]") {
     Bitboard board{FenString{"5n2/2Q5/6k1/1B1n3P/4r3/R7/5N2/8 w - - 0 1"}};
 
