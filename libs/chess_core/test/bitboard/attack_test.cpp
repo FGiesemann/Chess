@@ -46,7 +46,44 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.PawnAttacks", "[Bitboard][Attacks]") {
     CHECK_FALSE(board.pawn_attacks(Square::A5, Color::Black));
 }
 
-TEST_CASE("Bitboard.Bitboard.IsAttacked.KnightAttacks", "[Bitboard][Attacks]") {}
+TEST_CASE("Bitboard.Bitboard.IsAttacked.KnightAttacks", "[Bitboard][Attacks]") {
+    Bitboard board{FenString{"1n6/8/6N1/3n4/8/2N5/8/8 w - - 0 1"}};
+
+    CHECK(board.knight_attacks(Square::A2, Color::White));
+    CHECK(board.knight_attacks(Square::B1, Color::White));
+    CHECK(board.knight_attacks(Square::D1, Color::White));
+    CHECK(board.knight_attacks(Square::E2, Color::White));
+    CHECK(board.knight_attacks(Square::E4, Color::White));
+    CHECK(board.knight_attacks(Square::D5, Color::White));
+    CHECK(board.knight_attacks(Square::B5, Color::White));
+    CHECK(board.knight_attacks(Square::A4, Color::White));
+
+    CHECK(board.knight_attacks(Square::F4, Color::White));
+    CHECK(board.knight_attacks(Square::H4, Color::White));
+    CHECK(board.knight_attacks(Square::H8, Color::White));
+    CHECK(board.knight_attacks(Square::F8, Color::White));
+    CHECK(board.knight_attacks(Square::E7, Color::White));
+    CHECK(board.knight_attacks(Square::E5, Color::White));
+
+    CHECK(board.knight_attacks(Square::C3, Color::Black));
+    CHECK(board.knight_attacks(Square::E3, Color::Black));
+    CHECK(board.knight_attacks(Square::F4, Color::Black));
+    CHECK(board.knight_attacks(Square::F6, Color::Black));
+    CHECK(board.knight_attacks(Square::E7, Color::Black));
+    CHECK(board.knight_attacks(Square::C7, Color::Black));
+    CHECK(board.knight_attacks(Square::B6, Color::Black));
+    CHECK(board.knight_attacks(Square::B4, Color::Black));
+
+    CHECK(board.knight_attacks(Square::A6, Color::Black));
+    CHECK(board.knight_attacks(Square::C6, Color::Black));
+    CHECK(board.knight_attacks(Square::D7, Color::Black));
+
+    CHECK_FALSE(board.knight_attacks(Square::E3, Color::White));
+    CHECK_FALSE(board.knight_attacks(Square::B2, Color::White));
+    CHECK_FALSE(board.knight_attacks(Square::B2, Color::Black));
+    CHECK_FALSE(board.knight_attacks(Square::B8, Color::White));
+    CHECK_FALSE(board.knight_attacks(Square::B8, Color::Black));
+}
 
 TEST_CASE("Bitboard.Bitboard.IsAttacked.SlidingPieceAttacks", "[Bitboard][Attacks]") {}
 
