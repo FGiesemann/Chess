@@ -253,6 +253,21 @@ auto Bitboard::all_pawn_moves([[maybe_unused]] MoveList &moves, const PositionSt
     extract_pawn_captures(pawns_capture_E, PawnCaptureDirection::East, state, moves);
 }
 
+auto Bitboard::is_attacked([[maybe_unused]] const Square &square, [[maybe_unused]] Color attacker_color) const -> bool {
+    // Check in "reverse":
+    // - use "pawn_attack_table[color][square]" to find pawns that attack square
+    // - use knight_moves[square] & m_knights[attacker_color] to find knights that attack square
+    // - use ray checks from the square to detect sliding pieces that attack square
+    return false;
+}
+
+auto Bitboard::would_be_attacked(const Square &square, Color attacker_color, [[maybe_unused]] const Move &move) const -> bool {
+    // - Modify the necessary bitmasks used in is_attacked
+    bool under_attack = is_attacked(square, attacker_color);
+    // - Restore the bitmasks
+    return under_attack;
+}
+
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
     Square target_square{Square::A1};
     while (!targets.empty()) {

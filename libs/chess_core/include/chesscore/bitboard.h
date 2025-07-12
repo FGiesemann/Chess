@@ -197,6 +197,28 @@ public:
      * \param state State of the current position.
      */
     auto all_pawn_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    /**
+     * \brief Check, if a square is under attack.
+     *
+     * Checks, if the given square is under attack by a piece of the gven color.
+     * \param square The square to be checked.
+     * \param attacker_color Color of the attacker.
+     * \return If the square is under attack.
+     */
+    auto is_attacked(const Square &square, Color attacker_color) const -> bool;
+
+    /**
+     * \brief Check, if a square would be under attack after a move.
+     *
+     * Checks, if the given square woudl be under attack by a piece of the given
+     * color after the given move was applied.
+     * \param square The square to check.
+     * \param attacker_color Color or the attacker.
+     * \param move The move to apply before the check.
+     * \return If the square would be under attack after the move.
+     */
+    auto would_be_attacked(const Square &square, Color attacker_color, const Move &move) const -> bool;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};

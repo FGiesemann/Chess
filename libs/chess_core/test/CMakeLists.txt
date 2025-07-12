@@ -9,6 +9,7 @@ add_executable(chesscore_tests
     bitboard/make_move_test.cpp
     bitboard/unmake_move_test.cpp
     bitboard/move_generation_test.cpp
+    bitboard/attack_test.cpp
 
     position/position_test.cpp
     position/make_move_test.cpp
