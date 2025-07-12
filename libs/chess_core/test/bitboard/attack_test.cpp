@@ -85,7 +85,43 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.KnightAttacks", "[Bitboard][Attacks]") {
     CHECK_FALSE(board.knight_attacks(Square::B8, Color::Black));
 }
 
-TEST_CASE("Bitboard.Bitboard.IsAttacked.SlidingPieceAttacks", "[Bitboard][Attacks]") {}
+TEST_CASE("Bitboard.Bitboard.IsAttacked.SlidingPieceAttacks", "[Bitboard][Attacks]") {
+    Bitboard board{FenString{"8/1q1Bb3/6R1/2p1Rp2/6r1/1P1Q4/8/4b1B1 w - - 0 1"}};
+
+    CHECK(board.sliding_piece_attacks(Square::B1, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::D1, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::E1, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::F1, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::C2, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::D2, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::E2, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::F2, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::H2, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::B5, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::A6, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::C8, Color::White));
+    CHECK(board.sliding_piece_attacks(Square::D5, Color::White));
+
+    CHECK(board.sliding_piece_attacks(Square::A5, Color::Black));
+    CHECK(board.sliding_piece_attacks(Square::D5, Color::Black));
+    CHECK(board.sliding_piece_attacks(Square::C5, Color::Black));
+    CHECK(board.sliding_piece_attacks(Square::C7, Color::Black));
+    CHECK(board.sliding_piece_attacks(Square::D7, Color::Black));
+    CHECK(board.sliding_piece_attacks(Square::G5, Color::Black));
+    CHECK(board.sliding_piece_attacks(Square::G6, Color::Black));
+    CHECK(board.sliding_piece_attacks(Square::F8, Color::Black));
+    CHECK(board.sliding_piece_attacks(Square::E4, Color::Black));
+
+    CHECK_FALSE(board.sliding_piece_attacks(Square::A3, Color::White));
+    CHECK_FALSE(board.sliding_piece_attacks(Square::A5, Color::White));
+    CHECK_FALSE(board.sliding_piece_attacks(Square::H5, Color::White));
+    CHECK_FALSE(board.sliding_piece_attacks(Square::G2, Color::White));
+
+    CHECK_FALSE(board.sliding_piece_attacks(Square::A3, Color::Black));
+    CHECK_FALSE(board.sliding_piece_attacks(Square::E7, Color::Black));
+    CHECK_FALSE(board.sliding_piece_attacks(Square::F7, Color::Black));
+    CHECK_FALSE(board.sliding_piece_attacks(Square::G7, Color::Black));
+}
 
 TEST_CASE("Bitboard.Bitboard.IsAttacked.ByWhite", "[Bitboard][Attacks]") {
     Bitboard board{FenString{"5n2/2Q5/6k1/1B1n3P/4r3/R7/5N2/8 w - - 0 1"}};
