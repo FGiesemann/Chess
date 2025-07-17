@@ -279,9 +279,10 @@ auto Bitboard::pawn_attacks(const Square &square, Color pawn_color) const -> boo
     return attacked_squares.get(square);
 }
 
-auto Bitboard::knight_attacks([[maybe_unused]] const Square &square, [[maybe_unused]] Color knight_color) const -> bool {
-    // - use knight_moves[square] & m_knights[attacker_color] to find knights that attack square
-    return false;
+auto Bitboard::knight_attacks(const Square &square, Color knight_color) const -> bool {
+    const auto knights = bitmap(Piece{.type = PieceType::Knight, .color = knight_color});
+    const auto attackers = bitmaps::get_target_table(PieceType::Knight)[square] & knights;
+    return !attackers.empty();
 }
 
 auto Bitboard::sliding_piece_attacks([[maybe_unused]] const Square &square, [[maybe_unused]] Color piece_color) const -> bool {
