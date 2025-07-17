@@ -17,13 +17,13 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.PawnAttacks", "[Bitboard][Attacks]") {
 
     CHECK(board.pawn_attacks(Square::A8, Color::White));
     CHECK(board.pawn_attacks(Square::C8, Color::White));
-    CHECK(board.pawn_attacks(Square::B5, Color::White));
+    CHECK(board.pawn_attacks(Square::A5, Color::White));
     CHECK(board.pawn_attacks(Square::C5, Color::White));
-    CHECK(board.pawn_attacks(Square::D3, Color::White));
+    CHECK(board.pawn_attacks(Square::C3, Color::White));
     CHECK(board.pawn_attacks(Square::E3, Color::White));
-    CHECK(board.pawn_attacks(Square::F5, Color::White));
+    CHECK(board.pawn_attacks(Square::E5, Color::White));
     CHECK(board.pawn_attacks(Square::G5, Color::White));
-    CHECK(board.pawn_attacks(Square::F4, Color::White));
+    CHECK(board.pawn_attacks(Square::E4, Color::White));
     CHECK(board.pawn_attacks(Square::G4, Color::White));
     CHECK(board.pawn_attacks(Square::F4, Color::White));
     CHECK(board.pawn_attacks(Square::H4, Color::White));

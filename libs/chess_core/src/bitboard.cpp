@@ -272,9 +272,11 @@ auto Bitboard::would_be_attacked(const Square &square, Color attacker_color, [[m
     return under_attack;
 }
 
-auto Bitboard::pawn_attacks([[maybe_unused]] const Square &square, [[maybe_unused]] Color pawn_color) const -> bool {
-    // - use "pawn_attack_table[color][square]" to find pawns that attack square
-    return false;
+auto Bitboard::pawn_attacks(const Square &square, Color pawn_color) const -> bool {
+    const auto pawns = bitmap(Piece{.type = PieceType::Pawn, .color = pawn_color});
+    const auto stepped_pawns = step_pawns(pawns, pawn_color);
+    const auto attacked_squares = shift_left(stepped_pawns) | shift_right(stepped_pawns);
+    return attacked_squares.get(square);
 }
 
 auto Bitboard::knight_attacks([[maybe_unused]] const Square &square, [[maybe_unused]] Color knight_color) const -> bool {
