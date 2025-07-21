@@ -257,11 +257,7 @@ auto Bitboard::all_pawn_moves([[maybe_unused]] MoveList &moves, const PositionSt
     extract_pawn_captures(pawns_capture_E, PawnCaptureDirection::East, state, moves);
 }
 
-auto Bitboard::is_attacked([[maybe_unused]] const Square &square, [[maybe_unused]] Color attacker_color) const -> bool {
-    // Check in "reverse":
-    // - use "pawn_attack_table[color][square]" to find pawns that attack square
-    // - use knight_moves[square] & m_knights[attacker_color] to find knights that attack square
-    // - use ray checks from the square to detect sliding pieces that attack square
+auto Bitboard::is_attacked(const Square &square, Color attacker_color) const -> bool {
     return pawn_attacks(square, attacker_color) || knight_attacks(square, attacker_color) || sliding_piece_attacks(square, attacker_color);
 }
 
