@@ -286,9 +286,21 @@ auto Bitboard::knight_attacks(const Square &square, Color knight_color) const ->
     return !attackers.empty();
 }
 
-auto Bitboard::sliding_piece_attacks([[maybe_unused]] const Square &square, [[maybe_unused]] Color piece_color) const -> bool {
-    // - use ray checks from the square to detect sliding pieces that attack square
-    return false;
+auto Bitboard::attacked_from_ray(const Square &square, Color piece_color, RayDirection direction, PieceType attacker1, PieceType attacker2) const -> bool {
+    const auto targets = all_targets_along_ray(square, other_color(piece_color), direction);
+    const auto attackers = targets & (bitmap(Piece{.type = attacker1, .color = piece_color}) | bitmap(Piece{.type = attacker2, .color = piece_color}));
+    return !attackers.empty();
+}
+
+auto Bitboard::sliding_piece_attacks(const Square &square, Color piece_color) const -> bool {
+    return attacked_from_ray(square, piece_color, RayDirection::North, PieceType::Rook, PieceType::Queen) ||
+           attacked_from_ray(square, piece_color, RayDirection::NorthEast, PieceType::Bishop, PieceType::Queen) ||
+           attacked_from_ray(square, piece_color, RayDirection::East, PieceType::Rook, PieceType::Queen) ||
+           attacked_from_ray(square, piece_color, RayDirection::SouthEast, PieceType::Bishop, PieceType::Queen) ||
+           attacked_from_ray(square, piece_color, RayDirection::South, PieceType::Rook, PieceType::Queen) ||
+           attacked_from_ray(square, piece_color, RayDirection::SouthWest, PieceType::Bishop, PieceType::Queen) ||
+           attacked_from_ray(square, piece_color, RayDirection::West, PieceType::Rook, PieceType::Queen) ||
+           attacked_from_ray(square, piece_color, RayDirection::NorthWest, PieceType::Bishop, PieceType::Queen);
 }
 
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
