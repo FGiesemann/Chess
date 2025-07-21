@@ -263,7 +263,7 @@ auto Bitboard::all_pawn_moves([[maybe_unused]] MoveList &moves, const PositionSt
 }
 
 auto Bitboard::is_attacked(const Square &square, Color attacker_color) const -> bool {
-    return pawn_attacks(square, attacker_color) || knight_attacks(square, attacker_color) || sliding_piece_attacks(square, attacker_color);
+    return king_attacks(square, attacker_color) || pawn_attacks(square, attacker_color) || knight_attacks(square, attacker_color) || sliding_piece_attacks(square, attacker_color);
 }
 
 auto Bitboard::would_be_attacked(const Square &square, Color attacker_color, [[maybe_unused]] const Move &move) const -> bool {
@@ -283,6 +283,12 @@ auto Bitboard::pawn_attacks(const Square &square, Color pawn_color) const -> boo
 auto Bitboard::knight_attacks(const Square &square, Color knight_color) const -> bool {
     const auto knights = bitmap(Piece{.type = PieceType::Knight, .color = knight_color});
     const auto attackers = bitmaps::get_target_table(PieceType::Knight)[square] & knights;
+    return !attackers.empty();
+}
+
+auto Bitboard::king_attacks(const Square &square, Color king_color) const -> bool {
+    const auto king = bitmap(Piece{.type = PieceType::King, .color = king_color});
+    const auto attackers = bitmaps::get_target_table(PieceType::King)[square] & king;
     return !attackers.empty();
 }
 

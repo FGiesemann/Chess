@@ -239,6 +239,15 @@ public:
     auto knight_attacks(const Square &square, Color knight_color) const -> bool;
 
     /**
+     * \brief Checks, if a square is attacked by a king.
+     *
+     * \param square The square to be checked.
+     * \param king_color Color of the attacking king.
+     * \return If the square is attacked by a king.
+     */
+    auto king_attacks(const Square &square, Color king_color) const -> bool;
+
+    /**
      * \brief Checks, if a square is attacked by a sliding piece.
      *
      * \param square The square to be checked.
