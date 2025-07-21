@@ -178,6 +178,7 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.ByBlack", "[Bitboard][Attacks]") {
     CHECK(board.is_attacked(Square::H5, Color::Black)); // Kxh5
     CHECK(board.is_attacked(Square::F6, Color::Black)); // Nxf6 Kxf6
     CHECK(board.is_attacked(Square::C7, Color::Black)); // Nxc7
+    CHECK(board.is_attacked(Square::D5, Color::Black)); // Qxd5
 
     // exhaustive check:
     CHECK_FALSE(board.is_attacked(Square::A1, Color::Black));
@@ -191,7 +192,6 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.ByBlack", "[Bitboard][Attacks]") {
     CHECK_FALSE(board.is_attacked(Square::C5, Color::Black));
     CHECK_FALSE(board.is_attacked(Square::D1, Color::Black));
     CHECK_FALSE(board.is_attacked(Square::D3, Color::Black));
-    CHECK_FALSE(board.is_attacked(Square::D5, Color::Black));
     CHECK_FALSE(board.is_attacked(Square::D6, Color::Black));
     CHECK_FALSE(board.is_attacked(Square::E4, Color::Black));
     CHECK_FALSE(board.is_attacked(Square::F1, Color::Black));
