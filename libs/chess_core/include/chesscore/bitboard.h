@@ -271,7 +271,7 @@ private:
     auto remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap;
 
     auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
-    auto all_targets_along_ray(const Square &start, const RayDirection &direction, const PositionState &state) const -> Bitmap;
+    auto all_targets_along_ray(const Square &start, Color moving_color, const RayDirection &direction) const -> Bitmap;
 
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
     static auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) -> void;
