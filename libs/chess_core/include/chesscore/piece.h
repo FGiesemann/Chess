@@ -11,6 +11,7 @@
 #include "chesscore/table.h"
 
 #include <array>
+#include <cstdint>
 #include <optional>
 
 namespace chesscore {

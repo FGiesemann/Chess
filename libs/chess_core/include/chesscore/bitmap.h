@@ -8,6 +8,7 @@
 #define CHESSCORE_BITMAP_H
 
 #include <bit>
+#include <cstdint>
 
 #include "chesscore/square.h"
 

@@ -36,7 +36,7 @@ concept IndexConvertible = requires(const T &i) {
  * \tparam Size Number of entries in the table.
  * \tparam IndexT Type used for indexing into the table.
  */
-template<typename ElementT, size_t Size, typename IndexT>
+template<typename ElementT, std::size_t Size, typename IndexT>
 class Table {
 public:
     /**
@@ -59,7 +59,7 @@ public:
      *
      * \return The number of elements in the table.
      */
-    constexpr auto size() const -> size_t { return m_data.size(); }
+    constexpr auto size() const -> std::size_t { return m_data.size(); }
 
     /**
      * \brief Index table entries.
