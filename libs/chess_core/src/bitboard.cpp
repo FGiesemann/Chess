@@ -219,7 +219,7 @@ auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start,
     }
 }
 
-auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &start, const RayDirection &direction, MoveList &moves, const PositionState &state) const -> void {
+auto Bitboard::all_targets_along_ray(const Square &start, const RayDirection &direction, const PositionState &state) const -> Bitmap {
     auto targets = bitmaps::ray_target_table[direction][start];
     const auto blockers = targets & m_all_pieces;
     if (!blockers.empty()) {
@@ -227,6 +227,11 @@ auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &star
         targets ^= bitmaps::ray_target_table[direction][blocker_square];
     }
     targets &= ~bitmap(state.side_to_move);
+    return targets;
+}
+
+auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &start, const RayDirection &direction, MoveList &moves, const PositionState &state) const -> void {
+    const auto targets = all_targets_along_ray(start, direction, state);
     extract_moves(targets, start, moving_piece, state, moves);
 }
 
