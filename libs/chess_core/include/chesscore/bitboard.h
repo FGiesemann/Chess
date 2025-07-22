@@ -295,8 +295,15 @@ private:
     auto attacked_from_ray(const Square &square, Color piece_color, RayDirection direction, PieceType attacker1, PieceType attacker2) const -> bool;
 
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
-    static auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) -> void;
+    auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) const -> void;
     auto extract_pawn_captures(Bitmap targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void;
+    auto generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void;
+    auto generate_pawn_move(
+        const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
+    ) const -> void;
+
+    auto store_move_if_legal(const Move &move, MoveList &moves) const -> void;
+    auto find_king(Color color) const -> std::optional<Square>;
 };
 
 static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");

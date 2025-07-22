@@ -24,10 +24,12 @@ auto shift_right(const Bitmap &bitmap) -> Bitmap {
     return (bitmap & ~bitmaps::file_table[File::max_file]) << 1;
 }
 
-auto generate_pawn_move(
+} // namespace
+
+auto Bitboard::generate_pawn_move(
     const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
-) -> void {
-    moves.emplace_back(
+) const -> void {
+    store_move_if_legal(
         Move{
             .from = source,
             .to = target,
@@ -38,11 +40,13 @@ auto generate_pawn_move(
             .castling_rights_before = state.castling_rights,
             .halfmove_clock_before = state.halfmove_clock,
             .en_passant_target_before = state.en_passant_target
-        }
+        },
+        moves
     );
 }
 
-auto generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) -> void {
+auto Bitboard::generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const
+    -> void {
     if (target.rank().rank == Rank::min_rank || target.rank().rank == Rank::max_rank) {
         const auto color = other_color(state.side_to_move);
         for (const auto &type : all_promotion_piece_types) {
@@ -52,8 +56,6 @@ auto generate_pawn_moves(const Square &source, const Square &target, std::option
         generate_pawn_move(source, target, captured, en_passant, std::nullopt, state, moves);
     }
 }
-
-} // namespace
 
 Bitboard::Bitboard(const FenString &fen) {
     const auto &placements{fen.piece_placement()};
@@ -261,7 +263,7 @@ auto Bitboard::remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap {
     return bitmap & ~m_all_pieces;
 }
 
-auto Bitboard::all_pawn_moves([[maybe_unused]] MoveList &moves, const PositionState &state) const -> void {
+auto Bitboard::all_pawn_moves(MoveList &moves, const PositionState &state) const -> void {
     const auto pawns = bitmap(Piece{.type = PieceType::Pawn, .color = state.side_to_move});
     const auto pawns_advance1 = step_pawns(pawns, state.side_to_move);
     const auto pawns_step1 = remove_occupied_squares(pawns_advance1);
@@ -288,11 +290,10 @@ auto Bitboard::is_attacked(const Square &square, Color attacker_color) const -> 
     return king_attacks(square, attacker_color) || pawn_attacks(square, attacker_color) || knight_attacks(square, attacker_color) || sliding_piece_attacks(square, attacker_color);
 }
 
-auto Bitboard::would_be_attacked(const Square &square, Color attacker_color, [[maybe_unused]] const Move &move) const -> bool {
-    // - Modify the necessary bitmasks used in is_attacked (or more precise sliding_piece_attacks)
-    bool under_attack = is_attacked(square, attacker_color);
-    // - Restore the bitmasks
-    return under_attack;
+auto Bitboard::would_be_attacked(const Square &square, Color attacker_color, const Move &move) const -> bool {
+    Bitboard test_board{*this};
+    test_board.make_move(move);
+    return test_board.is_attacked(square, attacker_color);
 }
 
 auto Bitboard::pawn_attacks(const Square &square, Color pawn_color) const -> bool {
@@ -337,7 +338,7 @@ auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &pi
         const auto shift = targets.empty_squares_before();
         target_square += shift;
         targets >>= shift;
-        moves.emplace_back(
+        store_move_if_legal(
             Move{
                 .from = from,
                 .to = target_square,
@@ -348,14 +349,15 @@ auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &pi
                 .castling_rights_before = state.castling_rights,
                 .halfmove_clock_before = state.halfmove_clock,
                 .en_passant_target_before = state.en_passant_target
-            }
+            },
+            moves
         );
         target_square += 1;
         targets >>= 1;
     }
 }
 
-void Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) {
+auto Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) const -> void {
     Square target_square{Square::A1};
     while (!targets.empty()) {
         const auto shift = targets.empty_squares_before();
@@ -383,6 +385,26 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
         );
         target_square += 1;
     }
+}
+
+auto Bitboard::store_move_if_legal(const Move &move, MoveList &moves) const -> void {
+    Color color = move.piece.color;
+    const auto king_square = move.piece.type == PieceType::King ? move.to : find_king(color);
+    if (king_square.has_value()) {
+        if (would_be_attacked(king_square.value(), other_color(color), move)) {
+            return;
+        }
+    }
+    moves.push_back(move);
+}
+
+auto Bitboard::find_king(Color color) const -> std::optional<Square> {
+    const auto map = bitmap(Piece{.type = PieceType::King, .color = color});
+    if (!map.empty()) {
+        const auto shift = map.empty_squares_before();
+        return Square{Square::A1 + shift};
+    }
+    return {};
 }
 
 } // namespace chesscore
