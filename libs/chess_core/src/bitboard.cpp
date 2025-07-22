@@ -181,6 +181,8 @@ auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
     MoveList moves{};
     all_knight_moves(moves, state);
     all_king_moves(moves, state);
+    all_sliding_moves(moves, state);
+    all_pawn_moves(moves, state);
     return moves;
 }
 
@@ -208,6 +210,26 @@ auto Bitboard::all_knight_moves(MoveList &moves, const PositionState &state) con
 
 auto Bitboard::all_king_moves(MoveList &moves, const PositionState &state) const -> void {
     all_stepping_moves(PieceType::King, moves, state);
+}
+
+auto Bitboard::all_sliding_moves(MoveList &moves, const PositionState &state) const -> void {
+    sliding_moves_for_type(PieceType::Queen, moves, state);
+    sliding_moves_for_type(PieceType::Bishop, moves, state);
+    sliding_moves_for_type(PieceType::Rook, moves, state);
+}
+
+auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
+    const auto piece = Piece{.type = piece_type, .color = state.side_to_move};
+    auto squares = bitmap(piece);
+    Square square{Square::A1};
+    while (!squares.empty()) {
+        const auto shift = squares.empty_squares_before();
+        square += shift;
+        squares >>= shift;
+        all_sliding_moves(piece, square, moves, state);
+        square += 1;
+        squares >>= 1;
+    }
 }
 
 auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void {

@@ -163,6 +163,16 @@ public:
     auto all_king_moves(MoveList &moves, const PositionState &state) const -> void;
 
     /**
+     * \brief Generate all moves for bishops, rooks and queens.
+     *
+     * Generates the possible moves for the bishops, rooks and queens of the
+     * player to move.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_sliding_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    /**
      * \brief Generate all moves for a sliding piece.
      *
      * Generates the possible moves for a given sliding piece from the given
@@ -281,6 +291,7 @@ private:
 
     auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
     auto all_targets_along_ray(const Square &start, Color moving_color, const RayDirection &direction) const -> Bitmap;
+    auto sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
     auto attacked_from_ray(const Square &square, Color piece_color, RayDirection direction, PieceType attacker1, PieceType attacker2) const -> bool;
 
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
