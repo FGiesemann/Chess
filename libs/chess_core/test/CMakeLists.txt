@@ -14,6 +14,7 @@ add_executable(chesscore_tests
     position/position_test.cpp
     position/make_move_test.cpp
     position/unmake_move_test.cpp
+    position/move_generation_test.cpp
 )
 
 target_link_libraries(chesscore_tests PRIVATE chesscore)
