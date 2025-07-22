@@ -95,14 +95,23 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.King Castling.King in Check", "[Bitb
 }
 
 TEST_CASE("Bitboard.Bitboard.MoveGeneration.King Castling.Trough Check", "[Bitboard][MoveGeneration]") {
-    Position<Bitboard> position{FenString{"r3k2r/8/8/8/7B/8/8/8 b KQkq - 0 1"}};
-    MoveList moves{};
-    position.board().all_king_moves(moves, position.state());
-    CHECK(moves.size() == 4);
-    CHECK(move_list_contains(moves, Move{Square::E8, Square::D7, Piece::BlackKing}));
-    CHECK(move_list_contains(moves, Move{Square::E8, Square::F7, Piece::BlackKing}));
-    CHECK(move_list_contains(moves, Move{Square::E8, Square::F8, Piece::BlackKing}));
-    CHECK(move_list_contains(moves, Move{Square::E8, Square::G8, Piece::BlackKing}));
+    Position<Bitboard> position1{FenString{"r3k2r/8/8/8/7B/8/8/8 b KQkq - 0 1"}};
+    MoveList moves1{};
+    position1.board().all_king_moves(moves1, position1.state());
+    CHECK(moves1.size() == 4);
+    CHECK(move_list_contains(moves1, Move{Square::E8, Square::D7, Piece::BlackKing}));
+    CHECK(move_list_contains(moves1, Move{Square::E8, Square::F7, Piece::BlackKing}));
+    CHECK(move_list_contains(moves1, Move{Square::E8, Square::F8, Piece::BlackKing}));
+    CHECK(move_list_contains(moves1, Move{Square::E8, Square::G8, Piece::BlackKing}));
+
+    Position<Bitboard> position2{FenString{"8/8/8/2q5/8/8/8/R3K2R w KQkq - 0 1"}};
+    MoveList moves2{};
+    position2.board().all_king_moves(moves2, position2.state());
+    CHECK(moves2.size() == 4);
+    CHECK(move_list_contains(moves2, Move{Square::E1, Square::D1, Piece::WhiteKing}));
+    CHECK(move_list_contains(moves2, Move{Square::E1, Square::D2, Piece::WhiteKing}));
+    CHECK(move_list_contains(moves2, Move{Square::E1, Square::E2, Piece::WhiteKing}));
+    CHECK(move_list_contains(moves2, Move{Square::E1, Square::F1, Piece::WhiteKing}));
 }
 
 TEST_CASE("Bitboard.Bitboard.MoveGeneration.King Castling.Not Allowed", "[Bitboard][MoveGeneration]") {
