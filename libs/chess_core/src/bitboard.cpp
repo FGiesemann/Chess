@@ -212,6 +212,7 @@ auto Bitboard::all_knight_moves(MoveList &moves, const PositionState &state) con
 
 auto Bitboard::all_king_moves(MoveList &moves, const PositionState &state) const -> void {
     all_stepping_moves(PieceType::King, moves, state);
+    // TODO: generate_castling(moves, state);
 }
 
 auto Bitboard::all_sliding_moves(MoveList &moves, const PositionState &state) const -> void {
