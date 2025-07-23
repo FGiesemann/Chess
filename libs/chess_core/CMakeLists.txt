@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.15)
-project(chesscore CXX)
+project(chesscore VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
 
 include(cmake/compiler_warnings.cmake)
 
@@ -22,31 +24,94 @@ add_library(${PROJECT_NAME}
     src/chesscore/square.cpp
     src/chesscore/table.cpp
 )
-target_include_directories(chesscore PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
-add_compiler_warnings(chesscore)
+add_compiler_warnings(${PROJECT_NAME})
 
-add_library(chesscore_io
-        src/chesscore_io/bitboard_io.cpp
-        src/chesscore_io/bitmap_io.cpp
-        src/chesscore_io/piece_io.cpp
+install(TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}Targets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
-target_link_libraries(chesscore_io PRIVATE ${PROJECT_NAME})
-target_compile_options(chesscore_io PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/${PROJECT_NAME})
+install(EXPORT ${PROJECT_NAME}Targets
+    FILE ${PROJECT_NAME}Targets.cmake
+    NAMESPACE ${PROJECT_NAME}::
+    DESTINATION lib/cmake/${PROJECT_NAME}
+)
+set(${PROJECT_NAME}_VERSION ${PROJECT_VERSION})
+add_library(${PROJECT_NAME}_io
+    src/chesscore_io/bitboard_io.cpp
+    src/chesscore_io/bitmap_io.cpp
+    src/chesscore_io/piece_io.cpp
+)
+target_link_libraries(${PROJECT_NAME}_io PRIVATE ${PROJECT_NAME})
+add_compiler_warnings(${PROJECT_NAME}_io)
+target_compile_options(${PROJECT_NAME}_io PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+install(TARGETS ${PROJECT_NAME}_io
+    EXPORT ${PROJECT_NAME}Targets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}_io
+)
+install(DIRECTORY include/${PROJECT_NAME}_io/ DESTINATION include/${PROJECT_NAME}_io)
 
-find_package(Doxygen)
-if(DOXYGEN_FOUND)
-    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
+include(CMakePackageConfigHelpers)
+set(chesscore_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/chesscore")
+set(chesscore_IO_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/chesscore_io")
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    PATH_VARS
+        chesscore_INCLUDE_DIR
+        chesscore_IO_INCLUDE_DIR
+)
 
-    add_custom_target(doc ALL
-        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_IN}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+)
+
+if(BUILD_DOCUMENTATION)
+    find_package(Doxygen)
+    if(DOXYGEN_FOUND)
+        set(DOXYGEN_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/api")
+        configure_file(
+            ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+            ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile 
+            @ONLY
+        )
+
+    add_custom_command(
+        OUTPUT ${DOXYGEN_OUTPUT_DIR}/html/index.html
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        COMMAND_EXPAND_LISTS
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating documentation with Doxygen"
         VERBATIM
     )
+
+    add_custom_target(doc ALL DEPENDS ${DOXYGEN_OUTPUT_DIR}/html/index.html)
+
+    install(DIRECTORY ${DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/${PROJECT_NAME}
+        PATTERN "*.map" EXCLUDE
+        PATTERN "*.md5" EXCLUDE
+    )
+    endif()
 endif()
+
+install(FILES LICENSE DESTINATION share/doc/${PROJECT_NAME})
 
 enable_testing()
 find_package(Catch2 3 REQUIRED)
