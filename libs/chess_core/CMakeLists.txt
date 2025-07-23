@@ -8,19 +8,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(cmake/compiler_warnings.cmake)
 
-add_library(chesscore
-    src/bitboard.cpp
-    src/bitboard_tables.cpp
-    src/bitmap.cpp
-    src/board.cpp
-    src/chesscore.cpp
-    src/fen.cpp
-    src/move.cpp
-    src/piece.cpp
-    src/position.cpp
-    src/position_types.cpp
-    src/square.cpp
-    src/table.cpp
+add_library(${PROJECT_NAME}
+    src/chesscore/bitboard.cpp
+    src/chesscore/bitboard_tables.cpp
+    src/chesscore/bitmap.cpp
+    src/chesscore/board.cpp
+    src/chesscore/chesscore.cpp
+    src/chesscore/fen.cpp
+    src/chesscore/move.cpp
+    src/chesscore/piece.cpp
+    src/chesscore/position.cpp
+    src/chesscore/position_types.cpp
+    src/chesscore/square.cpp
+    src/chesscore/table.cpp
 )
 target_include_directories(chesscore PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -28,13 +28,13 @@ target_include_directories(chesscore PUBLIC
 )
 add_compiler_warnings(chesscore)
 
-enable_testing()
-find_package(Catch2 3 REQUIRED)
-add_subdirectory(test)
-
-add_subdirectory(tools)
-
-install(TARGETS chesscore)
+add_library(chesscore_io
+        src/chesscore_io/bitboard_io.cpp
+        src/chesscore_io/bitmap_io.cpp
+        src/chesscore_io/piece_io.cpp
+)
+target_link_libraries(chesscore_io PRIVATE ${PROJECT_NAME})
+target_compile_options(chesscore_io PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
@@ -47,3 +47,7 @@ if(DOXYGEN_FOUND)
         VERBATIM
     )
 endif()
+
+enable_testing()
+find_package(Catch2 3 REQUIRED)
+add_subdirectory(test)

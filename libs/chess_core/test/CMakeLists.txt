@@ -16,11 +16,9 @@ add_executable(chesscore_tests
     position/unmake_move_test.cpp
     position/move_generation_test.cpp
 )
-
-target_link_libraries(chesscore_tests PRIVATE chesscore)
-target_link_libraries(chesscore_tests PRIVATE Catch2::Catch2WithMain)
-
 add_compiler_warnings(chesscore_tests)
+
+target_link_libraries(chesscore_tests PRIVATE chesscore Catch2::Catch2WithMain)
 
 include(Catch)
 catch_discover_tests(chesscore_tests)
