@@ -212,7 +212,7 @@ auto Bitboard::all_knight_moves(MoveList &moves, const PositionState &state) con
 
 auto Bitboard::all_king_moves(MoveList &moves, const PositionState &state) const -> void {
     all_stepping_moves(PieceType::King, moves, state);
-    // TODO: generate_castling(moves, state);
+    generate_castling_moves(moves, state);
 }
 
 auto Bitboard::all_sliding_moves(MoveList &moves, const PositionState &state) const -> void {
@@ -385,6 +385,72 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
             source_square, target_square, captured.value_or(Piece{.type = PieceType::Pawn, .color = other_color(state.side_to_move)}), !captured.has_value(), state, moves
         );
         target_square += 1;
+    }
+}
+
+auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &state) const -> void {
+    if (state.side_to_move == Color::White) {
+        if (state.castling_rights.white_kingside && !is_attacked(Square::E1, Color::Black) && !is_attacked(Square::F1, Color::Black) && !is_attacked(Square::G1, Color::Black)) {
+            moves.push_back(
+                Move{
+                    .from = Square::E1,
+                    .to = Square::G1,
+                    .piece = Piece{.type = PieceType::King, .color = Color::White},
+                    .captured = {},
+                    .capturing_en_passant = false,
+                    .promoted = {},
+                    .castling_rights_before = state.castling_rights,
+                    .halfmove_clock_before = state.halfmove_clock,
+                    .en_passant_target_before = state.en_passant_target
+                }
+            );
+        }
+        if (state.castling_rights.white_queenside && !is_attacked(Square::E1, Color::Black) && !is_attacked(Square::D1, Color::Black) && !is_attacked(Square::C1, Color::Black)) {
+            moves.push_back(
+                Move{
+                    .from = Square::E1,
+                    .to = Square::C1,
+                    .piece = Piece{.type = PieceType::King, .color = Color::White},
+                    .captured = {},
+                    .capturing_en_passant = false,
+                    .promoted = {},
+                    .castling_rights_before = state.castling_rights,
+                    .halfmove_clock_before = state.halfmove_clock,
+                    .en_passant_target_before = state.en_passant_target
+                }
+            );
+        }
+    } else {
+        if (state.castling_rights.black_kingside && !is_attacked(Square::E8, Color::White) && !is_attacked(Square::F8, Color::White) && !is_attacked(Square::G8, Color::White)) {
+            moves.push_back(
+                Move{
+                    .from = Square::E8,
+                    .to = Square::G8,
+                    .piece = Piece{.type = PieceType::King, .color = Color::Black},
+                    .captured = {},
+                    .capturing_en_passant = false,
+                    .promoted = {},
+                    .castling_rights_before = state.castling_rights,
+                    .halfmove_clock_before = state.halfmove_clock,
+                    .en_passant_target_before = state.en_passant_target
+                }
+            );
+        }
+        if (state.castling_rights.black_queenside && !is_attacked(Square::E8, Color::White) && !is_attacked(Square::D8, Color::White) && !is_attacked(Square::C8, Color::White)) {
+            moves.push_back(
+                Move{
+                    .from = Square::E8,
+                    .to = Square::C8,
+                    .piece = Piece{.type = PieceType::King, .color = Color::Black},
+                    .captured = {},
+                    .capturing_en_passant = false,
+                    .promoted = {},
+                    .castling_rights_before = state.castling_rights,
+                    .halfmove_clock_before = state.halfmove_clock,
+                    .en_passant_target_before = state.en_passant_target
+                }
+            );
+        }
     }
 }
 

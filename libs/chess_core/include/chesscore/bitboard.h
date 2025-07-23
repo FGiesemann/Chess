@@ -301,6 +301,7 @@ private:
     auto generate_pawn_move(
         const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
     ) const -> void;
+    auto generate_castling_moves(MoveList &moves, const PositionState &state) const -> void;
 
     auto store_move_if_legal(const Move &move, MoveList &moves) const -> void;
     auto find_king(Color color) const -> std::optional<Square>;
