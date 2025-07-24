@@ -1,5 +1,6 @@
-#include "chesscore.h"
-#include <string>
-#include <vector>
+#include "chesscore/bitboard.h"
 
-int main() {}
+int main() {
+    chesscore::Bitboard b{};
+    return 0;
+}

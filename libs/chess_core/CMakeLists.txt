@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
+option(BUILD_TESTING "Build unittests" ON)
 
 include(cmake/compiler_warnings.cmake)
 
@@ -111,8 +112,10 @@ if(BUILD_DOCUMENTATION)
     endif()
 endif()
 
-install(FILES LICENSE DESTINATION share/doc/${PROJECT_NAME})
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE DESTINATION share/doc/${PROJECT_NAME})
 
-enable_testing()
-find_package(Catch2 3 REQUIRED)
-add_subdirectory(test)
+if (NOT BUILD_TESTING STREQUAL OFF)
+    enable_testing()
+    find_package(Catch2 3 REQUIRED)
+    add_subdirectory(test)
+endif()

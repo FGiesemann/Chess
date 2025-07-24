@@ -22,5 +22,7 @@ class chesscoreTestConan(ConanFile):
 
     def test(self):
         if can_run(self):
-            cmd = os.path.join(self.cpp.build.bindir, "example")
+            cmd = os.path.join(self.cpp.build.bindir, "test_without_io")
+            self.run(cmd, env="conanrun")
+            cmd = os.path.join(self.cpp.build.bindir, "test_with_io")
             self.run(cmd, env="conanrun")

@@ -13,7 +13,7 @@
 
 namespace chesscore {
 
-auto operator<<(std::ostream &os, const Bitboard &bitmap) -> std::ostream &;
+auto operator<<(std::ostream &os, const Bitboard &bitboard) -> std::ostream &;
 
 } // namespace chesscore
 
