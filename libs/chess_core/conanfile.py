@@ -5,7 +5,7 @@ import os
 
 class chesscoreRecipe(ConanFile):
     name = "chesscore"
-    version = "1.0.0"
+    version = "1.0.0-dev"
     package_type = "library"
 
     license = "MIT License"
@@ -35,6 +35,11 @@ class chesscoreRecipe(ConanFile):
 
     def layout(self):
         cmake_layout(self)
+        self.cpp.source.components["chesscore"].srcdirs = ["src/chesscore"]
+        self.cpp.source.components["chesscore_io"].srcdirs = ["src/chesscore_io"]
+        bt = "." if self.settings.os != "Windows" else str(self.settings.build_type)
+        self.cpp.build.components["chesscore"].libdirs = [bt]
+        self.cpp.build.components["chesscore_io"].libdirs = [bt]
 
     def generate(self):
         deps = CMakeDeps(self)
@@ -58,11 +63,9 @@ class chesscoreRecipe(ConanFile):
 
     def package_info(self):
         self.cpp_info.components["chesscore"].libs = ["chesscore"]
-        self.cpp_info.components["chesscore"].set_property("cmake_find_package_name", "chesscore")
         self.cpp_info.components["chesscore"].set_property("cmake_target_name", "chesscore::chesscore")
 
         self.cpp_info.components["chesscore_io"].libs = ["chesscore_io"]
-        self.cpp_info.components["chesscore_io"].set_property("cmake_find_package_name", "chesscore") # Optional, aber gute Praxis
         self.cpp_info.components["chesscore_io"].set_property("cmake_target_name", "chesscore::chesscore_io")
 
         self.cpp_info.components["chesscore_io"].requires = ["chesscore"]
