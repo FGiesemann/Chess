@@ -168,6 +168,13 @@ public:
     constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{static_cast<size_t>((m_rank.rank - 1) * 8 + m_file.file - 1)} {}
 
     /**
+     * \brief Default construtor.
+     *
+     * Creates the Square::A1.
+     */
+    constexpr Square() : Square(1, 1) {}
+
+    /**
      * \brief Access the file of the square.
      *
      * The file (column) of the square.
