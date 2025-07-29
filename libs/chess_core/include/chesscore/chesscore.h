@@ -22,14 +22,14 @@ public:
      *
      * \param message A message describing the error.
      */
-    ChessException(const std::string &message) : m_message{message} {}
+    ChessException(std::string message) : m_message{std::move(message)} {}
 
     /**
      * \brief The message stored in the exception.
      *
      * \return The stored message.
      */
-    const char *what() const noexcept override { return m_message.c_str(); }
+    [[nodiscard]] auto what() const noexcept -> const char * override { return m_message.c_str(); }
 private:
     std::string m_message;
 };
