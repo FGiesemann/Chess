@@ -6,4 +6,5 @@ find_package(chesscore CONFIG REQUIRED COMPONENTS chesscore chesscore_io)
 
 add_subdirectory(bitmap_tool)
 add_subdirectory(fen_display)
+add_subdirectory(legal_moves_in_position_tool)
 add_subdirectory(table_generator)
