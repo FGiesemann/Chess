@@ -283,6 +283,7 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.Pawn.Promotions", "[Bitboard][MoveGe
     MoveList moves1;
     position1.board().all_pawn_moves(moves1, position1.state());
     CHECK(moves1.size() == 21);
+    CHECK_THAT(moves1, Catch::Matchers::Contains(Move{.from = Square::B7, .to = Square::B8, .piece = Piece::WhitePawn, .promoted = Piece::WhiteQueen}));
     CHECK(move_list_contains_promotions(moves1, Move{Square::B7, Square::B8, Piece::WhitePawn}));
     CHECK(move_list_contains_promotions(moves1, Move{Square::C7, Square::C8, Piece::WhitePawn}));
     CHECK(move_list_contains_promotions(moves1, Move{Square::C7, Square::D8, Piece::WhitePawn, Piece::BlackRook}));

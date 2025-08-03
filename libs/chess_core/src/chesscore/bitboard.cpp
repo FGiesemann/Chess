@@ -48,7 +48,7 @@ auto Bitboard::generate_pawn_move(
 auto Bitboard::generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const
     -> void {
     if (target.rank().rank == Rank::min_rank || target.rank().rank == Rank::max_rank) {
-        const auto color = other_color(state.side_to_move);
+        const auto color = state.side_to_move;
         for (const auto &type : all_promotion_piece_types) {
             generate_pawn_move(source, target, captured, en_passant, Piece{.type = type, .color = color}, state, moves);
         }
