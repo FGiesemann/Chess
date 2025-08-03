@@ -47,7 +47,9 @@ set(${PROJECT_NAME}_VERSION ${PROJECT_VERSION})
 add_library(${PROJECT_NAME}_io
     src/chesscore_io/bitboard_io.cpp
     src/chesscore_io/bitmap_io.cpp
+    src/chesscore_io/move_io.cpp
     src/chesscore_io/piece_io.cpp
+    src/chesscore_io/square_io.cpp
 )
 target_link_libraries(${PROJECT_NAME}_io PRIVATE ${PROJECT_NAME})
 add_compiler_warnings(${PROJECT_NAME}_io)
