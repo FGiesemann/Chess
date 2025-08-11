@@ -15,10 +15,10 @@ namespace chesscore {
 
 namespace {
 
-std::string to_uppercase(const std::string &str) {
+auto to_uppercase(const std::string &str) -> std::string {
     std::string result = str;
-    for (char &c : result) {
-        c = std::toupper(c);
+    for (char &character : result) {
+        character = static_cast<char>(std::toupper(character));
     }
     return result;
 }

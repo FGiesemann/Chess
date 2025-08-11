@@ -32,6 +32,8 @@ auto symbolic_type_name(PieceType type) -> std::string {
         return "Queen";
     case PieceType::King:
         return "King";
+    default:
+        return "<invalid piece>";
     }
 }
 
