@@ -17,7 +17,14 @@ class chesscoreRecipe(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
 
-    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*", "test/*", "LICENSE"
+    exports_sources = (
+        "CMakeLists.txt",
+        "cmake/*",
+        "src/*",
+        "include/*",
+        "test/*",
+        "LICENSE",
+    )
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.15]")
@@ -37,7 +44,7 @@ class chesscoreRecipe(ConanFile):
         cmake_layout(self)
         self.cpp.source.components["chesscore"].srcdirs = ["src/chesscore"]
         self.cpp.source.components["chesscore_io"].srcdirs = ["src/chesscore_io"]
-        bt = "." if self.settings.os != "Windows" else str(self.settings.build_type)
+        bt = "." if self.settings.os == "Windows" else str(self.settings.build_type)
         self.cpp.build.components["chesscore"].libdirs = [bt]
         self.cpp.build.components["chesscore_io"].libdirs = [bt]
 
@@ -63,10 +70,13 @@ class chesscoreRecipe(ConanFile):
 
     def package_info(self):
         self.cpp_info.components["chesscore"].libs = ["chesscore"]
-        self.cpp_info.components["chesscore"].set_property("cmake_target_name", "chesscore::chesscore")
+        self.cpp_info.components["chesscore"].set_property(
+            "cmake_target_name", "chesscore::chesscore"
+        )
 
         self.cpp_info.components["chesscore_io"].libs = ["chesscore_io"]
-        self.cpp_info.components["chesscore_io"].set_property("cmake_target_name", "chesscore::chesscore_io")
+        self.cpp_info.components["chesscore_io"].set_property(
+            "cmake_target_name", "chesscore::chesscore_io"
+        )
 
         self.cpp_info.components["chesscore_io"].requires = ["chesscore"]
-
