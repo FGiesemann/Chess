@@ -44,7 +44,7 @@ class chesscoreRecipe(ConanFile):
         cmake_layout(self)
         self.cpp.source.components["chesscore"].srcdirs = ["src/chesscore"]
         self.cpp.source.components["chesscore_io"].srcdirs = ["src/chesscore_io"]
-        bt = "." if self.settings.os == "Windows" else str(self.settings.build_type)
+        bt = "."
         self.cpp.build.components["chesscore"].libdirs = [bt]
         self.cpp.build.components["chesscore_io"].libdirs = [bt]
 
