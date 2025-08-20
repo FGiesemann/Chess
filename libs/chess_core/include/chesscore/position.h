@@ -204,14 +204,17 @@ void Position<BoardT>::updateCastlingRights(const Move &move) {
         } else if (move.from == Square::A8) {
             m_state.castling_rights['q'] = false;
         }
-    } else if (move.is_capture() && move.to == Square::A1) {
-        m_state.castling_rights['Q'] = false;
-    } else if (move.is_capture() && move.to == Square::H1) {
-        m_state.castling_rights['K'] = false;
-    } else if (move.is_capture() && move.to == Square::A8) {
-        m_state.castling_rights['q'] = false;
-    } else if (move.is_capture() && move.to == Square::H8) {
-        m_state.castling_rights['k'] = false;
+    }
+    if (move.is_capture()) {
+        if (move.to == Square::A1) {
+            m_state.castling_rights['Q'] = false;
+        } else if (move.to == Square::H1) {
+            m_state.castling_rights['K'] = false;
+        } else if (move.to == Square::A8) {
+            m_state.castling_rights['q'] = false;
+        } else if (move.to == Square::H8) {
+            m_state.castling_rights['k'] = false;
+        }
     }
 }
 

@@ -154,3 +154,55 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     CHECK(position.halfmove_clock() == 1);
     CHECK(position.fullmove_number() == 4);
 }
+
+TEST_CASE("Position.MakeMove.Castling Rights", "[Position][MakeMove]") {
+    Position<Bitboard> position{FenString{"r3k2r/8/8/8/8/2B3n1/8/R3K2R w KQkq - 0 1"}};
+
+    Move m1{
+        .from = Square::C3,
+        .to = Square::H8,
+        .piece = Piece::WhiteBishop,
+        .captured = Piece::BlackRook,
+        .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
+    };
+
+    position.make_move(m1);
+    CHECK(position.castling_rights()['K']);
+    CHECK(position.castling_rights()['Q']);
+    CHECK_FALSE(position.castling_rights()['k']);
+    CHECK(position.castling_rights()['q']);
+
+    Move m2{
+        .from = Square::G3,
+        .to = Square::H1,
+        .piece = Piece::BlackKnight,
+        .captured = Piece::WhiteRook,
+        .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
+    };
+
+    position.make_move(m2);
+    CHECK_FALSE(position.castling_rights()['K']);
+    CHECK(position.castling_rights()['Q']);
+    CHECK_FALSE(position.castling_rights()['k']);
+    CHECK(position.castling_rights()['q']);
+
+    Move m3{
+        .from = Square::A1,
+        .to = Square::A8,
+        .piece = Piece::WhiteRook,
+        .captured = Piece::BlackRook,
+        .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
+        .en_passant_target_before = position.en_passant_target(),
+    };
+
+    position.make_move(m3);
+    CHECK_FALSE(position.castling_rights()['K']);
+    CHECK_FALSE(position.castling_rights()['Q']);
+    CHECK_FALSE(position.castling_rights()['k']);
+    CHECK_FALSE(position.castling_rights()['q']);
+}
