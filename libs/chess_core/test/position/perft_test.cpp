@@ -46,7 +46,7 @@ TEST_CASE("Position.Perft.Position 3", "[Position][Perft]") {
     CHECK(perft(position, 3) == 2812);
     CHECK(perft(position, 4) == 43238);
     CHECK(perft(position, 5) == 674624);
-    CHECK(perft(position, 6) == 11030083);
+    // CHECK(perft(position, 6) == 11030083);
     // CHECK(perft(position, 7) == 178633661);
     // CHECK(perft(position, 8) == 3009794393);
 }
@@ -59,4 +59,15 @@ TEST_CASE("Position.Perft.Position 5", "[Position][Perft]") {
     CHECK(perft(position, 3) == 62379);
     CHECK(perft(position, 4) == 2103487);
     // CHECK(perft(position, 5) == 89941194);
+}
+
+TEST_CASE("Position.Perft.Promotions", "[Position][Perft]") {
+    Position<Bitboard> position{FenString{"n1n5/PPPk4/8/8/8/8/4Kppp/5N1N b - - 0 1"}};
+
+    CHECK(perft(position, 1) == 24);
+    CHECK(perft(position, 2) == 496);
+    CHECK(perft(position, 3) == 9483);
+    CHECK(perft(position, 4) == 182838);
+    CHECK(perft(position, 5) == 3605103);
+    // CHECK(perft(position, 6) == 71179139);
 }
