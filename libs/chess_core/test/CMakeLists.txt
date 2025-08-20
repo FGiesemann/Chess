@@ -11,14 +11,15 @@ add_executable(chesscore_tests
     bitboard/move_generation_test.cpp
     bitboard/attack_test.cpp
 
-    position/position_test.cpp
     position/make_move_test.cpp
-    position/unmake_move_test.cpp
     position/move_generation_test.cpp
+    position/perft_test.cpp
+    position/position_test.cpp
+    position/unmake_move_test.cpp
 )
 add_compiler_warnings(chesscore_tests)
 
-target_link_libraries(chesscore_tests PRIVATE chesscore Catch2::Catch2WithMain)
+target_link_libraries(chesscore_tests PRIVATE chesscore chesscore_io Catch2::Catch2WithMain)
 
 include(Catch)
 catch_discover_tests(chesscore_tests)

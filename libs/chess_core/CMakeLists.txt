@@ -19,6 +19,7 @@ add_library(${PROJECT_NAME}
     src/chesscore/chesscore.cpp
     src/chesscore/fen.cpp
     src/chesscore/move.cpp
+    src/chesscore/perft.cpp
     src/chesscore/piece.cpp
     src/chesscore/position.cpp
     src/chesscore/position_types.cpp
