@@ -390,7 +390,8 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
 
 auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &state) const -> void {
     if (state.side_to_move == Color::White) {
-        if (state.castling_rights.white_kingside && !is_attacked(Square::E1, Color::Black) && !is_attacked(Square::F1, Color::Black) && !is_attacked(Square::G1, Color::Black)) {
+        if (state.castling_rights.white_kingside && !is_attacked(Square::E1, Color::Black) && !has_piece(Square::F1) && !is_attacked(Square::F1, Color::Black) &&
+            !has_piece(Square::G1) && !is_attacked(Square::G1, Color::Black)) {
             moves.push_back(
                 Move{
                     .from = Square::E1,
@@ -405,7 +406,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                 }
             );
         }
-        if (state.castling_rights.white_queenside && !is_attacked(Square::E1, Color::Black) && !is_attacked(Square::D1, Color::Black) && !is_attacked(Square::C1, Color::Black)) {
+        if (state.castling_rights.white_queenside && !is_attacked(Square::E1, Color::Black) && !has_piece(Square::D1) && !is_attacked(Square::D1, Color::Black) &&
+            !has_piece(Square::C1) && !is_attacked(Square::C1, Color::Black) && !has_piece(Square::B1)) {
             moves.push_back(
                 Move{
                     .from = Square::E1,
@@ -421,7 +423,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
             );
         }
     } else {
-        if (state.castling_rights.black_kingside && !is_attacked(Square::E8, Color::White) && !is_attacked(Square::F8, Color::White) && !is_attacked(Square::G8, Color::White)) {
+        if (state.castling_rights.black_kingside && !is_attacked(Square::E8, Color::White) && !has_piece(Square::F8) && !is_attacked(Square::F8, Color::White) &&
+            !has_piece(Square::G8) && !is_attacked(Square::G8, Color::White)) {
             moves.push_back(
                 Move{
                     .from = Square::E8,
@@ -436,7 +439,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                 }
             );
         }
-        if (state.castling_rights.black_queenside && !is_attacked(Square::E8, Color::White) && !is_attacked(Square::D8, Color::White) && !is_attacked(Square::C8, Color::White)) {
+        if (state.castling_rights.black_queenside && !is_attacked(Square::E8, Color::White) && !has_piece(Square::D8) && !is_attacked(Square::D8, Color::White) &&
+            !has_piece(Square::C8) && !is_attacked(Square::C8, Color::White) && !has_piece(Square::B8)) {
             moves.push_back(
                 Move{
                     .from = Square::E8,
