@@ -17,8 +17,12 @@ auto perft(Position<BoardT> &pos, int depth) -> std::uint64_t {
         return 1;
     }
 
-    std::uint64_t count{0};
     const auto moves = pos.all_legal_moves();
+    if (depth == 1) {
+        return moves.size();
+    }
+
+    std::uint64_t count{0};
     for (const auto &move : moves) {
         pos.make_move(move);
         count += perft(pos, depth - 1);
