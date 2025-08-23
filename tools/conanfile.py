@@ -1,6 +1,7 @@
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout, CMakeDeps
 
+
 class ChessToolsConan(ConanFile):
     name = "ChessTools"
     version = "1.0.0"
@@ -8,7 +9,7 @@ class ChessToolsConan(ConanFile):
 
     settings = "os", "compiler", "build_type", "arch"
 
-    requires = "chesscore/1.0.0-dev"
+    requires = ["chesscore/1.0.0-dev", "chessgame/1.0.0-dev"]
 
     def layout(self):
         cmake_layout(self)
