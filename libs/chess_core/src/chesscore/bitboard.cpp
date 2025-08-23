@@ -363,10 +363,11 @@ auto Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionS
     while (!targets.empty()) {
         const auto shift = targets.empty_squares_before();
         target_square += shift;
-        targets >>= shift + 1;
+        targets >>= shift;
         const auto source_square = state.side_to_move == Color::White ? (target_square - File::max_file * step_size) : (target_square + File::max_file * step_size);
         generate_pawn_moves(source_square, target_square, std::nullopt, false, state, moves);
         target_square += 1;
+        targets >>= 1;
     }
 }
 
