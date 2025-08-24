@@ -22,10 +22,22 @@ int main(int argc, const char *argv[]) {
         while (opt_game.has_value()) {
             ++count;
             std::cout << "Found PGN game " << count << ".\n";
-            opt_game = parser.read_game();
+            try {
+                opt_game = parser.read_game();
+            } catch (chessgame::PGNError &e) {
+                std::cout << "PGN ERROR: (" << to_string(e.type()) << ") " << e.what() << " (line " << e.line() << ")\n";
+                parser.skip_to_next_game();
+            } catch (chesscore::InvalidFen &e) {
+                std::cout << "ERROR: Cannot interpret FEN: " << e.what() << '\n';
+                parser.skip_to_next_game();
+            }
         }
     } catch (chessgame::PGNError &e) {
         std::cout << "PGN ERROR: (" << to_string(e.type()) << ") " << e.what() << " (line " << e.line() << ")\n";
+        parser.skip_to_next_game();
+    } catch (chesscore::InvalidFen &e) {
+        std::cout << "ERROR: Cannot interpret FEN: " << e.what() << '\n';
+        parser.skip_to_next_game();
     }
     std::cout << "No more games.\n";
 }
