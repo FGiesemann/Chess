@@ -376,7 +376,7 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
     while (!targets.empty()) {
         const auto shift = targets.empty_squares_before();
         target_square += shift;
-        targets >>= shift + 1;
+        targets >>= shift;
         const auto source_square = Square{
             File{direction == PawnCaptureDirection::East ? target_square.file().file - 1 : target_square.file().file + 1},
             Rank{state.side_to_move == Color::White ? target_square.rank().rank - 1 : target_square.rank().rank + 1},
@@ -386,6 +386,7 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
             source_square, target_square, captured.value_or(Piece{.type = PieceType::Pawn, .color = other_color(state.side_to_move)}), !captured.has_value(), state, moves
         );
         target_square += 1;
+        targets >>= 1;
     }
 }
 
