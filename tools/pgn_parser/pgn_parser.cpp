@@ -27,17 +27,16 @@ int main(int argc, const char *argv[]) {
                 need_to_skip = false;
                 std::cout << "... skipping done ...\n";
             }
+            ++count;
             const auto opt_game = parser.read_game();
             if (!opt_game.has_value()) {
                 break;
             }
-            ++count;
-            std::cout << "Found PGN game " << count << ".\n";
         } catch (const chessgame::PGNError &e) {
-            std::cout << "Error reading PGN file: " << to_string(e.type()) << " at line " << e.line() << ": " << e.what() << '\n';
+            std::cout << "(" << count << "): Error reading PGN file: " << to_string(e.type()) << " at line " << e.line() << ": " << e.what() << '\n';
             need_to_skip = true;
         } catch (const chesscore::InvalidFen &e) {
-            std::cout << "Error interpreting FEN: " << e.what() << '\n';
+            std::cout << "(" << count << "): Error interpreting FEN: " << e.what() << '\n';
             need_to_skip = true;
         }
     }
