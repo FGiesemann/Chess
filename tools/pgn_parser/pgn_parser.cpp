@@ -22,21 +22,25 @@ int main(int argc, const char *argv[]) {
     while (parsing) {
         try {
             if (need_to_skip) {
-                std::cout << "... skipping to next game ...\n";
                 parser.skip_to_next_game();
                 need_to_skip = false;
-                std::cout << "... skipping done ...\n";
             }
             ++count;
             const auto opt_game = parser.read_game();
             if (!opt_game.has_value()) {
                 break;
             }
+            if (!parser.warnings().empty()) {
+                std::cout << "(game " << count << "): Parsed with warnings:\n";
+                for (const auto &warning : parser.warnings()) {
+                    std::cout << "  (line " << warning.line << ") " << to_string(warning.type) << ": " << warning.description << '\n';
+                }
+            }
         } catch (const chessgame::PGNError &e) {
-            std::cout << "(" << count << "): Error reading PGN file: " << to_string(e.type()) << " at line " << e.line() << ": " << e.what() << '\n';
+            std::cout << "(game " << count << "): Error reading PGN file: " << to_string(e.type()) << " at line " << e.line() << ": " << e.what() << '\n';
             need_to_skip = true;
         } catch (const chesscore::InvalidFen &e) {
-            std::cout << "(" << count << "): Error interpreting FEN: " << e.what() << '\n';
+            std::cout << "(game " << count << "): Error interpreting FEN: " << e.what() << '\n';
             need_to_skip = true;
         }
     }
