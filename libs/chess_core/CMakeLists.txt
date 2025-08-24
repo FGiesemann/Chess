@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 project(chesscore VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
@@ -30,6 +28,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 add_compiler_warnings(${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME}
@@ -56,6 +55,7 @@ target_include_directories(${PROJECT_NAME}_io PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
+target_compile_features(${PROJECT_NAME}_io PUBLIC cxx_std_20)
 target_link_libraries(${PROJECT_NAME}_io PRIVATE ${PROJECT_NAME})
 add_compiler_warnings(${PROJECT_NAME}_io)
 target_compile_options(${PROJECT_NAME}_io PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
