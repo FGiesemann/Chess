@@ -17,27 +17,30 @@ int main(int argc, const char *argv[]) {
 
     chessgame::PGNParser parser{pgn_file};
     std::uint64_t count{0};
-    try {
-        auto opt_game = parser.read_game();
-        while (opt_game.has_value()) {
+    bool parsing = true;
+    bool need_to_skip = false;
+    while (parsing) {
+        try {
+            if (need_to_skip) {
+                std::cout << "... skipping to next game ...\n";
+                parser.skip_to_next_game();
+                need_to_skip = false;
+                std::cout << "... skipping done ...\n";
+            }
+            const auto opt_game = parser.read_game();
+            if (!opt_game.has_value()) {
+                break;
+            }
             ++count;
             std::cout << "Found PGN game " << count << ".\n";
-            try {
-                opt_game = parser.read_game();
-            } catch (chessgame::PGNError &e) {
-                std::cout << "PGN ERROR: (" << to_string(e.type()) << ") " << e.what() << " (line " << e.line() << ")\n";
-                parser.skip_to_next_game();
-            } catch (chesscore::InvalidFen &e) {
-                std::cout << "ERROR: Cannot interpret FEN: " << e.what() << '\n';
-                parser.skip_to_next_game();
-            }
+        } catch (const chessgame::PGNError &e) {
+            std::cout << "Error reading PGN file: " << to_string(e.type()) << " at line " << e.line() << ": " << e.what() << '\n';
+            need_to_skip = true;
+        } catch (const chesscore::InvalidFen &e) {
+            std::cout << "Error interpreting FEN: " << e.what() << '\n';
+            need_to_skip = true;
         }
-    } catch (chessgame::PGNError &e) {
-        std::cout << "PGN ERROR: (" << to_string(e.type()) << ") " << e.what() << " (line " << e.line() << ")\n";
-        parser.skip_to_next_game();
-    } catch (chesscore::InvalidFen &e) {
-        std::cout << "ERROR: Cannot interpret FEN: " << e.what() << '\n';
-        parser.skip_to_next_game();
     }
+
     std::cout << "No more games.\n";
 }
