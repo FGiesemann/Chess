@@ -52,6 +52,10 @@ add_library(${PROJECT_NAME}_io
     src/chesscore_io/piece_io.cpp
     src/chesscore_io/square_io.cpp
 )
+target_include_directories(${PROJECT_NAME}_io PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 target_link_libraries(${PROJECT_NAME}_io PRIVATE ${PROJECT_NAME})
 add_compiler_warnings(${PROJECT_NAME}_io)
 target_compile_options(${PROJECT_NAME}_io PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
