@@ -49,6 +49,7 @@ add_library(${PROJECT_NAME}_io
     src/chesscore_io/bitmap_io.cpp
     src/chesscore_io/move_io.cpp
     src/chesscore_io/piece_io.cpp
+    src/chesscore_io/position_io.cpp
     src/chesscore_io/square_io.cpp
 )
 target_include_directories(${PROJECT_NAME}_io PUBLIC

@@ -41,4 +41,8 @@ auto color_name(Color color) -> std::string {
     return color == Color::White ? "White" : "Black";
 }
 
+auto operator<<(std::ostream &os, Color color) -> std::ostream & {
+    return os << color_name(color);
+}
+
 } // namespace chesscore

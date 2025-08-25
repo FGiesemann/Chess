@@ -11,6 +11,7 @@
 #include "chesscore_io/bitmap_io.h"
 #include "chesscore_io/move_io.h"
 #include "chesscore_io/piece_io.h"
+#include "chesscore_io/position_io.h"
 #include "chesscore_io/square_io.h"
 
 #endif
