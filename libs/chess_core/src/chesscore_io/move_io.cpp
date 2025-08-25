@@ -30,16 +30,17 @@ auto operator<<(std::ostream &os, const Move &move) -> std::ostream & {
         os << move.piece;
     }
     os << move.from;
-    os << (move.captured ? "x" : "-");
+    if (move.captured) {
+        os << 'x' << move.captured.value().type;
+    } else {
+        os << "-";
+    }
     os << move.to;
     if (move.promoted) {
         os << "=" << move.promoted.value();
     }
     if (move.capturing_en_passant) {
         os << " (e.p.)";
-    }
-    if (move.captured) {
-        os << " (x" << move.captured.value() << ")";
     }
     return os;
 }

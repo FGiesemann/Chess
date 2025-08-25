@@ -9,6 +9,25 @@
 
 namespace chesscore {
 
+auto operator<<(std::ostream &os, PieceType type) -> std::ostream & {
+    switch (type) {
+    case PieceType::Pawn:
+        return os << "P";
+    case PieceType::Rook:
+        return os << "R";
+    case PieceType::Knight:
+        return os << "N";
+    case PieceType::Bishop:
+        return os << "B";
+    case PieceType::Queen:
+        return os << "Q";
+    case PieceType::King:
+        return os << "K";
+    default:
+        return os << "<invalid piece type>";
+    }
+}
+
 auto operator<<(std::ostream &os, const Piece &piece) -> std::ostream & {
     const auto index = static_cast<std::underlying_type_t<PieceType>>(piece.type) + (piece.color == Color::White ? 0 : piece_type_count);
     return os << "PRNBQKprnbqk"[index];
