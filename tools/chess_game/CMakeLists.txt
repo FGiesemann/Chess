@@ -1,4 +1,5 @@
 add_executable(chess_game
+    commands.cpp
     main.cpp
     user_io.cpp
 )
