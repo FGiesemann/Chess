@@ -7,6 +7,7 @@
 #include "commands.h"
 
 #include <iostream>
+#include <sstream>
 
 auto prompt_user(const std::string &prompt = "> ") -> std::string {
     std::string input{};
@@ -36,9 +37,24 @@ Moves:
         Play a move that is given in standard algebraic notation
   m? <SAN>
         Test, if the given SAN move is legal and unambiguous
+  play <movetext>
+        Play the moves that are found in movetext, ignoring everything that is
+        not a move. The movetext can span multiple lines. If a move from the
+        sequence cannot be played (illegal, ambiguous, ...), the process stops
+        with that move.
   list
         List all legal moves
 )";
+}
+
+auto gather_movetext(const std::string &input) -> std::string {
+    std::stringstream sstr;
+    sstr << input;
+    std::string line{};
+    while (std::getline(std::cin, line) && !line.empty()) {
+        sstr << ' ' << line;
+    }
+    return sstr.str();
 }
 
 auto handle_user_input(Context &context) -> void {
@@ -56,6 +72,9 @@ auto handle_user_input(Context &context) -> void {
         apply_san_move(input, context);
     } else if (input.starts_with("m? ")) {
         test_san_move(input.substr(3), context);
+    } else if (input.starts_with("play ")) {
+        const auto movetext = gather_movetext(input.substr(5));
+        play_moves(movetext, context);
     } else if (input == "list") {
         list_legal_moves(context);
     } else {
