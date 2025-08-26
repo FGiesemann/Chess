@@ -17,6 +17,8 @@ auto reset_game(Context &context) -> void {
 
 auto print_game_status(const Context &context) -> void {
     std::cout << '\n' << context.mainline.position();
+    std::cout << "White in check: " << context.mainline.position().is_king_in_check(chesscore::Color::White)
+              << " | Black in check: " << context.mainline.position().is_king_in_check(chesscore::Color::Black) << '\n';
 }
 
 auto set_fen(std::string &input, Context &context) -> void {
