@@ -209,6 +209,16 @@ public:
     auto all_pawn_moves(MoveList &moves, const PositionState &state) const -> void;
 
     /**
+     * \brief Search the board for a king.
+     *
+     * Search the board for a king of the given color and return the square, if
+     * a king was found.
+     * \param color The color.
+     * \return The square of the king, if found.
+     */
+    auto find_king(Color color) const -> std::optional<Square>;
+
+    /**
      * \brief Check, if a square is under attack.
      *
      * Checks, if the given square is under attack by a piece of the gven color.
@@ -304,7 +314,6 @@ private:
     auto generate_castling_moves(MoveList &moves, const PositionState &state) const -> void;
 
     auto store_move_if_legal(const Move &move, MoveList &moves) const -> void;
-    auto find_king(Color color) const -> std::optional<Square>;
 };
 
 static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");
