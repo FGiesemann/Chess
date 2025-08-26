@@ -131,6 +131,16 @@ public:
      * \return A list of all legal moves for the given position.
      */
     auto all_legal_moves() const -> MoveList;
+
+    /**
+     * \brief Checks, if a king is under attack.
+     *
+     * Checks, if the king of the given color is under attack. If no king of the
+     * given color exists, it is obviously not under attack.
+     * \param color The color
+     * \return If the king of the given color is under attack.
+     */
+    auto is_king_in_check(Color color) const -> bool;
 private:
     BoardT m_board{};        ///< Current placement of pieces on the board.
     PositionState m_state{}; ///< The current state of the position.
@@ -257,6 +267,15 @@ auto Position<BoardT>::resetCastlingRights(const Move &move) -> void {
 template<Board BoardT>
 auto Position<BoardT>::all_legal_moves() const -> MoveList {
     return m_board.all_legal_moves(state());
+}
+
+template<Board BoardT>
+auto Position<BoardT>::is_king_in_check(Color color) const -> bool {
+    const auto king_sq = m_board.find_king(color);
+    if (king_sq.has_value()) {
+        return m_board.is_attacked(king_sq.value(), other_color(color));
+    }
+    return false;
 }
 
 } // namespace chesscore

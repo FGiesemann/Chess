@@ -78,3 +78,18 @@ TEST_CASE("Position.Bitboard.Init.FEN", "[Position][Init][FEN]") {
     CHECK_FALSE(position2.board().get_piece(Square::F1).has_value());
     CHECK(position2.board().get_piece(Square::G1) == Piece::WhiteKnight);
 }
+
+TEST_CASE("Position.Bitboard.King in Check", "[Position]") {
+    Position<Bitboard> position{FenString{"8/1pk5/8/Q7/8/5n2/6P1/4K3 w - - 0 1"}};
+
+    CHECK(position.is_king_in_check(Color::White));
+    CHECK(position.is_king_in_check(Color::Black));
+
+    position.make_move(Move{.from = Square::G2, .to = Square::F3, .piece = Piece::WhitePawn, .captured = Piece::BlackKnight});
+    CHECK_FALSE(position.is_king_in_check(Color::White));
+    CHECK(position.is_king_in_check(Color::Black));
+
+    position.make_move(Move{.from = Square::B7, .to = Square::B6, .piece = Piece::BlackPawn});
+    CHECK_FALSE(position.is_king_in_check(Color::White));
+    CHECK_FALSE(position.is_king_in_check(Color::Black));
+}
