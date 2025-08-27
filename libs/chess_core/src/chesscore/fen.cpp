@@ -46,6 +46,9 @@ FenString::FenString(
     m_fen_string += " " + std::to_string(m_halfmove_clock) + " " + std::to_string(m_fullmove_number);
 }
 
+FenString::FenString(const PiecePlacement &placement, const PositionState &state)
+    : FenString{placement, state.side_to_move, state.castling_rights, state.en_passant_target, state.halfmove_clock, state.fullmove_number} {}
+
 auto FenString::starting_position() -> FenString {
     return FenString{std::string{starting_position_fen}};
 }

@@ -5,7 +5,9 @@
 
 #include <catch2/catch_all.hpp>
 
+#include "chesscore/bitboard.h"
 #include "chesscore/fen.h"
+#include "chesscore/position.h"
 
 using namespace chesscore;
 
@@ -224,4 +226,18 @@ TEST_CASE("Data.FEN.Write.Whole FEN", "[FENString][Write]") {
     CHECK(build_fen_string(fen).str() == fen);
     fen = "r2r1b2/p1p1p1pp/bp3p2/2kq4/QP1BPnB1/2PNPNP1/P2P3P/R3K3 b K b3 0 1";
     CHECK(build_fen_string(fen).str() == fen);
+}
+
+auto build_position_fen(const std::string &fen) -> FenString {
+    const auto pos = Position<Bitboard>{FenString{fen}};
+    return FenString{pos.piece_placement(), pos.state()};
+}
+
+TEST_CASE("Data.FEN.Write.Position", "[FENString][Write]") {
+    std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    CHECK(build_position_fen(fen).str() == fen);
+    fen = "r2r1b2/p1pkp1pp/bpnp1p2/8/Qq1BPnBR/2PN1NP1/PP1P1P1P/R4K2 b - - 0 1";
+    CHECK(build_position_fen(fen).str() == fen);
+    fen = "r2r1b2/p1p1p1pp/bp3p2/2kq4/QP1BPnB1/2PNPNP1/P2P3P/R3K3 b K b3 0 1";
+    CHECK(build_position_fen(fen).str() == fen);
 }

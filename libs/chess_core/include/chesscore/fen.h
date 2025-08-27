@@ -67,6 +67,8 @@ public:
         const PiecePlacement &piece_placement, Color side_to_move, const CastlingRights &castling_rights, std::optional<Square> en_passant, int halfmove_clock, int fullmove_number
     );
 
+    FenString(const PiecePlacement &piece_placement, const PositionState &state);
+
     /**
      * \brief Generate a FEN strig for the starting position.
      *

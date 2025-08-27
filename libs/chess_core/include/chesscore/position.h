@@ -141,6 +141,14 @@ public:
      * \return If the king of the given color is under attack.
      */
     auto is_king_in_check(Color color) const -> bool;
+
+    /**
+     * \brief Get the piece placement of the position.
+     *
+     * Creates the piece placement describing the pieces on the board.
+     * \return The piece placement.
+     */
+    auto piece_placement() const -> PiecePlacement;
 private:
     BoardT m_board{};        ///< Current placement of pieces on the board.
     PositionState m_state{}; ///< The current state of the position.
@@ -276,6 +284,21 @@ auto Position<BoardT>::is_king_in_check(Color color) const -> bool {
         return m_board.is_attacked(king_sq.value(), other_color(color));
     }
     return false;
+}
+
+template<Board BoardT>
+auto Position<BoardT>::piece_placement() const -> PiecePlacement {
+    PiecePlacement pieces{};
+    for (int rank = Rank::max_rank; rank >= Rank::min_rank; --rank) {
+        for (int file = File::min_file; file <= File::max_file; ++file) {
+            const Square square{file, rank};
+            const auto piece = m_board.get_piece(square);
+            if (piece) {
+                pieces[square.index()] = piece.value();
+            }
+        }
+    }
+    return pieces;
 }
 
 } // namespace chesscore
