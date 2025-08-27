@@ -32,7 +32,18 @@ FenString::FenString(
 )
     : m_piece_placement{piece_placement}, m_side_to_move{side_to_move}, m_castling_rights{castling_rights}, m_en_passant{en_passant}, m_halfmove_clock{halfmove_clock},
       m_fullmove_number{fullmove_number} {
-    m_fen_string = detail::placement_to_string(m_piece_placement) + " " + (m_side_to_move == Color::White ? "w" : "b");
+    m_fen_string = detail::placement_to_string(m_piece_placement) + " " + (m_side_to_move == Color::White ? "w" : "b") + " ";
+    if (m_castling_rights != CastlingRights::none()) {
+        m_fen_string += detail::castling_rights_to_string(m_castling_rights);
+    } else {
+        m_fen_string += '-';
+    }
+    if (m_en_passant.has_value()) {
+        m_fen_string += " " + to_string(m_en_passant.value());
+    } else {
+        m_fen_string += " -";
+    }
+    m_fen_string += " " + std::to_string(m_halfmove_clock) + " " + std::to_string(m_fullmove_number);
 }
 
 auto FenString::starting_position() -> FenString {
@@ -267,6 +278,26 @@ auto placement_to_string([[maybe_unused]] const PiecePlacement &placement) -> st
         if (row > 0) {
             result += '/';
         }
+    }
+    return result;
+}
+
+auto castling_rights_to_string(const CastlingRights &castling_rights) -> std::string {
+    std::string result;
+    if (castling_rights.white_kingside) {
+        result += 'K';
+    }
+    if (castling_rights.white_queenside) {
+        result += 'Q';
+    }
+    if (castling_rights.black_kingside) {
+        result += 'k';
+    }
+    if (castling_rights.black_queenside) {
+        result += 'q';
+    }
+    if (result.empty()) {
+        result += '-';
     }
     return result;
 }

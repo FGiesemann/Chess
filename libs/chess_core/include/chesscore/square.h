@@ -340,6 +340,8 @@ auto operator+(const Square &square, int squares) -> Square;
  */
 auto operator-(const Square &square, int squares) -> Square;
 
+auto to_string(const Square &square) -> std::string;
+
 } // namespace chesscore
 
 #endif

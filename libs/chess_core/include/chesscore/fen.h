@@ -154,6 +154,7 @@ auto check_halfmove_clock(const std::string &fen_string, std::size_t pos) -> std
 auto check_fullmove_number(const std::string &fen_string, std::size_t pos) -> int;
 
 auto placement_to_string(const PiecePlacement &placement) -> std::string;
+auto castling_rights_to_string(const CastlingRights &castling_rights) -> std::string;
 
 } // namespace detail
 

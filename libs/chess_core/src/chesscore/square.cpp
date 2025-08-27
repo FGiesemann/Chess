@@ -97,4 +97,8 @@ auto operator-(const Square &square, int squares) -> Square {
     return result;
 }
 
+auto to_string(const Square &square) -> std::string {
+    return std::string{square.file().name()} + std::to_string(square.rank().rank);
+}
+
 } // namespace chesscore

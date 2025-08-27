@@ -172,3 +172,56 @@ TEST_CASE("Data.FEN.Write.Piece Placement", "[FENString][Write]") {
     const std::string pieces3 = "r2r1b2/p1pkp1pp/bpnp1p2/8/Qq1BPnBR/2PN1NP1/PP1P1P1P/R4K2";
     CHECK(detail::placement_to_string(placement_for_pieces(pieces3)) == pieces3);
 }
+
+TEST_CASE("Data.FEN.Write.Castling Availability", "[FENString][Write]") {
+    CHECK(detail::castling_rights_to_string(CastlingRights::none()) == "-");
+    CHECK(detail::castling_rights_to_string(CastlingRights::all()) == "KQkq");
+    CastlingRights rights = CastlingRights::none();
+    rights.white_kingside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "K");
+    rights = CastlingRights::none();
+    rights.white_queenside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "Q");
+    rights = CastlingRights::none();
+    rights.black_kingside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "k");
+    rights = CastlingRights::none();
+    rights.black_queenside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "q");
+    rights = CastlingRights::none();
+    rights.white_kingside = true;
+    rights.white_queenside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "KQ");
+    rights = CastlingRights::none();
+    rights.black_kingside = true;
+    rights.black_queenside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "kq");
+    rights = CastlingRights::none();
+    rights.white_kingside = true;
+    rights.black_kingside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "Kk");
+    rights = CastlingRights::none();
+    rights.white_queenside = true;
+    rights.black_queenside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "Qq");
+    rights = CastlingRights::none();
+    rights.white_kingside = true;
+    rights.black_kingside = false;
+    rights.white_queenside = true;
+    rights.black_queenside = true;
+    CHECK(detail::castling_rights_to_string(rights) == "KQq");
+}
+
+auto build_fen_string(const std::string &fen) -> FenString {
+    const auto in_fen = FenString{fen};
+    return FenString{in_fen.piece_placement(), in_fen.side_to_move(), in_fen.castling_rights(), in_fen.en_passant_square(), in_fen.halfmove_clock(), in_fen.fullmove_number()};
+}
+
+TEST_CASE("Data.FEN.Write.Whole FEN", "[FENString][Write]") {
+    std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    CHECK(build_fen_string(fen).str() == fen);
+    fen = "r2r1b2/p1pkp1pp/bpnp1p2/8/Qq1BPnBR/2PN1NP1/PP1P1P1P/R4K2 b - - 0 1";
+    CHECK(build_fen_string(fen).str() == fen);
+    fen = "r2r1b2/p1p1p1pp/bp3p2/2kq4/QP1BPnB1/2PNPNP1/P2P3P/R3K3 b K b3 0 1";
+    CHECK(build_fen_string(fen).str() == fen);
+}
