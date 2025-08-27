@@ -8,6 +8,7 @@
 #define CHESSCORE_BITBOARD_TABLES_H
 
 #include "chesscore/bitmap.h"
+#include "chesscore/board.h"
 #include "chesscore/piece.h"
 #include "chesscore/square.h"
 #include "chesscore/table.h"
