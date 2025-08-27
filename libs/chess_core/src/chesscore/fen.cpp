@@ -27,6 +27,14 @@ FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
     m_fullmove_number = detail::check_fullmove_number(fen_string, half.second);
 }
 
+FenString::FenString(
+    const PiecePlacement &piece_placement, Color side_to_move, const CastlingRights &castling_rights, std::optional<Square> en_passant, int halfmove_clock, int fullmove_number
+)
+    : m_piece_placement{piece_placement}, m_side_to_move{side_to_move}, m_castling_rights{castling_rights}, m_en_passant{en_passant}, m_halfmove_clock{halfmove_clock},
+      m_fullmove_number{fullmove_number} {
+    m_fen_string = detail::placement_to_string(m_piece_placement) + " " + (m_side_to_move == Color::White ? "w" : "b");
+}
+
 auto FenString::starting_position() -> FenString {
     return FenString{std::string{starting_position_fen}};
 }
@@ -234,6 +242,33 @@ auto check_fullmove_number(const std::string &fen_string, size_t pos) -> int {
         ++pos;
     }
     return std::stoi(fen_string.substr(start, pos - start));
+}
+
+auto placement_to_string([[maybe_unused]] const PiecePlacement &placement) -> std::string {
+    std::string result;
+    int blank_count{0};
+    for (int row = Rank::max_rank - 1; row >= 0; --row) {
+        for (int column = 0; column < File::max_file; ++column) {
+            int index = row * File::max_file + column;
+            if (!placement[index].has_value()) {
+                ++blank_count;
+            } else {
+                if (blank_count > 0) {
+                    result += std::to_string(blank_count);
+                    blank_count = 0;
+                }
+                result += placement[index].value().piece_char();
+            }
+        }
+        if (blank_count > 0) {
+            result += std::to_string(blank_count);
+        }
+        blank_count = 0;
+        if (row > 0) {
+            result += '/';
+        }
+    }
+    return result;
 }
 
 } // namespace detail

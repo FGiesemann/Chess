@@ -117,6 +117,8 @@ struct Piece {
     static const Piece BlackQueen;  ///< A black queen.
     static const Piece BlackKing;   ///< A black king.
     ///@}
+
+    auto piece_char() const -> char;
 };
 
 static constexpr size_t min_white_piece_index{0U};  ///< Index of the first white piece (white pawn)

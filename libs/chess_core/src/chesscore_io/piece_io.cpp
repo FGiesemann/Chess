@@ -29,8 +29,7 @@ auto operator<<(std::ostream &os, PieceType type) -> std::ostream & {
 }
 
 auto operator<<(std::ostream &os, const Piece &piece) -> std::ostream & {
-    const auto index = static_cast<std::underlying_type_t<PieceType>>(piece.type) + (piece.color == Color::White ? 0 : piece_type_count);
-    return os << "PRNBQKprnbqk"[index];
+    return os << piece.piece_char();
 }
 
 auto symbolic_name(const Piece &piece) -> std::string {

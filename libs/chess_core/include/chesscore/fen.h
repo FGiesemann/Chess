@@ -63,6 +63,10 @@ public:
      */
     explicit FenString(const std::string &fen_string);
 
+    FenString(
+        const PiecePlacement &piece_placement, Color side_to_move, const CastlingRights &castling_rights, std::optional<Square> en_passant, int halfmove_clock, int fullmove_number
+    );
+
     /**
      * \brief Generate a FEN strig for the starting position.
      *
@@ -148,6 +152,8 @@ auto check_castling_availability(const std::string &fen_string, std::size_t pos)
 auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t>;
 auto check_halfmove_clock(const std::string &fen_string, std::size_t pos) -> std::pair<int, std::size_t>;
 auto check_fullmove_number(const std::string &fen_string, std::size_t pos) -> int;
+
+auto placement_to_string(const PiecePlacement &placement) -> std::string;
 
 } // namespace detail
 
