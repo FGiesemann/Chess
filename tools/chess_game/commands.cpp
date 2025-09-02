@@ -24,9 +24,8 @@ auto print_game_status(const Context &context) -> void {
 }
 
 auto set_fen(std::string &input, Context &context) -> void {
-    std::vector<chessgame::metadata_tag> metadata{
-        {.name = "FEN", .value = input.substr(4)}
-    };
+    chessgame::GameMetadata metadata;
+    metadata.add("FEN", input.substr(4));
     context.game = chessgame::Game{metadata};
     context.mainline = context.game.cursor();
 }
