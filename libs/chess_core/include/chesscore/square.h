@@ -92,6 +92,8 @@ struct File {
     friend auto operator==(const File &lhs, const File &rhs) -> bool { return lhs.file == rhs.file; }
 };
 
+auto operator<(const File &lhs, const File &rhs) -> bool;
+
 static constexpr auto get_index(const File &file) -> int {
     return file.file - 1;
 }
@@ -146,6 +148,8 @@ struct Rank {
      */
     friend auto operator==(const Rank &lhs, const Rank &rhs) -> bool { return lhs.rank == rhs.rank; }
 };
+
+auto operator<(const Rank &lhs, const Rank &rhs) -> bool;
 
 static constexpr auto get_index(const Rank &rank) -> int {
     return rank.rank - 1;

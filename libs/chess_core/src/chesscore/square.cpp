@@ -11,6 +11,14 @@ auto File::name() const -> char {
     return static_cast<char>(file + 'a' - 1);
 }
 
+auto operator<(const File &lhs, const File &rhs) -> bool {
+    return lhs.file < rhs.file;
+}
+
+auto operator<(const Rank &lhs, const Rank &rhs) -> bool {
+    return lhs.rank < rhs.rank;
+}
+
 // NOLINTBEGIN(readability-identifier-length,modernize-use-designated-initializers)
 const Square Square::A1{File{'a'}, Rank{1}};
 const Square Square::A2{File{'a'}, Rank{2}};
