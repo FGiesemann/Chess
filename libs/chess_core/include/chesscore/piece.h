@@ -119,6 +119,7 @@ struct Piece {
     ///@}
 
     auto piece_char() const -> char;
+    auto piece_char_colorless() const -> char;
 };
 
 static constexpr size_t min_white_piece_index{0U};  ///< Index of the first white piece (white pawn)

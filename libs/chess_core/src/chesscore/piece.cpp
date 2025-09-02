@@ -40,6 +40,11 @@ auto Piece::piece_char() const -> char {
     return "PRNBQKprnbqk"[index];
 }
 
+auto Piece::piece_char_colorless() const -> char {
+    const auto index = static_cast<std::underlying_type_t<PieceType>>(type);
+    return "PRNBQK"[index];
+}
+
 auto piece_from_fen_letter(char letter) -> Piece {
     if (std::isupper(letter) != 0) {
         return Piece{.type = piece_type_from_char(letter), .color = Color::White};
