@@ -62,6 +62,8 @@ struct Move {
     auto operator==(const Move &rhs) const -> bool;
 };
 
+auto to_string(const Move &move) -> std::string;
+
 /**
  * \brief Partial comparison of two moves.
  *

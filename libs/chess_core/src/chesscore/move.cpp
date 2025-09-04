@@ -6,10 +6,33 @@
 
 #include "chesscore/move.h"
 
+#include <sstream>
+
 namespace chesscore {
 
 auto Move::operator==(const Move &rhs) const -> bool {
     return from == rhs.from && to == rhs.to && piece == rhs.piece && captured == rhs.captured && capturing_en_passant == rhs.capturing_en_passant && promoted == rhs.promoted;
+}
+
+auto to_string(const Move &move) -> std::string {
+    std::stringstream sstr;
+    if (move.piece.type != PieceType::Pawn) {
+        sstr << move.piece.piece_char_colorless();
+    }
+    sstr << move.from.file().name() << move.from.rank().rank;
+    if (move.captured) {
+        sstr << 'x' << move.captured.value().piece_char_colorless();
+    } else {
+        sstr << "-";
+    }
+    sstr << move.to.file().name() << move.to.rank().rank;
+    if (move.promoted) {
+        sstr << "=" << move.promoted.value().piece_char_colorless();
+    }
+    if (move.capturing_en_passant) {
+        sstr << " (e.p.)";
+    }
+    return sstr.str();
 }
 
 auto is_moving_same_piece(const Move &move1, const Move &move2) -> bool {

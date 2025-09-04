@@ -26,23 +26,7 @@ auto to_uppercase(const std::string &str) -> std::string {
 } // namespace
 
 auto operator<<(std::ostream &os, const Move &move) -> std::ostream & {
-    if (move.piece.type != PieceType::Pawn) {
-        os << move.piece;
-    }
-    os << move.from;
-    if (move.captured) {
-        os << 'x' << move.captured.value().type;
-    } else {
-        os << "-";
-    }
-    os << move.to;
-    if (move.promoted) {
-        os << "=" << move.promoted.value();
-    }
-    if (move.capturing_en_passant) {
-        os << " (e.p.)";
-    }
-    return os;
+    return os << to_string(move);
 }
 
 auto write_move_constructor(std::ostream &os, const Move &move) -> std::ostream & {
