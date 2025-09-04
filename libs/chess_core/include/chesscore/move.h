@@ -109,6 +109,15 @@ struct BasicMoveCompare {
 };
 
 /**
+ * \brief Function object to compare moves.
+ *
+ * Compares two moves with the equality operator.
+ */
+struct FullMoveCompare {
+    auto operator()(const Move &move1, const Move &move2) -> bool { return move1 == move2; }
+};
+
+/**
  * \brief Function object to compare moves with check for promotion.
  *
  * Compares moves according to the is_moving_same_piece_and_promotes function.
