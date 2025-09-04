@@ -143,6 +143,16 @@ public:
     auto is_king_in_check(Color color) const -> bool;
 
     /**
+     * \brief Determine the check state of the position.
+     *
+     * The check state of the player to move is returned. The player is in
+     * check, if his king is under attack, but he still has legal moves. If
+     * there are no legal moves, the player is in checkmate.
+     * \return Check state for the player to move.
+     */
+    auto check_state() const -> CheckState;
+
+    /**
      * \brief Get the piece placement of the position.
      *
      * Creates the piece placement describing the pieces on the board.
@@ -284,6 +294,18 @@ auto Position<BoardT>::is_king_in_check(Color color) const -> bool {
         return m_board.is_attacked(king_sq.value(), other_color(color));
     }
     return false;
+}
+
+template<Board BoardT>
+auto Position<BoardT>::check_state() const -> CheckState {
+    if (is_king_in_check(m_state.side_to_move)) {
+        if (all_legal_moves().empty()) {
+            return CheckState::Checkmate;
+        } else {
+            return CheckState::Check;
+        }
+    }
+    return CheckState::None;
 }
 
 template<Board BoardT>

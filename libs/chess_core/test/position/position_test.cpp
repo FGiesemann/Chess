@@ -93,3 +93,7 @@ TEST_CASE("Position.Bitboard.King in Check", "[Position]") {
     CHECK_FALSE(position.is_king_in_check(Color::White));
     CHECK_FALSE(position.is_king_in_check(Color::Black));
 }
+
+TEST_CASE("Position.Bitboard.Check State", "[Position]") {
+    FAIL("Not yet implemented!");
+}

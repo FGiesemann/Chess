@@ -97,6 +97,15 @@ struct CastlingRights {
     static auto none() -> CastlingRights { return CastlingRights{false, false, false, false}; }
 };
 
+/**
+ * \brief Possible check states of a position.
+ */
+enum class CheckState {
+    None,     ///< No check.
+    Check,    ///< Check.
+    Checkmate ///< Checkmate.
+};
+
 struct PositionState {
     Color side_to_move{Color::White};                       ///< The player who moves next.
     int fullmove_number{1};                                 ///< Number of the next move.
