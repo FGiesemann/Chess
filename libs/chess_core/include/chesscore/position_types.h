@@ -101,9 +101,10 @@ struct CastlingRights {
  * \brief Possible check states of a position.
  */
 enum class CheckState {
-    None,     ///< No check.
-    Check,    ///< Check.
-    Checkmate ///< Checkmate.
+    None,      ///< No check.
+    Check,     ///< Check.
+    Checkmate, ///< Checkmate.
+    Stalemate  ///< Stalemate.
 };
 
 struct PositionState {

@@ -304,6 +304,10 @@ auto Position<BoardT>::check_state() const -> CheckState {
         } else {
             return CheckState::Check;
         }
+    } else {
+        if (all_legal_moves().empty()) {
+            return CheckState::Stalemate;
+        }
     }
     return CheckState::None;
 }
