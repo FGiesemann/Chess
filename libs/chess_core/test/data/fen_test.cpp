@@ -11,6 +11,25 @@
 
 using namespace chesscore;
 
+namespace {
+
+auto placement_for_pieces(const std::string &pieces) -> PiecePlacement {
+    const auto [placement, index] = detail::check_piece_placement(pieces);
+    return placement;
+}
+
+auto build_fen_string(const std::string &fen) -> FenString {
+    const auto in_fen = FenString{fen};
+    return FenString{in_fen.piece_placement(), in_fen.side_to_move(), in_fen.castling_rights(), in_fen.en_passant_square(), in_fen.halfmove_clock(), in_fen.fullmove_number()};
+}
+
+auto build_position_fen(const std::string &fen) -> FenString {
+    const auto pos = Position<Bitboard>{FenString{fen}};
+    return FenString{pos.piece_placement(), pos.state()};
+}
+
+} // namespace
+
 TEST_CASE("Data.FEN.Read.Empty FEN string", "[FENString][Init]") {
     FenString empty_board{};
     CHECK(empty_board.str() == "8/8/8/8/8/8/8/8 w - - 0 1");
@@ -161,11 +180,6 @@ TEST_CASE("Data.FEN.Read.Valid FEN strings", "[FENString][Validity]") {
     CHECK(fen.fullmove_number() == 39);
 }
 
-auto placement_for_pieces(const std::string &pieces) -> PiecePlacement {
-    const auto [placement, index] = detail::check_piece_placement(pieces);
-    return placement;
-}
-
 TEST_CASE("Data.FEN.Write.Piece Placement", "[FENString][Write]") {
     const std::string pieces1 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
     CHECK(detail::placement_to_string(placement_for_pieces(pieces1)) == pieces1);
@@ -214,11 +228,6 @@ TEST_CASE("Data.FEN.Write.Castling Availability", "[FENString][Write]") {
     CHECK(detail::castling_rights_to_string(rights) == "KQq");
 }
 
-auto build_fen_string(const std::string &fen) -> FenString {
-    const auto in_fen = FenString{fen};
-    return FenString{in_fen.piece_placement(), in_fen.side_to_move(), in_fen.castling_rights(), in_fen.en_passant_square(), in_fen.halfmove_clock(), in_fen.fullmove_number()};
-}
-
 TEST_CASE("Data.FEN.Write.Whole FEN", "[FENString][Write]") {
     std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     CHECK(build_fen_string(fen).str() == fen);
@@ -226,11 +235,6 @@ TEST_CASE("Data.FEN.Write.Whole FEN", "[FENString][Write]") {
     CHECK(build_fen_string(fen).str() == fen);
     fen = "r2r1b2/p1p1p1pp/bp3p2/2kq4/QP1BPnB1/2PNPNP1/P2P3P/R3K3 b K b3 0 1";
     CHECK(build_fen_string(fen).str() == fen);
-}
-
-auto build_position_fen(const std::string &fen) -> FenString {
-    const auto pos = Position<Bitboard>{FenString{fen}};
-    return FenString{pos.piece_placement(), pos.state()};
 }
 
 TEST_CASE("Data.FEN.Write.Position", "[FENString][Write]") {

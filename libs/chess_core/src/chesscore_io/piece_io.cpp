@@ -23,9 +23,8 @@ auto operator<<(std::ostream &os, PieceType type) -> std::ostream & {
         return os << "Q";
     case PieceType::King:
         return os << "K";
-    default:
-        return os << "<invalid piece type>";
     }
+    return os << "<invalid piece type>";
 }
 
 auto operator<<(std::ostream &os, const Piece &piece) -> std::ostream & {
@@ -50,9 +49,8 @@ auto symbolic_type_name(PieceType type) -> std::string {
         return "Queen";
     case PieceType::King:
         return "King";
-    default:
-        return "<invalid piece>";
     }
+    return "<invalid piece type>";
 }
 
 auto color_name(Color color) -> std::string {

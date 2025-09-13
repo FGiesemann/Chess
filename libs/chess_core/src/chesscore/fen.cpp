@@ -263,7 +263,7 @@ auto placement_to_string([[maybe_unused]] const PiecePlacement &placement) -> st
     int blank_count{0};
     for (int row = Rank::max_rank - 1; row >= 0; --row) {
         for (int column = 0; column < File::max_file; ++column) {
-            int index = row * File::max_file + column;
+            size_t index = static_cast<size_t>(row * File::max_file + column);
             if (!placement[index].has_value()) {
                 ++blank_count;
             } else {
