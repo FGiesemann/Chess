@@ -5,7 +5,7 @@ import os
 
 class chesscoreRecipe(ConanFile):
     name = "chesscore"
-    version = "1.0.0-dev"
+    version = "1.0.0"
     package_type = "library"
 
     license = "MIT License"
