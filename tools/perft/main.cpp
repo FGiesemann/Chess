@@ -13,6 +13,7 @@
 #include <chesscore_io/chesscore_io.h>
 
 #include "perft.h"
+#include "suite.h"
 
 enum class Command { None, Perft, Divide };
 
@@ -33,6 +34,7 @@ struct Options {
     bool perform_range{false};
     std::string fen;
     int depth{0};
+    std::string suite_path;
 };
 
 auto parse_arguments(const std::vector<std::string> &argv) -> Options;
@@ -42,13 +44,20 @@ auto perform_divide(chesstools::perft::Position &pos, int depth, bool perform_ra
 auto print_divide_result(const chesstools::perft::DivideResult &result) -> void;
 
 auto main(int argc, char *argv[]) -> int {
-    std::vector<std::string> arguments = {argv, argv + argc};
-    const auto options = parse_arguments(std::vector<std::string>{argv, argv + argc});
-    auto pos = chesstools::perft::Position{chesscore::FenString{options.fen}};
-    if (options.command == Command::Perft) {
-        perform_perft(pos, options.depth, options.perform_range);
-    } else if (options.command == Command::Divide) {
-        perform_divide(pos, options.depth, options.perform_range);
+    try {
+        std::vector<std::string> arguments = {argv, argv + argc};
+        const auto options = parse_arguments(std::vector<std::string>{argv, argv + argc});
+        if (!options.suite_path.empty()) {
+            chesstools::perft::perform_perft_suite(options.suite_path);
+        } else if (options.command == Command::Perft) {
+            auto pos = chesstools::perft::Position{chesscore::FenString{options.fen}};
+            perform_perft(pos, options.depth, options.perform_range);
+        } else if (options.command == Command::Divide) {
+            auto pos = chesstools::perft::Position{chesscore::FenString{options.fen}};
+            perform_divide(pos, options.depth, options.perform_range);
+        }
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << '\n';
     }
     return 0;
 }
@@ -112,6 +121,11 @@ auto parse_arguments(const std::vector<std::string> &argv) -> Options {
             }
         } else if (argv[i] == "-r" || argv[i] == "--range") {
             options.perform_range = true;
+        } else if (argv[i] == "-s" || argv[i] == "--suite") {
+            if (i + 1 < argv.size()) {
+                options.suite_path = argv[i + 1];
+                ++i;
+            }
         } else {
             if (unnamed_arg_index == 0) {
                 options.fen = argv[i];
@@ -125,7 +139,7 @@ auto parse_arguments(const std::vector<std::string> &argv) -> Options {
             ++unnamed_arg_index;
         }
     }
-    if (unnamed_arg_index != 2) {
+    if (options.suite_path.empty() && unnamed_arg_index != 2) {
         std::cerr << "Missing arguments\n";
         print_help();
         return {.command = Command::None};
@@ -146,5 +160,8 @@ Options:
         - divide : Divide test
     -r, --range
         Perform test over a range of depth starting with 1 and ending with the
-        given depth.)";
+        given depth.
+    -s, --suite <path>
+        Perform a perft test suite from the given path. The file must be in the
+        EPD format.)";
 }
