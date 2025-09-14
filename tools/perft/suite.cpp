@@ -36,37 +36,38 @@ auto split_epd_fields(const std::string &line, const std::string &delimiter = ";
 
 } // namespace
 
-auto perform_perft_suite(const std::string &path) -> void {
+auto perform_perft_suite(const std::string &path, Reporter &reporter) -> void {
     int positions_count{0};
     int test_count{0};
     int pass_count{0};
     const auto suite = parse_suite_definition(path);
     for (const auto &test : suite.tests) {
-        std::cout << test.fen.str() << '\n';
+        reporter << test.fen.str() << '\n';
         Position position{test.fen};
         positions_count += 1;
         for (const auto &expected_result : test.expected_results) {
-            std::cout << "  " << expected_result.depth << ": ";
+            reporter << "  " << expected_result.depth << ": ";
             const auto result = perft_count(position, expected_result.depth);
             test_count += 1;
             if (result == expected_result.node_count) {
-                std::cout << "OK\n";
+                reporter << "OK\n";
                 pass_count += 1;
             } else {
-                std::cout << "FAIL (" << result << " != " << expected_result.node_count << ")\n";
+                reporter << "FAIL (" << result << " != " << expected_result.node_count << ")\n";
+                break;
             }
         }
-        std::cout << '\n';
+        reporter << '\n';
     }
 
-    std::cout << "\nFinal result:\n";
-    std::cout << "Positions checked: " << positions_count << '\n';
-    std::cout << "Tests performed: " << test_count << '\n';
-    std::cout << "Tests passed: " << pass_count << '\n';
+    reporter << "\nFinal result:\n";
+    reporter << "Positions checked: " << positions_count << '\n';
+    reporter << "Tests performed: " << test_count << '\n';
+    reporter << "Tests passed: " << pass_count << '\n';
     if (pass_count == test_count) {
-        std::cout << "All tests passed!\n";
+        reporter << "All tests passed!\n";
     } else {
-        std::cout << (test_count - pass_count) << " tests failed!\n";
+        reporter << (test_count - pass_count) << " tests failed!\n";
     }
 }
 

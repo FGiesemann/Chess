@@ -4,6 +4,7 @@
  * Performance Test (perft-Tool)                                              *
  * ************************************************************************** */
 
+#include <fstream>
 #include <iostream>
 #include <ranges>
 #include <span>
@@ -13,6 +14,7 @@
 #include <chesscore_io/chesscore_io.h>
 
 #include "perft.h"
+#include "reporter.h"
 #include "suite.h"
 
 enum class Command { None, Perft, Divide };
@@ -35,26 +37,28 @@ struct Options {
     std::string fen;
     int depth{0};
     std::string suite_path;
+    std::string report_path;
 };
 
 auto parse_arguments(const std::vector<std::string> &argv) -> Options;
 auto print_help() -> void;
-auto perform_perft(chesstools::perft::Position &pos, int depth, bool perform_range) -> void;
-auto perform_divide(chesstools::perft::Position &pos, int depth, bool perform_range) -> void;
-auto print_divide_result(const chesstools::perft::DivideResult &result) -> void;
+auto perform_perft(chesstools::perft::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void;
+auto perform_divide(chesstools::perft::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void;
+auto print_divide_result(const chesstools::perft::DivideResult &result, chesstools::perft::Reporter &reporter) -> void;
 
 auto main(int argc, char *argv[]) -> int {
     try {
         std::vector<std::string> arguments = {argv, argv + argc};
         const auto options = parse_arguments(std::vector<std::string>{argv, argv + argc});
+        chesstools::perft::Reporter reporter{options.report_path};
         if (!options.suite_path.empty()) {
-            chesstools::perft::perform_perft_suite(options.suite_path);
+            chesstools::perft::perform_perft_suite(options.suite_path, reporter);
         } else if (options.command == Command::Perft) {
             auto pos = chesstools::perft::Position{chesscore::FenString{options.fen}};
-            perform_perft(pos, options.depth, options.perform_range);
+            perform_perft(pos, options.depth, options.perform_range, reporter);
         } else if (options.command == Command::Divide) {
             auto pos = chesstools::perft::Position{chesscore::FenString{options.fen}};
-            perform_divide(pos, options.depth, options.perform_range);
+            perform_divide(pos, options.depth, options.perform_range, reporter);
         }
     } catch (const std::exception &e) {
         std::cerr << e.what() << '\n';
@@ -62,40 +66,40 @@ auto main(int argc, char *argv[]) -> int {
     return 0;
 }
 
-auto perform_perft(chesstools::perft::Position &pos, int depth, bool perform_range) -> void {
+auto perform_perft(chesstools::perft::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void {
     if (perform_range) {
         for (int perft_depth = 1; perft_depth <= depth; ++perft_depth) {
             const auto result = chesstools::perft::perft(pos, perft_depth);
-            std::cout << perft_depth << ": " << result.node_count << " (" << result.duration.count() << " us)\n";
+            reporter << perft_depth << ": " << result.node_count << " (" << result.duration.count() << " us)\n";
         }
     } else {
         const auto result = chesstools::perft::perft(pos, depth);
-        std::cout << depth << ": " << result.node_count << " (" << result.duration.count() << " us)\n";
+        reporter << depth << ": " << result.node_count << " (" << result.duration.count() << " us)\n";
     }
 }
 
-auto perform_divide(chesstools::perft::Position &pos, int depth, bool perform_range) -> void {
+auto perform_divide(chesstools::perft::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void {
     if (perform_range) {
         for (int perft_depth = 1; perft_depth <= depth; ++perft_depth) {
             const auto result = chesstools::perft::divide(pos, perft_depth);
-            print_divide_result(result);
+            print_divide_result(result, reporter);
         }
     } else {
         const auto result = chesstools::perft::divide(pos, depth);
-        print_divide_result(result);
+        print_divide_result(result, reporter);
     }
 }
 
-auto print_divide_result(const chesstools::perft::DivideResult &result) -> void {
-    std::cout << "Divide result:\n";
+auto print_divide_result(const chesstools::perft::DivideResult &result, chesstools::perft::Reporter &reporter) -> void {
+    reporter << "Divide result:\n";
     std::uint64_t total_nodes{0};
     for (const auto &entry : result.table) {
-        std::cout << entry.move << ": " << entry.node_count << '\n';
+        reporter << entry.move << ": " << entry.node_count << '\n';
         total_nodes += entry.node_count;
     }
-    std::cout << "Duration: " << result.duration.count() << " us\n";
-    std::cout << "Total nodes: " << total_nodes << '\n';
-    std::cout << "Nodes per second: " << total_nodes / (result.duration.count() / 1000000.0) << '\n';
+    reporter << "Duration: " << result.duration.count() << " us\n";
+    reporter << "Total nodes: " << total_nodes << '\n';
+    reporter << "Nodes per second: " << total_nodes / (result.duration.count() / 1000000.0) << '\n';
 }
 
 auto parse_arguments(const std::vector<std::string> &argv) -> Options {
@@ -124,6 +128,11 @@ auto parse_arguments(const std::vector<std::string> &argv) -> Options {
         } else if (argv[i] == "-s" || argv[i] == "--suite") {
             if (i + 1 < argv.size()) {
                 options.suite_path = argv[i + 1];
+                ++i;
+            }
+        } else if (argv[i] == "-o" || argv[i] == "--output") {
+            if (i + 1 < argv.size()) {
+                options.report_path = argv[i + 1];
                 ++i;
             }
         } else {
@@ -163,5 +172,7 @@ Options:
         given depth.
     -s, --suite <path>
         Perform a perft test suite from the given path. The file must be in the
-        EPD format.)";
+        EPD format
+    -o, --output <path>
+        Write output to specified file and the standard output)";
 }

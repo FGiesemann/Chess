@@ -12,6 +12,8 @@
 
 #include <chesscore/fen.h>
 
+#include "reporter.h"
+
 namespace chesstools::perft {
 
 struct ExpectedResult {
@@ -30,7 +32,7 @@ struct TestSuite {
 };
 
 auto parse_suite_definition(const std::string &path) -> TestSuite;
-auto perform_perft_suite(const std::string &path) -> void;
+auto perform_perft_suite(const std::string &path, Reporter &reporter) -> void;
 
 } // namespace chesstools::perft
 
