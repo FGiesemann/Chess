@@ -25,7 +25,7 @@ class ChessGuiConan(ConanFile):
     )
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=3.15]")
+        self.tool_requires("cmake/[>=3.20]")
 
     def requirements(self):
         self.requires("chesscore/1.0.0")
