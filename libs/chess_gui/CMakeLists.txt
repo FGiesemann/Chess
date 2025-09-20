@@ -9,7 +9,11 @@ option(BUILD_TESTING "Build unittests" OFF)
 
 include(cmake/compiler_warnings.cmake)
 
-add_library(${PROJECT_NAME}
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+qt_standard_project_setup()
+
+qt_add_library(${PROJECT_NAME} STATIC
+    include/chessgui/ChessboardWidget.h
     src/ChessboardWidget.cpp
 )
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -19,6 +23,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_23)
 find_package(chesscore REQUIRED COMPONENTS chesscore)
 target_link_libraries(${PROJECT_NAME} PUBLIC chesscore::chesscore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Widgets)
 add_compiler_warnings(${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME}
@@ -91,3 +96,5 @@ if (NOT BUILD_TESTING STREQUAL OFF)
     find_package(Catch2 3 REQUIRED)
     add_subdirectory(test)
 endif()
+
+add_subdirectory(testapp)
