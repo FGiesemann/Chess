@@ -29,7 +29,6 @@ class ChessGuiConan(ConanFile):
 
     def requirements(self):
         self.requires("chesscore/1.0.0")
-        self.requires("qt/6.8.3")
 
     def config_options(self):
         if self.settings.os == "Windows":
