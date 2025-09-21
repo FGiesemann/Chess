@@ -8,6 +8,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QList>
 
 #include <chesscore/bitboard.h>
 #include <chesscore/position.h>
@@ -27,16 +28,25 @@ public:
     ChessboardWidget &operator=(const ChessboardWidget &) = delete;
 
     auto setPosition(const Position &position) -> void;
+
+    auto markSquare(const chesscore::Square &square) -> void;
+    auto unmarkSquare(const chesscore::Square &square) -> void;
+    auto clearMarkedSquares() -> void;
 protected:
     auto resizeEvent(QResizeEvent *event) -> void override;
+    auto mousePressEvent(QMouseEvent *event) -> void override;
+signals:
+    auto squareClicked(const chesscore::Square &square) -> void;
 private:
     auto drawBoard() -> void;
     auto placePieces(const Position &position) -> void;
     auto clearPieces() -> void;
+    auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
 
     QGraphicsScene *m_scene;
     const PieceSet &m_pieces;
     QMap<QPair<int, int>, ChessPiece *> m_piecemap;
+    QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;
 };
 
 } // namespace chessgui

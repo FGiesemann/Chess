@@ -77,9 +77,6 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
                 if (nativeSize.width() > 0 && nativeSize.height() > 0) {
                     qreal scaleX = cellSize / nativeSize.width();
                     qreal scaleY = cellSize / nativeSize.height();
-                    qWarning() << QString("Piece size: (%1, %2)").arg(nativeSize.width()).arg(nativeSize.height());
-                    qWarning() << QString("Cell size: (%1, %2)").arg(cellSize).arg(cellSize);
-                    qWarning() << QString("Scaling factors: (%1, %2)").arg(scaleX).arg(scaleY);
                     piece->setTransform(QTransform::fromScale(scaleX, scaleY));
                     piece->setPos(col, 7 - row);
                     m_scene->addItem(piece);
@@ -93,10 +90,65 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
     }
 }
 
-void ChessboardWidget::resizeEvent(QResizeEvent *event) {
+auto ChessboardWidget::markSquare(const chesscore::Square &square) -> void {
+    const auto opt_marker = findSquareMarker(square);
+    if (opt_marker.has_value()) {
+        return;
+    }
+
+    const qreal cellSize = 1.0;
+    auto *marker = new QGraphicsRectItem(square.file().file - 1, 8 - square.rank().rank, cellSize, cellSize);
+    QColor color{120, 255, 85};
+    color.setAlpha(100);
+    marker->setBrush(color);
+    marker->setPen(Qt::NoPen);
+    m_markedSquares.append({square, marker});
+    m_scene->addItem(marker);
+}
+
+auto ChessboardWidget::findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *> {
+    for (const auto &marker : m_markedSquares) {
+        if (marker.first == square) {
+            return marker.second;
+        }
+    }
+    return {};
+}
+
+auto ChessboardWidget::unmarkSquare(const chesscore::Square &square) -> void {
+    auto opt_marker = findSquareMarker(square);
+    if (opt_marker.has_value()) {
+        m_scene->removeItem(opt_marker.value());
+        delete opt_marker.value();
+        m_markedSquares.removeOne({square, opt_marker.value()});
+    }
+}
+
+auto ChessboardWidget::clearMarkedSquares() -> void {
+    for (auto &item : m_markedSquares) {
+        m_scene->removeItem(item.second);
+        delete item.second;
+    }
+    m_markedSquares.clear();
+}
+
+auto ChessboardWidget::resizeEvent(QResizeEvent *event) -> void {
     QGraphicsView::resizeEvent(event);
     drawBoard();
     fitInView(m_scene->sceneRect(), Qt::KeepAspectRatio);
+}
+
+auto ChessboardWidget::mousePressEvent(QMouseEvent *event) -> void {
+    QGraphicsView::mousePressEvent(event);
+    if (event->button() == Qt::LeftButton) {
+        QPointF posInScene = mapToScene(event->pos());
+        int file = qFloor(posInScene.x()) + 1;
+        int rank = 8 - qFloor(posInScene.y());
+
+        if (file > 0 && file <= 8 && rank > 0 && rank <= 8) {
+            emit squareClicked(chesscore::Square{file, rank});
+        }
+    }
 }
 
 } // namespace chessgui
