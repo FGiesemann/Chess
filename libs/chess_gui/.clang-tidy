@@ -6,5 +6,6 @@ Checks: '-*,
          cppcoreguidelines-*,
          misc-macro-parentheses,
          -cppcoreguidelines-pro-bounds-constant-array-index,
-         -readability-math-missing-parentheses'
+         -readability-math-missing-parentheses,
+         -cppcoreguidelines-owning-memory'
 WarningsAsErrors: ''

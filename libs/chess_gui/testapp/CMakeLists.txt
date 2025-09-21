@@ -8,7 +8,7 @@ target_link_libraries(testapp
     ChessGui
 )
 
-set_target_properties(testapp PROPERTIES
-    WIN32_EXECUTABLE ON
-    MACOSX_BUNDLE ON
-)
+# set_target_properties(testapp PROPERTIES
+#     WIN32_EXECUTABLE ON
+#     MACOSX_BUNDLE ON
+# )

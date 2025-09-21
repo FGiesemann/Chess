@@ -9,18 +9,34 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
+#include <chesscore/bitboard.h>
+#include <chesscore/position.h>
+
+#include "chessgui/ChessPieceItem.h"
+#include "chessgui/PieceSet.h"
+
 namespace chessgui {
+
+using Position = chesscore::Position<chesscore::Bitboard>;
 
 class ChessboardWidget : public QGraphicsView {
     Q_OBJECT
 public:
-    explicit ChessboardWidget(QWidget *parent = nullptr);
+    explicit ChessboardWidget(const PieceSet &pieces, QWidget *parent = nullptr);
+    ChessboardWidget(const ChessboardWidget &) = delete;
+    ChessboardWidget &operator=(const ChessboardWidget &) = delete;
+
+    auto setPosition(const Position &position) -> void;
 protected:
-    void resizeEvent(QResizeEvent *event) override;
+    auto resizeEvent(QResizeEvent *event) -> void override;
 private:
-    void drawBoard();
+    auto drawBoard() -> void;
+    auto placePieces(const Position &position) -> void;
+    auto clearPieces() -> void;
 
     QGraphicsScene *m_scene;
+    const PieceSet &m_pieces;
+    QMap<QPair<int, int>, ChessPiece *> m_piecemap;
 };
 
 } // namespace chessgui
