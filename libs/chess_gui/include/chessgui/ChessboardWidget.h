@@ -10,6 +10,8 @@
 #include <QGraphicsView>
 #include <QList>
 
+#include <array>
+
 #include <chesscore/bitboard.h>
 #include <chesscore/position.h>
 
@@ -45,7 +47,7 @@ private:
 
     QGraphicsScene *m_scene;
     PieceSet m_piece_set;
-    QMap<QPair<int, int>, ChessPiece *> m_piecemap;
+    std::array<ChessPiece *, 64> m_pieces{};
     QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;
 };
 

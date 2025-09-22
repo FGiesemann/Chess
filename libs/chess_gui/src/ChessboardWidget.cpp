@@ -20,6 +20,7 @@ ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent)
     setMouseTracking(true);
 
     m_scene->setSceneRect(0, 0, chesscore::File::max_file, chesscore::Rank::max_rank);
+    std::ranges::fill(m_pieces, nullptr);
 }
 
 auto ChessboardWidget::drawBoard() -> void {
@@ -55,11 +56,13 @@ auto ChessboardWidget::setPosition(const Position &position) -> void {
 }
 
 auto ChessboardWidget::clearPieces() -> void {
-    for (const auto &item : m_piecemap) {
-        m_scene->removeItem(item);
-        delete item;
+    for (auto &piece : m_pieces) {
+        if (piece != nullptr) {
+            m_scene->removeItem(piece);
+            delete piece;
+            piece = nullptr;
+        }
     }
-    m_piecemap.clear();
 }
 
 auto ChessboardWidget::placePieces(const Position &position) -> void {
@@ -79,7 +82,7 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
                     piece->setTransform(QTransform::fromScale(scaleX, scaleY));
                     piece->setPos(file - 1, chesscore::Rank::max_rank - rank);
                     m_scene->addItem(piece);
-                    m_piecemap.insert(QPair<int, int>(rank, file), piece);
+                    m_pieces[square.index()] = piece;
                 } else {
                     qWarning() << "Warning: Skipping piece at" << rank << "," << file << "due to invalid SVG graphics.";
                     delete piece;
