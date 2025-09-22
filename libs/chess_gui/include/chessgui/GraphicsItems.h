@@ -3,8 +3,8 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#ifndef CHESSGUI_CHESSPIECEITEM_H
-#define CHESSGUI_CHESSPIECEITEM_H
+#ifndef CHESSGUI_GRAPHICS_ITEMS_H
+#define CHESSGUI_GRAPHICS_ITEMS_H
 
 #include <QGraphicsSvgItem>
 #include <QSvgRenderer>

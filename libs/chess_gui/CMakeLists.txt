@@ -14,7 +14,7 @@ qt_standard_project_setup()
 
 qt_add_library(${PROJECT_NAME} STATIC
     include/chessgui/ChessboardWidget.h src/ChessboardWidget.cpp
-    include/chessgui/ChessPieceItem.h src/ChessPieceItem.cpp
+    include/chessgui/GraphicsItems.h src/GraphicsItems.cpp
     include/chessgui/PieceSet.h src/PieceSet.cpp
 )
 target_include_directories(${PROJECT_NAME} PUBLIC

@@ -4,7 +4,6 @@
  * ************************************************************************** */
 
 #include "chessgui/ChessboardWidget.h"
-#include "chessgui/ChessPieceItem.h"
 
 #include <QBrush>
 #include <QGraphicsRectItem>

@@ -13,7 +13,7 @@
 #include <chesscore/bitboard.h>
 #include <chesscore/position.h>
 
-#include "chessgui/ChessPieceItem.h"
+#include "chessgui/GraphicsItems.h"
 #include "chessgui/PieceSet.h"
 
 namespace chessgui {
