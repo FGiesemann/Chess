@@ -23,7 +23,7 @@ using Position = chesscore::Position<chesscore::Bitboard>;
 class ChessboardWidget : public QGraphicsView {
     Q_OBJECT
 public:
-    explicit ChessboardWidget(const PieceSet &pieces, QWidget *parent = nullptr);
+    explicit ChessboardWidget(const QString &piece_folder, QWidget *parent = nullptr);
     ChessboardWidget(const ChessboardWidget &) = delete;
     ChessboardWidget &operator=(const ChessboardWidget &) = delete;
 
@@ -44,7 +44,7 @@ private:
     auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
 
     QGraphicsScene *m_scene;
-    const PieceSet &m_pieces;
+    PieceSet m_piece_set;
     QMap<QPair<int, int>, ChessPiece *> m_piecemap;
     QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;
 };

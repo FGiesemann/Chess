@@ -14,8 +14,9 @@ namespace chessgui {
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
-    MainWindow(const PieceSet &pieceSet, QWidget *parent = nullptr)
-        : QMainWindow(parent), m_boardWidget{new ChessboardWidget(pieceSet, this)}, m_currentPosition{chesscore::FenString::starting_position()}, m_selectedSquare(std::nullopt) {
+    MainWindow(const QString &piece_folder, QWidget *parent = nullptr)
+        : QMainWindow(parent), m_boardWidget{new ChessboardWidget(piece_folder, this)}, m_currentPosition{chesscore::FenString::starting_position()},
+          m_selectedSquare(std::nullopt) {
         setWindowTitle("Schachbrett");
         setMinimumSize(400, 400);
         resize(600, 600);
@@ -100,8 +101,7 @@ private:
 
 auto main(int argc, char *argv[]) -> int {
     QApplication a(argc, argv);
-    chessgui::PieceSet pieces{QString{"D:/Programmierung/Projekte/Chess/ChessGui/data/pieces/alpha"}};
-    chessgui::MainWindow window(pieces);
+    chessgui::MainWindow window(QString{"D:/Programmierung/Projekte/Chess/ChessGui/data/pieces/alpha"});
     window.show();
 
     return a.exec();

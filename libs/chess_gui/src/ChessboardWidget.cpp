@@ -12,7 +12,7 @@
 
 namespace chessgui {
 
-ChessboardWidget::ChessboardWidget(const PieceSet &pieces, QWidget *parent) : QGraphicsView(parent), m_pieces{pieces} {
+ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent) : QGraphicsView(parent), m_piece_set{piece_folder} {
     m_scene = new QGraphicsScene(this);
     setScene(m_scene);
     setRenderHint(QPainter::Antialiasing);
@@ -70,7 +70,7 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
         for (int col = 0; col < 8; ++col) {
             const auto piece_at_square = position.board().get_piece(chesscore::Square{col + 1, row + 1});
             if (piece_at_square.has_value()) {
-                const auto *renderer = m_pieces.renderer(piece_at_square.value());
+                const auto *renderer = m_piece_set.renderer(piece_at_square.value());
                 auto *piece = new ChessPiece(renderer);
                 QSizeF nativeSize = renderer->defaultSize();
                 if (nativeSize.width() > 0 && nativeSize.height() > 0) {
