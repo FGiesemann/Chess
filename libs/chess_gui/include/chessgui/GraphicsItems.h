@@ -15,9 +15,7 @@ namespace chessgui {
 
 class ChessPiece : public QGraphicsSvgItem {
 public:
-    explicit ChessPiece(chesscore::Piece piece, const QSvgRenderer *renderer);
-private:
-    chesscore::Piece m_piece;
+    explicit ChessPiece(const QSvgRenderer *renderer);
 };
 
 } // namespace chessgui

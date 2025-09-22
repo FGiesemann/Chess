@@ -71,7 +71,7 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
             const auto piece_at_square = position.board().get_piece(chesscore::Square{col + 1, row + 1});
             if (piece_at_square.has_value()) {
                 const auto *renderer = m_pieces.renderer(piece_at_square.value());
-                auto *piece = new ChessPiece(piece_at_square.value(), renderer);
+                auto *piece = new ChessPiece(renderer);
                 QSizeF nativeSize = renderer->defaultSize();
                 if (nativeSize.width() > 0 && nativeSize.height() > 0) {
                     qreal scaleX = cellSize / nativeSize.width();

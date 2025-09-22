@@ -7,7 +7,7 @@
 
 namespace chessgui {
 
-ChessPiece::ChessPiece(chesscore::Piece piece, const QSvgRenderer *renderer) : m_piece{piece} {
+ChessPiece::ChessPiece(const QSvgRenderer *renderer) {
     if (renderer) {
         setSharedRenderer(const_cast<QSvgRenderer *>(renderer));
     } else {
