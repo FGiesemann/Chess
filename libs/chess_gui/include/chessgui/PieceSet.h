@@ -10,7 +10,7 @@
 #include <QString>
 #include <QSvgRenderer>
 
-#include <map>
+#include <array>
 #include <memory>
 
 #include <chesscore/piece.h>
@@ -24,10 +24,8 @@ public:
     PieceSet &operator=(const PieceSet &) = delete;
 
     auto renderer(chesscore::Piece piece) const -> const QSvgRenderer *;
-
-    using PieceKey = std::pair<chesscore::PieceType, chesscore::Color>;
 private:
-    std::map<PieceKey, std::unique_ptr<QSvgRenderer>> m_renderers;
+    std::array<std::unique_ptr<QSvgRenderer>, 12> m_renderers;
 };
 
 } // namespace chessgui
