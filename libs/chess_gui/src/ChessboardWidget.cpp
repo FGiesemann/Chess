@@ -20,12 +20,12 @@ ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent)
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setMouseTracking(true);
 
-    m_scene->setSceneRect(0, 0, 8, 8);
+    m_scene->setSceneRect(0, 0, chesscore::File::max_file, chesscore::Rank::max_rank);
 }
 
 auto ChessboardWidget::drawBoard() -> void {
-    for (auto item : m_scene->items()) {
-        if (qgraphicsitem_cast<QGraphicsRectItem *>(item)) {
+    for (auto *item : m_scene->items()) {
+        if (qgraphicsitem_cast<QGraphicsRectItem *>(item) != nullptr) {
             m_scene->removeItem(item);
             delete item;
         }
@@ -35,10 +35,10 @@ auto ChessboardWidget::drawBoard() -> void {
     static constexpr auto darkSquareColor = QColor(181, 155, 114);
     qreal cellSize = 1.0;
 
-    for (int row = 0; row < 8; ++row) {
-        for (int col = 0; col < 8; ++col) {
-            auto *square = new QGraphicsRectItem(col, 7 - row, cellSize, cellSize);
-            if ((row + col) % 2 == 1) {
+    for (int rank = chesscore::Rank::min_rank; rank <= chesscore::Rank::max_rank; ++rank) {
+        for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
+            auto *square = new QGraphicsRectItem(file, chesscore::Rank::max_rank - rank, cellSize, cellSize);
+            if ((rank + file) % 2 == 1) {
                 square->setBrush(QBrush(brightSquareColor));
                 square->setPen(QPen(Qt::NoPen));
             } else {
@@ -66,9 +66,9 @@ auto ChessboardWidget::clearPieces() -> void {
 auto ChessboardWidget::placePieces(const Position &position) -> void {
     const qreal cellSize = 1.0;
 
-    for (int row = 0; row < 8; ++row) {
-        for (int col = 0; col < 8; ++col) {
-            const auto piece_at_square = position.board().get_piece(chesscore::Square{col + 1, row + 1});
+    for (int rank = chesscore::Rank::min_rank; rank <= chesscore::Rank::max_rank; ++rank) {
+        for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
+            const auto piece_at_square = position.board().get_piece(chesscore::Square{file, rank});
             if (piece_at_square.has_value()) {
                 const auto *renderer = m_piece_set.renderer(piece_at_square.value());
                 auto *piece = new ChessPiece(renderer);
@@ -77,11 +77,11 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
                     qreal scaleX = cellSize / nativeSize.width();
                     qreal scaleY = cellSize / nativeSize.height();
                     piece->setTransform(QTransform::fromScale(scaleX, scaleY));
-                    piece->setPos(col, 7 - row);
+                    piece->setPos(file, chesscore::Rank::max_rank - rank);
                     m_scene->addItem(piece);
-                    m_piecemap.insert(QPair<int, int>(row, col), piece);
+                    m_piecemap.insert(QPair<int, int>(rank, file), piece);
                 } else {
-                    qWarning() << "Warning: Skipping piece at" << row << "," << col << "due to invalid SVG graphics.";
+                    qWarning() << "Warning: Skipping piece at" << rank << "," << file << "due to invalid SVG graphics.";
                     delete piece;
                 }
             }
@@ -96,7 +96,7 @@ auto ChessboardWidget::markSquare(const chesscore::Square &square) -> void {
     }
 
     const qreal cellSize = 1.0;
-    auto *marker = new QGraphicsRectItem(square.file().file - 1, 8 - square.rank().rank, cellSize, cellSize);
+    auto *marker = new QGraphicsRectItem(square.file().file, chesscore::Rank::max_rank - square.rank().rank, cellSize, cellSize);
     QColor color{120, 255, 85};
     color.setAlpha(100);
     marker->setBrush(color);
@@ -142,9 +142,9 @@ auto ChessboardWidget::mousePressEvent(QMouseEvent *event) -> void {
     if (event->button() == Qt::LeftButton) {
         QPointF posInScene = mapToScene(event->pos());
         int file = qFloor(posInScene.x()) + 1;
-        int rank = 8 - qFloor(posInScene.y());
+        int rank = chesscore::Rank::max_rank - qFloor(posInScene.y());
 
-        if (file > 0 && file <= 8 && rank > 0 && rank <= 8) {
+        if (file >= chesscore::File::min_file && file <= chesscore::File::max_file && rank >= chesscore::Rank::min_rank && rank <= chesscore::Rank::max_rank) {
             emit squareClicked(chesscore::Square{file, rank});
         }
     }
