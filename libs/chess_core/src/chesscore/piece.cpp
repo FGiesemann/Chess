@@ -11,7 +11,7 @@ namespace chesscore {
 
 auto piece_type_from_index(int index) -> PieceType {
     if (index >= 0 && index < piece_type_count) {
-        return static_cast<PieceType>(index);
+        return all_piece_types[index];
     }
     throw ChessException("Invalid piece type index: " + std::to_string(index));
 }
@@ -35,14 +35,16 @@ auto piece_type_from_char(char letter) -> PieceType {
     }
 }
 
+auto Piece::piece_index() const -> size_t {
+    return get_index(type) + (color == Color::White ? 0 : piece_type_count);
+}
+
 auto Piece::piece_char() const -> char {
-    const auto index = static_cast<std::underlying_type_t<PieceType>>(type) + (color == Color::White ? 0 : piece_type_count);
-    return "PRNBQKprnbqk"[index];
+    return "PRNBQKprnbqk"[piece_index()];
 }
 
 auto Piece::piece_char_colorless() const -> char {
-    const auto index = static_cast<std::underlying_type_t<PieceType>>(type);
-    return "PRNBQK"[index];
+    return "PRNBQK"[get_index(type)];
 }
 
 auto piece_from_fen_letter(char letter) -> Piece {

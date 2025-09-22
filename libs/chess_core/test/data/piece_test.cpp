@@ -28,3 +28,33 @@ TEST_CASE("Data.Piece.Type from Char", "[Piece]") {
     CHECK(piece_type_from_char('p') == PieceType::Pawn);
     CHECK_THROWS_AS(piece_type_from_char('a'), ChessException);
 }
+
+TEST_CASE("Data.Piece.Letter", "[Piece]") {
+    CHECK(Piece::WhitePawn.piece_char() == 'P');
+    CHECK(Piece::WhiteRook.piece_char() == 'R');
+    CHECK(Piece::WhiteKnight.piece_char() == 'N');
+    CHECK(Piece::WhiteBishop.piece_char() == 'B');
+    CHECK(Piece::WhiteQueen.piece_char() == 'Q');
+    CHECK(Piece::WhiteKing.piece_char() == 'K');
+    CHECK(Piece::BlackPawn.piece_char() == 'p');
+    CHECK(Piece::BlackRook.piece_char() == 'r');
+    CHECK(Piece::BlackKnight.piece_char() == 'n');
+    CHECK(Piece::BlackBishop.piece_char() == 'b');
+    CHECK(Piece::BlackQueen.piece_char() == 'q');
+    CHECK(Piece::BlackKing.piece_char() == 'k');
+}
+
+TEST_CASE("Data.Piece.Letter colorless", "[Piece]") {
+    CHECK(Piece::WhitePawn.piece_char_colorless() == 'P');
+    CHECK(Piece::WhiteRook.piece_char_colorless() == 'R');
+    CHECK(Piece::WhiteKnight.piece_char_colorless() == 'N');
+    CHECK(Piece::WhiteBishop.piece_char_colorless() == 'B');
+    CHECK(Piece::WhiteQueen.piece_char_colorless() == 'Q');
+    CHECK(Piece::WhiteKing.piece_char_colorless() == 'K');
+    CHECK(Piece::BlackPawn.piece_char_colorless() == 'P');
+    CHECK(Piece::BlackRook.piece_char_colorless() == 'R');
+    CHECK(Piece::BlackKnight.piece_char_colorless() == 'N');
+    CHECK(Piece::BlackBishop.piece_char_colorless() == 'B');
+    CHECK(Piece::BlackQueen.piece_char_colorless() == 'Q');
+    CHECK(Piece::BlackKing.piece_char_colorless() == 'K');
+}

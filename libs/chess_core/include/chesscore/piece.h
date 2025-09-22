@@ -22,6 +22,17 @@ namespace chesscore {
 enum class PieceType { Pawn, Rook, Knight, Bishop, Queen, King };
 
 /**
+ * \brief Number of available piece types.
+ */
+static constexpr int piece_type_count = 6;
+
+/**
+ * \brief All the piece types.
+ *
+ */
+static constexpr std::array<PieceType, piece_type_count> all_piece_types{PieceType::Pawn, PieceType::Rook, PieceType::Knight, PieceType::Bishop, PieceType::Queen, PieceType::King};
+
+/**
  * \brief Get the numeric index of a piece type.
  *
  * The piece types are enumerated pawn = 0, rook = 1, knight = 2, bishop = 3,
@@ -32,11 +43,6 @@ enum class PieceType { Pawn, Rook, Knight, Bishop, Queen, King };
 inline auto get_index(const PieceType &type) -> std::size_t {
     return static_cast<std::size_t>(type);
 }
-
-/**
- * \brief Number of available piece types.
- */
-static constexpr int piece_type_count = 6;
 
 /**
  * \brief All the piece types that a pawn can promote into.
@@ -118,6 +124,7 @@ struct Piece {
     static const Piece BlackKing;   ///< A black king.
     ///@}
 
+    auto piece_index() const -> size_t;
     auto piece_char() const -> char;
     auto piece_char_colorless() const -> char;
 };
