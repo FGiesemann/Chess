@@ -40,6 +40,10 @@ protected:
 signals:
     auto squareClicked(const chesscore::Square &square) -> void;
 private:
+    static constexpr auto brightSquareColor = QColor(252, 212, 146);
+    static constexpr auto darkSquareColor = QColor(181, 155, 114);
+    static constexpr auto squareHighlightColor = QColor(120, 255, 85, 100);
+
     auto drawBoard() -> void;
     auto placePieces(const Position &position) -> void;
     auto clearPieces() -> void;

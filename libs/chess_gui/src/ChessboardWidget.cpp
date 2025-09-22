@@ -33,9 +33,6 @@ auto ChessboardWidget::drawBoard() -> void {
         }
     }
 
-    static constexpr auto brightSquareColor = QColor(252, 212, 146);
-    static constexpr auto darkSquareColor = QColor(181, 155, 114);
-
     for (int rank = chesscore::Rank::min_rank; rank <= chesscore::Rank::max_rank; ++rank) {
         for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
             auto *square = new QGraphicsRectItem(file - 1, chesscore::Rank::max_rank - rank, cell_size, cell_size);
@@ -98,9 +95,7 @@ auto ChessboardWidget::markSquare(const chesscore::Square &square) -> void {
     }
 
     auto *marker = new QGraphicsRectItem(square.file().file - 1, chesscore::Rank::max_rank - square.rank().rank, cell_size, cell_size);
-    QColor color{120, 255, 85};
-    color.setAlpha(100);
-    marker->setBrush(color);
+    marker->setBrush(squareHighlightColor);
     marker->setPen(Qt::NoPen);
     m_markedSquares.append({square, marker});
     m_scene->addItem(marker);
