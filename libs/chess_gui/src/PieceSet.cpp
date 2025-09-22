@@ -4,6 +4,7 @@
  * ************************************************************************** */
 
 #include "chessgui/PieceSet.h"
+#include "chessgui/ChessboardError.h"
 
 #include <set>
 
@@ -19,12 +20,11 @@ PieceSet::PieceSet(const QString &folder) {
             QString colorName = (color == chesscore::Color::White) ? "w" : "b";
             QString fileName = QString("%1/%2%3.svg").arg(folder, colorName, QString{piece.piece_char_colorless()}.toLower());
             if (!QFile::exists(fileName)) {
-                qWarning() << "Error: Piece file " << fileName << " does not exist!"; // TODO: exception
+                throw ChessboardError{std::string{"Piece file "} + fileName.toStdString() + std::string{" does not exist!"}};
             }
             auto renderer = std::make_unique<QSvgRenderer>(fileName);
             if (!renderer->isValid()) {
-                qWarning() << QString("Fatal error: Invalid SVG file for chess piece at path: %1").arg(fileName);
-                continue;
+                throw ChessboardError{std::string{"Invalid SVG file for chess piece at path "} + fileName.toStdString()};
             }
 
             m_renderers[piece.piece_index()] = std::move(renderer);

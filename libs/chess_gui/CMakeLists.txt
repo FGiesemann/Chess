@@ -13,6 +13,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets SvgWidgets)
 qt_standard_project_setup()
 
 qt_add_library(${PROJECT_NAME} STATIC
+    include/chessgui/ChessboardError.h src/ChessboardError.cpp
     include/chessgui/ChessboardWidget.h src/ChessboardWidget.cpp
     include/chessgui/GraphicsItems.h src/GraphicsItems.cpp
     include/chessgui/PieceSet.h src/PieceSet.cpp
