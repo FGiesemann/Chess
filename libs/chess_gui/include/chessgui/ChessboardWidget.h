@@ -45,6 +45,7 @@ private:
     auto clearPieces() -> void;
     auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
 
+    static const qreal cell_size;
     QGraphicsScene *m_scene;
     PieceSet m_piece_set;
     std::array<ChessPiece *, 64> m_pieces{};

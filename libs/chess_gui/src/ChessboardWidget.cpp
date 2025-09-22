@@ -12,6 +12,8 @@
 
 namespace chessgui {
 
+const qreal ChessboardWidget::cell_size{1.0};
+
 ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent) : QGraphicsView(parent), m_scene{new QGraphicsScene(this)}, m_piece_set{piece_folder} {
     setScene(m_scene);
     setRenderHint(QPainter::Antialiasing);
@@ -33,11 +35,10 @@ auto ChessboardWidget::drawBoard() -> void {
 
     static constexpr auto brightSquareColor = QColor(252, 212, 146);
     static constexpr auto darkSquareColor = QColor(181, 155, 114);
-    qreal cellSize = 1.0;
 
     for (int rank = chesscore::Rank::min_rank; rank <= chesscore::Rank::max_rank; ++rank) {
         for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
-            auto *square = new QGraphicsRectItem(file - 1, chesscore::Rank::max_rank - rank, cellSize, cellSize);
+            auto *square = new QGraphicsRectItem(file - 1, chesscore::Rank::max_rank - rank, cell_size, cell_size);
             if ((rank + file) % 2 == 1) {
                 square->setBrush(QBrush(brightSquareColor));
                 square->setPen(QPen(Qt::NoPen));
@@ -66,8 +67,6 @@ auto ChessboardWidget::clearPieces() -> void {
 }
 
 auto ChessboardWidget::placePieces(const Position &position) -> void {
-    const qreal cellSize = 1.0;
-
     for (int rank = chesscore::Rank::min_rank; rank <= chesscore::Rank::max_rank; ++rank) {
         for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
             const auto square = chesscore::Square{file, rank};
@@ -77,8 +76,8 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
                 auto *piece = new ChessPiece(renderer);
                 QSizeF nativeSize = renderer->defaultSize();
                 if (nativeSize.width() > 0 && nativeSize.height() > 0) {
-                    qreal scaleX = cellSize / nativeSize.width();
-                    qreal scaleY = cellSize / nativeSize.height();
+                    qreal scaleX = cell_size / nativeSize.width();
+                    qreal scaleY = cell_size / nativeSize.height();
                     piece->setTransform(QTransform::fromScale(scaleX, scaleY));
                     piece->setPos(file - 1, chesscore::Rank::max_rank - rank);
                     m_scene->addItem(piece);
@@ -98,8 +97,7 @@ auto ChessboardWidget::markSquare(const chesscore::Square &square) -> void {
         return;
     }
 
-    const qreal cellSize = 1.0;
-    auto *marker = new QGraphicsRectItem(square.file().file - 1, chesscore::Rank::max_rank - square.rank().rank, cellSize, cellSize);
+    auto *marker = new QGraphicsRectItem(square.file().file - 1, chesscore::Rank::max_rank - square.rank().rank, cell_size, cell_size);
     QColor color{120, 255, 85};
     color.setAlpha(100);
     marker->setBrush(color);
