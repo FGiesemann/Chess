@@ -8,7 +8,7 @@
 namespace chessgui {
 
 ChessPiece::ChessPiece(const QSvgRenderer *renderer) {
-    if (renderer) {
+    if (renderer != nullptr) {
         setSharedRenderer(const_cast<QSvgRenderer *>(renderer));
     } else {
         qWarning() << "Renderer for chess piece is nullptr";
