@@ -12,8 +12,7 @@
 
 namespace chessgui {
 
-ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent) : QGraphicsView(parent), m_piece_set{piece_folder} {
-    m_scene = new QGraphicsScene(this);
+ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent) : QGraphicsView(parent), m_scene{new QGraphicsScene(this)}, m_piece_set{piece_folder} {
     setScene(m_scene);
     setRenderHint(QPainter::Antialiasing);
     setCacheMode(CacheBackground);
