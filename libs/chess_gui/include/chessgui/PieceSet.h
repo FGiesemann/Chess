@@ -25,7 +25,7 @@ public:
 
     auto renderer(chesscore::Piece piece) const -> const QSvgRenderer *;
 private:
-    std::array<std::unique_ptr<QSvgRenderer>, 12> m_renderers{};
+    std::array<std::unique_ptr<QSvgRenderer>, 2 * chesscore::piece_type_count> m_renderers{};
 };
 
 } // namespace chessgui
