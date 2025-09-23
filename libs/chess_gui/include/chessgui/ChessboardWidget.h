@@ -39,9 +39,13 @@ public:
     auto clearMarkedSquares() -> void;
 
     auto pieceSet() const -> const PieceSet & { return m_piece_set; }
+
+    auto setGhostPiece(chesscore::Piece piece, chesscore::Square square) -> void;
+    auto clearGhostPiece() -> void;
 protected:
     auto resizeEvent(QResizeEvent *event) -> void override;
     auto mousePressEvent(QMouseEvent *event) -> void override;
+    auto mouseMoveEvent(QMouseEvent *event) -> void override;
 signals:
     auto squareClicked(const chesscore::Square &square) -> void;
 private:
@@ -59,6 +63,7 @@ private:
     PieceSet m_piece_set;
     std::array<ChessPiece *, chesscore::File::max_file * chesscore::Rank::max_rank> m_pieces{};
     QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;
+    ChessPiece *m_ghost_piece{};
 };
 
 } // namespace chessgui

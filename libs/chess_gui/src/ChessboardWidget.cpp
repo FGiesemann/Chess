@@ -127,6 +127,30 @@ auto ChessboardWidget::clearMarkedSquares() -> void {
     m_markedSquares.clear();
 }
 
+auto ChessboardWidget::setGhostPiece(chesscore::Piece piece, chesscore::Square square) -> void {
+    clearGhostPiece();
+
+    const QSvgRenderer *renderer = m_piece_set.renderer(piece);
+    if (renderer != nullptr) {
+        m_ghost_piece = new ChessPiece(renderer);
+        QSizeF nativeSize = renderer->defaultSize();
+        qreal scaleX = cell_size / nativeSize.width();
+        qreal scaleY = cell_size / nativeSize.height();
+        m_ghost_piece->setTransform(QTransform::fromScale(scaleX, scaleY));
+        m_ghost_piece->setPos(square.file().file - 1, chesscore::Rank::max_rank - square.rank().rank);
+        m_scene->addItem(m_ghost_piece);
+    }
+}
+
+auto ChessboardWidget::clearGhostPiece() -> void {
+    if (m_ghost_piece != nullptr) {
+        qDebug() << "Removing ghost piece";
+        m_scene->removeItem(m_ghost_piece);
+        delete m_ghost_piece;
+        m_ghost_piece = nullptr;
+    }
+}
+
 auto ChessboardWidget::resizeEvent(QResizeEvent *event) -> void {
     QGraphicsView::resizeEvent(event);
     drawBoard();
@@ -144,6 +168,14 @@ auto ChessboardWidget::mousePressEvent(QMouseEvent *event) -> void {
             emit squareClicked(chesscore::Square{file, rank});
         }
     }
+}
+
+auto ChessboardWidget::mouseMoveEvent(QMouseEvent *event) -> void {
+    if (m_ghost_piece != nullptr) {
+        QPointF posInScene = mapToScene(event->pos());
+        m_ghost_piece->setPos(posInScene - QPointF(cell_size / 2.0, cell_size / 2.0));
+    }
+    QGraphicsView::mouseMoveEvent(event);
 }
 
 } // namespace chessgui

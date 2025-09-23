@@ -38,24 +38,25 @@ protected:
                 m_selectedSquare = std::nullopt;
                 m_legal_moves.clear();
             }
+            m_boardWidget->clearGhostPiece();
         }
     }
 private slots:
     auto onSquareClicked(const chesscore::Square &square) -> void {
         if (m_selectedSquare.has_value()) {
-            chesscore::Square from_square = m_selectedSquare.value();
-            qDebug() << "Wants to move from " << to_string(from_square) << " to " << to_string(square);
-
-            auto iter = std::find_if(m_legal_moves.begin(), m_legal_moves.end(), [&](const chesscore::Move &move) { return move.to == square; });
             auto piece_at_target_square = m_currentPosition.board().get_piece(square);
+            chesscore::Square from_square = m_selectedSquare.value();
+            auto iter = std::find_if(m_legal_moves.begin(), m_legal_moves.end(), [&](const chesscore::Move &move) { return move.to == square; });
             if (iter != m_legal_moves.end()) {
                 m_currentPosition.make_move(*iter);
                 m_boardWidget->showPosition(m_currentPosition);
                 m_boardWidget->clearMarkedSquares();
                 m_selectedSquare = std::nullopt;
                 m_legal_moves.clear();
+                m_boardWidget->clearGhostPiece();
             } else if (piece_at_target_square.has_value()) {
                 m_boardWidget->clearMarkedSquares();
+                m_boardWidget->clearGhostPiece();
                 m_legal_moves.clear();
                 m_selectedSquare = std::nullopt;
                 const auto opt_piece = m_currentPosition.board().get_piece(square);
@@ -68,11 +69,13 @@ private slots:
                             m_legal_moves.push_back(move);
                         }
                     }
+                    m_boardWidget->setGhostPiece(opt_piece.value(), square);
                 }
             } else {
                 m_boardWidget->clearMarkedSquares();
                 m_legal_moves.clear();
                 m_selectedSquare = std::nullopt;
+                m_boardWidget->clearGhostPiece();
             }
         } else {
             m_boardWidget->clearMarkedSquares();
@@ -87,6 +90,7 @@ private slots:
                         m_legal_moves.push_back(move);
                     }
                 }
+                m_boardWidget->setGhostPiece(opt_piece.value(), square);
             }
         }
     }
