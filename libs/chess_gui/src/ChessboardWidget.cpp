@@ -48,7 +48,7 @@ auto ChessboardWidget::drawBoard() -> void {
     }
 }
 
-auto ChessboardWidget::setPosition(const Position &position) -> void {
+auto ChessboardWidget::showPosition(const Position &position) -> void {
     clearPieces();
     placePieces(position);
 }

@@ -29,7 +29,7 @@ public:
     ChessboardWidget(const ChessboardWidget &) = delete;
     ChessboardWidget &operator=(const ChessboardWidget &) = delete;
 
-    auto setPosition(const Position &position) -> void;
+    auto showPosition(const Position &position) -> void;
 
     auto markSquare(const chesscore::Square &square) -> void;
     auto unmarkSquare(const chesscore::Square &square) -> void;

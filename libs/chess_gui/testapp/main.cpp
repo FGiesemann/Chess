@@ -26,7 +26,7 @@ public:
         layout->addWidget(m_boardWidget);
         setCentralWidget(centralWidget);
 
-        m_boardWidget->setPosition(m_currentPosition);
+        m_boardWidget->showPosition(m_currentPosition);
 
         connect(m_boardWidget, &ChessboardWidget::squareClicked, this, &MainWindow::onSquareClicked);
     }
@@ -50,7 +50,7 @@ private slots:
             auto piece_at_target_square = m_currentPosition.board().get_piece(square);
             if (iter != m_legal_moves.end()) {
                 m_currentPosition.make_move(*iter);
-                m_boardWidget->setPosition(m_currentPosition);
+                m_boardWidget->showPosition(m_currentPosition);
                 m_boardWidget->clearMarkedSquares();
                 m_selectedSquare = std::nullopt;
                 m_legal_moves.clear();
