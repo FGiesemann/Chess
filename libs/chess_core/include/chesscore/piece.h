@@ -56,7 +56,7 @@ static constexpr std::array<PieceType, 4> all_promotion_piece_types{PieceType::R
  * \param index The index.
  * \return Piece type corresponding to the index.
  */
-auto piece_type_from_index(int index) -> PieceType;
+auto piece_type_from_index(std::size_t index) -> PieceType;
 
 /**
  * \brief Converts a character to a piece type.
