@@ -25,6 +25,11 @@ ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent)
     std::ranges::fill(m_pieces, nullptr);
 }
 
+ChessboardWidget::~ChessboardWidget() {
+    m_scene->clear();
+    delete m_scene;
+}
+
 auto ChessboardWidget::drawBoard() -> void {
     for (auto *item : m_scene->items()) {
         if (qgraphicsitem_cast<QGraphicsRectItem *>(item) != nullptr) {

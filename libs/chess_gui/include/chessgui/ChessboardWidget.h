@@ -27,7 +27,10 @@ class ChessboardWidget : public QGraphicsView {
 public:
     explicit ChessboardWidget(const QString &piece_folder, QWidget *parent = nullptr);
     ChessboardWidget(const ChessboardWidget &) = delete;
-    ChessboardWidget &operator=(const ChessboardWidget &) = delete;
+    auto operator=(const ChessboardWidget &) -> ChessboardWidget & = delete;
+    ChessboardWidget(ChessboardWidget &&) = default;
+    auto operator=(ChessboardWidget &&) -> ChessboardWidget & = default;
+    ~ChessboardWidget() override;
 
     auto showPosition(const Position &position) -> void;
 
