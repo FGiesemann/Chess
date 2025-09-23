@@ -34,6 +34,8 @@ public:
     auto markSquare(const chesscore::Square &square) -> void;
     auto unmarkSquare(const chesscore::Square &square) -> void;
     auto clearMarkedSquares() -> void;
+
+    auto pieceSet() const -> const PieceSet & { return m_piece_set; }
 protected:
     auto resizeEvent(QResizeEvent *event) -> void override;
     auto mousePressEvent(QMouseEvent *event) -> void override;
