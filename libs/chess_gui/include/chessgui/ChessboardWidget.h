@@ -30,7 +30,7 @@ public:
     auto operator=(const ChessboardWidget &) -> ChessboardWidget & = delete;
     ChessboardWidget(ChessboardWidget &&) = default;
     auto operator=(ChessboardWidget &&) -> ChessboardWidget & = default;
-    ~ChessboardWidget() override;
+    ~ChessboardWidget() = default;
 
     auto showPosition(const Position &position) -> void;
 
@@ -59,7 +59,7 @@ private:
     auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
 
     static const qreal cell_size;
-    QGraphicsScene *m_scene;
+    QGraphicsScene m_scene;
     PieceSet m_piece_set;
     std::array<ChessPiece *, chesscore::File::max_file * chesscore::Rank::max_rank> m_pieces{};
     QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;

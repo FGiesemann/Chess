@@ -14,26 +14,21 @@ namespace chessgui {
 
 const qreal ChessboardWidget::cell_size{1.0};
 
-ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent) : QGraphicsView(parent), m_scene{new QGraphicsScene(this)}, m_piece_set{piece_folder} {
-    setScene(m_scene);
+ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent) : QGraphicsView(parent), m_scene{this}, m_piece_set{piece_folder} {
+    setScene(&m_scene);
     setRenderHint(QPainter::Antialiasing);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setMouseTracking(true);
 
-    m_scene->setSceneRect(0, 0, chesscore::File::max_file, chesscore::Rank::max_rank);
+    m_scene.setSceneRect(0, 0, chesscore::File::max_file, chesscore::Rank::max_rank);
     std::ranges::fill(m_pieces, nullptr);
 }
 
-ChessboardWidget::~ChessboardWidget() {
-    m_scene->clear();
-    delete m_scene;
-}
-
 auto ChessboardWidget::drawBoard() -> void {
-    for (auto *item : m_scene->items()) {
+    for (auto *item : m_scene.items()) {
         if (qgraphicsitem_cast<QGraphicsRectItem *>(item) != nullptr) {
-            m_scene->removeItem(item);
+            m_scene.removeItem(item);
             delete item;
         }
     }
@@ -48,7 +43,7 @@ auto ChessboardWidget::drawBoard() -> void {
                 square->setBrush(QBrush(darkSquareColor));
                 square->setPen(QPen(Qt::NoPen));
             }
-            m_scene->addItem(square);
+            m_scene.addItem(square);
         }
     }
 }
@@ -61,7 +56,7 @@ auto ChessboardWidget::showPosition(const Position &position) -> void {
 auto ChessboardWidget::clearPieces() -> void {
     for (auto &piece : m_pieces) {
         if (piece != nullptr) {
-            m_scene->removeItem(piece);
+            m_scene.removeItem(piece);
             delete piece;
             piece = nullptr;
         }
@@ -81,7 +76,7 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
                 qreal scaleY = cell_size / nativeSize.height();
                 piece->setTransform(QTransform::fromScale(scaleX, scaleY));
                 piece->setPos(file - 1, chesscore::Rank::max_rank - rank);
-                m_scene->addItem(piece);
+                m_scene.addItem(piece);
                 m_pieces[square.index()] = piece;
             }
         }
@@ -98,7 +93,7 @@ auto ChessboardWidget::markSquare(const chesscore::Square &square) -> void {
     marker->setBrush(squareHighlightColor);
     marker->setPen(Qt::NoPen);
     m_markedSquares.append({square, marker});
-    m_scene->addItem(marker);
+    m_scene.addItem(marker);
 }
 
 auto ChessboardWidget::findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *> {
@@ -113,7 +108,7 @@ auto ChessboardWidget::findSquareMarker(const chesscore::Square &square) -> std:
 auto ChessboardWidget::unmarkSquare(const chesscore::Square &square) -> void {
     auto opt_marker = findSquareMarker(square);
     if (opt_marker.has_value()) {
-        m_scene->removeItem(opt_marker.value());
+        m_scene.removeItem(opt_marker.value());
         delete opt_marker.value();
         m_markedSquares.removeOne({square, opt_marker.value()});
     }
@@ -121,7 +116,7 @@ auto ChessboardWidget::unmarkSquare(const chesscore::Square &square) -> void {
 
 auto ChessboardWidget::clearMarkedSquares() -> void {
     for (auto &item : m_markedSquares) {
-        m_scene->removeItem(item.second);
+        m_scene.removeItem(item.second);
         delete item.second;
     }
     m_markedSquares.clear();
@@ -138,14 +133,14 @@ auto ChessboardWidget::setGhostPiece(chesscore::Piece piece, chesscore::Square s
         qreal scaleY = cell_size / nativeSize.height();
         m_ghost_piece->setTransform(QTransform::fromScale(scaleX, scaleY));
         m_ghost_piece->setPos(square.file().file - 1, chesscore::Rank::max_rank - square.rank().rank);
-        m_scene->addItem(m_ghost_piece);
+        m_scene.addItem(m_ghost_piece);
     }
 }
 
 auto ChessboardWidget::clearGhostPiece() -> void {
     if (m_ghost_piece != nullptr) {
         qDebug() << "Removing ghost piece";
-        m_scene->removeItem(m_ghost_piece);
+        m_scene.removeItem(m_ghost_piece);
         delete m_ghost_piece;
         m_ghost_piece = nullptr;
     }
@@ -154,7 +149,7 @@ auto ChessboardWidget::clearGhostPiece() -> void {
 auto ChessboardWidget::resizeEvent(QResizeEvent *event) -> void {
     QGraphicsView::resizeEvent(event);
     drawBoard();
-    fitInView(m_scene->sceneRect(), Qt::KeepAspectRatio);
+    fitInView(m_scene.sceneRect(), Qt::KeepAspectRatio);
 }
 
 auto ChessboardWidget::mousePressEvent(QMouseEvent *event) -> void {
