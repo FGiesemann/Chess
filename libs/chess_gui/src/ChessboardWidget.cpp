@@ -72,17 +72,12 @@ auto ChessboardWidget::placePieces(const Position &position) -> void {
                 const auto *renderer = m_piece_set.renderer(piece_at_square.value());
                 auto *piece = new ChessPiece(renderer);
                 QSizeF nativeSize = renderer->defaultSize();
-                if (nativeSize.width() > 0 && nativeSize.height() > 0) {
-                    qreal scaleX = cell_size / nativeSize.width();
-                    qreal scaleY = cell_size / nativeSize.height();
-                    piece->setTransform(QTransform::fromScale(scaleX, scaleY));
-                    piece->setPos(file - 1, chesscore::Rank::max_rank - rank);
-                    m_scene->addItem(piece);
-                    m_pieces[square.index()] = piece;
-                } else {
-                    qWarning() << "Warning: Skipping piece at" << rank << "," << file << "due to invalid SVG graphics.";
-                    delete piece;
-                }
+                qreal scaleX = cell_size / nativeSize.width();
+                qreal scaleY = cell_size / nativeSize.height();
+                piece->setTransform(QTransform::fromScale(scaleX, scaleY));
+                piece->setPos(file - 1, chesscore::Rank::max_rank - rank);
+                m_scene->addItem(piece);
+                m_pieces[square.index()] = piece;
             }
         }
     }

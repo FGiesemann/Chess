@@ -26,7 +26,10 @@ PieceSet::PieceSet(const QString &folder) {
             if (!renderer->isValid()) {
                 throw ChessboardError{std::string{"Invalid SVG file for chess piece at path "} + fileName.toStdString()};
             }
-
+            QSizeF nativeSize = renderer->defaultSize();
+            if (nativeSize.width() == 0 || nativeSize.height() == 0) {
+                throw ChessboardError{std::string{"Invalid SVG file for chess piece at path "} + fileName.toStdString()};
+            }
             m_renderers[piece.piece_index()] = std::move(renderer);
         }
     }
