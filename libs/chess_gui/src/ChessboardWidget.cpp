@@ -139,7 +139,6 @@ auto ChessboardWidget::setGhostPiece(chesscore::Piece piece, chesscore::Square s
 
 auto ChessboardWidget::clearGhostPiece() -> void {
     if (m_ghost_piece != nullptr) {
-        qDebug() << "Removing ghost piece";
         m_scene.removeItem(m_ghost_piece);
         delete m_ghost_piece;
         m_ghost_piece = nullptr;
@@ -166,9 +165,10 @@ auto ChessboardWidget::mousePressEvent(QMouseEvent *event) -> void {
 }
 
 auto ChessboardWidget::mouseMoveEvent(QMouseEvent *event) -> void {
+    static const qreal shift = cell_size / 2.0;
     if (m_ghost_piece != nullptr) {
         QPointF posInScene = mapToScene(event->pos());
-        m_ghost_piece->setPos(posInScene - QPointF(cell_size / 2.0, cell_size / 2.0));
+        m_ghost_piece->setPos(posInScene - QPointF(shift, shift));
     }
     QGraphicsView::mouseMoveEvent(event);
 }
