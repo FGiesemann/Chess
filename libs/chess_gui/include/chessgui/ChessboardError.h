@@ -6,17 +6,20 @@
 #ifndef CHESSGUI_CHESSBOARD_ERROR_H
 #define CHESSGUI_CHESSBOARD_ERROR_H
 
-#include <exception>
-#include <string>
+#include <QException>
+#include <QString>
 
 namespace chessgui {
 
-class ChessboardError : public std::exception {
+class ChessboardError : public QException {
 public:
-    ChessboardError(std::string message) : m_message{std::move(message)} {}
-    [[nodiscard]] auto what() const noexcept -> const char * override { return m_message.c_str(); }
+    ChessboardError(const QString &message = "") : m_message{message} {}
+    [[nodiscard]] auto what() const noexcept -> const char * override { return m_message.toStdString().c_str(); }
+
+    auto raise() const -> void override { throw *this; }
+    auto clone() const -> ChessboardError * override { return new ChessboardError{*this}; }
 private:
-    std::string m_message;
+    QString m_message;
 };
 
 } // namespace chessgui
