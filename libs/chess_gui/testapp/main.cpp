@@ -69,6 +69,7 @@ private:
         m_selected_square = square;
         m_board_widget->clearMarkedSquares();
         m_board_widget->setGhostPiece(piece, square);
+        m_board_widget->hidePiece(square);
         compute_piece_moves(square);
     }
 
@@ -76,6 +77,8 @@ private:
         const auto iter = std::ranges::find_if(m_legal_moves, [&](const chesscore::Move &move) { return move.to == square; });
         if (iter != m_legal_moves.end()) {
             perform_move(*iter);
+        } else {
+            cancel_move();
         }
     }
 
@@ -91,6 +94,9 @@ private:
     auto cancel_move() -> void {
         m_board_widget->clearMarkedSquares();
         m_board_widget->clearGhostPiece();
+        if (m_selected_square.has_value()) {
+            m_board_widget->showPiece(m_selected_square.value());
+        }
         m_selected_square = std::nullopt;
         m_legal_moves.clear();
     }

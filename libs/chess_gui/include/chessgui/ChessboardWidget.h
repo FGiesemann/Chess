@@ -42,6 +42,8 @@ public:
 
     auto setGhostPiece(chesscore::Piece piece, chesscore::Square square) -> void;
     auto clearGhostPiece() -> void;
+    auto hidePiece(chesscore::Square square) -> void;
+    auto showPiece(chesscore::Square square) -> void;
 protected:
     auto resizeEvent(QResizeEvent *event) -> void override;
     auto mousePressEvent(QMouseEvent *event) -> void override;

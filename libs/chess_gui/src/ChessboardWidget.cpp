@@ -145,6 +145,18 @@ auto ChessboardWidget::clearGhostPiece() -> void {
     }
 }
 
+auto ChessboardWidget::hidePiece(chesscore::Square square) -> void {
+    if (m_pieces[square.index()] != nullptr) {
+        m_pieces[square.index()]->setVisible(false);
+    }
+}
+
+auto ChessboardWidget::showPiece(chesscore::Square square) -> void {
+    if (m_pieces[square.index()] != nullptr) {
+        m_pieces[square.index()]->setVisible(true);
+    }
+}
+
 auto ChessboardWidget::squareAt(const QPoint &pos) -> std::optional<chesscore::Square> {
     QPointF posInScene = mapToScene(pos);
     int file = qFloor(posInScene.x()) + 1;
