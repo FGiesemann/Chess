@@ -83,7 +83,9 @@ auto ChessboardController::compute_piece_moves(chesscore::Square square) -> void
     for (const auto &move : all_legal_moves) {
         if (move.from == square) {
             m_legal_moves.push_back(move);
-            m_board_widget->markSquare(move.to);
+            if (m_mark_target_squares) {
+                m_board_widget->markSquare(move.to);
+            }
         }
     }
 }

@@ -16,6 +16,8 @@ class ChessboardController : public QObject {
     Q_OBJECT
 public:
     ChessboardController(ChessboardWidget *board_widget, QObject *parent = nullptr);
+
+    auto mark_target_squares(bool mark) -> void { m_mark_target_squares = mark; }
 private slots:
     auto on_square_clicked(const chesscore::Square &square) -> void;
     auto on_square_released(const chesscore::Square &square) -> void;
@@ -23,6 +25,7 @@ private slots:
 private:
     ChessboardWidget *m_board_widget;
     chesscore::Position<chesscore::Bitboard> m_current_position;
+    bool m_mark_target_squares{false};
 
     std::optional<chesscore::Square> m_selected_square{};
     chesscore::MoveList m_legal_moves{};
