@@ -46,8 +46,10 @@ protected:
     auto resizeEvent(QResizeEvent *event) -> void override;
     auto mousePressEvent(QMouseEvent *event) -> void override;
     auto mouseMoveEvent(QMouseEvent *event) -> void override;
+    auto mouseReleaseEvent(QMouseEvent *event) -> void override;
 signals:
-    auto squareClicked(const chesscore::Square &square) -> void;
+    auto mousePressed(const chesscore::Square &square) -> void;
+    auto mouseReleased(const chesscore::Square &square) -> void;
 private:
     static constexpr auto brightSquareColor = QColor(252, 212, 146);
     static constexpr auto darkSquareColor = QColor(181, 155, 114);
@@ -57,6 +59,7 @@ private:
     auto placePieces(const Position &position) -> void;
     auto clearPieces() -> void;
     auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
+    auto squareAt(const QPoint &pos) -> std::optional<chesscore::Square>;
 
     static const qreal cell_size;
     QGraphicsScene m_scene;

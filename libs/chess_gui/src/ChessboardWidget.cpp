@@ -145,6 +145,17 @@ auto ChessboardWidget::clearGhostPiece() -> void {
     }
 }
 
+auto ChessboardWidget::squareAt(const QPoint &pos) -> std::optional<chesscore::Square> {
+    QPointF posInScene = mapToScene(pos);
+    int file = qFloor(posInScene.x()) + 1;
+    int rank = chesscore::Rank::max_rank - qFloor(posInScene.y());
+
+    if (file >= chesscore::File::min_file && file <= chesscore::File::max_file && rank >= chesscore::Rank::min_rank && rank <= chesscore::Rank::max_rank) {
+        return chesscore::Square{file, rank};
+    }
+    return {};
+}
+
 auto ChessboardWidget::resizeEvent(QResizeEvent *event) -> void {
     QGraphicsView::resizeEvent(event);
     drawBoard();
@@ -154,12 +165,9 @@ auto ChessboardWidget::resizeEvent(QResizeEvent *event) -> void {
 auto ChessboardWidget::mousePressEvent(QMouseEvent *event) -> void {
     QGraphicsView::mousePressEvent(event);
     if (event->button() == Qt::LeftButton) {
-        QPointF posInScene = mapToScene(event->pos());
-        int file = qFloor(posInScene.x()) + 1;
-        int rank = chesscore::Rank::max_rank - qFloor(posInScene.y());
-
-        if (file >= chesscore::File::min_file && file <= chesscore::File::max_file && rank >= chesscore::Rank::min_rank && rank <= chesscore::Rank::max_rank) {
-            emit squareClicked(chesscore::Square{file, rank});
+        const auto opt_square = squareAt(event->pos());
+        if (opt_square.has_value()) {
+            emit mousePressed(opt_square.value());
         }
     }
 }
@@ -171,6 +179,16 @@ auto ChessboardWidget::mouseMoveEvent(QMouseEvent *event) -> void {
         m_ghost_piece->setPos(posInScene - QPointF(shift, shift));
     }
     QGraphicsView::mouseMoveEvent(event);
+}
+
+auto ChessboardWidget::mouseReleaseEvent(QMouseEvent *event) -> void {
+    QGraphicsView::mouseReleaseEvent(event);
+    if (event->button() == Qt::LeftButton) {
+        const auto opt_square = squareAt(event->pos());
+        if (opt_square.has_value()) {
+            emit mouseReleased(opt_square.value());
+        }
+    }
 }
 
 } // namespace chessgui
