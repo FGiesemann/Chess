@@ -203,4 +203,10 @@ auto ChessboardWidget::mouseReleaseEvent(QMouseEvent *event) -> void {
     }
 }
 
+auto ChessboardWidget::keyPressEvent(QKeyEvent *event) -> void {
+    if (event->key() == Qt::Key_Escape) {
+        emit cancelRequested();
+    }
+}
+
 } // namespace chessgui

@@ -49,9 +49,11 @@ protected:
     auto mousePressEvent(QMouseEvent *event) -> void override;
     auto mouseMoveEvent(QMouseEvent *event) -> void override;
     auto mouseReleaseEvent(QMouseEvent *event) -> void override;
+    auto keyPressEvent(QKeyEvent *event) -> void override;
 signals:
     auto mousePressed(const chesscore::Square &square) -> void;
     auto mouseReleased(const chesscore::Square &square) -> void;
+    auto cancelRequested() -> void;
 private:
     static constexpr auto brightSquareColor = QColor(252, 212, 146);
     static constexpr auto darkSquareColor = QColor(181, 155, 114);
