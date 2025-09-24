@@ -9,8 +9,9 @@ option(BUILD_TESTING "Build unittests" OFF)
 
 include(cmake/compiler_warnings.cmake)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets SvgWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets SvgWidgets)
 qt_standard_project_setup()
+set(CMAKE_AUTORCC ON)
 
 qt_add_library(${PROJECT_NAME} STATIC
     include/chessgui/ChessboardController.h src/ChessboardController.cpp
@@ -18,11 +19,13 @@ qt_add_library(${PROJECT_NAME} STATIC
     include/chessgui/ChessboardWidget.h src/ChessboardWidget.cpp
     include/chessgui/GraphicsItems.h src/GraphicsItems.cpp
     include/chessgui/PieceSet.h src/PieceSet.cpp
-)
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/data/pieces/pieces.qrc
+)    
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
-)
+)    
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_23)
 find_package(chesscore REQUIRED COMPONENTS chesscore)
 target_link_libraries(${PROJECT_NAME} PUBLIC chesscore::chesscore)

@@ -15,6 +15,7 @@ class ChessboardError : public QException {
 public:
     ChessboardError(const QString &message = "") : m_message{message} {}
     [[nodiscard]] auto what() const noexcept -> const char * override { return m_message.toStdString().c_str(); }
+    [[nodiscard]] auto message() const noexcept -> const QString & { return m_message; }
 
     auto raise() const -> void override { throw *this; }
     auto clone() const -> ChessboardError * override { return new ChessboardError{*this}; }

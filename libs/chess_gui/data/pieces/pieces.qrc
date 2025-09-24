@@ -1,0 +1,17 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/pieces">
+        <file alias="wk.svg">alpha/wk.svg</file>
+        <file alias="wq.svg">alpha/wq.svg</file>
+        <file alias="wr.svg">alpha/wr.svg</file>
+        <file alias="wb.svg">alpha/wb.svg</file>
+        <file alias="wn.svg">alpha/wk.svg</file>
+        <file alias="wp.svg">alpha/wp.svg</file>
+        <file alias="bk.svg">alpha/bk.svg</file>
+        <file alias="bq.svg">alpha/bq.svg</file>
+        <file alias="br.svg">alpha/br.svg</file>
+        <file alias="bb.svg">alpha/bb.svg</file>
+        <file alias="bn.svg">alpha/bk.svg</file>
+        <file alias="bp.svg">alpha/bp.svg</file>
+    </qresource>
+</RCC>

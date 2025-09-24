@@ -25,6 +25,7 @@ using Position = chesscore::Position<chesscore::Bitboard>;
 class ChessboardWidget : public QGraphicsView {
     Q_OBJECT
 public:
+    explicit ChessboardWidget(QWidget *parent = nullptr);
     explicit ChessboardWidget(const QString &piece_folder, QWidget *parent = nullptr);
     ChessboardWidget(const ChessboardWidget &) = delete;
     auto operator=(const ChessboardWidget &) -> ChessboardWidget & = delete;

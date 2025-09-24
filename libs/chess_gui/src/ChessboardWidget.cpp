@@ -25,6 +25,8 @@ ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent)
     std::ranges::fill(m_pieces, nullptr);
 }
 
+ChessboardWidget::ChessboardWidget(QWidget *parent) : ChessboardWidget(":/pieces", parent) {}
+
 auto ChessboardWidget::drawBoard() -> void {
     for (auto *item : m_scene.items()) {
         if (qgraphicsitem_cast<QGraphicsRectItem *>(item) != nullptr) {

@@ -13,6 +13,14 @@
 
 namespace chessgui {
 
+class PieceResourceInit {
+public:
+    PieceResourceInit() { Q_INIT_RESOURCE(pieces); }
+    ~PieceResourceInit() { Q_CLEANUP_RESOURCE(pieces); }
+};
+
+static PieceResourceInit pieceResourceInit;
+
 PieceSet::PieceSet(const QString &folder) {
     for (auto color : {chesscore::Color::White, chesscore::Color::Black}) {
         for (auto type : chesscore::all_piece_types) {
@@ -20,7 +28,7 @@ PieceSet::PieceSet(const QString &folder) {
             QString colorName = (color == chesscore::Color::White) ? "w" : "b";
             QString fileName = QString("%1/%2%3.svg").arg(folder, colorName, QString{piece.piece_char_colorless()}.toLower());
             if (!QFile::exists(fileName)) {
-                throw ChessboardError{QString{"Piece file %s does not exist"}.arg(fileName)};
+                throw ChessboardError{QString{"Piece file %1 does not exist"}.arg(fileName)};
             }
             auto renderer = std::make_unique<QSvgRenderer>(fileName);
             if (!renderer->isValid()) {

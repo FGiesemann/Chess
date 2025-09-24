@@ -1,4 +1,5 @@
 #include "chessgui/ChessboardController.h"
+#include "chessgui/ChessboardError.h"
 #include "chessgui/ChessboardWidget.h"
 #include "chessgui/PieceSet.h"
 
@@ -15,8 +16,7 @@ namespace chessgui {
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
-    MainWindow(const QString &piece_folder, QWidget *parent = nullptr)
-        : QMainWindow(parent), m_board_widget{new ChessboardWidget(piece_folder, this)}, m_board_controller{new ChessboardController(m_board_widget, this)} {
+    MainWindow(QWidget *parent = nullptr) : QMainWindow(parent), m_board_widget{new ChessboardWidget(this)}, m_board_controller{new ChessboardController(m_board_widget, this)} {
         setWindowTitle("Schachbrett");
         setMinimumSize(400, 400);
         resize(600, 600);
@@ -35,9 +35,8 @@ private:
 
 auto main(int argc, char *argv[]) -> int {
     QApplication a(argc, argv);
-    chessgui::MainWindow window(QString{"D:/Programmierung/Projekte/Chess/ChessGui/data/pieces/alpha"});
+    chessgui::MainWindow window;
     window.show();
-
     return a.exec();
 }
 #include "main.moc"
