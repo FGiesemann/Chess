@@ -42,6 +42,7 @@ auto ChessboardController::on_cancel_requested() -> void {
 }
 
 auto ChessboardController::start_possible_move(chesscore::Square square, chesscore::Piece piece) -> void {
+    emit piece_selected(square, piece);
     m_selected_square = square;
     m_board_widget->clearMarkedSquares();
     m_board_widget->setGhostPiece(piece, square);
@@ -59,6 +60,7 @@ auto ChessboardController::try_move(chesscore::Square square) -> void {
 }
 
 auto ChessboardController::perform_move(const chesscore::Move &move) -> void {
+    emit move_made(move);
     m_current_position.make_move(move);
     m_board_widget->showPosition(m_current_position);
     m_board_widget->clearMarkedSquares();
@@ -68,6 +70,7 @@ auto ChessboardController::perform_move(const chesscore::Move &move) -> void {
 }
 
 auto ChessboardController::cancel_move() -> void {
+    emit move_cancelled();
     m_board_widget->clearMarkedSquares();
     m_board_widget->clearGhostPiece();
     if (m_selected_square.has_value()) {

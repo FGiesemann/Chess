@@ -18,6 +18,10 @@ public:
     ChessboardController(ChessboardWidget *board_widget, QObject *parent = nullptr);
 
     auto mark_target_squares(bool mark) -> void { m_mark_target_squares = mark; }
+signals:
+    auto piece_selected(const chesscore::Square &square, chesscore::Piece piece) -> void;
+    auto move_cancelled() -> void;
+    auto move_made(const chesscore::Move &move) -> void;
 private slots:
     auto on_square_clicked(const chesscore::Square &square) -> void;
     auto on_square_released(const chesscore::Square &square) -> void;
