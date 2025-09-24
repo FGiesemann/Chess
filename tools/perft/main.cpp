@@ -42,8 +42,8 @@ struct Options {
 
 auto parse_arguments(const std::vector<std::string> &argv) -> Options;
 auto print_help() -> void;
-auto perform_perft(chesstools::perft::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void;
-auto perform_divide(chesstools::perft::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void;
+auto perform_perft(chesscore::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void;
+auto perform_divide(chesscore::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void;
 auto print_divide_result(const chesstools::perft::DivideResult &result, chesstools::perft::Reporter &reporter) -> void;
 
 auto main(int argc, char *argv[]) -> int {
@@ -54,10 +54,10 @@ auto main(int argc, char *argv[]) -> int {
         if (!options.suite_path.empty()) {
             chesstools::perft::perform_perft_suite(options.suite_path, reporter);
         } else if (options.command == Command::Perft) {
-            auto pos = chesstools::perft::Position{chesscore::FenString{options.fen}};
+            auto pos = chesscore::Position{chesscore::FenString{options.fen}};
             perform_perft(pos, options.depth, options.perform_range, reporter);
         } else if (options.command == Command::Divide) {
-            auto pos = chesstools::perft::Position{chesscore::FenString{options.fen}};
+            auto pos = chesscore::Position{chesscore::FenString{options.fen}};
             perform_divide(pos, options.depth, options.perform_range, reporter);
         }
     } catch (const std::exception &e) {
@@ -66,7 +66,7 @@ auto main(int argc, char *argv[]) -> int {
     return 0;
 }
 
-auto perform_perft(chesstools::perft::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void {
+auto perform_perft(chesscore::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void {
     if (perform_range) {
         for (int perft_depth = 1; perft_depth <= depth; ++perft_depth) {
             const auto result = chesstools::perft::perft(pos, perft_depth);
@@ -78,7 +78,7 @@ auto perform_perft(chesstools::perft::Position &pos, int depth, bool perform_ran
     }
 }
 
-auto perform_divide(chesstools::perft::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void {
+auto perform_divide(chesscore::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void {
     if (perform_range) {
         for (int perft_depth = 1; perft_depth <= depth; ++perft_depth) {
             const auto result = chesstools::perft::divide(pos, perft_depth);

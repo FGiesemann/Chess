@@ -15,8 +15,6 @@
 
 namespace chesstools::perft {
 
-using Position = chesscore::Position<chesscore::Bitboard>;
-
 struct PerftResult {
     std::uint64_t node_count{0};
     std::chrono::microseconds duration{};
@@ -34,9 +32,9 @@ struct DivideResult {
     std::chrono::microseconds duration{};
 };
 
-auto perft(Position &pos, int depth) -> PerftResult;
-auto perft_count(Position &pos, int depth) -> std::uint64_t;
-auto divide(Position &pos, int depth) -> DivideResult;
+auto perft(chesscore::Position &pos, int depth) -> PerftResult;
+auto perft_count(chesscore::Position &pos, int depth) -> std::uint64_t;
+auto divide(chesscore::Position &pos, int depth) -> DivideResult;
 
 } // namespace chesstools::perft
 

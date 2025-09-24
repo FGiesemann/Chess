@@ -20,7 +20,7 @@ auto main(int argc, const char *argv[]) -> int {
         constructor_output = true;
     }
 
-    const auto position = chesscore::Position<chesscore::Bitboard>{chesscore::FenString{argv[1]}};
+    const auto position = chesscore::Position{chesscore::FenString{argv[1]}};
     const auto moves = position.all_legal_moves();
     if (constructor_output) {
         for (const auto &move : moves) {

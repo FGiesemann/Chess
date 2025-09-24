@@ -43,7 +43,7 @@ auto perform_perft_suite(const std::string &path, Reporter &reporter) -> void {
     const auto suite = parse_suite_definition(path);
     for (const auto &test : suite.tests) {
         reporter << test.fen.str() << '\n';
-        Position position{test.fen};
+        chesscore::Position position{test.fen};
         positions_count += 1;
         for (const auto &expected_result : test.expected_results) {
             reporter << "  " << expected_result.depth << ": ";
