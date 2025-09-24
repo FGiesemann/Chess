@@ -11,7 +11,7 @@
 using namespace chesscore;
 
 TEST_CASE("Position.Perft.Initial Pos", "[Position][Perft]") {
-    Position<Bitboard> position{FenString::starting_position()};
+    Position position{FenString::starting_position()};
 
     CHECK(perft(position, 0) == 1);
     CHECK(perft(position, 1) == 20);
@@ -28,7 +28,7 @@ TEST_CASE("Position.Perft.Initial Pos", "[Position][Perft]") {
 }
 
 TEST_CASE("Position.Perft.Kiwipete", "[Position][Perft]") {
-    Position<Bitboard> position{FenString{"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"}};
+    Position position{FenString{"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"}};
 
     CHECK(perft(position, 1) == 48);
     CHECK(perft(position, 2) == 2039);
@@ -39,7 +39,7 @@ TEST_CASE("Position.Perft.Kiwipete", "[Position][Perft]") {
 }
 
 TEST_CASE("Position.Perft.Position 3", "[Position][Perft]") {
-    Position<Bitboard> position{FenString{"8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1"}};
+    Position position{FenString{"8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1"}};
 
     CHECK(perft(position, 1) == 14);
     CHECK(perft(position, 2) == 191);
@@ -52,7 +52,7 @@ TEST_CASE("Position.Perft.Position 3", "[Position][Perft]") {
 }
 
 TEST_CASE("Position.Perft.Position 5", "[Position][Perft]") {
-    Position<Bitboard> position{FenString{"rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8"}};
+    Position position{FenString{"rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8"}};
 
     CHECK(perft(position, 1) == 44);
     CHECK(perft(position, 2) == 1486);
@@ -62,7 +62,7 @@ TEST_CASE("Position.Perft.Position 5", "[Position][Perft]") {
 }
 
 TEST_CASE("Position.Perft.Promotions", "[Position][Perft]") {
-    Position<Bitboard> position{FenString{"n1n5/PPPk4/8/8/8/8/4Kppp/5N1N b - - 0 1"}};
+    Position position{FenString{"n1n5/PPPk4/8/8/8/8/4Kppp/5N1N b - - 0 1"}};
 
     CHECK(perft(position, 1) == 24);
     CHECK(perft(position, 2) == 496);

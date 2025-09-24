@@ -4,6 +4,9 @@
  * ************************************************************************** */
 
 #include "chesscore_io/position_io.h"
+#include "chesscore_io/bitboard_io.h"
+#include "chesscore_io/piece_io.h"
+#include "chesscore_io/square_io.h"
 
 namespace chesscore {
 
@@ -28,6 +31,20 @@ auto operator<<(std::ostream &os, const CastlingRights &rights) -> std::ostream 
     if (!found_one) {
         os << '-';
     }
+    return os;
+}
+
+auto operator<<(std::ostream &os, const Position &position) -> std::ostream & {
+    os << position.board() << '\n';
+    os << position.side_to_move() << " to move\n";
+    os << "Move counter: " << position.fullmove_number() << " | Halfmove counter " << position.halfmove_clock() << '\n';
+    os << "Castling rights: " << position.castling_rights() << " | en passant: ";
+    if (position.en_passant_target().has_value()) {
+        os << position.en_passant_target().value();
+    } else {
+        os << "-";
+    }
+    os << '\n';
     return os;
 }
 

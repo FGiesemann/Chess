@@ -11,7 +11,7 @@
 using namespace chesscore;
 
 TEST_CASE("Position.UnmakeMove.SinglePawn", "[Position][UnmakeMove]") {
-    Position<Bitboard> position{FenString::starting_position()};
+    Position position{FenString::starting_position()};
 
     Move move{
         .from = Square::E2,
@@ -35,7 +35,7 @@ TEST_CASE("Position.UnmakeMove.SinglePawn", "[Position][UnmakeMove]") {
 }
 
 TEST_CASE("Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
-    Position<Bitboard> position{FenString{"8/pp6/1q3n1B/8/1P6/2N2N2/6PP/6R1 b - b3 18 9"}};
+    Position position{FenString{"8/pp6/1q3n1B/8/1P6/2N2N2/6PP/6R1 b - b3 18 9"}};
 
     Move m{
         .from = Square::B6,

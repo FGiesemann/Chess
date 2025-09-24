@@ -24,7 +24,7 @@ auto build_fen_string(const std::string &fen) -> FenString {
 }
 
 auto build_position_fen(const std::string &fen) -> FenString {
-    const auto pos = Position<Bitboard>{FenString{fen}};
+    const auto pos = Position{FenString{fen}};
     return FenString{pos.piece_placement(), pos.state()};
 }
 

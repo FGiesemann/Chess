@@ -316,8 +316,6 @@ private:
     auto store_move_if_legal(const Move &move, MoveList &moves) const -> void;
 };
 
-static_assert(Board<Bitboard>, "Bitboard should implement the Board concept");
-
 } // namespace chesscore
 
 #endif

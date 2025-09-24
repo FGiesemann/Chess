@@ -7,6 +7,7 @@
 #ifndef CHESSCORE_POSITION_H
 #define CHESSCORE_POSITION_H
 
+#include "chesscore/bitboard.h"
 #include "chesscore/board.h"
 #include "chesscore/fen.h"
 #include "chesscore/position_types.h"
@@ -19,9 +20,7 @@ namespace chesscore {
  * Represents the state of a game of chess. It includes the current placement of
  * pieces on the board, the current turn, castling rights, the playerr to move,
  * and many other pieces of information that describe the state of the game.
- * \tparam BoardT The board representation that manages the pieces on the board.
  */
-template<Board BoardT>
 class Position {
 public:
     /**
@@ -52,7 +51,7 @@ public:
      * The board representation manages the pieces on the board.
      * \return The board representation.
      */
-    auto board() const -> const BoardT & { return m_board; }
+    auto board() const -> const Bitboard & { return m_board; }
 
     /**
      * \brief Return the player to move next.
@@ -160,7 +159,7 @@ public:
      */
     auto piece_placement() const -> PiecePlacement;
 private:
-    BoardT m_board{};        ///< Current placement of pieces on the board.
+    Bitboard m_board{};      ///< Current placement of pieces on the board.
     PositionState m_state{}; ///< The current state of the position.
 
     auto updateCastlingRights(const Move &move) -> void;
@@ -172,160 +171,6 @@ private:
     auto resetEnPassant(const Move &move) -> void;
     auto resetCastlingRights(const Move &move) -> void;
 };
-
-template<Board BoardT>
-auto Position<BoardT>::make_move(const Move &move) -> void {
-    m_board.make_move(move);
-    updateFullmoveNumber();
-    updateHalfmoveClock(move);
-    updateEnPassant(move);
-    updateCastlingRights(move);
-    m_state.side_to_move = other_color(m_state.side_to_move);
-}
-
-template<Board BoardT>
-void Position<BoardT>::updateFullmoveNumber() {
-    if (m_state.side_to_move == Color::Black) {
-        m_state.fullmove_number++;
-    }
-}
-
-template<Board BoardT>
-void Position<BoardT>::updateHalfmoveClock(const Move &move) {
-    if (move.is_capture() || move.piece.type == PieceType::Pawn) {
-        m_state.halfmove_clock = 0;
-    } else {
-        m_state.halfmove_clock++;
-    }
-}
-
-template<Board BoardT>
-void Position<BoardT>::updateEnPassant(const Move &move) {
-    if (move.piece.type == PieceType::Pawn && move.is_double_step()) {
-        if (move.from.rank().rank > move.to.rank().rank) {
-            m_state.en_passant_target = Square{File{move.from.file().file}, Rank{move.from.rank().rank - 1}};
-        } else {
-            m_state.en_passant_target = Square{File{move.from.file().file}, Rank{move.from.rank().rank + 1}};
-        }
-    } else {
-        m_state.en_passant_target.reset();
-    }
-}
-
-template<Board BoardT>
-void Position<BoardT>::updateCastlingRights(const Move &move) {
-    if (move.piece == Piece::WhiteKing) {
-        m_state.castling_rights['K'] = false;
-        m_state.castling_rights['Q'] = false;
-    } else if (move.piece == Piece::WhiteRook) {
-        if (move.from == Square::H1) {
-            m_state.castling_rights['K'] = false;
-        } else if (move.from == Square::A1) {
-            m_state.castling_rights['Q'] = false;
-        }
-    } else if (move.piece == Piece::BlackKing) {
-        m_state.castling_rights['k'] = false;
-        m_state.castling_rights['q'] = false;
-    } else if (move.piece == Piece::BlackRook) {
-        if (move.from == Square::H8) {
-            m_state.castling_rights['k'] = false;
-        } else if (move.from == Square::A8) {
-            m_state.castling_rights['q'] = false;
-        }
-    }
-    if (move.is_capture()) {
-        if (move.to == Square::A1) {
-            m_state.castling_rights['Q'] = false;
-        } else if (move.to == Square::H1) {
-            m_state.castling_rights['K'] = false;
-        } else if (move.to == Square::A8) {
-            m_state.castling_rights['q'] = false;
-        } else if (move.to == Square::H8) {
-            m_state.castling_rights['k'] = false;
-        }
-    }
-}
-
-template<Board BoardT>
-auto Position<BoardT>::unmake_move(const Move &move) -> void {
-    m_board.unmake_move(move);
-    resetFullmoveNumber(move);
-    resetHalfmoveClock(move);
-    resetEnPassant(move);
-    resetCastlingRights(move);
-    m_state.side_to_move = other_color(m_state.side_to_move);
-}
-
-template<Board BoardT>
-auto Position<BoardT>::resetFullmoveNumber(const Move &move) -> void {
-    if (move.piece.color == Color::Black) {
-        m_state.fullmove_number--;
-    }
-}
-
-template<Board BoardT>
-auto Position<BoardT>::resetHalfmoveClock(const Move &move) -> void {
-    m_state.halfmove_clock = move.halfmove_clock_before;
-}
-
-template<Board BoardT>
-auto Position<BoardT>::resetEnPassant(const Move &move) -> void {
-    if (move.en_passant_target_before.has_value()) {
-        m_state.en_passant_target = move.en_passant_target_before;
-    } else {
-        m_state.en_passant_target.reset();
-    }
-}
-
-template<Board BoardT>
-auto Position<BoardT>::resetCastlingRights(const Move &move) -> void {
-    m_state.castling_rights = move.castling_rights_before;
-}
-
-template<Board BoardT>
-auto Position<BoardT>::all_legal_moves() const -> MoveList {
-    return m_board.all_legal_moves(state());
-}
-
-template<Board BoardT>
-auto Position<BoardT>::is_king_in_check(Color color) const -> bool {
-    const auto king_sq = m_board.find_king(color);
-    if (king_sq.has_value()) {
-        return m_board.is_attacked(king_sq.value(), other_color(color));
-    }
-    return false;
-}
-
-template<Board BoardT>
-auto Position<BoardT>::check_state() const -> CheckState {
-    if (is_king_in_check(m_state.side_to_move)) {
-        if (all_legal_moves().empty()) {
-            return CheckState::Checkmate;
-        } else {
-            return CheckState::Check;
-        }
-    } else {
-        if (all_legal_moves().empty()) {
-            return CheckState::Stalemate;
-        }
-    }
-    return CheckState::None;
-}
-
-template<Board BoardT>
-auto Position<BoardT>::piece_placement() const -> PiecePlacement {
-    PiecePlacement pieces{};
-    for (int rank = Rank::max_rank; rank >= Rank::min_rank; --rank) {
-        for (int file = File::min_file; file <= File::max_file; ++file) {
-            const Square square{file, rank};
-            const auto piece = m_board.get_piece(square);
-            if (piece) {
-                pieces[square.index()] = piece.value();
-            }
-        }
-    }
-    return pieces;
-}
 
 } // namespace chesscore
 
