@@ -20,8 +20,6 @@
 
 namespace chessgui {
 
-using Position = chesscore::Position<chesscore::Bitboard>;
-
 class ChessboardWidget : public QGraphicsView {
     Q_OBJECT
 public:
@@ -33,7 +31,7 @@ public:
     auto operator=(ChessboardWidget &&) -> ChessboardWidget & = default;
     ~ChessboardWidget() = default;
 
-    auto showPosition(const Position &position) -> void;
+    auto showPosition(const chesscore::Position &position) -> void;
 
     auto markSquare(const chesscore::Square &square) -> void;
     auto unmarkSquare(const chesscore::Square &square) -> void;
@@ -61,7 +59,7 @@ private:
     static constexpr auto squareHighlightColor = QColor(120, 255, 85, 100);
 
     auto drawBoard() -> void;
-    auto placePieces(const Position &position) -> void;
+    auto placePieces(const chesscore::Position &position) -> void;
     auto clearPieces() -> void;
     auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
     auto squareAt(const QPoint &pos) -> std::optional<chesscore::Square>;

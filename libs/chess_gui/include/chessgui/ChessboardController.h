@@ -28,7 +28,7 @@ private slots:
     auto on_cancel_requested() -> void;
 private:
     ChessboardWidget *m_board_widget;
-    chesscore::Position<chesscore::Bitboard> m_current_position;
+    chesscore::Position m_current_position;
     bool m_mark_target_squares{false};
 
     std::optional<chesscore::Square> m_selected_square{};

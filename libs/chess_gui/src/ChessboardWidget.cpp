@@ -50,7 +50,7 @@ auto ChessboardWidget::drawBoard() -> void {
     }
 }
 
-auto ChessboardWidget::showPosition(const Position &position) -> void {
+auto ChessboardWidget::showPosition(const chesscore::Position &position) -> void {
     clearPieces();
     placePieces(position);
 }
@@ -65,7 +65,7 @@ auto ChessboardWidget::clearPieces() -> void {
     }
 }
 
-auto ChessboardWidget::placePieces(const Position &position) -> void {
+auto ChessboardWidget::placePieces(const chesscore::Position &position) -> void {
     for (int rank = chesscore::Rank::min_rank; rank <= chesscore::Rank::max_rank; ++rank) {
         for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
             const auto square = chesscore::Square{file, rank};
