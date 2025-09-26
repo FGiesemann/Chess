@@ -53,6 +53,14 @@ struct Move {
     auto is_capture() const -> bool { return captured.has_value(); }
 
     /**
+     * \brief If the move is a promotion.
+     *
+     * This is a convenience function to check if the move is a pawn promotion.
+     * \return If the move is a promotion.
+     */
+    auto is_pawn_promotion() const -> bool { return promoted.has_value(); }
+
+    /**
      * \brief If this is a double-stop of a pawn.
      *
      * \return If the move is a double-step of a pawn.
