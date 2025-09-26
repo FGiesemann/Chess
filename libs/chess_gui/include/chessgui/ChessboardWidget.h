@@ -23,6 +23,8 @@ namespace chessgui {
 class ChessboardWidget : public QGraphicsView {
     Q_OBJECT
 public:
+    enum class State { Normal, SelectingPromotionPiece };
+
     explicit ChessboardWidget(QWidget *parent = nullptr);
     explicit ChessboardWidget(const QString &piece_folder, QWidget *parent = nullptr);
     ChessboardWidget(const ChessboardWidget &) = delete;
@@ -43,6 +45,8 @@ public:
     auto clearGhostPiece() -> void;
     auto hidePiece(chesscore::Square square) -> void;
     auto showPiece(chesscore::Square square) -> void;
+
+    auto showPromotionSelection(chesscore::Color color, chesscore::Square target_square) -> void;
 protected:
     auto resizeEvent(QResizeEvent *event) -> void override;
     auto mousePressEvent(QMouseEvent *event) -> void override;
@@ -53,23 +57,30 @@ signals:
     auto mousePressed(const chesscore::Square &square) -> void;
     auto mouseReleased(const chesscore::Square &square) -> void;
     auto cancelRequested() -> void;
+    auto promotionPieceSelected(chesscore::PieceType type) -> void;
 private:
     static constexpr auto brightSquareColor = QColor(252, 212, 146);
     static constexpr auto darkSquareColor = QColor(181, 155, 114);
     static constexpr auto squareHighlightColor = QColor(120, 255, 85, 100);
+
+    static constexpr qreal promotion_piece_scale{0.5F};
+    static constexpr qreal promotion_piece_padding{0.05F};
 
     auto drawBoard() -> void;
     auto placePieces(const chesscore::Position &position) -> void;
     auto clearPieces() -> void;
     auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
     auto squareAt(const QPoint &pos) -> std::optional<chesscore::Square>;
+    auto cleanupPromotionOverlay() -> void;
 
     static const qreal cell_size;
     QGraphicsScene m_scene;
     PieceSet m_piece_set;
     std::array<ChessPiece *, chesscore::File::max_file * chesscore::Rank::max_rank> m_pieces{};
     QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;
+    State m_state{State::Normal};
     ChessPiece *m_ghost_piece{};
+    QGraphicsItemGroup *m_promotionOverlayGroup{};
 };
 
 } // namespace chessgui

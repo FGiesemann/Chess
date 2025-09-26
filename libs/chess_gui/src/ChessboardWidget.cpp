@@ -147,6 +147,77 @@ auto ChessboardWidget::clearGhostPiece() -> void {
     }
 }
 
+auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore::Square target_square) -> void {
+    if (m_promotionOverlayGroup != nullptr) {
+        cleanupPromotionOverlay();
+    }
+    clearGhostPiece();
+
+    m_state = State::SelectingPromotionPiece;
+
+    qreal pieceSize = cell_size * promotion_piece_scale;
+    qreal selectionItemSize = pieceSize + 2 * cell_size * promotion_piece_padding;
+    qreal overlayWidth = selectionItemSize * 4;
+    qreal overlayHeight = selectionItemSize;
+
+    QPointF centerPos = QPointF(target_square.file().file - 1, chesscore::Rank::max_rank - target_square.rank().rank) + QPointF{.5, .5};
+    qreal idealX = centerPos.x() - overlayWidth / 2.0;
+    qreal idealY = centerPos.y() - overlayHeight / 2.0;
+
+    qreal boardSize = cell_size * chesscore::File::max_file;
+
+    qreal clampedX = std::clamp(idealX, 0.0, boardSize - overlayWidth);
+    qreal clampedY = std::clamp(idealY, 0.0, boardSize - overlayHeight);
+
+    m_promotionOverlayGroup = new QGraphicsItemGroup();
+    m_scene.addItem(m_promotionOverlayGroup);
+
+    auto *background = new QGraphicsRectItem(0, 0, overlayWidth, overlayHeight);
+    background->setBrush(QBrush(QColor(100, 100, 100)));
+    background->setPen(QPen(Qt::black, .01F));
+    m_promotionOverlayGroup->addToGroup(background);
+
+    m_promotionOverlayGroup->setPos(clampedX, clampedY);
+
+    for (size_t i = 0; i < chesscore::all_promotion_piece_types.size(); ++i) {
+        chesscore::PieceType pieceType = chesscore::all_promotion_piece_types[i];
+        qreal itemX = i * selectionItemSize;
+        auto *selectionRect = new QGraphicsRectItem(clampedX + itemX, clampedY, selectionItemSize, selectionItemSize);
+        selectionRect->setBrush(QBrush(QColor(150, 150, 150)));
+        selectionRect->setPen(Qt::NoPen);
+        m_promotionOverlayGroup->addToGroup(selectionRect);
+
+        selectionRect->setData(0, QVariant::fromValue(get_index(pieceType)));
+        auto *renderer = m_piece_set.renderer(chesscore::Piece{.type = pieceType, .color = color});
+        auto *pieceItem = new ChessPiece(renderer);
+
+        QSizeF nativeSize = renderer->defaultSize();
+        qreal scaleX = pieceSize / nativeSize.width();
+        qreal scaleY = pieceSize / nativeSize.height();
+        pieceItem->setTransform(QTransform::fromScale(scaleX, scaleY));
+
+        qreal pieceOffsetX = clampedX + itemX + promotion_piece_padding;
+        qreal pieceOffsetY = clampedY + promotion_piece_padding;
+        pieceItem->setPos(pieceOffsetX, pieceOffsetY);
+
+        m_promotionOverlayGroup->addToGroup(pieceItem);
+    }
+
+    m_promotionOverlayGroup->setZValue(100);
+
+    viewport()->update();
+}
+
+auto ChessboardWidget::cleanupPromotionOverlay() -> void {
+    if (m_promotionOverlayGroup) {
+        m_scene.removeItem(m_promotionOverlayGroup);
+        delete m_promotionOverlayGroup;
+        m_promotionOverlayGroup = nullptr;
+    }
+    m_state = State::Normal;
+    viewport()->update();
+}
+
 auto ChessboardWidget::hidePiece(chesscore::Square square) -> void {
     if (m_pieces[square.index()] != nullptr) {
         m_pieces[square.index()]->setVisible(false);
@@ -179,9 +250,29 @@ auto ChessboardWidget::resizeEvent(QResizeEvent *event) -> void {
 auto ChessboardWidget::mousePressEvent(QMouseEvent *event) -> void {
     QGraphicsView::mousePressEvent(event);
     if (event->button() == Qt::LeftButton) {
-        const auto opt_square = squareAt(event->pos());
-        if (opt_square.has_value()) {
-            emit mousePressed(opt_square.value());
+        if (m_state == State::Normal) {
+            const auto opt_square = squareAt(event->pos());
+            if (opt_square.has_value()) {
+                emit mousePressed(opt_square.value());
+            }
+        } else if (m_state == State::SelectingPromotionPiece) {
+            QPointF posInScene = mapToScene(event->pos());
+            QList<QGraphicsItem *> clickedItems = m_scene.items(posInScene);
+            chesscore::PieceType type = chesscore::PieceType::Pawn;
+            for (QGraphicsItem *item : clickedItems) {
+                if (item->group() == m_promotionOverlayGroup) {
+                    QVariant item_data = item->data(0);
+                    if (item_data.isValid()) {
+                        type = chesscore::piece_type_from_index(item_data.toInt());
+                        break;
+                    }
+                }
+            }
+
+            if (type != chesscore::PieceType::Pawn) {
+                emit promotionPieceSelected(type);
+                cleanupPromotionOverlay();
+            }
         }
     }
 }
@@ -197,7 +288,7 @@ auto ChessboardWidget::mouseMoveEvent(QMouseEvent *event) -> void {
 
 auto ChessboardWidget::mouseReleaseEvent(QMouseEvent *event) -> void {
     QGraphicsView::mouseReleaseEvent(event);
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton && m_state == State::Normal) {
         const auto opt_square = squareAt(event->pos());
         if (opt_square.has_value()) {
             emit mouseReleased(opt_square.value());

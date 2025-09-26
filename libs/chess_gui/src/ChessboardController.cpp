@@ -7,12 +7,14 @@
 
 namespace chessgui {
 
-ChessboardController::ChessboardController(ChessboardWidget *board_widget, QObject *parent)
-    : QObject(parent), m_board_widget{board_widget}, m_current_position{chesscore::FenString::starting_position()} {
+static const chesscore::FenString max_promotions{"8/PPPPPPPP/8/8/8/8/pppppppp/8 w - - 0 1"};
+
+ChessboardController::ChessboardController(ChessboardWidget *board_widget, QObject *parent) : QObject(parent), m_board_widget{board_widget}, m_current_position{max_promotions} {
 
     connect(m_board_widget, &ChessboardWidget::mousePressed, this, &ChessboardController::on_square_clicked);
     connect(m_board_widget, &ChessboardWidget::mouseReleased, this, &ChessboardController::on_square_released);
     connect(m_board_widget, &ChessboardWidget::cancelRequested, this, &ChessboardController::on_cancel_requested);
+    connect(m_board_widget, &ChessboardWidget::promotionPieceSelected, this, &ChessboardController::on_promotion_piece_selected);
     m_board_widget->showPosition(m_current_position);
 }
 
@@ -41,6 +43,13 @@ auto ChessboardController::on_cancel_requested() -> void {
     cancel_move();
 }
 
+auto ChessboardController::on_promotion_piece_selected(chesscore::PieceType type) -> void {
+    if (m_promotion_move.promoted.has_value()) {
+        m_promotion_move.promoted.value().type = type;
+    }
+    perform_move(m_promotion_move);
+}
+
 auto ChessboardController::start_possible_move(chesscore::Square square, chesscore::Piece piece) -> void {
     emit piece_selected(square, piece);
     m_selected_square = square;
@@ -53,7 +62,13 @@ auto ChessboardController::start_possible_move(chesscore::Square square, chessco
 auto ChessboardController::try_move(chesscore::Square square) -> void {
     const auto iter = std::ranges::find_if(m_legal_moves, [&](const chesscore::Move &move) { return move.to == square; });
     if (iter != m_legal_moves.end()) {
-        perform_move(*iter);
+        const auto move = *iter;
+        if (move.is_pawn_promotion()) {
+            m_promotion_move = move;
+            m_board_widget->showPromotionSelection(move.piece.color, move.to);
+        } else {
+            perform_move(*iter);
+        }
     } else {
         cancel_move();
     }

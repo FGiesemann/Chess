@@ -26,10 +26,12 @@ private slots:
     auto on_square_clicked(const chesscore::Square &square) -> void;
     auto on_square_released(const chesscore::Square &square) -> void;
     auto on_cancel_requested() -> void;
+    auto on_promotion_piece_selected(chesscore::PieceType type) -> void;
 private:
     ChessboardWidget *m_board_widget;
     chesscore::Position m_current_position;
     bool m_mark_target_squares{false};
+    chesscore::Move m_promotion_move{};
 
     std::optional<chesscore::Square> m_selected_square{};
     chesscore::MoveList m_legal_moves{};
