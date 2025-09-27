@@ -39,10 +39,10 @@ auto ChessboardWidget::drawBoard() -> void {
         for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
             auto *square = new QGraphicsRectItem(file - 1, chesscore::Rank::max_rank - rank, cell_size, cell_size);
             if ((rank + file) % 2 == 1) {
-                square->setBrush(QBrush(brightSquareColor));
+                square->setBrush(QBrush(bright_square_color));
                 square->setPen(QPen(Qt::NoPen));
             } else {
-                square->setBrush(QBrush(darkSquareColor));
+                square->setBrush(QBrush(dark_square_color));
                 square->setPen(QPen(Qt::NoPen));
             }
             m_scene.addItem(square);
@@ -92,7 +92,7 @@ auto ChessboardWidget::markSquare(const chesscore::Square &square) -> void {
     }
 
     auto *marker = new QGraphicsRectItem(square.file().file - 1, chesscore::Rank::max_rank - square.rank().rank, cell_size, cell_size);
-    marker->setBrush(squareHighlightColor);
+    marker->setBrush(target_highlight_color);
     marker->setPen(Qt::NoPen);
     m_markedSquares.append({square, marker});
     m_scene.addItem(marker);
@@ -160,9 +160,9 @@ auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore:
     qreal overlayWidth = selectionItemSize * 4;
     qreal overlayHeight = selectionItemSize;
 
-    QPointF centerPos = QPointF(target_square.file().file - 1, chesscore::Rank::max_rank - target_square.rank().rank) + QPointF{.5, .5};
-    qreal idealX = centerPos.x() - overlayWidth / 2.0;
-    qreal idealY = centerPos.y() - overlayHeight / 2.0;
+    QPointF centerPos = QPointF(target_square.file().file - 1, chesscore::Rank::max_rank - target_square.rank().rank) + QPointF{half, half};
+    qreal idealX = centerPos.x() - overlayWidth * half;
+    qreal idealY = centerPos.y() - overlayHeight * half;
 
     qreal boardSize = cell_size * chesscore::File::max_file;
 
@@ -173,22 +173,22 @@ auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore:
     m_scene.addItem(m_promotionOverlayGroup);
 
     auto *background = new QGraphicsRectItem(0, 0, overlayWidth, overlayHeight);
-    background->setBrush(QBrush(QColor(100, 100, 100)));
-    background->setPen(QPen(Qt::black, .01F));
+    background->setBrush(QBrush(promotion_piece_selection_background_color));
+    background->setPen(QPen(Qt::black, minimal_boundary));
     m_promotionOverlayGroup->addToGroup(background);
 
     m_promotionOverlayGroup->setPos(clampedX, clampedY);
 
-    for (size_t i = 0; i < chesscore::all_promotion_piece_types.size(); ++i) {
-        chesscore::PieceType pieceType = chesscore::all_promotion_piece_types[i];
-        qreal itemX = i * selectionItemSize;
+    for (size_t piece_index = 0; piece_index < chesscore::all_promotion_piece_types.size(); ++piece_index) {
+        chesscore::PieceType pieceType = chesscore::all_promotion_piece_types[piece_index];
+        qreal itemX = static_cast<qreal>(piece_index) * selectionItemSize;
         auto *selectionRect = new QGraphicsRectItem(clampedX + itemX, clampedY, selectionItemSize, selectionItemSize);
-        selectionRect->setBrush(QBrush(QColor(150, 150, 150)));
+        selectionRect->setBrush(QBrush(promotion_piece_selection_rect_color));
         selectionRect->setPen(Qt::NoPen);
         m_promotionOverlayGroup->addToGroup(selectionRect);
 
         selectionRect->setData(0, QVariant::fromValue(get_index(pieceType)));
-        auto *renderer = m_piece_set.renderer(chesscore::Piece{.type = pieceType, .color = color});
+        const auto *renderer = m_piece_set.renderer(chesscore::Piece{.type = pieceType, .color = color});
         auto *pieceItem = new ChessPiece(renderer);
 
         QSizeF nativeSize = renderer->defaultSize();
@@ -203,7 +203,7 @@ auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore:
         m_promotionOverlayGroup->addToGroup(pieceItem);
     }
 
-    m_promotionOverlayGroup->setZValue(100);
+    m_promotionOverlayGroup->setZValue(promotion_piece_selection_z_value);
 
     viewport()->update();
 }
@@ -213,7 +213,7 @@ auto ChessboardWidget::cancelPromotionPieceSelection() -> void {
 }
 
 auto ChessboardWidget::cleanupPromotionOverlay() -> void {
-    if (m_promotionOverlayGroup) {
+    if (m_promotionOverlayGroup != nullptr) {
         m_scene.removeItem(m_promotionOverlayGroup);
         delete m_promotionOverlayGroup;
         m_promotionOverlayGroup = nullptr;

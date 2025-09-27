@@ -60,11 +60,16 @@ signals:
     auto cancelRequested() -> void;
     auto promotionPieceSelected(chesscore::PieceType type) -> void;
 private:
-    static constexpr auto brightSquareColor = QColor(252, 212, 146);
-    static constexpr auto darkSquareColor = QColor(181, 155, 114);
-    static constexpr auto squareHighlightColor = QColor(120, 255, 85, 100);
+    static constexpr qreal half = 0.5F;
+    static constexpr qreal minimal_boundary = 0.01F;
+    static constexpr int promotion_piece_selection_z_value = 5;
+    static constexpr auto bright_square_color = QColor(252, 212, 146);
+    static constexpr auto dark_square_color = QColor(181, 155, 114);
+    static constexpr auto target_highlight_color = QColor(120, 255, 85, 100);
+    static constexpr auto promotion_piece_selection_background_color = QColor(100, 100, 100);
+    static constexpr auto promotion_piece_selection_rect_color = QColor(150, 150, 150, 150);
 
-    static constexpr qreal promotion_piece_scale{0.5F};
+    static constexpr qreal promotion_piece_scale{0.75F};
     static constexpr qreal promotion_piece_padding{0.05F};
 
     auto drawBoard() -> void;
