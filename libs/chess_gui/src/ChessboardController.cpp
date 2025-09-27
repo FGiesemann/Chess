@@ -19,6 +19,10 @@ ChessboardController::ChessboardController(ChessboardWidget *board_widget, QObje
 }
 
 auto ChessboardController::on_square_clicked(const chesscore::Square &square) -> void {
+    if (!m_user_interaction_enabled) {
+        return;
+    }
+
     if (!m_selected_square.has_value()) {
         const auto opt_piece = m_current_position.board().get_piece(square);
         if (opt_piece.has_value() && opt_piece.value().color == m_current_position.side_to_move()) {
@@ -34,16 +38,28 @@ auto ChessboardController::on_square_clicked(const chesscore::Square &square) ->
 }
 
 auto ChessboardController::on_square_released(const chesscore::Square &square) -> void {
+    if (!m_user_interaction_enabled) {
+        return;
+    }
+
     if (m_selected_square.has_value() && square != m_selected_square.value()) {
         try_move(square);
     }
 }
 
 auto ChessboardController::on_cancel_requested() -> void {
+    if (!m_user_interaction_enabled) {
+        return;
+    }
+
     cancel_move();
 }
 
 auto ChessboardController::on_promotion_piece_selected(chesscore::PieceType type) -> void {
+    if (!m_user_interaction_enabled) {
+        return;
+    }
+
     if (m_promotion_move.promoted.has_value()) {
         m_promotion_move.promoted.value().type = type;
     }
@@ -88,6 +104,7 @@ auto ChessboardController::cancel_move() -> void {
     emit move_cancelled();
     m_board_widget->clearMarkedSquares();
     m_board_widget->clearGhostPiece();
+    m_board_widget->cancelPromotionPieceSelection();
     if (m_selected_square.has_value()) {
         m_board_widget->showPiece(m_selected_square.value());
     }
@@ -106,6 +123,16 @@ auto ChessboardController::compute_piece_moves(chesscore::Square square) -> void
             }
         }
     }
+}
+
+auto ChessboardController::make_move(const chesscore::Move &move) -> void {
+    m_current_position.make_move(move);
+    m_board_widget->showPosition(m_current_position);
+}
+
+auto ChessboardController::set_position(const chesscore::Position &position) -> void {
+    m_current_position = position;
+    m_board_widget->showPosition(m_current_position);
 }
 
 } // namespace chessgui

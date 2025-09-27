@@ -208,6 +208,10 @@ auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore:
     viewport()->update();
 }
 
+auto ChessboardWidget::cancelPromotionPieceSelection() -> void {
+    cleanupPromotionOverlay();
+}
+
 auto ChessboardWidget::cleanupPromotionOverlay() -> void {
     if (m_promotionOverlayGroup) {
         m_scene.removeItem(m_promotionOverlayGroup);

@@ -47,6 +47,7 @@ public:
     auto showPiece(chesscore::Square square) -> void;
 
     auto showPromotionSelection(chesscore::Color color, chesscore::Square target_square) -> void;
+    auto cancelPromotionPieceSelection() -> void;
 protected:
     auto resizeEvent(QResizeEvent *event) -> void override;
     auto mousePressEvent(QMouseEvent *event) -> void override;
