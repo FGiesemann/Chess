@@ -74,10 +74,13 @@ private:
 
     auto drawBoard() -> void;
     auto placePieces(const chesscore::Position &position) -> void;
+    auto create_piece_item(chesscore::Piece piece, qreal piece_size, QPointF pos) -> ChessPiece *;
     auto clearPieces() -> void;
     auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
     auto squareAt(const QPoint &pos) -> std::optional<chesscore::Square>;
     auto cleanupPromotionOverlay() -> void;
+    static auto create_promotion_piece_selection_rect(qreal item_x, qreal selection_item_size, chesscore::PieceType &piece_type) -> QGraphicsRectItem *;
+    static auto calculate_overlay_pos(chesscore::Square target_square, QSizeF overlay_size) -> QPointF;
 
     static const qreal cell_size;
     QGraphicsScene m_scene;
@@ -86,7 +89,7 @@ private:
     QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;
     State m_state{State::Normal};
     ChessPiece *m_ghost_piece{};
-    QGraphicsItemGroup *m_promotionOverlayGroup{};
+    QGraphicsItemGroup *m_promotion_overlay_group{};
 };
 
 } // namespace chessgui
