@@ -18,6 +18,8 @@ qt_add_library(${PROJECT_NAME} STATIC
     include/chessgui/ChessboardError.h src/ChessboardError.cpp
     include/chessgui/ChessboardWidget.h src/ChessboardWidget.cpp
     include/chessgui/GraphicsItems.h src/GraphicsItems.cpp
+    include/chessgui/MoveTreeModel.h src/MoveTreeModel.cpp
+    include/chessgui/MoveTreeWidget.h src/MoveTreeWidget.cpp
     include/chessgui/PieceSet.h src/PieceSet.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/data/pieces/pieces.qrc
@@ -26,9 +28,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )    
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_23)
 find_package(chesscore REQUIRED COMPONENTS chesscore)
+find_package(chessgame REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC chesscore::chesscore)
+target_link_libraries(${PROJECT_NAME} PUBLIC ChessGame::ChessGame)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Widgets Qt6::SvgWidgets)
 add_compiler_warnings(${PROJECT_NAME})
 

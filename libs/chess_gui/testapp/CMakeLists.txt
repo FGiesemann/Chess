@@ -1,5 +1,7 @@
 qt_add_executable(testapp
     main.cpp
+    TestAppWindow.h
+    TestAppWindow.cpp
 )
 
 target_link_libraries(testapp

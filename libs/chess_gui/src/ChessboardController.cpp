@@ -7,9 +7,8 @@
 
 namespace chessgui {
 
-static const chesscore::FenString max_promotions{"8/PPPPPPPP/8/8/8/8/pppppppp/8 w - - 0 1"};
-
-ChessboardController::ChessboardController(ChessboardWidget *board_widget, QObject *parent) : QObject(parent), m_board_widget{board_widget}, m_current_position{max_promotions} {
+ChessboardController::ChessboardController(ChessboardWidget *board_widget, QObject *parent)
+    : QObject(parent), m_board_widget{board_widget}, m_current_position{chesscore::FenString::starting_position()} {
 
     connect(m_board_widget, &ChessboardWidget::mousePressed, this, &ChessboardController::on_square_clicked);
     connect(m_board_widget, &ChessboardWidget::mouseReleased, this, &ChessboardController::on_square_released);
