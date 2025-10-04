@@ -18,7 +18,7 @@ public:
     explicit MoveTreeWidget(QWidget *parent = nullptr);
     ~MoveTreeWidget() override = default;
 
-    void setupModel(MoveTreeModel *model);
+    auto setupModel(MoveTreeModel *model) -> void;
 };
 
 } // namespace chessgui

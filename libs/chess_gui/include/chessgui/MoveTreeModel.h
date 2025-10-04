@@ -7,62 +7,99 @@
 #define CHESSGUI_MOVETREEMODEL_H
 
 #include <QAbstractItemModel>
-#include <QList>
-#include <QSharedPointer>
+#include <memory>
 
-#include <map>
-
-#include <chessgame/tree.h>
+#include <chessgame/game.h>
 
 namespace chessgui {
 
-class MoveTreeItem {
-public:
-    using GameNodePtr = std::shared_ptr<chessgame::GameNode>;
-
-    enum Column { MoveNumber = 0, WhiteMove = 1, BlackMove = 2, ColumnCount };
-
-    MoveTreeItem(GameNodePtr move_node, MoveTreeItem *parent_item = nullptr);
-
-    auto row() const -> int;
-    auto data(int column) const -> QVariant;
-    auto parent() const -> MoveTreeItem * { return m_parent; }
-    auto child(int row) -> MoveTreeItem *;
-    auto childCount() const -> int { return static_cast<int>(m_children.size()); }
-    auto move_node() const -> GameNodePtr { return m_move_node; }
-    auto removeChild(int row) -> void;
-private:
-    MoveTreeItem *m_parent;
-    GameNodePtr m_move_node;
-    std::vector<std::unique_ptr<MoveTreeItem>> m_children;
-};
-
+/**
+ * @brief Model for displaying a chess game tree in a QTreeView.
+ *
+ * This model presents chess moves in a tree structure with three columns:
+ * - Column 0: Move number (with markers for variations)
+ * - Column 1: White's move
+ * - Column 2: Black's move
+ *
+ * Each row represents a full move (white + black), with variations shown as child items.
+ *
+ * The model observes changes to the game tree and updates incrementally when notified.
+ */
 class MoveTreeModel : public QAbstractItemModel {
     Q_OBJECT
 public:
-    explicit MoveTreeModel(MoveTreeItem::GameNodePtr root_node, QObject *parent = nullptr);
+    // Custom roles for additional data
+    enum CustomRoles {
+        HasCommentRole = Qt::UserRole + 1, ///< bool: Node has a comment
+        HasPremoveCommentRole,             ///< bool: Node has a premove comment
+        HasVariationsRole,                 ///< bool: Node has variations (multiple children)
+        IsMainLineRole,                    ///< bool: This move is on the main line
+        NodeIdRole,                        ///< NodeId: ID of the GameNode
+        MoveNumberRole,                    ///< int: The move number
+        IsWhiteVariationRole,              ///< bool: This is a variation starting with white
+        IsBlackVariationRole,              ///< bool: This is a variation starting with black
+        HasNagsRole                        ///< bool: Node has NAGs (Numeric Annotation Glyphs)
+    };
+    Q_ENUM(CustomRoles)
 
-    auto columnCount(const QModelIndex & /*parent*/) const -> int override { return MoveTreeItem::ColumnCount; };
-    auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
+    enum Column { MoveNumberColumn = 0, WhiteMoveColumn = 1, BlackMoveColumn = 2, ColumnCount = 3 };
 
+    explicit MoveTreeModel(QObject *parent = nullptr);
+    explicit MoveTreeModel(std::shared_ptr<chessgame::Game> game, QObject *parent = nullptr);
+    ~MoveTreeModel() override = default;
+
+    // Set the game to display
+    auto setGame(std::shared_ptr<chessgame::Game> game) -> void;
+    auto game() const -> std::shared_ptr<chessgame::Game> { return m_game; }
+
+    // QAbstractItemModel interface
     auto index(int row, int column, const QModelIndex &parent = QModelIndex()) const -> QModelIndex override;
-    auto parent(const QModelIndex &index) const -> QModelIndex override;
-
-    auto data(const QModelIndex &index, int role) const -> QVariant override;
+    auto parent(const QModelIndex &child) const -> QModelIndex override;
+    auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
+    auto columnCount(const QModelIndex &parent = QModelIndex()) const -> int override;
+    auto data(const QModelIndex &index, int role = Qt::DisplayRole) const -> QVariant override;
     auto headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const -> QVariant override;
-
     auto flags(const QModelIndex &index) const -> Qt::ItemFlags override;
 
-    auto handleMoveNodeAdded(const QModelIndex &parentIndex) -> bool;
-    auto handleMoveNodeRemoved(const QModelIndex &index) -> bool;
-
-    auto indexForNode(const MoveTreeItem::GameNodePtr &node) const -> QModelIndex;
+    std::shared_ptr<const chessgame::GameNode> nodeFromIndex(const QModelIndex &index) const;
+public slots:
+    auto onMoveAdded(const chessgame::NodeId &parentNodeId, size_t childIndex) -> void;
+    auto onNodeDataChanged(const chessgame::NodeId &nodeId) -> void;
+    auto rebuildTree() -> void;
+signals:
+    void gameChanged();
 private:
-    std::unique_ptr<MoveTreeItem> m_root_item;
-    auto getItem(const QModelIndex &index) const -> MoveTreeItem *;
-    mutable std::map<chessgame::GameNode *, MoveTreeItem *> m_nodeItemMap;
+    struct ModelNode;
 
-    auto createItemForNode(const std::shared_ptr<chessgame::GameNode> &node, MoveTreeItem *parentItem) const -> MoveTreeItem *;
+    struct ModelNode {
+        std::weak_ptr<ModelNode> parent;
+        std::vector<std::shared_ptr<ModelNode>> children;
+
+        std::shared_ptr<chessgame::GameNode> whiteNode; ///< The white half-move
+        std::shared_ptr<chessgame::GameNode> blackNode; ///< The black half-move (may be nullptr)
+
+        int moveNumber{1};            ///< Full move number
+        bool isMainLine{true};        ///< True if this is part of the main line
+        bool isWhiteVariation{false}; ///< True if this starts a white variation
+        bool isBlackVariation{false}; ///< True if this starts a black variation
+    };
+
+    auto buildTree() -> void;
+    auto buildSubtree(std::shared_ptr<ModelNode> parentModelNode, std::shared_ptr<chessgame::GameNode> gameNode, int moveNumber, bool isMainLine) -> void;
+
+    auto modelNodeFromIndex(const QModelIndex &index) const -> std::shared_ptr<ModelNode>;
+    auto findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) const -> std::shared_ptr<ModelNode>;
+    auto findModelNodeByGameNode(std::shared_ptr<chessgame::GameNode> gameNode) const -> std::shared_ptr<ModelNode>;
+    auto indexFromModelNode(const std::shared_ptr<ModelNode> &node, int column = 0) const -> QModelIndex;
+
+    auto moveText(const std::shared_ptr<chessgame::GameNode> &node) const -> QString;
+    auto moveNumberText(const std::shared_ptr<ModelNode> &node, int column) const -> QString;
+
+    auto handleMoveAddedToWhiteNode(std::shared_ptr<ModelNode> modelNode, std::shared_ptr<chessgame::GameNode> newGameNode, size_t childIndex) -> void;
+    auto handleMoveAddedToBlackNode(std::shared_ptr<ModelNode> modelNode, std::shared_ptr<chessgame::GameNode> newGameNode, size_t childIndex) -> void;
+
+    std::shared_ptr<chessgame::Game> m_game;
+    std::shared_ptr<ModelNode> m_root; ///< Virtual root node
 };
 
 } // namespace chessgui

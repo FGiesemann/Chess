@@ -7,9 +7,8 @@
 #include <QVBoxLayout>
 
 TestAppWindow::TestAppWindow(QWidget *parent)
-    : QMainWindow(parent), m_mainline{m_game.edit()}, m_chessboard_widget(new chessgui::ChessboardWidget(this)),
-      m_chessboard_controller(new chessgui::ChessboardController(m_chessboard_widget, this)), m_move_tree_model{new chessgui::MoveTreeModel(m_mainline.node(), this)},
-      m_move_tree_view(new chessgui::MoveTreeWidget(this)) {
+    : QMainWindow(parent), m_chessboard_widget(new chessgui::ChessboardWidget(this)), m_chessboard_controller(new chessgui::ChessboardController(m_chessboard_widget, this)),
+      m_move_tree_model{new chessgui::MoveTreeModel(m_game, this)}, m_move_tree_view(new chessgui::MoveTreeWidget(this)) {
     m_move_tree_view->setupModel(m_move_tree_model);
     setupUi();
 
@@ -17,9 +16,9 @@ TestAppWindow::TestAppWindow(QWidget *parent)
 }
 
 auto TestAppWindow::move_made(const chesscore::Move &move) -> void {
-    auto index = m_move_tree_model->indexForNode(m_mainline.node());
-    m_mainline = m_mainline.play_move(move);
-    m_move_tree_model->handleMoveNodeAdded(index);
+    auto new_cursor = m_mainline.play_move(move);
+    m_move_tree_model->onMoveAdded(m_mainline.node()->id(), 0);
+    m_mainline = new_cursor;
 }
 
 void TestAppWindow::setupUi() {

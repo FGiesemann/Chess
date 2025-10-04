@@ -23,8 +23,8 @@ private slots:
 private:
     void setupUi();
 
-    chessgame::Game m_game{};
-    chessgame::Cursor m_mainline;
+    std::shared_ptr<chessgame::Game> m_game = std::make_shared<chessgame::Game>();
+    chessgame::Cursor m_mainline = m_game->edit();
 
     chessgui::ChessboardWidget *m_chessboard_widget;
     chessgui::ChessboardController *m_chessboard_controller;

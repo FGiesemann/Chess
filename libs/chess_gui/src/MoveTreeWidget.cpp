@@ -23,16 +23,15 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeView(parent) {
     setFont(QFont("Inter", 10));
 }
 
-void MoveTreeWidget::setupModel(MoveTreeModel *model) {
-    if (!model)
+auto MoveTreeWidget::setupModel(MoveTreeModel *model) -> void {
+    if (model == nullptr)
         return;
     this->setModel(model);
 
     QHeaderView *header = this->header();
-
-    header->setSectionResizeMode(MoveTreeItem::MoveNumber, QHeaderView::ResizeToContents);
-    header->setSectionResizeMode(MoveTreeItem::WhiteMove, QHeaderView::Stretch);
-    header->setSectionResizeMode(MoveTreeItem::BlackMove, QHeaderView::Stretch);
+    header->setSectionResizeMode(MoveTreeModel::MoveNumberColumn, QHeaderView::ResizeToContents);
+    header->setSectionResizeMode(MoveTreeModel::WhiteMoveColumn, QHeaderView::Stretch);
+    header->setSectionResizeMode(MoveTreeModel::BlackMoveColumn, QHeaderView::Stretch);
 }
 
 } // namespace chessgui
