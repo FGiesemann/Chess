@@ -80,16 +80,10 @@ auto MoveTreeModel::onMoveAdded(const chessgame::NodeId &parentNodeId, size_t ch
 
 auto MoveTreeModel::handleMoveAddedToWhiteNode(const std::shared_ptr<MoveTreeNode> &modelNode, const GameNodePtr &newGameNode, size_t childIndex) -> void {
     if (childIndex == 0) {
-        // This is the main line black move - update the existing ModelNode
         modelNode->blackNode = newGameNode;
-
-        // Notify that data changed for this row
         auto idx = indexFromModelNode(modelNode);
         emit dataChanged(idx, index(idx.row(), ColumnCount - 1, idx.parent()));
     } else {
-        // This is a variation after white's move (alternative black move)
-        // We need to insert a new child ModelNode
-
         auto newModelNode = std::make_shared<MoveTreeNode>();
         newModelNode->parent = modelNode;
         newModelNode->blackNode = newGameNode;
@@ -107,14 +101,11 @@ auto MoveTreeModel::handleMoveAddedToWhiteNode(const std::shared_ptr<MoveTreeNod
 }
 
 auto MoveTreeModel::handleMoveAddedToBlackNode(const std::shared_ptr<MoveTreeNode> &modelNode, const GameNodePtr &newGameNode, size_t childIndex) -> void {
-    // A move was added after a black move - this is always a new full move (white's move)
-
     auto newModelNode = std::make_shared<MoveTreeNode>();
     newModelNode->whiteNode = newGameNode;
     newModelNode->moveNumber = modelNode->moveNumber + 1;
 
     if (childIndex == 0) {
-        // Main line continuation - add as SIBLING, not child
         auto parentNode = modelNode->parent.lock();
         if (!parentNode) {
             // This shouldn't happen, but handle gracefully
@@ -125,7 +116,6 @@ auto MoveTreeModel::handleMoveAddedToBlackNode(const std::shared_ptr<MoveTreeNod
         newModelNode->parent = parentNode;
         newModelNode->isMainLine = modelNode->isMainLine;
 
-        // Find the position to insert (after the current modelNode)
         auto parentIdx = indexFromModelNode(parentNode);
         size_t insertPos = 0;
         for (size_t i = 0; i < parentNode->children.size(); ++i) {
@@ -139,7 +129,6 @@ auto MoveTreeModel::handleMoveAddedToBlackNode(const std::shared_ptr<MoveTreeNod
         parentNode->children.insert(parentNode->children.begin() + insertPos, newModelNode);
         endInsertRows();
     } else {
-        // Variation - add as child
         newModelNode->parent = modelNode;
         newModelNode->isMainLine = false;
 
@@ -153,14 +142,12 @@ auto MoveTreeModel::handleMoveAddedToBlackNode(const std::shared_ptr<MoveTreeNod
 }
 
 auto MoveTreeModel::onNodeDataChanged(const chessgame::NodeId &nodeId) -> void {
-    // Find the ModelNode containing this GameNode
     auto modelNode = findModelNodeByGameNodeId(nodeId);
 
     if (!modelNode) {
         return;
     }
 
-    // Emit dataChanged for the row containing this node
     auto idx = indexFromModelNode(modelNode);
     if (idx.isValid()) {
         emit dataChanged(idx, index(idx.row(), ColumnCount - 1, idx.parent()));
@@ -173,19 +160,14 @@ auto MoveTreeModel::findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) c
         if (!current) {
             return nullptr;
         }
-
-        // Check if this ModelNode contains a GameNode with the given ID
         if ((current->whiteNode && current->whiteNode->id() == nodeId) || (current->blackNode && current->blackNode->id() == nodeId)) {
             return current;
         }
-
-        // Recursively search children
         for (const auto &child : current->children) {
             if (auto found = search(child)) {
                 return found;
             }
         }
-
         return nullptr;
     };
 
@@ -208,8 +190,6 @@ auto MoveTreeModel::indexFromModelNode(const std::shared_ptr<MoveTreeNode> &node
     if (!parent) {
         return {};
     }
-
-    // Find the row of this node in its parent's children
     for (size_t i = 0; i < parent->children.size(); ++i) {
         if (parent->children[i] == node) {
             return createIndex(static_cast<int>(i), column, node.get());
@@ -242,15 +222,12 @@ auto MoveTreeModel::buildSubtree(const std::shared_ptr<MoveTreeNode> &parentMode
     if (!gameNode) {
         return;
     }
-
-    // Determine if this is a white or black move
     auto pos = gameNode->calculate_position();
-    bool isWhiteMove = (pos.side_to_move() == chesscore::Color::Black); // After white moves, black is to move
+    bool isWhiteMove = (pos.side_to_move() == chesscore::Color::Black);
 
     std::shared_ptr<MoveTreeNode> currentModelNode;
 
     if (isWhiteMove) {
-        // Create a new ModelNode for this full move
         currentModelNode = std::make_shared<MoveTreeNode>();
         currentModelNode->parent = parentModelNode;
         currentModelNode->whiteNode = gameNode;
@@ -259,47 +236,40 @@ auto MoveTreeModel::buildSubtree(const std::shared_ptr<MoveTreeNode> &parentMode
 
         parentModelNode->children.push_back(currentModelNode);
 
-        // Try to add the black move to the same ModelNode if it exists
         if (gameNode->child_count() > 0) {
             auto blackNode = gameNode->get_child(0);
             currentModelNode->blackNode = blackNode;
 
-            // Continue with black's first child ON THE SAME LEVEL (sibling, not child)
             if (blackNode->child_count() > 0) {
                 buildSubtree(parentModelNode, blackNode->get_child(0), moveNumber + 1, isMainLine);
             }
 
-            // Handle black move variations (children 1+) as children of current ModelNode
             for (size_t i = 1; i < blackNode->child_count(); ++i) {
                 buildSubtree(currentModelNode, blackNode->get_child(i), moveNumber + 1, false);
             }
         }
 
-        // Handle white move variations (children 1+) as children of current ModelNode
         for (size_t i = 1; i < gameNode->child_count(); ++i) {
             auto variationNode = std::make_shared<MoveTreeNode>();
             variationNode->parent = currentModelNode;
             variationNode->blackNode = gameNode->get_child(i);
             variationNode->moveNumber = moveNumber;
             variationNode->isMainLine = false;
-            variationNode->isBlackVariation = true; // Variation after white's move
+            variationNode->isBlackVariation = true;
 
             currentModelNode->children.push_back(variationNode);
 
-            // Continue building this variation
             auto varBlackNode = variationNode->blackNode;
             if (varBlackNode->child_count() > 0) {
                 buildSubtree(variationNode, varBlackNode->get_child(0), moveNumber + 1, false);
             }
 
-            // Handle variations in the variation
             for (size_t j = 1; j < varBlackNode->child_count(); ++j) {
                 buildSubtree(variationNode, varBlackNode->get_child(j), moveNumber + 1, false);
             }
         }
 
     } else {
-        // This is a black move starting a variation
         currentModelNode = std::make_shared<MoveTreeNode>();
         currentModelNode->parent = parentModelNode;
         currentModelNode->blackNode = gameNode;
@@ -309,12 +279,10 @@ auto MoveTreeModel::buildSubtree(const std::shared_ptr<MoveTreeNode> &parentMode
 
         parentModelNode->children.push_back(currentModelNode);
 
-        // Continue with next move ON THE SAME LEVEL (sibling in variation)
         if (gameNode->child_count() > 0) {
             buildSubtree(parentModelNode, gameNode->get_child(0), moveNumber + 1, false);
         }
 
-        // Handle variations as children
         for (size_t i = 1; i < gameNode->child_count(); ++i) {
             buildSubtree(currentModelNode, gameNode->get_child(i), moveNumber + 1, false);
         }
@@ -351,7 +319,6 @@ auto MoveTreeModel::parent(const QModelIndex &child) const -> QModelIndex {
         return {};
     }
 
-    // Find the row of the parent in its parent's children
     auto grandParentNode = parentNode->parent.lock();
     if (!grandParentNode) {
         return {};
@@ -390,7 +357,6 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
         return {};
     }
 
-    // Display role
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case MoveNumberColumn:
@@ -404,8 +370,7 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
         }
     }
 
-    // Custom roles (work for any column)
-    if (index.column() == 0) { // Only provide these for the first column to avoid redundancy
+    if (index.column() == 0) {
         switch (role) {
         case HasCommentRole:
             return (node->whiteNode && !node->whiteNode->comment().empty()) || (node->blackNode && !node->blackNode->comment().empty());
@@ -432,7 +397,6 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
             return (node->whiteNode && !node->whiteNode->nags().empty()) || (node->blackNode && !node->blackNode->nags().empty());
 
         case NodeIdRole:
-            // Return the ID of the white node if present, otherwise black
             if (node->whiteNode) {
                 return QVariant::fromValue(node->whiteNode->id());
             } else if (node->blackNode) {
@@ -483,7 +447,6 @@ auto MoveTreeModel::nodeFromIndex(const QModelIndex &index) const -> GameNodePtr
         return nullptr;
     }
 
-    // Depending on the column, return the appropriate GameNode
     if (index.column() == WhiteMoveColumn && node->whiteNode) {
         return node->whiteNode;
     }
@@ -550,7 +513,6 @@ auto MoveTreeModel::moveNumberText(const std::shared_ptr<MoveTreeNode> &node, in
         return {};
     }
 
-    // For variations, show appropriate marker
     if (node->isBlackVariation) {
         return QString("%1...").arg(node->moveNumber);
     }
