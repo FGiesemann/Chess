@@ -5,6 +5,8 @@
 
 #include "chessgui/MoveTreeModel.h"
 
+#include <chessgame/san.h>
+
 namespace chessgui {
 
 MoveTreeModel::MoveTreeModel(QObject *parent) : QAbstractItemModel(parent), m_root(std::make_shared<MoveTreeNode>()) {}
@@ -524,16 +526,21 @@ auto MoveTreeModel::moveText(const GameNodePtr &node) -> QString {
     if (!node) {
         return {};
     }
-    auto move = node->move();
-
-    // Placeholder implementation TODO: generate SAN here?
-    auto from = move.from;
-    auto to = move.to;
-    auto fileChar = [](int file) { return static_cast<char>('a' + file - 1); };
-    auto rankChar = [](int rank) { return static_cast<char>('1' + rank - 1); };
-    QString fromStr = QString("%1%2").arg(fileChar(from.file().file)).arg(rankChar(from.rank().rank));
-    QString toStr = QString("%1%2").arg(fileChar(to.file().file)).arg(rankChar(to.rank().rank));
-    return QString("%1-%2").arg(fromStr, toStr);
+    const auto parent = node->parent();
+    if (parent == nullptr) {
+        return QString{"No Parent"};
+    }
+    const auto position = node->calculate_position();
+    const auto check_state = position.check_state();
+    QString check_marker = (check_state == chesscore::CheckState::Check) ? QString{"+"} : (check_state == chesscore::CheckState::Checkmate) ? QString{"#"} : QString{""};
+    const auto parent_position = parent->calculate_position();
+    const auto all_moves = parent_position.all_legal_moves();
+    const auto &move = node->move();
+    const auto opt_san = chessgame::generate_san_move(move, all_moves);
+    if (opt_san.has_value()) {
+        return QString::fromStdString(opt_san.value().san_string) + check_marker;
+    }
+    return QString{"No SAN move"};
 }
 
 auto MoveTreeModel::moveNumberText(const std::shared_ptr<MoveTreeNode> &node, int column) -> QString {
