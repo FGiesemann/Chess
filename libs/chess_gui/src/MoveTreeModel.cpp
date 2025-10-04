@@ -7,13 +7,13 @@
 
 namespace chessgui {
 
-MoveTreeModel::MoveTreeModel(QObject *parent) : QAbstractItemModel(parent), m_root(std::make_shared<ModelNode>()) {}
+MoveTreeModel::MoveTreeModel(QObject *parent) : QAbstractItemModel(parent), m_root(std::make_shared<MoveTreeNode>()) {}
 
-MoveTreeModel::MoveTreeModel(std::shared_ptr<chessgame::Game> game, QObject *parent) : QAbstractItemModel(parent), m_game(std::move(game)), m_root(std::make_shared<ModelNode>()) {
+MoveTreeModel::MoveTreeModel(GamePtr game, QObject *parent) : QAbstractItemModel(parent), m_game(std::move(game)), m_root(std::make_shared<MoveTreeNode>()) {
     buildTree();
 }
 
-auto MoveTreeModel::setGame(std::shared_ptr<chessgame::Game> game) -> void {
+auto MoveTreeModel::setGame(GamePtr game) -> void {
     beginResetModel();
     m_game = std::move(game);
     buildTree();
@@ -32,26 +32,23 @@ auto MoveTreeModel::onMoveAdded(const chessgame::NodeId &parentNodeId, size_t ch
         return;
     }
 
-    // Find the ModelNode that corresponds to the parent GameNode
     auto parentModelNode = findModelNodeByGameNodeId(parentNodeId);
 
     if (!parentModelNode) {
-        // Parent not found in our tree - this shouldn't happen, but rebuild if it does
         rebuildTree();
         return;
     }
 
-    // Get the parent GameNode from the game tree
     auto cursor = m_game->const_cursor();
-    std::shared_ptr<chessgame::GameNode> parentGameNode;
+    GameNodePtr parentGameNode;
 
-    // Find the GameNode with the given ID
-    std::function<std::shared_ptr<chessgame::GameNode>(std::shared_ptr<const chessgame::GameNode>)> findGameNode;
-    findGameNode = [&](std::shared_ptr<const chessgame::GameNode> node) -> std::shared_ptr<chessgame::GameNode> {
-        if (!node)
+    std::function<GameNodePtr(GameNodePtr)> findGameNode;
+    findGameNode = [&](const GameNodePtr &node) -> GameNodePtr {
+        if (!node) {
             return nullptr;
+        }
         if (node->id() == parentNodeId) {
-            return std::const_pointer_cast<chessgame::GameNode>(node);
+            return node;
         }
         for (size_t i = 0; i < node->child_count(); ++i) {
             if (auto found = findGameNode(node->get_child(i))) {
@@ -60,7 +57,6 @@ auto MoveTreeModel::onMoveAdded(const chessgame::NodeId &parentNodeId, size_t ch
         }
         return nullptr;
     };
-
     parentGameNode = findGameNode(cursor.node());
 
     if (!parentGameNode || childIndex >= parentGameNode->child_count()) {
@@ -70,7 +66,6 @@ auto MoveTreeModel::onMoveAdded(const chessgame::NodeId &parentNodeId, size_t ch
 
     auto newGameNode = parentGameNode->get_child(childIndex);
 
-    // Determine if the parent ModelNode contains this GameNode
     if (parentModelNode->whiteNode == parentGameNode) {
         handleMoveAddedToWhiteNode(parentModelNode, newGameNode, childIndex);
     } else if (parentModelNode->blackNode == parentGameNode) {
@@ -81,7 +76,7 @@ auto MoveTreeModel::onMoveAdded(const chessgame::NodeId &parentNodeId, size_t ch
     }
 }
 
-auto MoveTreeModel::handleMoveAddedToWhiteNode(std::shared_ptr<ModelNode> modelNode, std::shared_ptr<chessgame::GameNode> newGameNode, size_t childIndex) -> void {
+auto MoveTreeModel::handleMoveAddedToWhiteNode(const std::shared_ptr<MoveTreeNode> &modelNode, const GameNodePtr &newGameNode, size_t childIndex) -> void {
     if (childIndex == 0) {
         // This is the main line black move - update the existing ModelNode
         modelNode->blackNode = newGameNode;
@@ -93,7 +88,7 @@ auto MoveTreeModel::handleMoveAddedToWhiteNode(std::shared_ptr<ModelNode> modelN
         // This is a variation after white's move (alternative black move)
         // We need to insert a new child ModelNode
 
-        auto newModelNode = std::make_shared<ModelNode>();
+        auto newModelNode = std::make_shared<MoveTreeNode>();
         newModelNode->parent = modelNode;
         newModelNode->blackNode = newGameNode;
         newModelNode->moveNumber = modelNode->moveNumber;
@@ -109,10 +104,10 @@ auto MoveTreeModel::handleMoveAddedToWhiteNode(std::shared_ptr<ModelNode> modelN
     }
 }
 
-auto MoveTreeModel::handleMoveAddedToBlackNode(std::shared_ptr<ModelNode> modelNode, std::shared_ptr<chessgame::GameNode> newGameNode, size_t childIndex) -> void {
+auto MoveTreeModel::handleMoveAddedToBlackNode(const std::shared_ptr<MoveTreeNode> &modelNode, const GameNodePtr &newGameNode, size_t childIndex) -> void {
     // A move was added after a black move - this is always a new full move (white's move)
 
-    auto newModelNode = std::make_shared<ModelNode>();
+    auto newModelNode = std::make_shared<MoveTreeNode>();
     newModelNode->whiteNode = newGameNode;
     newModelNode->moveNumber = modelNode->moveNumber + 1;
 
@@ -170,9 +165,9 @@ auto MoveTreeModel::onNodeDataChanged(const chessgame::NodeId &nodeId) -> void {
     }
 }
 
-auto MoveTreeModel::findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) const -> std::shared_ptr<MoveTreeModel::ModelNode> {
-    std::function<std::shared_ptr<ModelNode>(const std::shared_ptr<ModelNode> &)> search;
-    search = [&](const std::shared_ptr<ModelNode> &current) -> std::shared_ptr<ModelNode> {
+auto MoveTreeModel::findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) const -> std::shared_ptr<MoveTreeNode> {
+    std::function<std::shared_ptr<MoveTreeNode>(const std::shared_ptr<MoveTreeNode> &)> search;
+    search = [&](const std::shared_ptr<MoveTreeNode> &current) -> std::shared_ptr<MoveTreeNode> {
         if (!current) {
             return nullptr;
         }
@@ -195,14 +190,14 @@ auto MoveTreeModel::findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) c
     return search(m_root);
 }
 
-auto MoveTreeModel::findModelNodeByGameNode(std::shared_ptr<chessgame::GameNode> gameNode) const -> std::shared_ptr<MoveTreeModel::ModelNode> {
+auto MoveTreeModel::findModelNodeByGameNode(const GameNodePtr &gameNode) const -> std::shared_ptr<MoveTreeNode> {
     if (!gameNode) {
         return nullptr;
     }
     return findModelNodeByGameNodeId(gameNode->id());
 }
 
-auto MoveTreeModel::indexFromModelNode(const std::shared_ptr<ModelNode> &node, int column) const -> QModelIndex {
+auto MoveTreeModel::indexFromModelNode(const std::shared_ptr<MoveTreeNode> &node, int column) const -> QModelIndex {
     if (!node || node == m_root) {
         return {};
     }
@@ -223,7 +218,7 @@ auto MoveTreeModel::indexFromModelNode(const std::shared_ptr<ModelNode> &node, i
 }
 
 auto MoveTreeModel::buildTree() -> void {
-    m_root = std::make_shared<ModelNode>();
+    m_root = std::make_shared<MoveTreeNode>();
 
     if (!m_game) {
         return;
@@ -231,20 +226,17 @@ auto MoveTreeModel::buildTree() -> void {
 
     auto cursor = m_game->const_cursor();
 
-    // Start at move 1
     int moveNumber = 1;
 
-    // The root node of the game tree is special - it represents the starting position
-    // We need to process its children as the first moves
     if (cursor.child_count() > 0) {
         auto firstChild = cursor.child(0);
         if (firstChild) {
-            buildSubtree(m_root, std::const_pointer_cast<chessgame::GameNode>(firstChild->node()), moveNumber, true);
+            buildSubtree(m_root, firstChild->node(), moveNumber, true);
         }
     }
 }
 
-auto MoveTreeModel::buildSubtree(std::shared_ptr<ModelNode> parentModelNode, std::shared_ptr<chessgame::GameNode> gameNode, int moveNumber, bool isMainLine) -> void {
+auto MoveTreeModel::buildSubtree(const std::shared_ptr<MoveTreeNode> &parentModelNode, const GameNodePtr &gameNode, int moveNumber, bool isMainLine) -> void {
     if (!gameNode) {
         return;
     }
@@ -253,11 +245,11 @@ auto MoveTreeModel::buildSubtree(std::shared_ptr<ModelNode> parentModelNode, std
     auto pos = gameNode->calculate_position();
     bool isWhiteMove = (pos.side_to_move() == chesscore::Color::Black); // After white moves, black is to move
 
-    std::shared_ptr<ModelNode> currentModelNode;
+    std::shared_ptr<MoveTreeNode> currentModelNode;
 
     if (isWhiteMove) {
         // Create a new ModelNode for this full move
-        currentModelNode = std::make_shared<ModelNode>();
+        currentModelNode = std::make_shared<MoveTreeNode>();
         currentModelNode->parent = parentModelNode;
         currentModelNode->whiteNode = gameNode;
         currentModelNode->moveNumber = moveNumber;
@@ -283,7 +275,7 @@ auto MoveTreeModel::buildSubtree(std::shared_ptr<ModelNode> parentModelNode, std
 
         // Handle white move variations (children 1+) as children of current ModelNode
         for (size_t i = 1; i < gameNode->child_count(); ++i) {
-            auto variationNode = std::make_shared<ModelNode>();
+            auto variationNode = std::make_shared<MoveTreeNode>();
             variationNode->parent = currentModelNode;
             variationNode->blackNode = gameNode->get_child(i);
             variationNode->moveNumber = moveNumber;
@@ -306,7 +298,7 @@ auto MoveTreeModel::buildSubtree(std::shared_ptr<ModelNode> parentModelNode, std
 
     } else {
         // This is a black move starting a variation
-        currentModelNode = std::make_shared<ModelNode>();
+        currentModelNode = std::make_shared<MoveTreeNode>();
         currentModelNode->parent = parentModelNode;
         currentModelNode->blackNode = gameNode;
         currentModelNode->moveNumber = moveNumber;
@@ -479,7 +471,7 @@ auto MoveTreeModel::flags(const QModelIndex &index) const -> Qt::ItemFlags {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-auto MoveTreeModel::nodeFromIndex(const QModelIndex &index) const -> std::shared_ptr<const chessgame::GameNode> {
+auto MoveTreeModel::nodeFromIndex(const QModelIndex &index) const -> GameNodePtr {
     if (!index.isValid()) {
         return nullptr;
     }
@@ -492,28 +484,28 @@ auto MoveTreeModel::nodeFromIndex(const QModelIndex &index) const -> std::shared
     // Depending on the column, return the appropriate GameNode
     if (index.column() == WhiteMoveColumn && node->whiteNode) {
         return node->whiteNode;
-    } else if (index.column() == BlackMoveColumn && node->blackNode) {
-        return node->blackNode;
-    } else if (node->whiteNode) {
-        return node->whiteNode;
-    } else {
+    }
+    if (index.column() == BlackMoveColumn && node->blackNode) {
         return node->blackNode;
     }
+    if (node->whiteNode) {
+        return node->whiteNode;
+    }
+    return node->blackNode;
 }
 
-auto MoveTreeModel::modelNodeFromIndex(const QModelIndex &index) const -> std::shared_ptr<MoveTreeModel::ModelNode> {
+auto MoveTreeModel::modelNodeFromIndex(const QModelIndex &index) const -> std::shared_ptr<MoveTreeNode> {
     if (!index.isValid()) {
         return nullptr;
     }
 
-    auto ptr = static_cast<ModelNode *>(index.internalPointer());
-    if (!ptr) {
+    auto *ptr = static_cast<MoveTreeNode *>(index.internalPointer());
+    if (ptr == nullptr) {
         return nullptr;
     }
 
-    // Find the shared_ptr for this raw pointer
-    std::function<std::shared_ptr<ModelNode>(const std::shared_ptr<ModelNode> &, ModelNode *)> findNode;
-    findNode = [&](const std::shared_ptr<ModelNode> &current, ModelNode *target) -> std::shared_ptr<ModelNode> {
+    std::function<std::shared_ptr<MoveTreeNode>(const std::shared_ptr<MoveTreeNode> &, MoveTreeNode *)> findNode;
+    findNode = [&](const std::shared_ptr<MoveTreeNode> &current, MoveTreeNode *target) -> std::shared_ptr<MoveTreeNode> {
         if (current.get() == target) {
             return current;
         }
@@ -528,7 +520,7 @@ auto MoveTreeModel::modelNodeFromIndex(const QModelIndex &index) const -> std::s
     return findNode(m_root, ptr);
 }
 
-auto MoveTreeModel::moveText(const std::shared_ptr<chessgame::GameNode> &node) const -> QString {
+auto MoveTreeModel::moveText(const GameNodePtr &node) -> QString {
     if (!node) {
         return {};
     }
@@ -544,7 +536,7 @@ auto MoveTreeModel::moveText(const std::shared_ptr<chessgame::GameNode> &node) c
     return QString("%1-%2").arg(fromStr, toStr);
 }
 
-auto MoveTreeModel::moveNumberText(const std::shared_ptr<ModelNode> &node, int column) const -> QString {
+auto MoveTreeModel::moveNumberText(const std::shared_ptr<MoveTreeNode> &node, int column) -> QString {
     Q_UNUSED(column)
 
     if (!node) {
