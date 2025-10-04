@@ -17,7 +17,6 @@ class MoveTreeModel : public QAbstractItemModel {
     Q_OBJECT
 
     using GamePtr = std::shared_ptr<chessgame::Game>;
-    using GameNodePtr = std::shared_ptr<const chessgame::GameNode>;
 public:
     enum CustomRoles {
         HasCommentRole = Qt::UserRole + 1, ///< bool: Node has a comment
@@ -50,8 +49,8 @@ public:
 
     auto cursorFromIndex(const QModelIndex &index) const -> std::optional<chessgame::Cursor>;
 public slots:
-    auto onMoveAdded(const chessgame::NodeId &parentNodeId, size_t childIndex) -> void;
-    auto onNodeDataChanged(const chessgame::NodeId &nodeId) -> void;
+    auto onMoveAdded(chessgame::Cursor parentCursor, size_t childIndex) -> void;
+    auto onNodeDataChanged(chessgame::Cursor cursor) -> void;
     auto rebuildTree() -> void;
 signals:
     void gameChanged();

@@ -29,26 +29,19 @@ auto MoveTreeModel::rebuildTree() -> void {
     endResetModel();
 }
 
-auto MoveTreeModel::onMoveAdded(const chessgame::NodeId &parentNodeId, size_t childIndex) -> void {
+auto MoveTreeModel::onMoveAdded(chessgame::Cursor parentCursor, size_t childIndex) -> void {
     if (!m_game) {
         return;
     }
 
-    auto parentModelNode = findModelNodeByGameNodeId(parentNodeId);
+    auto parentNodeId = parentCursor.node_id();
+    auto parentModelNode = findModelNodeByCursor(parentCursor);
     if (!parentModelNode) {
         rebuildTree();
         return;
     }
 
     const auto parent_is_white = parentModelNode->whiteCursor && parentModelNode->whiteCursor->node_id() == parentNodeId;
-
-    chessgame::Cursor parentCursor = [&]() {
-        if (parent_is_white) {
-            return *parentModelNode->whiteCursor;
-        }
-        return *parentModelNode->blackCursor;
-    }();
-
     auto childCursorOpt = parentCursor.child(childIndex);
     if (!childCursorOpt) {
         rebuildTree();
@@ -128,8 +121,8 @@ auto MoveTreeModel::handleMoveAddedToBlackNode(const std::shared_ptr<MoveTreeNod
     }
 }
 
-auto MoveTreeModel::onNodeDataChanged(const chessgame::NodeId &nodeId) -> void {
-    auto modelNode = findModelNodeByGameNodeId(nodeId);
+auto MoveTreeModel::onNodeDataChanged(chessgame::Cursor cursor) -> void {
+    auto modelNode = findModelNodeByCursor(cursor);
 
     if (!modelNode) {
         return;
