@@ -541,8 +541,9 @@ auto MoveTreeModel::moveNumberText(const NodePtr &node, int column) -> QString {
     QString move_number{};
     if (node->isBlackVariation) {
         move_number = QString("%1...").arg(node->moveNumber);
+    } else {
+        move_number = QString("%1.").arg(node->moveNumber);
     }
-    move_number = QString("%1.").arg(node->moveNumber);
 
     return prefix + move_number;
 }
