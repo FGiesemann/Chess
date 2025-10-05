@@ -23,7 +23,6 @@ public:
         HasPremoveCommentRole,             ///< bool: Node has a premove comment
         HasVariationsRole,                 ///< bool: Node has variations (multiple children)
         IsMainLineRole,                    ///< bool: This move is on the main line
-        NodeIdRole,                        ///< NodeId: ID of the GameNode
         MoveNumberRole,                    ///< int: The move number
         IsWhiteVariationRole,              ///< bool: This is a variation starting with white
         IsBlackVariationRole,              ///< bool: This is a variation starting with black

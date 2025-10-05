@@ -36,14 +36,13 @@ auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parentCursor, size_t ch
         return;
     }
 
-    auto parentNodeId = parentCursor.node_id();
     auto parentModelNode = modelNodeByCursor(parentCursor);
     if (!parentModelNode) {
         rebuildTree();
         return;
     }
 
-    const auto parent_is_white = parentModelNode->whiteCursor && parentModelNode->whiteCursor->node_id() == parentNodeId;
+    const auto parent_is_white = parentModelNode->whiteCursor && parentModelNode->whiteCursor == parentCursor;
     auto childCursorOpt = parentCursor.child(childIndex);
     if (!childCursorOpt) {
         rebuildTree();
@@ -52,11 +51,8 @@ auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parentCursor, size_t ch
     const auto &newCursor = *childCursorOpt;
     if (parent_is_white) {
         handleMoveAddedToWhiteNode(parentModelNode, newCursor, childIndex);
-    } else if (parentModelNode->blackCursor && parentModelNode->blackCursor->node()->id() == parentNodeId) {
-        handleMoveAddedToBlackNode(parentModelNode, newCursor, childIndex);
     } else {
-        // This shouldn't happen
-        rebuildTree();
+        handleMoveAddedToBlackNode(parentModelNode, newCursor, childIndex);
     }
 }
 
@@ -140,7 +136,7 @@ auto MoveTreeModel::searchForCursor(const chessgame::Cursor &cursor, const NodeP
     if (node == nullptr) {
         return nullptr;
     }
-    if ((node->whiteCursor && node->whiteCursor->node_id() == cursor.node_id()) || (node->blackCursor && node->blackCursor->node_id() == cursor.node_id())) {
+    if ((node->whiteCursor && node->whiteCursor == cursor) || (node->blackCursor && node->blackCursor == cursor)) {
         return node;
     }
     for (const auto &child : node->children) {
@@ -393,14 +389,6 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
 
         case HasNagsRole:
             return (node->whiteCursor && !node->whiteCursor->nags().empty()) || (node->blackCursor && !node->blackCursor->nags().empty());
-
-        case NodeIdRole:
-            if (node->whiteCursor) {
-                return QVariant::fromValue(node->whiteCursor->node_id());
-            } else if (node->blackCursor) {
-                return QVariant::fromValue(node->blackCursor->node_id());
-            }
-            return {};
 
         default:
             break;
