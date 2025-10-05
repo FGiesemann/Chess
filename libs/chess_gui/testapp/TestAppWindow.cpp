@@ -22,7 +22,7 @@ TestAppWindow::TestAppWindow(QWidget *parent)
 [Black "Player B"]
 [Result "1/2-1/2"]
 
-1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. a3 Bxc3+ 5. bxc3 c5 6. f3 d5 7. e3 O-O
+1. d4 Nf6 (1... Nc6) 2. c4 (2. e4) 2... e6 (2... a5) 3. Nc3 Bb4 4. a3 Bxc3+ 5. bxc3 c5 6. f3 d5 7. e3 O-O
 8. cxd5 Nxd5
 9. Bd2 (9. c4 Ne7 10. Bd3 cxd4 11. exd4 Nf5 12. Bxf5 12... Qa5+)
 9... Nc6 10. Bd3 cxd4 11. cxd4 e5
