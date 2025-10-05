@@ -127,16 +127,9 @@ auto MoveTreeModel::handleMoveAddedToWhiteNode(const NodePtr &modelNode, const c
         auto idx = indexFromModelNode(modelNode);
         emit dataChanged(idx, index(idx.row(), ColumnCount - 1, idx.parent()));
     } else {
-        auto newModelNode = std::make_shared<MoveTreeNode>();
-        newModelNode->parent = modelNode;
-        newModelNode->black_cursor = newCursor;
-        newModelNode->move_number = modelNode->move_number;
-        newModelNode->is_main_line = false;
-        newModelNode->is_black_variation = true;
-
+        auto newModelNode = make_model_node(modelNode, newCursor, modelNode->move_number, false, false);
         auto parentIdx = indexFromModelNode(modelNode);
         int insertRow = static_cast<int>(modelNode->children.size());
-
         beginInsertRows(parentIdx, insertRow, insertRow);
         modelNode->children.push_back(newModelNode);
         endInsertRows();
