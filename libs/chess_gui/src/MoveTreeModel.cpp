@@ -31,24 +31,132 @@ auto MoveTreeModel::rebuildTree() -> void {
     endResetModel();
 }
 
-auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parentCursor, size_t childIndex) -> void {
+auto MoveTreeModel::buildTree() -> void {
+    m_root = std::make_shared<MoveTreeNode>();
+
     if (!m_game) {
         return;
     }
 
+    auto cursor = m_game->cursor();
+    int moveNumber = 1;
+    if (cursor.child_count() > 0) {
+        auto firstChild = cursor.child(0);
+        if (firstChild.has_value()) {
+            buildSubtree(m_root, firstChild.value(), moveNumber, true);
+        }
+    }
+}
+
+auto MoveTreeModel::buildSubtree(const NodePtr &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void {
+    bool isWhiteMove = cursor.player_color() == chesscore::Color::White;
+
+    NodePtr currentModelNode;
+
+    if (isWhiteMove) {
+        currentModelNode = std::make_shared<MoveTreeNode>();
+        currentModelNode->parent = parentModelNode;
+        currentModelNode->whiteCursor = cursor;
+        currentModelNode->moveNumber = moveNumber;
+        currentModelNode->isMainLine = isMainLine;
+
+        parentModelNode->children.push_back(currentModelNode);
+
+        if (cursor.child_count() > 0) {
+            auto blackCursorOpt = cursor.child(0);
+            if (blackCursorOpt) {
+                currentModelNode->blackCursor = *blackCursorOpt;
+
+                if (blackCursorOpt->child_count() > 0) {
+                    auto nextCursorOpt = blackCursorOpt->child(0);
+                    if (nextCursorOpt) {
+                        buildSubtree(parentModelNode, *nextCursorOpt, moveNumber + 1, isMainLine);
+                    }
+                }
+
+                for (size_t i = 1; i < blackCursorOpt->child_count(); ++i) {
+                    auto varCursorOpt = blackCursorOpt->child(i);
+                    if (varCursorOpt) {
+                        buildSubtree(currentModelNode, *varCursorOpt, moveNumber + 1, false);
+                    }
+                }
+            }
+        }
+
+        for (size_t i = 1; i < cursor.child_count(); ++i) {
+            auto varCursorOpt = cursor.child(i);
+            if (!varCursorOpt) {
+                continue;
+            }
+
+            auto variationNode = std::make_shared<MoveTreeNode>();
+            variationNode->parent = currentModelNode;
+            variationNode->blackCursor = *varCursorOpt;
+            variationNode->moveNumber = moveNumber;
+            variationNode->isMainLine = false;
+            variationNode->isBlackVariation = true;
+
+            currentModelNode->children.push_back(variationNode);
+
+            if (varCursorOpt->child_count() > 0) {
+                auto nextCursorOpt = varCursorOpt->child(0);
+                if (nextCursorOpt) {
+                    buildSubtree(variationNode, *nextCursorOpt, moveNumber + 1, false);
+                }
+            }
+
+            for (size_t j = 1; j < varCursorOpt->child_count(); ++j) {
+                auto subVarCursorOpt = varCursorOpt->child(j);
+                if (subVarCursorOpt) {
+                    buildSubtree(variationNode, *subVarCursorOpt, moveNumber + 1, false);
+                }
+            }
+        }
+
+    } else {
+        currentModelNode = std::make_shared<MoveTreeNode>();
+        currentModelNode->parent = parentModelNode;
+        currentModelNode->blackCursor = cursor;
+        currentModelNode->moveNumber = moveNumber;
+        currentModelNode->isMainLine = false;
+        currentModelNode->isBlackVariation = true;
+
+        parentModelNode->children.push_back(currentModelNode);
+
+        if (cursor.child_count() > 0) {
+            auto nextCursorOpt = cursor.child(0);
+            if (nextCursorOpt) {
+                buildSubtree(parentModelNode, *nextCursorOpt, moveNumber + 1, false);
+            }
+        }
+
+        for (size_t i = 1; i < cursor.child_count(); ++i) {
+            auto varCursorOpt = cursor.child(i);
+            if (varCursorOpt) {
+                buildSubtree(currentModelNode, *varCursorOpt, moveNumber + 1, false);
+            }
+        }
+    }
+}
+
+auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parentCursor, size_t childIndex) -> void {
+    if (m_game == nullptr) {
+        return;
+    }
+
     auto parentModelNode = modelNodeByCursor(parentCursor);
-    if (!parentModelNode) {
+    if (parentModelNode == nullptr) {
         rebuildTree();
         return;
     }
 
-    const auto parent_is_white = parentModelNode->whiteCursor && parentModelNode->whiteCursor == parentCursor;
     auto childCursorOpt = parentCursor.child(childIndex);
-    if (!childCursorOpt) {
+    if (!childCursorOpt.has_value()) {
         rebuildTree();
         return;
     }
     const auto &newCursor = *childCursorOpt;
+    const auto parent_is_white = parentModelNode->whiteCursor && parentModelNode->whiteCursor == parentCursor;
     if (parent_is_white) {
         handleMoveAddedToWhiteNode(parentModelNode, newCursor, childIndex);
     } else {
@@ -170,117 +278,6 @@ auto MoveTreeModel::indexFromModelNode(const NodePtr &node, int column) const ->
     }
 
     return {};
-}
-
-auto MoveTreeModel::buildTree() -> void {
-    m_root = std::make_shared<MoveTreeNode>();
-
-    if (!m_game) {
-        return;
-    }
-
-    auto cursor = m_game->cursor();
-
-    int moveNumber = 1;
-
-    if (cursor.child_count() > 0) {
-        auto firstChild = cursor.child(0);
-        if (firstChild) {
-            buildSubtree(m_root, *firstChild, moveNumber, true);
-        }
-    }
-}
-
-auto MoveTreeModel::buildSubtree(const NodePtr &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void {
-    auto pos = cursor.position();
-    bool isWhiteMove = (pos.side_to_move() == chesscore::Color::Black);
-
-    NodePtr currentModelNode;
-
-    if (isWhiteMove) {
-        currentModelNode = std::make_shared<MoveTreeNode>();
-        currentModelNode->parent = parentModelNode;
-        currentModelNode->whiteCursor = cursor;
-        currentModelNode->moveNumber = moveNumber;
-        currentModelNode->isMainLine = isMainLine;
-
-        parentModelNode->children.push_back(currentModelNode);
-
-        if (cursor.child_count() > 0) {
-            auto blackCursorOpt = cursor.child(0);
-            if (blackCursorOpt) {
-                currentModelNode->blackCursor = *blackCursorOpt;
-
-                if (blackCursorOpt->child_count() > 0) {
-                    auto nextCursorOpt = blackCursorOpt->child(0);
-                    if (nextCursorOpt) {
-                        buildSubtree(parentModelNode, *nextCursorOpt, moveNumber + 1, isMainLine);
-                    }
-                }
-
-                for (size_t i = 1; i < blackCursorOpt->child_count(); ++i) {
-                    auto varCursorOpt = blackCursorOpt->child(i);
-                    if (varCursorOpt) {
-                        buildSubtree(currentModelNode, *varCursorOpt, moveNumber + 1, false);
-                    }
-                }
-            }
-        }
-
-        for (size_t i = 1; i < cursor.child_count(); ++i) {
-            auto varCursorOpt = cursor.child(i);
-            if (!varCursorOpt) {
-                continue;
-            }
-
-            auto variationNode = std::make_shared<MoveTreeNode>();
-            variationNode->parent = currentModelNode;
-            variationNode->blackCursor = *varCursorOpt;
-            variationNode->moveNumber = moveNumber;
-            variationNode->isMainLine = false;
-            variationNode->isBlackVariation = true;
-
-            currentModelNode->children.push_back(variationNode);
-
-            if (varCursorOpt->child_count() > 0) {
-                auto nextCursorOpt = varCursorOpt->child(0);
-                if (nextCursorOpt) {
-                    buildSubtree(variationNode, *nextCursorOpt, moveNumber + 1, false);
-                }
-            }
-
-            for (size_t j = 1; j < varCursorOpt->child_count(); ++j) {
-                auto subVarCursorOpt = varCursorOpt->child(j);
-                if (subVarCursorOpt) {
-                    buildSubtree(variationNode, *subVarCursorOpt, moveNumber + 1, false);
-                }
-            }
-        }
-
-    } else {
-        currentModelNode = std::make_shared<MoveTreeNode>();
-        currentModelNode->parent = parentModelNode;
-        currentModelNode->blackCursor = cursor;
-        currentModelNode->moveNumber = moveNumber;
-        currentModelNode->isMainLine = false;
-        currentModelNode->isBlackVariation = true;
-
-        parentModelNode->children.push_back(currentModelNode);
-
-        if (cursor.child_count() > 0) {
-            auto nextCursorOpt = cursor.child(0);
-            if (nextCursorOpt) {
-                buildSubtree(parentModelNode, *nextCursorOpt, moveNumber + 1, false);
-            }
-        }
-
-        for (size_t i = 1; i < cursor.child_count(); ++i) {
-            auto varCursorOpt = cursor.child(i);
-            if (varCursorOpt) {
-                buildSubtree(currentModelNode, *varCursorOpt, moveNumber + 1, false);
-            }
-        }
-    }
 }
 
 auto MoveTreeModel::index(int row, int column, const QModelIndex &parent) const -> QModelIndex {
