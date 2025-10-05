@@ -107,6 +107,19 @@ enum class CheckState {
     Stalemate  ///< Stalemate.
 };
 
+/**
+ * \brief Convert the check state into a symbol as used in SAN.
+ *
+ * Converts the CheckState into a single character symbol as it is used in SAN,
+ * i.e.:
+ * - '+' for CheckState::Check,
+ * - '#' for CheckState::Checkmate,
+ * - '' for CheckState::None and CheckState::Stalemate
+ * \param state The state to convert.
+ * \return The statae symbol.
+ */
+auto check_state_symbol(CheckState state) -> std::string;
+
 struct PositionState {
     Color side_to_move{Color::White};                       ///< The player who moves next.
     int fullmove_number{1};                                 ///< Number of the next move.
