@@ -61,13 +61,13 @@ private:
         std::weak_ptr<MoveTreeNode> parent;
         std::vector<NodePtr> children;
 
-        std::optional<chessgame::Cursor> whiteCursor; ///< The white half-move
-        std::optional<chessgame::Cursor> blackCursor; ///< The black half-move (may be nullptr)
+        std::optional<chessgame::Cursor> white_cursor; ///< The white half-move
+        std::optional<chessgame::Cursor> black_cursor; ///< The black half-move (may be nullptr)
 
-        int moveNumber{1};            ///< Full move number
-        bool isMainLine{true};        ///< True if this is part of the main line
-        bool isWhiteVariation{false}; ///< True if this starts a white variation
-        bool isBlackVariation{false}; ///< True if this starts a black variation
+        int move_number{1};             ///< Full move number
+        bool is_main_line{true};        ///< True if this is part of the main line
+        bool is_white_variation{false}; ///< True if this starts a white variation
+        bool is_black_variation{false}; ///< True if this starts a black variation
     };
 
     auto build_tree() -> void;

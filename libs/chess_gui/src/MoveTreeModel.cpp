@@ -45,19 +45,19 @@ auto MoveTreeModel::build_tree() -> void {
     }
 }
 
-auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int moveNumber, bool isMainline, bool is_black_variation) -> NodePtr {
-    auto modelNode = std::make_shared<MoveTreeNode>();
-    modelNode->parent = parent;
+auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int move_number, bool is_main_line, bool is_black_variation) -> NodePtr {
+    auto model_node = std::make_shared<MoveTreeNode>();
+    model_node->parent = parent;
     if (cursor.player_color() == chesscore::Color::White) {
-        modelNode->whiteCursor = cursor;
+        model_node->white_cursor = cursor;
     } else {
-        modelNode->blackCursor = cursor;
+        model_node->black_cursor = cursor;
     }
-    modelNode->moveNumber = moveNumber;
-    modelNode->isMainLine = isMainline;
-    modelNode->isBlackVariation = is_black_variation;
-    parent->children.push_back(modelNode);
-    return modelNode;
+    model_node->move_number = move_number;
+    model_node->is_main_line = is_main_line;
+    model_node->is_black_variation = is_black_variation;
+    parent->children.push_back(model_node);
+    return model_node;
 }
 
 auto MoveTreeModel::continue_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void {
@@ -76,9 +76,10 @@ auto MoveTreeModel::create_variations(const chessgame::Cursor &move, const NodeP
 
 auto MoveTreeModel::collect_black_continuation(const chessgame::Cursor &white_move, const NodePtr &current_node, int move_number, bool is_main_line) -> void {
     if (auto black_continuation = white_move.child(0); black_continuation.has_value()) {
-        current_node->blackCursor = black_continuation.value();
-        continue_main_line(black_continuation.value(), current_node->parent.lock(), move_number, is_main_line);
-        create_variations(black_continuation.value(), current_node, move_number);
+        const auto &black_move = black_continuation.value();
+        current_node->black_cursor = black_move;
+        create_variations(black_move, current_node, move_number);
+        continue_main_line(black_move, current_node->parent.lock(), move_number, is_main_line);
     }
 }
 
@@ -89,8 +90,8 @@ auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::C
         collect_black_continuation(move, move_node, move_number + 1, is_main_line);
     } else {
         auto move_node = make_model_node(parent_node, move, move_number, false, true);
-        continue_main_line(move, parent_node, move_number + 1, false);
         create_variations(move, move_node, move_number + 1);
+        continue_main_line(move, parent_node, move_number + 1, false);
     }
 }
 
@@ -111,7 +112,7 @@ auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parentCursor, size_t ch
         return;
     }
     const auto &newCursor = *childCursorOpt;
-    const auto parent_is_white = parentModelNode->whiteCursor && parentModelNode->whiteCursor == parentCursor;
+    const auto parent_is_white = parentModelNode->white_cursor && parentModelNode->white_cursor == parentCursor;
     if (parent_is_white) {
         handleMoveAddedToWhiteNode(parentModelNode, newCursor, childIndex);
     } else {
@@ -121,16 +122,16 @@ auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parentCursor, size_t ch
 
 auto MoveTreeModel::handleMoveAddedToWhiteNode(const NodePtr &modelNode, const chessgame::Cursor &newCursor, size_t childIndex) -> void {
     if (childIndex == 0) {
-        modelNode->blackCursor = newCursor;
+        modelNode->black_cursor = newCursor;
         auto idx = indexFromModelNode(modelNode);
         emit dataChanged(idx, index(idx.row(), ColumnCount - 1, idx.parent()));
     } else {
         auto newModelNode = std::make_shared<MoveTreeNode>();
         newModelNode->parent = modelNode;
-        newModelNode->blackCursor = newCursor;
-        newModelNode->moveNumber = modelNode->moveNumber;
-        newModelNode->isMainLine = false;
-        newModelNode->isBlackVariation = true;
+        newModelNode->black_cursor = newCursor;
+        newModelNode->move_number = modelNode->move_number;
+        newModelNode->is_main_line = false;
+        newModelNode->is_black_variation = true;
 
         auto parentIdx = indexFromModelNode(modelNode);
         int insertRow = static_cast<int>(modelNode->children.size());
@@ -143,8 +144,8 @@ auto MoveTreeModel::handleMoveAddedToWhiteNode(const NodePtr &modelNode, const c
 
 auto MoveTreeModel::handleMoveAddedToBlackNode(const NodePtr &modelNode, const chessgame::Cursor &newCursor, size_t childIndex) -> void {
     auto newModelNode = std::make_shared<MoveTreeNode>();
-    newModelNode->whiteCursor = newCursor;
-    newModelNode->moveNumber = modelNode->moveNumber + 1;
+    newModelNode->white_cursor = newCursor;
+    newModelNode->move_number = modelNode->move_number + 1;
 
     if (childIndex == 0) {
         auto parentNode = modelNode->parent.lock();
@@ -155,7 +156,7 @@ auto MoveTreeModel::handleMoveAddedToBlackNode(const NodePtr &modelNode, const c
         }
 
         newModelNode->parent = parentNode;
-        newModelNode->isMainLine = modelNode->isMainLine;
+        newModelNode->is_main_line = modelNode->is_main_line;
 
         auto parentIdx = indexFromModelNode(parentNode);
         size_t insertPos = 0;
@@ -171,7 +172,7 @@ auto MoveTreeModel::handleMoveAddedToBlackNode(const NodePtr &modelNode, const c
         endInsertRows();
     } else {
         newModelNode->parent = modelNode;
-        newModelNode->isMainLine = false;
+        newModelNode->is_main_line = false;
 
         auto parentIdx = indexFromModelNode(modelNode);
         int insertRow = static_cast<int>(modelNode->children.size());
@@ -199,7 +200,7 @@ auto MoveTreeModel::searchForCursor(const chessgame::Cursor &cursor, const NodeP
     if (node == nullptr) {
         return nullptr;
     }
-    if ((node->whiteCursor && node->whiteCursor == cursor) || (node->blackCursor && node->blackCursor == cursor)) {
+    if ((node->white_cursor && node->white_cursor == cursor) || (node->black_cursor && node->black_cursor == cursor)) {
         return node;
     }
     for (const auto &child : node->children) {
@@ -308,9 +309,9 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
         case MoveNumberColumn:
             return moveNumberText(node, index.column());
         case WhiteMoveColumn:
-            return node->whiteCursor ? moveText(*node->whiteCursor) : QString();
+            return node->white_cursor ? moveText(*node->white_cursor) : QString();
         case BlackMoveColumn:
-            return node->blackCursor ? moveText(*node->blackCursor) : QString();
+            return node->black_cursor ? moveText(*node->black_cursor) : QString();
         default:
             return {};
         }
@@ -322,28 +323,28 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
             //     return Qt::AlignRight;
 
         case HasCommentRole:
-            return (node->whiteCursor && !node->whiteCursor->comment().empty()) || (node->blackCursor && !node->blackCursor->comment().empty());
+            return (node->white_cursor && !node->white_cursor->comment().empty()) || (node->black_cursor && !node->black_cursor->comment().empty());
 
         case HasPremoveCommentRole:
-            return (node->whiteCursor && !node->whiteCursor->premove_comment().empty()) || (node->blackCursor && !node->blackCursor->premove_comment().empty());
+            return (node->white_cursor && !node->white_cursor->premove_comment().empty()) || (node->black_cursor && !node->black_cursor->premove_comment().empty());
 
         case HasVariationsRole:
             return node->children.size() > 1;
 
         case IsMainLineRole:
-            return node->isMainLine;
+            return node->is_main_line;
 
         case MoveNumberRole:
-            return node->moveNumber;
+            return node->move_number;
 
         case IsWhiteVariationRole:
-            return node->isWhiteVariation;
+            return node->is_white_variation;
 
         case IsBlackVariationRole:
-            return node->isBlackVariation;
+            return node->is_black_variation;
 
         case HasNagsRole:
-            return (node->whiteCursor && !node->whiteCursor->nags().empty()) || (node->blackCursor && !node->blackCursor->nags().empty());
+            return (node->white_cursor && !node->white_cursor->nags().empty()) || (node->black_cursor && !node->black_cursor->nags().empty());
 
         default:
             break;
@@ -388,16 +389,16 @@ auto MoveTreeModel::cursorFromIndex(const QModelIndex &index) const -> std::opti
         return std::nullopt;
     }
 
-    if (index.column() == WhiteMoveColumn && node->whiteCursor) {
-        return node->whiteCursor;
+    if (index.column() == WhiteMoveColumn && node->white_cursor) {
+        return node->white_cursor;
     }
-    if (index.column() == BlackMoveColumn && node->blackCursor) {
-        return node->blackCursor;
+    if (index.column() == BlackMoveColumn && node->black_cursor) {
+        return node->black_cursor;
     }
-    if (node->whiteCursor) {
-        return node->whiteCursor;
+    if (node->white_cursor) {
+        return node->white_cursor;
     }
-    return node->blackCursor;
+    return node->black_cursor;
 }
 
 auto MoveTreeModel::modelNodeFromIndex(const QModelIndex &index) const -> NodePtr {
@@ -452,16 +453,16 @@ auto MoveTreeModel::moveNumberText(const NodePtr &node, int column) -> QString {
     }
 
     QString prefix{};
-    const auto cursor = (node->whiteCursor) ? node->whiteCursor : node->blackCursor;
+    const auto cursor = (node->white_cursor) ? node->white_cursor : node->black_cursor;
     if (cursor && cursor->variation_number() > 0) {
         prefix = QString{"▶"};
     }
 
     QString move_number{};
-    if (node->isBlackVariation) {
-        move_number = QString("%1...").arg(node->moveNumber);
+    if (node->is_black_variation) {
+        move_number = QString("%1...").arg(node->move_number);
     } else {
-        move_number = QString("%1.").arg(node->moveNumber);
+        move_number = QString("%1.").arg(node->move_number);
     }
 
     return prefix + move_number;
