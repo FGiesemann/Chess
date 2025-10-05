@@ -17,7 +17,7 @@ TestAppWindow::TestAppWindow(QWidget *parent)
 
 auto TestAppWindow::move_made(const chesscore::Move &move) -> void {
     auto new_cursor = m_mainline.play_move(move);
-    m_move_tree_model->onMoveAdded(m_mainline, 0);
+    m_move_tree_model->onMoveAdded(m_mainline, m_mainline.child_count() - 1);
     m_mainline = new_cursor;
 }
 
