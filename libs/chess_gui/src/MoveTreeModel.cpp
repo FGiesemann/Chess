@@ -534,7 +534,7 @@ auto MoveTreeModel::moveNumberText(const NodePtr &node, int column) -> QString {
 
     QString prefix{};
     const auto cursor = (node->whiteCursor) ? node->whiteCursor : node->blackCursor;
-    if (cursor && cursor->variation_number() > 1) {
+    if (cursor && cursor->variation_number() > 0) {
         prefix = QString{"▶"};
     }
 
