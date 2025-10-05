@@ -85,20 +85,8 @@ auto MoveTreeModel::collect_black_continuation(const chessgame::Cursor &white_mo
 auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void {
     if (const auto is_white_move = move.player_color() == chesscore::Color::White; is_white_move) {
         auto move_node = make_model_node(parent_node, move, move_number, is_main_line);
+        create_variations(move, move_node, move_number);
         collect_black_continuation(move, move_node, move_number + 1, is_main_line);
-        for (size_t i = 1; i < move.child_count(); ++i) {
-            auto black_variation = move.child(i);
-            if (!black_variation.has_value()) {
-                continue;
-            }
-            auto black_variation_node = make_model_node(move_node, black_variation.value(), move_number, false, true);
-            if (auto white_continuation = black_variation->child(0); white_continuation) {
-                auto variation_continuation_node = make_model_node(move_node, *white_continuation, move_number + 1, false);
-                collect_black_continuation(white_continuation.value(), variation_continuation_node, move_number + 2, false);
-                create_variations(white_continuation.value(), variation_continuation_node, move_number + 1);
-            }
-            create_variations(black_variation.value(), black_variation_node, move_number + 1);
-        }
     } else {
         auto move_node = make_model_node(parent_node, move, move_number, false, true);
         continue_main_line(move, parent_node, move_number + 1, false);
