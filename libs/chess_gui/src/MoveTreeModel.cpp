@@ -25,7 +25,7 @@ auto MoveTreeModel::setGame(GamePtr game) -> void {
     emit gameChanged();
 }
 
-auto MoveTreeModel::rebuildTree() -> void {
+auto MoveTreeModel::rebuild_tree() -> void {
     beginResetModel();
     build_tree();
     endResetModel();
@@ -38,10 +38,10 @@ auto MoveTreeModel::build_tree() -> void {
         return;
     }
 
-    int moveNumber = 1;
+    const int move_number = 1;
     for (size_t i = 0; i < m_game->cursor().child_count(); ++i) {
         if (const auto child = m_game->cursor().child(i); child.has_value()) {
-            build_subtree(m_root, child.value(), moveNumber, i == 0);
+            build_subtree(m_root, child.value(), move_number, i == 0);
         }
     }
 }
@@ -96,101 +96,102 @@ auto MoveTreeModel::collect_black_continuation(const chessgame::Cursor &white_mo
     }
 }
 
-auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parentCursor, size_t childIndex) -> void {
+auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parent_cursor, size_t child_index) -> void {
     if (m_game == nullptr) {
         return;
     }
 
-    auto parentModelNode = modelNodeByCursor(parentCursor);
-    if (parentModelNode == nullptr) {
-        rebuildTree();
+    auto parent_model_node = model_node_by_cursor(parent_cursor);
+    if (parent_model_node == nullptr) {
+        rebuild_tree();
         return;
     }
 
-    auto childCursorOpt = parentCursor.child(childIndex);
-    if (!childCursorOpt.has_value()) {
-        rebuildTree();
+    auto child_cursor_opt = parent_cursor.child(child_index);
+    if (!child_cursor_opt.has_value()) {
+        rebuild_tree();
         return;
     }
-    const auto &newCursor = *childCursorOpt;
-    const auto parent_is_white = parentModelNode->white_cursor && parentModelNode->white_cursor == parentCursor;
+    const auto &new_cursor = *child_cursor_opt;
+    const auto parent_is_white = parent_model_node->white_cursor && parent_model_node->white_cursor == parent_cursor;
     if (parent_is_white) {
-        handleMoveAddedToWhiteNode(parentModelNode, newCursor, childIndex);
+        handle_move_added_to_white_node(parent_model_node, new_cursor, child_index);
     } else {
-        handleMoveAddedToBlackNode(parentModelNode, newCursor, childIndex);
+        handle_move_added_to_black_node(parent_model_node, new_cursor, child_index);
     }
 }
 
-auto MoveTreeModel::handleMoveAddedToWhiteNode(const NodePtr &modelNode, const chessgame::Cursor &newCursor, size_t childIndex) -> void {
-    if (childIndex == 0) {
-        modelNode->black_cursor = newCursor;
-        auto idx = indexFromModelNode(modelNode);
+auto MoveTreeModel::handle_move_added_to_white_node(const NodePtr &model_node, const chessgame::Cursor &new_cursor, size_t child_index) -> void {
+    if (child_index == 0) {
+        model_node->black_cursor = new_cursor;
+        auto idx = index_from_model_node(model_node);
         emit dataChanged(idx, index(idx.row(), ColumnCount - 1, idx.parent()));
     } else {
-        auto newModelNode = make_model_node(modelNode, newCursor, modelNode->move_number, false, false);
-        auto parentIdx = indexFromModelNode(modelNode);
-        int insertRow = static_cast<int>(modelNode->children.size());
-        beginInsertRows(parentIdx, insertRow, insertRow);
-        modelNode->children.push_back(newModelNode);
+        auto new_model_node = make_model_node(model_node, new_cursor, model_node->move_number, false, false);
+        auto parent_idx = index_from_model_node(model_node);
+        int insert_row = static_cast<int>(model_node->children.size());
+        beginInsertRows(parent_idx, insert_row, insert_row);
+        model_node->children.push_back(new_model_node);
         endInsertRows();
     }
 }
 
-auto MoveTreeModel::handleMoveAddedToBlackNode(const NodePtr &modelNode, const chessgame::Cursor &newCursor, size_t childIndex) -> void {
-    auto newModelNode = std::make_shared<MoveTreeNode>();
-    newModelNode->white_cursor = newCursor;
-    newModelNode->move_number = modelNode->move_number + 1;
+auto MoveTreeModel::handle_move_added_to_black_node(const NodePtr &model_node, const chessgame::Cursor &new_cursor, size_t child_index) -> void {
+    auto parent_node = model_node->parent.lock();
+    if (!parent_node) {
+        // This shouldn't happen, but handle gracefully
+        rebuild_tree();
+        return;
+    }
+    auto new_model_node =
+        make_model_node(child_index == 0 ? parent_node : model_node, new_cursor, model_node->move_number + 1, child_index == 0 ? model_node->is_main_line : false, false);
 
-    if (childIndex == 0) {
-        auto parentNode = modelNode->parent.lock();
-        if (!parentNode) {
-            // This shouldn't happen, but handle gracefully
-            rebuildTree();
-            return;
-        }
+    new_model_node->white_cursor = new_cursor;
+    new_model_node->move_number = model_node->move_number + 1;
 
-        newModelNode->parent = parentNode;
-        newModelNode->is_main_line = modelNode->is_main_line;
+    if (child_index == 0) {
+        new_model_node->parent = parent_node;
+        new_model_node->is_main_line = model_node->is_main_line;
 
-        auto parentIdx = indexFromModelNode(parentNode);
-        size_t insertPos = 0;
-        for (size_t i = 0; i < parentNode->children.size(); ++i) {
-            if (parentNode->children[i] == modelNode) {
-                insertPos = i + 1;
+        auto parent_idx = index_from_model_node(parent_node);
+        size_t insert_pos = 0;
+        for (size_t i = 0; i < parent_node->children.size(); ++i) {
+            if (parent_node->children[i] == model_node) {
+                insert_pos = i + 1;
                 break;
             }
         }
 
-        beginInsertRows(parentIdx, static_cast<int>(insertPos), static_cast<int>(insertPos));
-        parentNode->children.insert(parentNode->children.begin() + static_cast<int>(insertPos), newModelNode);
+        beginInsertRows(parent_idx, static_cast<int>(insert_pos), static_cast<int>(insert_pos));
+        parent_node->children.insert(parent_node->children.begin() + static_cast<int>(insert_pos), new_model_node);
         endInsertRows();
     } else {
-        newModelNode->parent = modelNode;
-        newModelNode->is_main_line = false;
+        new_model_node->parent = model_node;
+        new_model_node->is_main_line = false;
 
-        auto parentIdx = indexFromModelNode(modelNode);
-        int insertRow = static_cast<int>(modelNode->children.size());
+        auto parent_idx = index_from_model_node(model_node);
+        int insert_row = static_cast<int>(model_node->children.size());
 
-        beginInsertRows(parentIdx, insertRow, insertRow);
-        modelNode->children.push_back(newModelNode);
+        beginInsertRows(parent_idx, insert_row, insert_row);
+        model_node->children.push_back(new_model_node);
         endInsertRows();
     }
 }
 
 auto MoveTreeModel::onNodeDataChanged(const chessgame::Cursor &cursor) -> void {
-    auto modelNode = modelNodeByCursor(cursor);
+    auto model_node = model_node_by_cursor(cursor);
 
-    if (!modelNode) {
+    if (!model_node) {
         return;
     }
 
-    auto idx = indexFromModelNode(modelNode);
+    auto idx = index_from_model_node(model_node);
     if (idx.isValid()) {
         emit dataChanged(idx, index(idx.row(), ColumnCount - 1, idx.parent()));
     }
 }
 
-auto MoveTreeModel::searchForCursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr {
+auto MoveTreeModel::search_for_cursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr {
     if (node == nullptr) {
         return nullptr;
     }
@@ -198,21 +199,21 @@ auto MoveTreeModel::searchForCursor(const chessgame::Cursor &cursor, const NodeP
         return node;
     }
     for (const auto &child : node->children) {
-        if (auto found = searchForCursor(cursor, child)) {
+        if (auto found = search_for_cursor(cursor, child)) {
             return found;
         }
     }
     return nullptr;
 }
 
-auto MoveTreeModel::modelNodeByCursor(const chessgame::Cursor &cursor) const -> NodePtr {
+auto MoveTreeModel::model_node_by_cursor(const chessgame::Cursor &cursor) const -> NodePtr {
     if (!cursor.node()) {
         return nullptr;
     }
-    return searchForCursor(cursor, m_root);
+    return search_for_cursor(cursor, m_root);
 }
 
-auto MoveTreeModel::indexFromModelNode(const NodePtr &node, int column) const -> QModelIndex {
+auto MoveTreeModel::index_from_model_node(const NodePtr &node, int column) const -> QModelIndex {
     if (!node || node == m_root) {
         return {};
     }
@@ -235,14 +236,14 @@ auto MoveTreeModel::index(int row, int column, const QModelIndex &parent) const 
         return {};
     }
 
-    auto parentNode = parent.isValid() ? modelNodeFromIndex(parent) : m_root;
+    auto parent_node = parent.isValid() ? model_node_from_index(parent) : m_root;
 
-    if (!parentNode || std::cmp_greater_equal(row, parentNode->children.size())) {
+    if (!parent_node || std::cmp_greater_equal(row, parent_node->children.size())) {
         return {};
     }
 
-    auto childNode = parentNode->children[row];
-    return createIndex(row, column, childNode.get());
+    auto child_node = parent_node->children[row];
+    return createIndex(row, column, child_node.get());
 }
 
 auto MoveTreeModel::parent(const QModelIndex &child) const -> QModelIndex {
@@ -250,24 +251,24 @@ auto MoveTreeModel::parent(const QModelIndex &child) const -> QModelIndex {
         return {};
     }
 
-    auto childNode = modelNodeFromIndex(child);
-    if (!childNode) {
+    auto child_node = model_node_from_index(child);
+    if (!child_node) {
         return {};
     }
 
-    auto parentNode = childNode->parent.lock();
-    if (!parentNode || parentNode == m_root) {
+    auto parent_node = child_node->parent.lock();
+    if (!parent_node || parent_node == m_root) {
         return {};
     }
 
-    auto grandParentNode = parentNode->parent.lock();
-    if (!grandParentNode) {
+    auto grand_parent_node = parent_node->parent.lock();
+    if (!grand_parent_node) {
         return {};
     }
 
-    for (size_t i = 0; i < grandParentNode->children.size(); ++i) {
-        if (grandParentNode->children[i] == parentNode) {
-            return createIndex(static_cast<int>(i), 0, parentNode.get());
+    for (size_t i = 0; i < grand_parent_node->children.size(); ++i) {
+        if (grand_parent_node->children[i] == parent_node) {
+            return createIndex(static_cast<int>(i), 0, parent_node.get());
         }
     }
 
@@ -279,8 +280,8 @@ auto MoveTreeModel::rowCount(const QModelIndex &parent) const -> int {
         return 0;
     }
 
-    auto parentNode = parent.isValid() ? modelNodeFromIndex(parent) : m_root;
-    return parentNode ? static_cast<int>(parentNode->children.size()) : 0;
+    auto parent_node = parent.isValid() ? model_node_from_index(parent) : m_root;
+    return parent_node ? static_cast<int>(parent_node->children.size()) : 0;
 }
 
 auto MoveTreeModel::columnCount(const QModelIndex &parent) const -> int {
@@ -293,7 +294,7 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
         return {};
     }
 
-    auto node = modelNodeFromIndex(index);
+    auto node = model_node_from_index(index);
     if (!node) {
         return {};
     }
@@ -301,11 +302,11 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case MoveNumberColumn:
-            return moveNumberText(node, index.column());
+            return move_number_text(node, index.column());
         case WhiteMoveColumn:
-            return node->white_cursor ? moveText(*node->white_cursor) : QString();
+            return node->white_cursor ? move_text(*node->white_cursor) : QString();
         case BlackMoveColumn:
-            return node->black_cursor ? moveText(*node->black_cursor) : QString();
+            return node->black_cursor ? move_text(*node->black_cursor) : QString();
         default:
             return {};
         }
@@ -373,12 +374,12 @@ auto MoveTreeModel::flags(const QModelIndex &index) const -> Qt::ItemFlags {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-auto MoveTreeModel::cursorFromIndex(const QModelIndex &index) const -> std::optional<chessgame::Cursor> {
+auto MoveTreeModel::cursor_from_index(const QModelIndex &index) const -> std::optional<chessgame::Cursor> {
     if (!index.isValid()) {
         return std::nullopt;
     }
 
-    auto node = modelNodeFromIndex(index);
+    auto node = model_node_from_index(index);
     if (!node) {
         return std::nullopt;
     }
@@ -395,7 +396,7 @@ auto MoveTreeModel::cursorFromIndex(const QModelIndex &index) const -> std::opti
     return node->black_cursor;
 }
 
-auto MoveTreeModel::modelNodeFromIndex(const QModelIndex &index) const -> NodePtr {
+auto MoveTreeModel::model_node_from_index(const QModelIndex &index) const -> NodePtr {
     if (!index.isValid()) {
         return nullptr;
     }
@@ -405,23 +406,23 @@ auto MoveTreeModel::modelNodeFromIndex(const QModelIndex &index) const -> NodePt
         return nullptr;
     }
 
-    std::function<NodePtr(const NodePtr &, MoveTreeNode *)> findNode;
-    findNode = [&](const NodePtr &current, MoveTreeNode *target) -> NodePtr {
+    std::function<NodePtr(const NodePtr &, MoveTreeNode *)> find_node;
+    find_node = [&](const NodePtr &current, MoveTreeNode *target) -> NodePtr {
         if (current.get() == target) {
             return current;
         }
         for (const auto &child : current->children) {
-            if (auto found = findNode(child, target)) {
+            if (auto found = find_node(child, target)) {
                 return found;
             }
         }
         return nullptr;
     };
 
-    return findNode(m_root, ptr);
+    return find_node(m_root, ptr);
 }
 
-auto MoveTreeModel::moveText(const chessgame::Cursor &cursor) -> QString {
+auto MoveTreeModel::move_text(const chessgame::Cursor &cursor) -> QString {
     const auto parent = cursor.parent();
     if (!parent) {
         return QString{"No Parent"};
@@ -439,7 +440,7 @@ auto MoveTreeModel::moveText(const chessgame::Cursor &cursor) -> QString {
     return QString{"No SAN move"};
 }
 
-auto MoveTreeModel::moveNumberText(const NodePtr &node, int column) -> QString {
+auto MoveTreeModel::move_number_text(const NodePtr &node, int column) -> QString {
     Q_UNUSED(column)
 
     if (!node) {

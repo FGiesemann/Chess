@@ -46,11 +46,11 @@ public:
     auto headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const -> QVariant override;
     auto flags(const QModelIndex &index) const -> Qt::ItemFlags override;
 
-    auto cursorFromIndex(const QModelIndex &index) const -> std::optional<chessgame::Cursor>;
+    auto cursor_from_index(const QModelIndex &index) const -> std::optional<chessgame::Cursor>;
 public slots:
-    auto onMoveAdded(const chessgame::Cursor &parentCursor, size_t childIndex) -> void;
+    auto onMoveAdded(const chessgame::Cursor &parent_cursor, size_t child_index) -> void;
     auto onNodeDataChanged(const chessgame::Cursor &cursor) -> void;
-    auto rebuildTree() -> void;
+    auto rebuild_tree() -> void;
 signals:
     void gameChanged();
 private:
@@ -77,16 +77,16 @@ private:
     static auto collect_black_continuation(const chessgame::Cursor &white_move, const NodePtr &current_node, int move_number, bool is_main_line) -> void;
     static auto make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int move_number, bool is_main_line, bool is_black_variation = false) -> NodePtr;
 
-    auto modelNodeFromIndex(const QModelIndex &index) const -> NodePtr;
-    static auto searchForCursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr;
-    auto modelNodeByCursor(const chessgame::Cursor &cursor) const -> NodePtr;
-    auto indexFromModelNode(const NodePtr &node, int column = 0) const -> QModelIndex;
+    auto model_node_from_index(const QModelIndex &index) const -> NodePtr;
+    static auto search_for_cursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr;
+    auto model_node_by_cursor(const chessgame::Cursor &cursor) const -> NodePtr;
+    auto index_from_model_node(const NodePtr &node, int column = 0) const -> QModelIndex;
 
-    static auto moveText(const chessgame::Cursor &cursor) -> QString;
-    static auto moveNumberText(const NodePtr &node, int column) -> QString;
+    static auto move_text(const chessgame::Cursor &cursor) -> QString;
+    static auto move_number_text(const NodePtr &node, int column) -> QString;
 
-    auto handleMoveAddedToWhiteNode(const NodePtr &modelNode, const chessgame::Cursor &newCursor, size_t childIndex) -> void;
-    auto handleMoveAddedToBlackNode(const NodePtr &modelNode, const chessgame::Cursor &newCursor, size_t childIndex) -> void;
+    auto handle_move_added_to_white_node(const NodePtr &model_node, const chessgame::Cursor &new_cursor, size_t child_index) -> void;
+    auto handle_move_added_to_black_node(const NodePtr &model_node, const chessgame::Cursor &new_cursor, size_t child_index) -> void;
 
     GamePtr m_game;
     NodePtr m_root;
