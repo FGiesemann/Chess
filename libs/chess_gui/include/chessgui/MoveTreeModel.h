@@ -49,8 +49,8 @@ public:
 
     auto cursorFromIndex(const QModelIndex &index) const -> std::optional<chessgame::Cursor>;
 public slots:
-    auto onMoveAdded(chessgame::Cursor parentCursor, size_t childIndex) -> void;
-    auto onNodeDataChanged(chessgame::Cursor cursor) -> void;
+    auto onMoveAdded(const chessgame::Cursor &parentCursor, size_t childIndex) -> void;
+    auto onNodeDataChanged(const chessgame::Cursor &cursor) -> void;
     auto rebuildTree() -> void;
 signals:
     void gameChanged();
@@ -67,23 +67,24 @@ private:
         bool isWhiteVariation{false}; ///< True if this starts a white variation
         bool isBlackVariation{false}; ///< True if this starts a black variation
     };
+    using NodePtr = std::shared_ptr<MoveTreeNode>;
 
     auto buildTree() -> void;
-    auto buildSubtree(const std::shared_ptr<MoveTreeNode> &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void;
+    auto buildSubtree(const NodePtr &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void;
 
-    auto modelNodeFromIndex(const QModelIndex &index) const -> std::shared_ptr<MoveTreeNode>;
-    auto findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) const -> std::shared_ptr<MoveTreeNode>;
-    auto findModelNodeByCursor(const chessgame::Cursor &cursor) const -> std::shared_ptr<MoveTreeNode>;
-    auto indexFromModelNode(const std::shared_ptr<MoveTreeNode> &node, int column = 0) const -> QModelIndex;
+    auto modelNodeFromIndex(const QModelIndex &index) const -> NodePtr;
+    auto findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) const -> NodePtr;
+    auto findModelNodeByCursor(const chessgame::Cursor &cursor) const -> NodePtr;
+    auto indexFromModelNode(const NodePtr &node, int column = 0) const -> QModelIndex;
 
     static auto moveText(const chessgame::Cursor &cursor) -> QString;
-    static auto moveNumberText(const std::shared_ptr<MoveTreeNode> &node, int column) -> QString;
+    static auto moveNumberText(const NodePtr &node, int column) -> QString;
 
-    auto handleMoveAddedToWhiteNode(const std::shared_ptr<MoveTreeNode> &modelNode, chessgame::Cursor newCursor, size_t childIndex) -> void;
-    auto handleMoveAddedToBlackNode(const std::shared_ptr<MoveTreeNode> &modelNode, chessgame::Cursor newCursor, size_t childIndex) -> void;
+    auto handleMoveAddedToWhiteNode(const NodePtr &modelNode, const chessgame::Cursor &newCursor, size_t childIndex) -> void;
+    auto handleMoveAddedToBlackNode(const NodePtr &modelNode, const chessgame::Cursor &newCursor, size_t childIndex) -> void;
 
     GamePtr m_game;
-    std::shared_ptr<MoveTreeNode> m_root;
+    NodePtr m_root;
 };
 
 } // namespace chessgui
