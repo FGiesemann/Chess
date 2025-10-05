@@ -37,7 +37,7 @@ auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parentCursor, size_t ch
     }
 
     auto parentNodeId = parentCursor.node_id();
-    auto parentModelNode = findModelNodeByCursor(parentCursor);
+    auto parentModelNode = modelNodeByCursor(parentCursor);
     if (!parentModelNode) {
         rebuildTree();
         return;
@@ -124,7 +124,7 @@ auto MoveTreeModel::handleMoveAddedToBlackNode(const NodePtr &modelNode, const c
 }
 
 auto MoveTreeModel::onNodeDataChanged(const chessgame::Cursor &cursor) -> void {
-    auto modelNode = findModelNodeByCursor(cursor);
+    auto modelNode = modelNodeByCursor(cursor);
 
     if (!modelNode) {
         return;
@@ -136,31 +136,26 @@ auto MoveTreeModel::onNodeDataChanged(const chessgame::Cursor &cursor) -> void {
     }
 }
 
-auto MoveTreeModel::findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) const -> NodePtr {
-    std::function<NodePtr(const NodePtr &)> search;
-    search = [&](const NodePtr &current) -> NodePtr {
-        if (!current) {
-            return nullptr;
-        }
-        if ((current->whiteCursor && current->whiteCursor->node_id() == nodeId) || (current->blackCursor && current->blackCursor->node_id() == nodeId)) {
-            return current;
-        }
-        for (const auto &child : current->children) {
-            if (auto found = search(child)) {
-                return found;
-            }
-        }
+auto MoveTreeModel::searchForCursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr {
+    if (node == nullptr) {
         return nullptr;
-    };
-
-    return search(m_root);
+    }
+    if ((node->whiteCursor && node->whiteCursor->node_id() == cursor.node_id()) || (node->blackCursor && node->blackCursor->node_id() == cursor.node_id())) {
+        return node;
+    }
+    for (const auto &child : node->children) {
+        if (auto found = searchForCursor(cursor, child)) {
+            return found;
+        }
+    }
+    return nullptr;
 }
 
-auto MoveTreeModel::findModelNodeByCursor(const chessgame::Cursor &cursor) const -> NodePtr {
+auto MoveTreeModel::modelNodeByCursor(const chessgame::Cursor &cursor) const -> NodePtr {
     if (!cursor.node()) {
         return nullptr;
     }
-    return findModelNodeByGameNodeId(cursor.node_id());
+    return searchForCursor(cursor, m_root);
 }
 
 auto MoveTreeModel::indexFromModelNode(const NodePtr &node, int column) const -> QModelIndex {

@@ -73,8 +73,8 @@ private:
     auto buildSubtree(const NodePtr &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void;
 
     auto modelNodeFromIndex(const QModelIndex &index) const -> NodePtr;
-    auto findModelNodeByGameNodeId(const chessgame::NodeId &nodeId) const -> NodePtr;
-    auto findModelNodeByCursor(const chessgame::Cursor &cursor) const -> NodePtr;
+    static auto searchForCursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr;
+    auto modelNodeByCursor(const chessgame::Cursor &cursor) const -> NodePtr;
     auto indexFromModelNode(const NodePtr &node, int column = 0) const -> QModelIndex;
 
     static auto moveText(const chessgame::Cursor &cursor) -> QString;
