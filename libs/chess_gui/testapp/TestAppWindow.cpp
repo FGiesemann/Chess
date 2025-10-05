@@ -52,8 +52,8 @@ TestAppWindow::TestAppWindow(QWidget *parent)
     auto opt_game = parser.read_game();
     if (opt_game.has_value()) {
         m_move_tree_model->setGame(std::make_shared<chessgame::Game>(opt_game.value()));
-        auto cursor = opt_game.value().current_mainline();
-        m_chessboard_controller->set_position(cursor.position());
+        m_mainline = opt_game.value().current_mainline();
+        m_chessboard_controller->set_position(m_mainline.position());
     }
 }
 
