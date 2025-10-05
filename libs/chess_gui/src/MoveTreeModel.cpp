@@ -45,7 +45,7 @@ auto MoveTreeModel::buildTree() -> void {
     }
 }
 
-auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int moveNumber, bool isMainline) -> NodePtr {
+auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int moveNumber, bool isMainline, bool is_black_variation) -> NodePtr {
     auto modelNode = std::make_shared<MoveTreeNode>();
     modelNode->parent = parent;
     if (cursor.player_color() == chesscore::Color::White) {
@@ -55,123 +55,54 @@ auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Curs
     }
     modelNode->moveNumber = moveNumber;
     modelNode->isMainLine = isMainline;
+    modelNode->isBlackVariation = is_black_variation;
+    parent->children.push_back(modelNode);
     return modelNode;
 }
 
-auto MoveTreeModel::buildSubtree(const NodePtr &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void {
-    bool isWhiteMove = cursor.player_color() == chesscore::Color::White;
+auto MoveTreeModel::continue_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void {
+    if (auto white_continuation = black_move.child(0); white_continuation.has_value()) {
+        buildSubtree(parent_node, white_continuation.value(), move_number, is_main_line);
+    }
+}
 
-    NodePtr currentModelNode;
-
-    if (isWhiteMove) {
-        currentModelNode = make_model_node(parentModelNode, cursor, moveNumber, isMainLine);
-        parentModelNode->children.push_back(currentModelNode);
-
-        auto blackCursorOpt = cursor.child(0);
-        if (blackCursorOpt) {
-            currentModelNode->blackCursor = *blackCursorOpt;
-
-            auto nextCursorOpt = blackCursorOpt->child(0);
-            if (nextCursorOpt) {
-                buildSubtree(parentModelNode, *nextCursorOpt, moveNumber + 1, isMainLine);
-            }
-
-            for (size_t i = 1; i < blackCursorOpt->child_count(); ++i) {
-                auto varCursorOpt = blackCursorOpt->child(i);
-                if (varCursorOpt) {
-                    buildSubtree(currentModelNode, *varCursorOpt, moveNumber + 1, false);
-                }
-            }
+auto MoveTreeModel::create_variations(const chessgame::Cursor &move, const NodePtr &parent_node, int move_number) -> void {
+    for (size_t i = 1; i < move.child_count(); ++i) {
+        if (auto variation = move.child(i); variation.has_value()) {
+            buildSubtree(parent_node, variation.value(), move_number, false);
         }
+    }
+}
 
-        for (size_t i = 1; i < cursor.child_count(); ++i) {
-            auto varCursorOpt = cursor.child(i);
-            if (!varCursorOpt) {
+auto MoveTreeModel::collect_black_continuation(const chessgame::Cursor &white_move, const NodePtr &current_node, int move_number, bool is_main_line) -> void {
+    if (auto black_continuation = white_move.child(0); black_continuation.has_value()) {
+        current_node->blackCursor = black_continuation.value();
+        continue_main_line(black_continuation.value(), current_node->parent.lock(), move_number, is_main_line);
+        create_variations(black_continuation.value(), current_node, move_number);
+    }
+}
+
+auto MoveTreeModel::buildSubtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool isMainLine) -> void {
+    if (const auto is_white_move = move.player_color() == chesscore::Color::White; is_white_move) {
+        auto current_node = make_model_node(parent_node, move, move_number, isMainLine);
+        collect_black_continuation(move, current_node, move_number + 1, isMainLine);
+        for (size_t i = 1; i < move.child_count(); ++i) {
+            auto black_variation = move.child(i);
+            if (!black_variation.has_value()) {
                 continue;
             }
-
-            auto variationNode = std::make_shared<MoveTreeNode>();
-            variationNode->parent = currentModelNode;
-            variationNode->blackCursor = *varCursorOpt;
-            variationNode->moveNumber = moveNumber;
-            variationNode->isMainLine = false;
-            variationNode->isBlackVariation = true;
-
-            currentModelNode->children.push_back(variationNode);
-
-            NodePtr whiteContinuationNode;
-            if (varCursorOpt->child_count() > 0) {
-                auto nextCursorOpt = varCursorOpt->child(0);
-                if (nextCursorOpt) {
-                    // Create the white continuation on the same level
-                    whiteContinuationNode = std::make_shared<MoveTreeNode>();
-                    whiteContinuationNode->parent = currentModelNode;
-                    whiteContinuationNode->whiteCursor = *nextCursorOpt;
-                    whiteContinuationNode->moveNumber = moveNumber + 1;
-                    whiteContinuationNode->isMainLine = false;
-
-                    currentModelNode->children.push_back(whiteContinuationNode);
-
-                    // Add black move to the same node if it exists
-                    if (nextCursorOpt->child_count() > 0) {
-                        auto blackAfterOpt = nextCursorOpt->child(0);
-                        if (blackAfterOpt) {
-                            whiteContinuationNode->blackCursor = *blackAfterOpt;
-
-                            // Continue recursively from this point on the same level
-                            if (blackAfterOpt->child_count() > 0) {
-                                auto furtherCursorOpt = blackAfterOpt->child(0);
-                                if (furtherCursorOpt) {
-                                    buildSubtree(currentModelNode, *furtherCursorOpt, moveNumber + 2, false);
-                                }
-                            }
-
-                            // Handle black variations
-                            for (size_t k = 1; k < blackAfterOpt->child_count(); ++k) {
-                                auto blackVarOpt = blackAfterOpt->child(k);
-                                if (blackVarOpt) {
-                                    buildSubtree(whiteContinuationNode, *blackVarOpt, moveNumber + 2, false);
-                                }
-                            }
-                        }
-                    }
-
-                    // Handle white variations of the continuation - these are children of whiteContinuationNode
-                    for (size_t j = 1; j < nextCursorOpt->child_count(); ++j) {
-                        auto whiteVarOpt = nextCursorOpt->child(j);
-                        if (whiteVarOpt) {
-                            buildSubtree(whiteContinuationNode, *whiteVarOpt, moveNumber + 1, false);
-                        }
-                    }
-                }
+            auto black_variation_node = make_model_node(current_node, *black_variation, move_number, false, true);
+            if (auto white_continuation = black_variation->child(0); white_continuation) {
+                auto variation_continuation_node = make_model_node(current_node, *white_continuation, move_number + 1, false);
+                collect_black_continuation(white_continuation.value(), variation_continuation_node, move_number + 2, false);
+                create_variations(white_continuation.value(), variation_continuation_node, move_number + 1);
             }
-
-            for (size_t j = 1; j < varCursorOpt->child_count(); ++j) {
-                auto subVarCursorOpt = varCursorOpt->child(j);
-                if (subVarCursorOpt) {
-                    buildSubtree(variationNode, *subVarCursorOpt, moveNumber + 1, false);
-                }
-            }
+            create_variations(black_variation.value(), black_variation_node, move_number + 1);
         }
-
     } else {
-        currentModelNode = make_model_node(parentModelNode, cursor, moveNumber, false);
-        currentModelNode->isBlackVariation = true;
-        parentModelNode->children.push_back(currentModelNode);
-
-        if (cursor.child_count() > 0) {
-            auto nextCursorOpt = cursor.child(0);
-            if (nextCursorOpt) {
-                buildSubtree(parentModelNode, *nextCursorOpt, moveNumber + 1, false);
-            }
-        }
-
-        for (size_t i = 1; i < cursor.child_count(); ++i) {
-            auto varCursorOpt = cursor.child(i);
-            if (varCursorOpt) {
-                buildSubtree(currentModelNode, *varCursorOpt, moveNumber + 1, false);
-            }
-        }
+        auto current_node = make_model_node(parent_node, move, move_number, false, true);
+        continue_main_line(move, parent_node, move_number + 1, false);
+        create_variations(move, current_node, move_number + 1);
     }
 }
 
