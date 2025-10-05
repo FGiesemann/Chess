@@ -20,6 +20,8 @@ public:
     explicit MoveTreeDelegate(QObject *parent = nullptr);
     auto paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const -> void override;
     auto sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const -> QSize override;
+
+    static constexpr int prefix_width = 15;
 };
 
 class MoveTreeWidget : public QTreeView {
