@@ -399,6 +399,9 @@ auto MoveTreeModel::data(const QModelIndex &index, int role) const -> QVariant {
 
     if (index.column() == 0) {
         switch (role) {
+            // case Qt::TextAlignmentRole:
+            //     return Qt::AlignRight;
+
         case HasCommentRole:
             return (node->whiteCursor && !node->whiteCursor->comment().empty()) || (node->blackCursor && !node->blackCursor->comment().empty());
 
@@ -529,13 +532,19 @@ auto MoveTreeModel::moveNumberText(const NodePtr &node, int column) -> QString {
         return {};
     }
 
+    QString prefix{};
+    const auto cursor = (node->whiteCursor) ? node->whiteCursor : node->blackCursor;
+    if (cursor && cursor->variation_number() > 1) {
+        prefix = QString{"▶ "};
+    }
+
+    QString move_number{};
     if (node->isBlackVariation) {
-        return QString("%1...").arg(node->moveNumber);
+        move_number = QString("%1...").arg(node->moveNumber);
     }
-    if (node->isWhiteVariation) {
-        return QString("%1.").arg(node->moveNumber);
-    }
-    return QString("%1.").arg(node->moveNumber);
+    move_number = QString("%1.").arg(node->moveNumber);
+
+    return prefix + move_number;
 }
 
 } // namespace chessgui

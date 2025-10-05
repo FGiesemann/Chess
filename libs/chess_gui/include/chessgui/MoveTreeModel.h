@@ -54,9 +54,12 @@ public slots:
 signals:
     void gameChanged();
 private:
+    struct MoveTreeNode;
+    using NodePtr = std::shared_ptr<MoveTreeNode>;
+
     struct MoveTreeNode {
         std::weak_ptr<MoveTreeNode> parent;
-        std::vector<std::shared_ptr<MoveTreeNode>> children;
+        std::vector<NodePtr> children;
 
         std::optional<chessgame::Cursor> whiteCursor; ///< The white half-move
         std::optional<chessgame::Cursor> blackCursor; ///< The black half-move (may be nullptr)
@@ -66,7 +69,6 @@ private:
         bool isWhiteVariation{false}; ///< True if this starts a white variation
         bool isBlackVariation{false}; ///< True if this starts a black variation
     };
-    using NodePtr = std::shared_ptr<MoveTreeNode>;
 
     auto buildTree() -> void;
     auto buildSubtree(const NodePtr &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void;
