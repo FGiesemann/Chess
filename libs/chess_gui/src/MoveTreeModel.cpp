@@ -99,10 +99,50 @@ auto MoveTreeModel::buildSubtree(const NodePtr &parentModelNode, const chessgame
 
             currentModelNode->children.push_back(variationNode);
 
+            NodePtr whiteContinuationNode;
             if (varCursorOpt->child_count() > 0) {
                 auto nextCursorOpt = varCursorOpt->child(0);
                 if (nextCursorOpt) {
-                    buildSubtree(variationNode, *nextCursorOpt, moveNumber + 1, false);
+                    // Create the white continuation on the same level
+                    whiteContinuationNode = std::make_shared<MoveTreeNode>();
+                    whiteContinuationNode->parent = currentModelNode;
+                    whiteContinuationNode->whiteCursor = *nextCursorOpt;
+                    whiteContinuationNode->moveNumber = moveNumber + 1;
+                    whiteContinuationNode->isMainLine = false;
+
+                    currentModelNode->children.push_back(whiteContinuationNode);
+
+                    // Add black move to the same node if it exists
+                    if (nextCursorOpt->child_count() > 0) {
+                        auto blackAfterOpt = nextCursorOpt->child(0);
+                        if (blackAfterOpt) {
+                            whiteContinuationNode->blackCursor = *blackAfterOpt;
+
+                            // Continue recursively from this point on the same level
+                            if (blackAfterOpt->child_count() > 0) {
+                                auto furtherCursorOpt = blackAfterOpt->child(0);
+                                if (furtherCursorOpt) {
+                                    buildSubtree(currentModelNode, *furtherCursorOpt, moveNumber + 2, false);
+                                }
+                            }
+
+                            // Handle black variations
+                            for (size_t k = 1; k < blackAfterOpt->child_count(); ++k) {
+                                auto blackVarOpt = blackAfterOpt->child(k);
+                                if (blackVarOpt) {
+                                    buildSubtree(whiteContinuationNode, *blackVarOpt, moveNumber + 2, false);
+                                }
+                            }
+                        }
+                    }
+
+                    // Handle white variations of the continuation - these are children of whiteContinuationNode
+                    for (size_t j = 1; j < nextCursorOpt->child_count(); ++j) {
+                        auto whiteVarOpt = nextCursorOpt->child(j);
+                        if (whiteVarOpt) {
+                            buildSubtree(whiteContinuationNode, *whiteVarOpt, moveNumber + 1, false);
+                        }
+                    }
                 }
             }
 
