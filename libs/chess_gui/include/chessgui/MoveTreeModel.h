@@ -70,6 +70,7 @@ private:
 
     auto buildTree() -> void;
     auto buildSubtree(const NodePtr &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void;
+    static auto make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int moveNumber, bool isMainline) -> NodePtr;
 
     auto modelNodeFromIndex(const QModelIndex &index) const -> NodePtr;
     static auto searchForCursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr;

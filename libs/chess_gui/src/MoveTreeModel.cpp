@@ -38,14 +38,24 @@ auto MoveTreeModel::buildTree() -> void {
         return;
     }
 
-    auto cursor = m_game->cursor();
     int moveNumber = 1;
-    if (cursor.child_count() > 0) {
-        auto firstChild = cursor.child(0);
-        if (firstChild.has_value()) {
-            buildSubtree(m_root, firstChild.value(), moveNumber, true);
-        }
+    auto firstChild = m_game->cursor().child(0);
+    if (firstChild.has_value()) {
+        buildSubtree(m_root, firstChild.value(), moveNumber, true);
     }
+}
+
+auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int moveNumber, bool isMainline) -> NodePtr {
+    auto modelNode = std::make_shared<MoveTreeNode>();
+    modelNode->parent = parent;
+    if (cursor.player_color() == chesscore::Color::White) {
+        modelNode->whiteCursor = cursor;
+    } else {
+        modelNode->blackCursor = cursor;
+    }
+    modelNode->moveNumber = moveNumber;
+    modelNode->isMainLine = isMainline;
+    return modelNode;
 }
 
 auto MoveTreeModel::buildSubtree(const NodePtr &parentModelNode, const chessgame::Cursor &cursor, int moveNumber, bool isMainLine) -> void {
@@ -54,31 +64,22 @@ auto MoveTreeModel::buildSubtree(const NodePtr &parentModelNode, const chessgame
     NodePtr currentModelNode;
 
     if (isWhiteMove) {
-        currentModelNode = std::make_shared<MoveTreeNode>();
-        currentModelNode->parent = parentModelNode;
-        currentModelNode->whiteCursor = cursor;
-        currentModelNode->moveNumber = moveNumber;
-        currentModelNode->isMainLine = isMainLine;
-
+        currentModelNode = make_model_node(parentModelNode, cursor, moveNumber, isMainLine);
         parentModelNode->children.push_back(currentModelNode);
 
-        if (cursor.child_count() > 0) {
-            auto blackCursorOpt = cursor.child(0);
-            if (blackCursorOpt) {
-                currentModelNode->blackCursor = *blackCursorOpt;
+        auto blackCursorOpt = cursor.child(0);
+        if (blackCursorOpt) {
+            currentModelNode->blackCursor = *blackCursorOpt;
 
-                if (blackCursorOpt->child_count() > 0) {
-                    auto nextCursorOpt = blackCursorOpt->child(0);
-                    if (nextCursorOpt) {
-                        buildSubtree(parentModelNode, *nextCursorOpt, moveNumber + 1, isMainLine);
-                    }
-                }
+            auto nextCursorOpt = blackCursorOpt->child(0);
+            if (nextCursorOpt) {
+                buildSubtree(parentModelNode, *nextCursorOpt, moveNumber + 1, isMainLine);
+            }
 
-                for (size_t i = 1; i < blackCursorOpt->child_count(); ++i) {
-                    auto varCursorOpt = blackCursorOpt->child(i);
-                    if (varCursorOpt) {
-                        buildSubtree(currentModelNode, *varCursorOpt, moveNumber + 1, false);
-                    }
+            for (size_t i = 1; i < blackCursorOpt->child_count(); ++i) {
+                auto varCursorOpt = blackCursorOpt->child(i);
+                if (varCursorOpt) {
+                    buildSubtree(currentModelNode, *varCursorOpt, moveNumber + 1, false);
                 }
             }
         }
@@ -114,13 +115,8 @@ auto MoveTreeModel::buildSubtree(const NodePtr &parentModelNode, const chessgame
         }
 
     } else {
-        currentModelNode = std::make_shared<MoveTreeNode>();
-        currentModelNode->parent = parentModelNode;
-        currentModelNode->blackCursor = cursor;
-        currentModelNode->moveNumber = moveNumber;
-        currentModelNode->isMainLine = false;
+        currentModelNode = make_model_node(parentModelNode, cursor, moveNumber, false);
         currentModelNode->isBlackVariation = true;
-
         parentModelNode->children.push_back(currentModelNode);
 
         if (cursor.child_count() > 0) {
