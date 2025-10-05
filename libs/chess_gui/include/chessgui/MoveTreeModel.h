@@ -72,10 +72,10 @@ private:
 
     auto build_tree() -> void;
     static auto build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void;
-    static auto continue_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void;
+    static auto continue_white_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void;
     static auto create_variations(const chessgame::Cursor &move, const NodePtr &parent_node, int move_number) -> void;
     static auto collect_black_continuation(const chessgame::Cursor &white_move, const NodePtr &current_node, int move_number, bool is_main_line) -> void;
-    static auto make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int moveNumber, bool isMainline, bool is_black_variation = false) -> NodePtr;
+    static auto make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int move_number, bool is_main_line, bool is_black_variation = false) -> NodePtr;
 
     auto modelNodeFromIndex(const QModelIndex &index) const -> NodePtr;
     static auto searchForCursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr;

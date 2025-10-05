@@ -39,9 +39,15 @@ auto MoveTreeModel::build_tree() -> void {
     }
 
     int moveNumber = 1;
-    auto firstChild = m_game->cursor().child(0);
-    if (firstChild.has_value()) {
-        build_subtree(m_root, firstChild.value(), moveNumber, true);
+auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void {
+    if (const auto is_white_move = move.player_color() == chesscore::Color::White; is_white_move) {
+        auto move_node = make_model_node(parent_node, move, move_number, is_main_line);
+        create_variations(move, move_node, move_number);
+        collect_black_continuation(move, move_node, move_number + 1, is_main_line);
+    } else {
+        auto move_node = make_model_node(parent_node, move, move_number, false, true);
+        create_variations(move, move_node, move_number + 1);
+        continue_white_main_line(move, parent_node, move_number + 1, false);
     }
 }
 
@@ -60,7 +66,7 @@ auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Curs
     return model_node;
 }
 
-auto MoveTreeModel::continue_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void {
+auto MoveTreeModel::continue_white_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void {
     if (auto white_continuation = black_move.child(0); white_continuation.has_value()) {
         build_subtree(parent_node, white_continuation.value(), move_number, is_main_line);
     }
@@ -79,19 +85,7 @@ auto MoveTreeModel::collect_black_continuation(const chessgame::Cursor &white_mo
         const auto &black_move = black_continuation.value();
         current_node->black_cursor = black_move;
         create_variations(black_move, current_node, move_number);
-        continue_main_line(black_move, current_node->parent.lock(), move_number, is_main_line);
-    }
-}
-
-auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void {
-    if (const auto is_white_move = move.player_color() == chesscore::Color::White; is_white_move) {
-        auto move_node = make_model_node(parent_node, move, move_number, is_main_line);
-        create_variations(move, move_node, move_number);
-        collect_black_continuation(move, move_node, move_number + 1, is_main_line);
-    } else {
-        auto move_node = make_model_node(parent_node, move, move_number, false, true);
-        create_variations(move, move_node, move_number + 1);
-        continue_main_line(move, parent_node, move_number + 1, false);
+        continue_white_main_line(black_move, current_node->parent.lock(), move_number, is_main_line);
     }
 }
 
