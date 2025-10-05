@@ -39,6 +39,13 @@ auto MoveTreeModel::build_tree() -> void {
     }
 
     int moveNumber = 1;
+    for (size_t i = 0; i < m_game->cursor().child_count(); ++i) {
+        if (const auto child = m_game->cursor().child(i); child.has_value()) {
+            build_subtree(m_root, child.value(), moveNumber, i == 0);
+        }
+    }
+}
+
 auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void {
     if (const auto is_white_move = move.player_color() == chesscore::Color::White; is_white_move) {
         auto move_node = make_model_node(parent_node, move, move_number, is_main_line);

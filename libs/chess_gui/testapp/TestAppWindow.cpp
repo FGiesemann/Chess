@@ -22,7 +22,9 @@ TestAppWindow::TestAppWindow(QWidget *parent)
 [Black "Player B"]
 [Result "1/2-1/2"]
 
-1. d4 Nf6 
+1. d4 
+   (1. a4 e5)
+1... Nf6 
    (1... Nc6 2. Nf3 g6)
 2. c4 
    (2. e4 e6 3. a4) 
