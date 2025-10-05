@@ -70,8 +70,8 @@ private:
         bool isBlackVariation{false}; ///< True if this starts a black variation
     };
 
-    auto buildTree() -> void;
-    static auto buildSubtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool isMainLine) -> void;
+    auto build_tree() -> void;
+    static auto build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void;
     static auto continue_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void;
     static auto create_variations(const chessgame::Cursor &move, const NodePtr &parent_node, int move_number) -> void;
     static auto collect_black_continuation(const chessgame::Cursor &white_move, const NodePtr &current_node, int move_number, bool is_main_line) -> void;

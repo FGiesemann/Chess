@@ -14,24 +14,24 @@ namespace chessgui {
 MoveTreeModel::MoveTreeModel(QObject *parent) : QAbstractItemModel(parent), m_root(std::make_shared<MoveTreeNode>()) {}
 
 MoveTreeModel::MoveTreeModel(GamePtr game, QObject *parent) : QAbstractItemModel(parent), m_game(std::move(game)), m_root(std::make_shared<MoveTreeNode>()) {
-    buildTree();
+    build_tree();
 }
 
 auto MoveTreeModel::setGame(GamePtr game) -> void {
     beginResetModel();
     m_game = std::move(game);
-    buildTree();
+    build_tree();
     endResetModel();
     emit gameChanged();
 }
 
 auto MoveTreeModel::rebuildTree() -> void {
     beginResetModel();
-    buildTree();
+    build_tree();
     endResetModel();
 }
 
-auto MoveTreeModel::buildTree() -> void {
+auto MoveTreeModel::build_tree() -> void {
     m_root = std::make_shared<MoveTreeNode>();
 
     if (!m_game) {
@@ -41,7 +41,7 @@ auto MoveTreeModel::buildTree() -> void {
     int moveNumber = 1;
     auto firstChild = m_game->cursor().child(0);
     if (firstChild.has_value()) {
-        buildSubtree(m_root, firstChild.value(), moveNumber, true);
+        build_subtree(m_root, firstChild.value(), moveNumber, true);
     }
 }
 
@@ -62,14 +62,14 @@ auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Curs
 
 auto MoveTreeModel::continue_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void {
     if (auto white_continuation = black_move.child(0); white_continuation.has_value()) {
-        buildSubtree(parent_node, white_continuation.value(), move_number, is_main_line);
+        build_subtree(parent_node, white_continuation.value(), move_number, is_main_line);
     }
 }
 
 auto MoveTreeModel::create_variations(const chessgame::Cursor &move, const NodePtr &parent_node, int move_number) -> void {
     for (size_t i = 1; i < move.child_count(); ++i) {
         if (auto variation = move.child(i); variation.has_value()) {
-            buildSubtree(parent_node, variation.value(), move_number, false);
+            build_subtree(parent_node, variation.value(), move_number, false);
         }
     }
 }
@@ -82,27 +82,27 @@ auto MoveTreeModel::collect_black_continuation(const chessgame::Cursor &white_mo
     }
 }
 
-auto MoveTreeModel::buildSubtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool isMainLine) -> void {
+auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void {
     if (const auto is_white_move = move.player_color() == chesscore::Color::White; is_white_move) {
-        auto current_node = make_model_node(parent_node, move, move_number, isMainLine);
-        collect_black_continuation(move, current_node, move_number + 1, isMainLine);
+        auto move_node = make_model_node(parent_node, move, move_number, is_main_line);
+        collect_black_continuation(move, move_node, move_number + 1, is_main_line);
         for (size_t i = 1; i < move.child_count(); ++i) {
             auto black_variation = move.child(i);
             if (!black_variation.has_value()) {
                 continue;
             }
-            auto black_variation_node = make_model_node(current_node, *black_variation, move_number, false, true);
+            auto black_variation_node = make_model_node(move_node, black_variation.value(), move_number, false, true);
             if (auto white_continuation = black_variation->child(0); white_continuation) {
-                auto variation_continuation_node = make_model_node(current_node, *white_continuation, move_number + 1, false);
+                auto variation_continuation_node = make_model_node(move_node, *white_continuation, move_number + 1, false);
                 collect_black_continuation(white_continuation.value(), variation_continuation_node, move_number + 2, false);
                 create_variations(white_continuation.value(), variation_continuation_node, move_number + 1);
             }
             create_variations(black_variation.value(), black_variation_node, move_number + 1);
         }
     } else {
-        auto current_node = make_model_node(parent_node, move, move_number, false, true);
+        auto move_node = make_model_node(parent_node, move, move_number, false, true);
         continue_main_line(move, parent_node, move_number + 1, false);
-        create_variations(move, current_node, move_number + 1);
+        create_variations(move, move_node, move_number + 1);
     }
 }
 
