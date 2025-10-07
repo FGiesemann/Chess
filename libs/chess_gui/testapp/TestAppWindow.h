@@ -20,6 +20,10 @@ public:
     ~TestAppWindow() = default;
 private slots:
     auto move_made(const chesscore::Move &move) -> void;
+
+    auto move_clicked(chessgame::Cursor cursor) -> void;
+    auto move_double_clicked(chessgame::Cursor cursor) -> void;
+    auto move_selected(chessgame::Cursor cursor) -> void;
 private:
     void setupUi();
 

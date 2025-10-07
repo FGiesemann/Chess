@@ -62,29 +62,93 @@ auto MoveTreeDelegate::sizeHint(const QStyleOptionViewItem &option, const QModel
 }
 
 MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeView(parent) {
+    setupUI();
+
+    connect(this, &QTreeView::clicked, this, &MoveTreeWidget::onItemClicked);
+    connect(this, &QTreeView::doubleClicked, this, &MoveTreeWidget::onItemDoubleClicked);
+}
+
+auto MoveTreeWidget::setupUI() -> void {
     setItemDelegate(new MoveTreeDelegate(this));
     setAlternatingRowColors(true);
+    setRootIsDecorated(true);
+    setHeaderHidden(false);
+
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setSelectionBehavior(QAbstractItemView::SelectItems);
     setSelectionMode(QAbstractItemView::SingleSelection);
-    setHeaderHidden(false);
 
     QPalette p = palette();
     p.setColor(QPalette::Base, QColor(245, 245, 245));
     setPalette(p);
 
     setFont(QFont("Inter", 10));
+    header()->setStretchLastSection(true);
+    header()->setSectionResizeMode(QHeaderView::Interactive);
 }
 
-auto MoveTreeWidget::setupModel(MoveTreeModel *model) -> void {
-    if (model == nullptr)
+auto MoveTreeWidget::setModel(MoveTreeModel *model) -> void {
+    if (m_model != nullptr) {
+        disconnect(selectionModel(), nullptr, this, nullptr);
+    }
+    m_model = model;
+    QTreeView::setModel(model);
+    if (m_model == nullptr) {
         return;
-    this->setModel(model);
+    }
 
-    QHeaderView *header = this->header();
-    header->setSectionResizeMode(MoveTreeModel::MoveNumberColumn, QHeaderView::ResizeToContents);
-    header->setSectionResizeMode(MoveTreeModel::WhiteMoveColumn, QHeaderView::Stretch);
-    header->setSectionResizeMode(MoveTreeModel::BlackMoveColumn, QHeaderView::Stretch);
+    connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &MoveTreeWidget::onSelectionChanged);
+    header()->setSectionResizeMode(MoveTreeModel::MoveNumberColumn, QHeaderView::ResizeToContents);
+    header()->setSectionResizeMode(MoveTreeModel::WhiteMoveColumn, QHeaderView::Stretch);
+    header()->setSectionResizeMode(MoveTreeModel::BlackMoveColumn, QHeaderView::Stretch);
+}
+
+auto MoveTreeWidget::onItemClicked(const QModelIndex &index) -> void {
+    if (!index.isValid() || m_model == nullptr) {
+        return;
+    }
+
+    auto cursor = m_model->cursor_from_index(index);
+    if (cursor) {
+        emit moveClicked(*cursor);
+    }
+}
+
+auto MoveTreeWidget::onItemDoubleClicked(const QModelIndex &index) -> void {
+    if (!index.isValid() || m_model == nullptr) {
+        return;
+    }
+    auto cursor = m_model->cursor_from_index(index);
+    if (cursor) {
+        emit moveDoubleClicked(*cursor);
+    }
+}
+
+auto MoveTreeWidget::onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) -> void {
+    Q_UNUSED(deselected)
+    if (!m_model) {
+        return;
+    }
+    if (selected.isEmpty()) {
+        emit selectionCleared();
+        return;
+    }
+    QModelIndexList indexes = selected.indexes();
+    if (indexes.isEmpty()) {
+        emit selectionCleared();
+        return;
+    }
+    QModelIndex index = indexes.first();
+    for (const auto &idx : indexes) {
+        if (idx.column() == 0) {
+            index = idx;
+            break;
+        }
+    }
+    auto cursor = m_model->cursor_from_index(index);
+    if (cursor) {
+        emit moveSelected(*cursor);
+    }
 }
 
 } // namespace chessgui

@@ -11,10 +11,14 @@
 TestAppWindow::TestAppWindow(QWidget *parent)
     : QMainWindow(parent), m_chessboard_widget(new chessgui::ChessboardWidget(this)), m_chessboard_controller(new chessgui::ChessboardController(m_chessboard_widget, this)),
       m_move_tree_model{new chessgui::MoveTreeModel(m_game, this)}, m_move_tree_view(new chessgui::MoveTreeWidget(this)) {
-    m_move_tree_view->setupModel(m_move_tree_model);
+    m_move_tree_view->setModel(m_move_tree_model);
     setupUi();
 
     connect(m_chessboard_controller, &chessgui::ChessboardController::move_made, this, &TestAppWindow::move_made);
+
+    connect(m_move_tree_view, &chessgui::MoveTreeWidget::moveClicked, this, &TestAppWindow::move_clicked);
+    connect(m_move_tree_view, &chessgui::MoveTreeWidget::moveDoubleClicked, this, &TestAppWindow::move_double_clicked);
+    connect(m_move_tree_view, &chessgui::MoveTreeWidget::moveSelected, this, &TestAppWindow::move_selected);
 
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
@@ -96,4 +100,17 @@ void TestAppWindow::setupUi() {
 
     setCentralWidget(splitter);
     resize(700 + fixedWidth, 700);
+}
+
+auto TestAppWindow::move_clicked(chessgame::Cursor cursor) -> void {
+    qDebug() << "Move clicked: " << to_string(cursor.move());
+}
+
+auto TestAppWindow::move_double_clicked(chessgame::Cursor cursor) -> void {
+    m_mainline = cursor;
+    m_chessboard_controller->set_position(m_mainline.position());
+}
+
+auto TestAppWindow::move_selected(chessgame::Cursor cursor) -> void {
+    qDebug() << "Move selected: " << to_string(cursor.move());
 }
