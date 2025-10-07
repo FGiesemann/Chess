@@ -49,10 +49,12 @@ auto MoveTreeModel::build_tree() -> void {
 auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void {
     if (const auto is_white_move = move.player_color() == chesscore::Color::White; is_white_move) {
         auto move_node = make_model_node(parent_node, move, move_number, is_main_line);
+        parent_node->children.push_back(move_node);
         create_variations(move, move_node, move_number);
         collect_black_continuation(move, move_node, move_number + 1, is_main_line);
     } else {
         auto move_node = make_model_node(parent_node, move, move_number, false, true);
+        parent_node->children.push_back(move_node);
         create_variations(move, move_node, move_number + 1);
         continue_white_main_line(move, parent_node, move_number + 1, false);
     }
@@ -69,7 +71,6 @@ auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Curs
     model_node->move_number = move_number;
     model_node->is_main_line = is_main_line;
     model_node->is_black_variation = is_black_variation;
-    parent->children.push_back(model_node);
     return model_node;
 }
 
@@ -115,19 +116,19 @@ auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parent_cursor, size_t c
     const auto &new_cursor = *child_cursor_opt;
     const auto parent_is_white = parent_model_node->white_cursor && parent_model_node->white_cursor == parent_cursor;
     if (parent_is_white) {
-        handle_move_added_to_white_node(parent_model_node, new_cursor, child_index);
+        handle_black_move_added(parent_model_node, new_cursor, child_index);
     } else {
-        handle_move_added_to_black_node(parent_model_node, new_cursor, child_index);
+        handle_white_move_added(parent_model_node, new_cursor, child_index);
     }
 }
 
-auto MoveTreeModel::handle_move_added_to_white_node(const NodePtr &model_node, const chessgame::Cursor &new_cursor, size_t child_index) -> void {
+auto MoveTreeModel::handle_black_move_added(const NodePtr &model_node, const chessgame::Cursor &black_move, size_t child_index) -> void {
     if (child_index == 0) {
-        model_node->black_cursor = new_cursor;
+        model_node->black_cursor = black_move;
         auto idx = index_from_model_node(model_node);
-        emit dataChanged(idx, index(idx.row(), ColumnCount - 1, idx.parent()));
+        emit dataChanged(idx, index(idx.row(), BlackMoveColumn, idx.parent()));
     } else {
-        auto new_model_node = make_model_node(model_node, new_cursor, model_node->move_number, false, false);
+        auto new_model_node = make_model_node(model_node, black_move, model_node->move_number, false, true);
         auto parent_idx = index_from_model_node(model_node);
         int insert_row = static_cast<int>(model_node->children.size());
         beginInsertRows(parent_idx, insert_row, insert_row);
@@ -136,7 +137,7 @@ auto MoveTreeModel::handle_move_added_to_white_node(const NodePtr &model_node, c
     }
 }
 
-auto MoveTreeModel::handle_move_added_to_black_node(const NodePtr &model_node, const chessgame::Cursor &new_cursor, size_t child_index) -> void {
+auto MoveTreeModel::handle_white_move_added(const NodePtr &model_node, const chessgame::Cursor &white_move, size_t child_index) -> void {
     auto parent_node = model_node->parent.lock();
     if (!parent_node) {
         // This shouldn't happen, but handle gracefully
@@ -144,15 +145,9 @@ auto MoveTreeModel::handle_move_added_to_black_node(const NodePtr &model_node, c
         return;
     }
     auto new_model_node =
-        make_model_node(child_index == 0 ? parent_node : model_node, new_cursor, model_node->move_number + 1, child_index == 0 ? model_node->is_main_line : false, false);
-
-    new_model_node->white_cursor = new_cursor;
-    new_model_node->move_number = model_node->move_number + 1;
+        make_model_node(child_index == 0 ? parent_node : model_node, white_move, model_node->move_number + 1, child_index == 0 ? model_node->is_main_line : false, false);
 
     if (child_index == 0) {
-        new_model_node->parent = parent_node;
-        new_model_node->is_main_line = model_node->is_main_line;
-
         auto parent_idx = index_from_model_node(parent_node);
         size_t insert_pos = 0;
         for (size_t i = 0; i < parent_node->children.size(); ++i) {
@@ -166,9 +161,6 @@ auto MoveTreeModel::handle_move_added_to_black_node(const NodePtr &model_node, c
         parent_node->children.insert(parent_node->children.begin() + static_cast<int>(insert_pos), new_model_node);
         endInsertRows();
     } else {
-        new_model_node->parent = model_node;
-        new_model_node->is_main_line = false;
-
         auto parent_idx = index_from_model_node(model_node);
         int insert_row = static_cast<int>(model_node->children.size());
 

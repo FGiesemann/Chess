@@ -85,8 +85,8 @@ private:
     static auto move_text(const chessgame::Cursor &cursor) -> QString;
     static auto move_number_text(const NodePtr &node, int column) -> QString;
 
-    auto handle_move_added_to_white_node(const NodePtr &model_node, const chessgame::Cursor &new_cursor, size_t child_index) -> void;
-    auto handle_move_added_to_black_node(const NodePtr &model_node, const chessgame::Cursor &new_cursor, size_t child_index) -> void;
+    auto handle_black_move_added(const NodePtr &model_node, const chessgame::Cursor &black_move, size_t child_index) -> void;
+    auto handle_white_move_added(const NodePtr &model_node, const chessgame::Cursor &white_move, size_t child_index) -> void;
 
     GamePtr m_game;
     NodePtr m_root;
