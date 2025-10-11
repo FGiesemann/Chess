@@ -123,6 +123,10 @@ auto Bitboard::clear_square(const Square &square) -> void {
     m_all_pieces &= remove_from_square;
 }
 
+auto Bitboard::piece_count(Piece piece) -> int {
+    return bitmap(piece).count();
+}
+
 auto Bitboard::make_move(const Move &move) -> void {
     clear_square(move.from);
     if (move.promoted) {

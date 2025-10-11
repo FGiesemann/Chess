@@ -87,6 +87,13 @@ public:
     constexpr auto toggle(const Square &square) -> void { m_bits ^= bit_mask(square.index()); }
 
     /**
+     * \brief Count the number of occupied squares.
+     *
+     * \return The number of occupied squares.
+     */
+    constexpr auto count() const -> int { return std::popcount(m_bits); }
+
+    /**
      * \brief Equality comparison.
      *
      * Bitmaps are equal if they have the same bits set.

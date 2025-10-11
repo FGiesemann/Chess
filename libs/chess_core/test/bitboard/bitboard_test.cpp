@@ -98,6 +98,18 @@ TEST_CASE("Bitboard.Bitboard.Clear", "[Bitboard][Init]") {
     CHECK(bitboard.empty());
 }
 
+TEST_CASE("Bitboard.Bitboard.Piece Count", "[Bitboard][Basic]") {
+    Bitboard bitboard{FenString::starting_position()};
+    CHECK(bitboard.piece_count(Piece::WhitePawn) == 8);
+    CHECK(bitboard.piece_count(Piece::WhiteQueen) == 1);
+    CHECK(bitboard.piece_count(Piece::BlackKnight) == 2);
+
+    bitboard.clear_square(Square::A2);
+    bitboard.clear_square(Square::C8);
+    CHECK(bitboard.piece_count(Piece::WhitePawn) == 7);
+    CHECK(bitboard.piece_count(Piece::BlackBishop) == 1);
+}
+
 TEST_CASE("Bitboard.Bitboard.FromFEN", "[Bitboard][Init]") {
     Bitboard empty_bitboard{FenString{}};
     CHECK(empty_bitboard.empty());

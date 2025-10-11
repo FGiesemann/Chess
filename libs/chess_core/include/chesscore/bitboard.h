@@ -114,6 +114,14 @@ public:
     auto clear_square(const Square &square) -> void;
 
     /**
+     * \brief Count the number of pieces of a certain type.
+     *
+     * \param piece The piece to count.
+     * \return The number of pieces of the given type.
+     */
+    auto piece_count(Piece piece) -> int;
+
+    /**
      * \brief Make a move.
      *
      * Assumes, that the given move is valid in the current position. No checks

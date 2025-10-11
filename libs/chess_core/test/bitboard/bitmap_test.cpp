@@ -79,6 +79,31 @@ TEST_CASE("Bitboard.Bitmap.Multiple suqares", "[Bitmap][Basic]") {
     CHECK_FALSE(bitmap.get(Square::A1));
 }
 
+TEST_CASE("Bitboard.Bitmap.Count", "[Bitmap][Basic]") {
+    Bitmap bitmap{};
+    CHECK(bitmap.count() == 0);
+    bitmap.set(Square::C5);
+    CHECK(bitmap.count() == 1);
+    bitmap.set(Square::D4);
+    CHECK(bitmap.count() == 2);
+    bitmap.set(Square::E3);
+    CHECK(bitmap.count() == 3);
+    bitmap.set(Square::F2);
+    CHECK(bitmap.count() == 4);
+    bitmap.set(Square::G1);
+    CHECK(bitmap.count() == 5);
+    bitmap.clear(Square::E3);
+    CHECK(bitmap.count() == 4);
+    bitmap.clear(Square::F2);
+    CHECK(bitmap.count() == 3);
+    bitmap.clear(Square::G1);
+    CHECK(bitmap.count() == 2);
+    bitmap.clear(Square::D4);
+    CHECK(bitmap.count() == 1);
+    bitmap.clear(Square::C5);
+    CHECK(bitmap.count() == 0);
+}
+
 TEST_CASE("Bitboard.Bitmap.Comparison", "[Bitmap][Operators]") {
     Bitmap bitmap1{};
     Bitmap bitmap2{};
