@@ -40,7 +40,7 @@ static constexpr std::array<PieceType, piece_type_count> all_piece_types{PieceTy
  * \param type The piece type.
  * \return The numerix index of the piece type.
  */
-inline auto get_index(const PieceType &type) -> std::size_t {
+constexpr auto get_index(const PieceType &type) -> std::size_t {
     return static_cast<std::size_t>(type);
 }
 
@@ -82,7 +82,7 @@ enum class Color { White, Black };
  * \param color The color to switch.
  * \return The switched color.
  */
-inline auto other_color(Color color) -> Color {
+constexpr auto other_color(Color color) -> Color {
     return color == Color::White ? Color::Black : Color::White;
 }
 
