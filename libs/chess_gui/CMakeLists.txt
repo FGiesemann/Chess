@@ -39,9 +39,9 @@ install(TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}Targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chessgame
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chessgui
 )
-install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/chessgame)
+install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/chessgui)
 install(EXPORT ${PROJECT_NAME}Targets
     FILE ${PROJECT_NAME}Targets.cmake
     NAMESPACE ${PROJECT_NAME}::
@@ -50,13 +50,13 @@ install(EXPORT ${PROJECT_NAME}Targets
 set(${PROJECT_NAME}_VERSION ${PROJECT_VERSION})
 
 include(CMakePackageConfigHelpers)
-set(chessgame_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/chessgame")
+set(chessgui_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/chessgui")
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
     PATH_VARS
-        chessgame_INCLUDE_DIR
+        chessgui_INCLUDE_DIR
 )
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
