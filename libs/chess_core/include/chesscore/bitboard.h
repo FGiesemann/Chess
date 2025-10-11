@@ -119,7 +119,7 @@ public:
      * \param piece The piece to count.
      * \return The number of pieces of the given type.
      */
-    auto piece_count(Piece piece) -> int;
+    auto piece_count(Piece piece) const -> int;
 
     /**
      * \brief Make a move.
