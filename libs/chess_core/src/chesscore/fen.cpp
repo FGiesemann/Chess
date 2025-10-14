@@ -195,16 +195,10 @@ auto check_castling_availability(const std::string &fen_string, std::size_t pos)
 }
 
 auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t> {
-    if (pos >= fen_string.length()) {
+    if (pos > fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
     if (fen_string[pos] == '-') {
-        if (pos + 1 >= fen_string.length()) {
-            throw InvalidFen{"Unexpected end of FEN string"};
-        }
-        if (fen_string[pos + 1] != ' ') {
-            throw InvalidFen{"Invalid en passant target square in FEN string"};
-        }
         return std::make_pair(std::nullopt, pos + 2);
     }
     const char file = fen_string[pos];
@@ -216,12 +210,6 @@ auto check_en_passant_target_square(const std::string &fen_string, Color player_
     }
     const char rank = fen_string[pos + 1];
     if ((player_to_move == Color::White && rank != '6') || (player_to_move == Color::Black && rank != '3')) {
-        throw InvalidFen{"Invalid en passant target square in FEN string"};
-    }
-    if (pos + 2 >= fen_string.length()) {
-        throw InvalidFen{"Unexpected end of FEN string"};
-    }
-    if (fen_string[pos + 2] != ' ') {
         throw InvalidFen{"Invalid en passant target square in FEN string"};
     }
     return std::make_pair(Square{File{file}, Rank{rank - '1' + 1}}, pos + 3);
@@ -258,7 +246,7 @@ auto check_fullmove_number(const std::string &fen_string, size_t pos) -> int {
     return std::stoi(fen_string.substr(start, pos - start));
 }
 
-auto placement_to_string([[maybe_unused]] const PiecePlacement &placement) -> std::string {
+auto placement_to_string(const PiecePlacement &placement) -> std::string {
     std::string result;
     int blank_count{0};
     for (int row = Rank::max_rank - 1; row >= 0; --row) {

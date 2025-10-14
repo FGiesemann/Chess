@@ -15,6 +15,7 @@ add_library(${PROJECT_NAME}
     src/chesscore/bitmap.cpp
     src/chesscore/board.cpp
     src/chesscore/chesscore.cpp
+    src/chesscore/epd.cpp
     src/chesscore/fen.cpp
     src/chesscore/move.cpp
     src/chesscore/perft.cpp
