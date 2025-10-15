@@ -335,27 +335,36 @@ auto read_operation(const std::string &line, size_t &index, EpdRecord &record) -
 } // namespace
 
 auto parse_epd_line(const std::string &line) -> EpdRecord {
-    auto [fen, index] = read_fen_fields(line);
-    if (index < line.length()) {
-        advance(line, index);
+    try {
+        auto [fen, index] = read_fen_fields(line);
+        if (index < line.length()) {
+            advance(line, index);
+        }
+        EpdRecord record;
+        record.position = Position{fen};
+        while (index < line.length()) {
+            read_operation(line, index, record);
+        }
+        return record;
+    } catch (InvalidFen &error) {
+        throw InvalidEpd{std::string{"Error reading EPD: "} + error.what()};
     }
-    EpdRecord record;
-    record.position = Position{fen};
-    while (index < line.length()) {
-        read_operation(line, index, record);
-    }
-
-    return record;
 }
 
 auto read_epd(std::istream &input) -> std::vector<EpdRecord> {
     std::vector<EpdRecord> records;
     std::string line{};
-    while (std::getline(input, line)) {
-        if (line.empty() || line[0] == '#') {
-            continue;
+    int line_number{0};
+    try {
+        while (std::getline(input, line)) {
+            ++line_number;
+            if (line.empty() || line[0] == '#') {
+                continue;
+            }
+            records.emplace_back(parse_epd_line(line));
         }
-        records.emplace_back(parse_epd_line(line));
+    } catch (InvalidEpd &error) {
+        throw InvalidEpd{std::string{"Error in line "} + std::to_string(line_number) + ": " + error.what()};
     }
 
     return records;

@@ -203,14 +203,14 @@ auto check_en_passant_target_square(const std::string &fen_string, Color player_
     }
     const char file = fen_string[pos];
     if (file < 'a' || file > 'h') {
-        throw InvalidFen{"Invalid en passant target square in FEN string"};
+        throw InvalidFen{"Invalid en passant target square in FEN string: " + std::string{file}};
     }
     if (pos + 1 >= fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
     const char rank = fen_string[pos + 1];
     if ((player_to_move == Color::White && rank != '6') || (player_to_move == Color::Black && rank != '3')) {
-        throw InvalidFen{"Invalid en passant target square in FEN string"};
+        throw InvalidFen{"Invalid en passant target square in FEN string: " + std::string{rank}};
     }
     return std::make_pair(Square{File{file}, Rank{rank - '1' + 1}}, pos + 3);
 }
