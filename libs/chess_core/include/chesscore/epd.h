@@ -7,6 +7,7 @@
 #ifndef CHESSCORE_EPD_H
 #define CHESSCORE_EPD_H
 
+#include <iosfwd>
 #include <optional>
 #include <string>
 #include <vector>
@@ -79,7 +80,7 @@ struct EpdRecord {
 };
 
 auto parse_epd_line(const std::string &line) -> EpdRecord;
-auto read_epd(const std::string &path) -> std::vector<EpdRecord>;
+auto read_epd(std::istream &input) -> std::vector<EpdRecord>;
 
 } // namespace chesscore
 

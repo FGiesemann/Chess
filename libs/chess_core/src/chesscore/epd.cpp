@@ -5,6 +5,7 @@
 
 #include "chesscore/epd.h"
 
+#include <istream>
 #include <unordered_map>
 
 namespace chesscore {
@@ -346,8 +347,17 @@ auto parse_epd_line(const std::string &line) -> EpdRecord {
     return record;
 }
 
-auto read_epd([[maybe_unused]] const std::string &path) -> std::vector<EpdRecord> {
-    return {};
+auto read_epd(std::istream &input) -> std::vector<EpdRecord> {
+    std::vector<EpdRecord> records;
+    std::string line{};
+    while (std::getline(input, line)) {
+        if (line.empty() || line[0] == '#') {
+            continue;
+        }
+        records.emplace_back(parse_epd_line(line));
+    }
+
+    return records;
 }
 
 } // namespace chesscore

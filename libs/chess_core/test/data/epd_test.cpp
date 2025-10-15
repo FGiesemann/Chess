@@ -122,3 +122,20 @@ TEST_CASE("Data.EPD.Parse.Operations.Unknown Operation", "[EPD]") {
     CHECK(record.unknown_commands[0].opcode == "D");
     CHECK(record.unknown_commands[0].operands == EpdRecord::str_list{"123"});
 }
+
+TEST_CASE("Data.EPD.File", "[EPD]") {
+    const std::string epd_data = R"(r1b2rk1/2q1b1pp/p2ppn2/1p6/3QP3/1BN1B3/PPP3PP/R4RK1 w - - bm Nd5 a4;
+r2qr1k1/1b1pppbp/1p4p1/pP2P1B1/3N4/R7/1PP2PPP/3QR1K1 w - a6
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
+# Another one
+7b/8/kq6/8/8/1N2R3/K2P4/8 w - - bm a4; id "test";)";
+
+    std::istringstream epd_file{epd_data};
+    const auto records = read_epd(epd_file);
+
+    CHECK(records.size() == 4);
+    CHECK(records[0].bm == EpdRecord::move_list{"Nd5", "a4"});
+    CHECK(records[1].position.en_passant_target() == Square::A6);
+    CHECK(records[2].position.castling_rights() == CastlingRights::all());
+    CHECK(records[3].id == "test");
+}
