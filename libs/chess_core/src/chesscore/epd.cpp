@@ -84,7 +84,7 @@ auto get_string(const std::string &line, size_t &index) -> std::string {
     return line.substr(start, index++ - start);
 }
 
-auto read_string(const std::string &line, size_t &index, EpdRecord::str_list &list, int list_index) -> void {
+auto read_string(const std::string &line, size_t &index, EpdRecord::str_list &list, size_t list_index) -> void {
     list[list_index] = get_string(line, index);
 }
 
@@ -92,7 +92,8 @@ auto read_string(const std::string &line, size_t &index, EpdRecord::opt_str &opt
     opt_str = get_string(line, index);
 }
 
-auto collect_operands(const std::string &line, size_t &index, EpdRecord::str_list &list) -> void {
+template<typename ListT>
+auto collect_operands(const std::string &line, size_t &index, ListT &list) -> void {
     advance(line, index);
     while (index < line.length() && line[index] != ';') {
         const auto operand = read_word(line, index);
@@ -112,212 +113,212 @@ auto read_operation(const std::string &line, size_t &index, EpdRecord &record) -
     static const std::unordered_map < std::string_view,
         void (*)(EpdRecord &, const std::string &, size_t &)> operation_handlers = {
             {"acd",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.acd);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.acd);
+                 check_operation_end(in_line, in_index);
              }},
             {"acn",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.acn);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.acn);
+                 check_operation_end(in_line, in_index);
              }},
             {"acs",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.acs);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.acs);
+                 check_operation_end(in_line, in_index);
              }},
-            {"bm", [](EpdRecord &record, const std::string &line, size_t &index) { read_moves(line, index, record.bm); }},
+            {"bm", [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) { read_moves(in_line, in_index, in_record.bm); }},
             {"c0",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 0);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 0);
+                 check_operation_end(in_line, in_index);
              }},
             {"c1",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 1);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 1);
+                 check_operation_end(in_line, in_index);
              }},
             {"c2",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 2);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 2);
+                 check_operation_end(in_line, in_index);
              }},
             {"c3",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 3);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 3);
+                 check_operation_end(in_line, in_index);
              }},
             {"c4",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 4);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 4);
+                 check_operation_end(in_line, in_index);
              }},
             {"c5",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 5);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 5);
+                 check_operation_end(in_line, in_index);
              }},
             {"c6",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 6);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 6);
+                 check_operation_end(in_line, in_index);
              }},
             {"c7",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 7);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 7);
+                 check_operation_end(in_line, in_index);
              }},
             {"c8",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 8);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 8);
+                 check_operation_end(in_line, in_index);
              }},
             {"c9",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.c, 9);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.c, 9);
+                 check_operation_end(in_line, in_index);
              }},
             {"ce",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.ce);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.ce);
+                 check_operation_end(in_line, in_index);
              }},
             {"dm",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.dm);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.dm);
+                 check_operation_end(in_line, in_index);
              }},
             {"draw_accept",
-             [](EpdRecord &record, const std::string &, size_t &index) {
-                 record.draw_accept = true;
-                 ++index;
+             [](EpdRecord &in_record, const std::string &, size_t &in_index) {
+                 in_record.draw_accept = true;
+                 ++in_index;
              }},
             {"draw_claim",
-             [](EpdRecord &record, const std::string &, size_t &index) {
-                 record.draw_claim = true;
-                 ++index;
+             [](EpdRecord &in_record, const std::string &, size_t &in_index) {
+                 in_record.draw_claim = true;
+                 ++in_index;
              }},
             {"draw_offer",
-             [](EpdRecord &record, const std::string &, size_t &index) {
-                 record.draw_offer = true;
-                 ++index;
+             [](EpdRecord &in_record, const std::string &, size_t &in_index) {
+                 in_record.draw_offer = true;
+                 ++in_index;
              }},
             {"draw_reject",
-             [](EpdRecord &record, const std::string &, size_t &index) {
-                 record.draw_reject = true;
-                 ++index;
+             [](EpdRecord &in_record, const std::string &, size_t &in_index) {
+                 in_record.draw_reject = true;
+                 ++in_index;
              }},
             {"eco",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.eco);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.eco);
+                 check_operation_end(in_line, in_index);
              }},
             {"fmvn",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.fmvn);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.fmvn);
+                 check_operation_end(in_line, in_index);
              }},
             {"hmvc",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.hmvc);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.hmvc);
+                 check_operation_end(in_line, in_index);
              }},
             {"id",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.id);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.id);
+                 check_operation_end(in_line, in_index);
              }},
             {"nic",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.nic);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.nic);
+                 check_operation_end(in_line, in_index);
              }},
-            {"noop", [](EpdRecord &record, const std::string &line, size_t &index) { collect_operands(line, index, record.noop_ops); }},
+            {"noop", [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) { collect_operands(in_line, in_index, in_record.noop_ops); }},
             {"pm",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_move(line, index, record.pm);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_move(in_line, in_index, in_record.pm);
+                 check_operation_end(in_line, in_index);
              }},
-            {"pv", [](EpdRecord &record, const std::string &line, size_t &index) { read_moves(line, index, record.pv); }},
+            {"pv", [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) { read_moves(in_line, in_index, in_record.pv); }},
             {"rc",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.rc);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.rc);
+                 check_operation_end(in_line, in_index);
              }},
             {"resign",
-             [](EpdRecord &record, const std::string &, size_t &index) {
-                 record.resign = true;
-                 ++index;
+             [](EpdRecord &in_record, const std::string &, size_t &in_index) {
+                 in_record.resign = true;
+                 ++in_index;
              }},
             {"sm",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_move(line, index, record.sm);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_move(in_line, in_index, in_record.sm);
+                 check_operation_end(in_line, in_index);
              }},
             {"tcgs",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_int(line, index, record.tcgs);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_int(in_line, in_index, in_record.tcgs);
+                 check_operation_end(in_line, in_index);
              }},
             {"tcri",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_player_identifier(line, index, record.tcri);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_player_identifier(in_line, in_index, in_record.tcri);
+                 check_operation_end(in_line, in_index);
              }},
             {"tcsi",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_player_identifier(line, index, record.tcsi);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_player_identifier(in_line, in_index, in_record.tcsi);
+                 check_operation_end(in_line, in_index);
              }},
             {"v0",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 0);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 0);
+                 check_operation_end(in_line, in_index);
              }},
             {"v1",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 1);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 1);
+                 check_operation_end(in_line, in_index);
              }},
             {"v2",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 2);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 2);
+                 check_operation_end(in_line, in_index);
              }},
             {"v3",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 3);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 3);
+                 check_operation_end(in_line, in_index);
              }},
             {"v4",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 4);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 4);
+                 check_operation_end(in_line, in_index);
              }},
             {"v5",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 5);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 5);
+                 check_operation_end(in_line, in_index);
              }},
             {"v6",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 6);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 6);
+                 check_operation_end(in_line, in_index);
              }},
             {"v7",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 7);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 7);
+                 check_operation_end(in_line, in_index);
              }},
             {"v8",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 8);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 8);
+                 check_operation_end(in_line, in_index);
              }},
             {"v9",
-             [](EpdRecord &record, const std::string &line, size_t &index) {
-                 read_string(line, index, record.v, 9);
-                 check_operation_end(line, index);
+             [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
+                 read_string(in_line, in_index, in_record.v, 9);
+                 check_operation_end(in_line, in_index);
              }},
         };
 

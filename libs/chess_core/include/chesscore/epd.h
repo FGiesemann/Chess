@@ -45,7 +45,7 @@ struct EpdRecord {
     using player_identifier = std::pair<std::string, std::string>; ///< Identifier (email and name) of a player.
     struct unknown_command {
         std::string opcode;
-        str_list operands;
+        std::vector<std::string> operands;
     };
 
     Position position;         ///< The position described by the record.

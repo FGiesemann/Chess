@@ -120,7 +120,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Unknown Operation", "[EPD]") {
     CHECK(record.id == "test");
     CHECK(record.unknown_commands.size() == 1);
     CHECK(record.unknown_commands[0].opcode == "D");
-    CHECK(record.unknown_commands[0].operands == EpdRecord::str_list{"123"});
+    CHECK(record.unknown_commands[0].operands == std::vector<std::string>{"123"});
 }
 
 TEST_CASE("Data.EPD.File", "[EPD]") {
