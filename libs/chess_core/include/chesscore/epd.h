@@ -42,6 +42,10 @@ struct EpdRecord {
     using opt_move = std::optional<san_str>;                       ///< An optional move
     using move_list = std::vector<san_str>;                        ///< A (possibly empty) list of moves.
     using player_identifier = std::pair<std::string, std::string>; ///< Identifier (email and name) of a player.
+    struct unknown_command {
+        std::string opcode;
+        str_list operands;
+    };
 
     Position position;         ///< The position described by the record.
     opt_int acd;               ///< analysis count: depth.
@@ -70,6 +74,8 @@ struct EpdRecord {
     player_identifier tcri;    ///< telecommunication: receiver identification.
     player_identifier tcsi;    ///< telecommunication: sender identification.
     str_list v = str_list(10); ///< variation names.
+
+    std::vector<unknown_command> unknown_commands; ///< List of unknown commands with their operands.
 };
 
 auto parse_epd_line(const std::string &line) -> EpdRecord;

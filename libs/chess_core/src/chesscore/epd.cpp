@@ -5,6 +5,8 @@
 
 #include "chesscore/epd.h"
 
+#include <unordered_map>
+
 namespace chesscore {
 
 namespace {
@@ -106,83 +108,225 @@ auto read_player_identifier(const std::string &line, size_t &index, EpdRecord::p
 
 auto read_operation(const std::string &line, size_t &index, EpdRecord &record) -> void {
     const auto opcode = read_word(line, index);
-    if (opcode == "acd") {
-        read_int(line, index, record.acd);
-        check_operation_end(line, index);
-    } else if (opcode == "acn") {
-        read_int(line, index, record.acn);
-        check_operation_end(line, index);
-    } else if (opcode == "acs") {
-        read_int(line, index, record.acs);
-        check_operation_end(line, index);
-    } else if (opcode == "bm") {
-        read_moves(line, index, record.bm);
-    } else if (opcode == "c0" || opcode == "c1" || opcode == "c2" || opcode == "c3" || opcode == "c4" || opcode == "c5" || opcode == "c6" || opcode == "c7" || opcode == "c8" ||
-               opcode == "c9") {
-        read_string(line, index, record.c, opcode[1] - '0');
-        check_operation_end(line, index);
-    } else if (opcode == "ce") {
-        read_int(line, index, record.ce);
-        check_operation_end(line, index);
-    } else if (opcode == "dm") {
-        read_int(line, index, record.dm);
-        check_operation_end(line, index);
-    } else if (opcode == "draw_accept;") {
-        record.draw_accept = true;
-        ++index;
-    } else if (opcode == "draw_claim;") {
-        record.draw_claim = true;
-        ++index;
-    } else if (opcode == "draw_offer;") {
-        record.draw_offer = true;
-        ++index;
-    } else if (opcode == "draw_reject;") {
-        record.draw_reject = true;
-        ++index;
-    } else if (opcode == "eco") {
-        read_string(line, index, record.eco);
-        check_operation_end(line, index);
-    } else if (opcode == "fmvn") {
-        read_int(line, index, record.fmvn);
-        check_operation_end(line, index);
-    } else if (opcode == "hmvc") {
-        read_int(line, index, record.hmvc);
-        check_operation_end(line, index);
-    } else if (opcode == "id") {
-        read_string(line, index, record.id);
-        check_operation_end(line, index);
-    } else if (opcode == "nic") {
-        read_string(line, index, record.nic);
-        check_operation_end(line, index);
-    } else if (opcode == "noop") {
-        collect_operands(line, index, record.noop_ops);
-    } else if (opcode == "pm") {
-        read_move(line, index, record.pm);
-        check_operation_end(line, index);
-    } else if (opcode == "pv") {
-        read_moves(line, index, record.pv);
-    } else if (opcode == "rc") {
-        read_int(line, index, record.rc);
-        check_operation_end(line, index);
-    } else if (opcode == "resign;") {
-        record.resign = true;
-        ++index;
-    } else if (opcode == "sm") {
-        read_move(line, index, record.sm);
-        check_operation_end(line, index);
-    } else if (opcode == "tcgs") {
-        read_int(line, index, record.tcgs);
-        check_operation_end(line, index);
-    } else if (opcode == "tcri") {
-        read_player_identifier(line, index, record.tcri);
-        check_operation_end(line, index);
-    } else if (opcode == "tcsi") {
-        read_player_identifier(line, index, record.tcsi);
-        check_operation_end(line, index);
-    } else if (opcode == "v0" || opcode == "v1" || opcode == "v2" || opcode == "v3" || opcode == "v4" || opcode == "v5" || opcode == "v6" || opcode == "v7" || opcode == "v8" ||
-               opcode == "v9") {
-        read_string(line, index, record.v, opcode[1] - '0');
-        check_operation_end(line, index);
+    static const std::unordered_map < std::string_view,
+        void (*)(EpdRecord &, const std::string &, size_t &)> operation_handlers = {
+            {"acd",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.acd);
+                 check_operation_end(line, index);
+             }},
+            {"acn",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.acn);
+                 check_operation_end(line, index);
+             }},
+            {"acs",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.acs);
+                 check_operation_end(line, index);
+             }},
+            {"bm", [](EpdRecord &record, const std::string &line, size_t &index) { read_moves(line, index, record.bm); }},
+            {"c0",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 0);
+                 check_operation_end(line, index);
+             }},
+            {"c1",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 1);
+                 check_operation_end(line, index);
+             }},
+            {"c2",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 2);
+                 check_operation_end(line, index);
+             }},
+            {"c3",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 3);
+                 check_operation_end(line, index);
+             }},
+            {"c4",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 4);
+                 check_operation_end(line, index);
+             }},
+            {"c5",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 5);
+                 check_operation_end(line, index);
+             }},
+            {"c6",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 6);
+                 check_operation_end(line, index);
+             }},
+            {"c7",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 7);
+                 check_operation_end(line, index);
+             }},
+            {"c8",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 8);
+                 check_operation_end(line, index);
+             }},
+            {"c9",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.c, 9);
+                 check_operation_end(line, index);
+             }},
+            {"ce",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.ce);
+                 check_operation_end(line, index);
+             }},
+            {"dm",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.dm);
+                 check_operation_end(line, index);
+             }},
+            {"draw_accept",
+             [](EpdRecord &record, const std::string &, size_t &index) {
+                 record.draw_accept = true;
+                 ++index;
+             }},
+            {"draw_claim",
+             [](EpdRecord &record, const std::string &, size_t &index) {
+                 record.draw_claim = true;
+                 ++index;
+             }},
+            {"draw_offer",
+             [](EpdRecord &record, const std::string &, size_t &index) {
+                 record.draw_offer = true;
+                 ++index;
+             }},
+            {"draw_reject",
+             [](EpdRecord &record, const std::string &, size_t &index) {
+                 record.draw_reject = true;
+                 ++index;
+             }},
+            {"eco",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.eco);
+                 check_operation_end(line, index);
+             }},
+            {"fmvn",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.fmvn);
+                 check_operation_end(line, index);
+             }},
+            {"hmvc",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.hmvc);
+                 check_operation_end(line, index);
+             }},
+            {"id",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.id);
+                 check_operation_end(line, index);
+             }},
+            {"nic",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.nic);
+                 check_operation_end(line, index);
+             }},
+            {"noop", [](EpdRecord &record, const std::string &line, size_t &index) { collect_operands(line, index, record.noop_ops); }},
+            {"pm",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_move(line, index, record.pm);
+                 check_operation_end(line, index);
+             }},
+            {"pv", [](EpdRecord &record, const std::string &line, size_t &index) { read_moves(line, index, record.pv); }},
+            {"rc",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.rc);
+                 check_operation_end(line, index);
+             }},
+            {"resign",
+             [](EpdRecord &record, const std::string &, size_t &index) {
+                 record.resign = true;
+                 ++index;
+             }},
+            {"sm",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_move(line, index, record.sm);
+                 check_operation_end(line, index);
+             }},
+            {"tcgs",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_int(line, index, record.tcgs);
+                 check_operation_end(line, index);
+             }},
+            {"tcri",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_player_identifier(line, index, record.tcri);
+                 check_operation_end(line, index);
+             }},
+            {"tcsi",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_player_identifier(line, index, record.tcsi);
+                 check_operation_end(line, index);
+             }},
+            {"v0",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 0);
+                 check_operation_end(line, index);
+             }},
+            {"v1",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 1);
+                 check_operation_end(line, index);
+             }},
+            {"v2",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 2);
+                 check_operation_end(line, index);
+             }},
+            {"v3",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 3);
+                 check_operation_end(line, index);
+             }},
+            {"v4",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 4);
+                 check_operation_end(line, index);
+             }},
+            {"v5",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 5);
+                 check_operation_end(line, index);
+             }},
+            {"v6",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 6);
+                 check_operation_end(line, index);
+             }},
+            {"v7",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 7);
+                 check_operation_end(line, index);
+             }},
+            {"v8",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 8);
+                 check_operation_end(line, index);
+             }},
+            {"v9",
+             [](EpdRecord &record, const std::string &line, size_t &index) {
+                 read_string(line, index, record.v, 9);
+                 check_operation_end(line, index);
+             }},
+        };
+
+    if (operation_handlers.contains(opcode)) {
+        operation_handlers.at(opcode)(record, line, index);
+    } else {
+        EpdRecord::unknown_command unknown;
+        unknown.opcode = opcode;
+        collect_operands(line, index, unknown.operands);
+        record.unknown_commands.emplace_back(std::move(unknown));
     }
 }
 

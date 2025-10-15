@@ -96,7 +96,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Multiple", "[EPD]") {
 
 TEST_CASE("Data.EPD.Parse.Operations.Operands", "[EPD]") {
     const auto record = parse_epd_line(
-        R"(7b/8/kq6/8/8/1N2R3/K2P4/8 w - - bm a4; id "name"; c0 "comment0"; c1 "comment1"; acd 3; noop opA opB 123 "test" xyz; tcri player@server.de "Player Name";)"
+        R"(7b/8/kq6/8/8/1N2R3/K2P4/8 w - - bm a4; id "name"; c0 "comment0"; c1 "comment1"; acd 3; noop opA opB 123 "test" xyz; draw_reject; tcri player@server.de "Player Name";)"
     );
 
     CHECK(record.bm == EpdRecord::move_list{"a4"});
@@ -108,6 +108,17 @@ TEST_CASE("Data.EPD.Parse.Operations.Operands", "[EPD]") {
     CHECK(record.acd == 3);
     CHECK(record.noop_ops.size() == 5);
     CHECK(record.noop_ops == EpdRecord::str_list{"opA", "opB", "123", "\"test\"", "xyz"});
+    CHECK(record.draw_reject);
     CHECK(record.tcri.first == "player@server.de");
     CHECK(record.tcri.second == "Player Name");
+}
+
+TEST_CASE("Data.EPD.Parse.Operations.Unknown Operation", "[EPD]") {
+    const auto record = parse_epd_line(R"(7b/8/kq6/8/8/1N2R3/K2P4/8 w - - bm a4; D 123; id "test";)");
+
+    CHECK(record.bm == EpdRecord::move_list{"a4"});
+    CHECK(record.id == "test");
+    CHECK(record.unknown_commands.size() == 1);
+    CHECK(record.unknown_commands[0].opcode == "D");
+    CHECK(record.unknown_commands[0].operands == EpdRecord::str_list{"123"});
 }
