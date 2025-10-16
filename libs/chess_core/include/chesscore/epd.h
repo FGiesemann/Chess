@@ -37,6 +37,7 @@ public:
  */
 struct EpdRecord {
     using opt_int = std::optional<int>;                            ///< An optional integer.
+    using opt_ull = std::optional<unsigned long long>;             ///< An optional unsigned long long.
     using opt_str = std::optional<std::string>;                    ///< An optional string.
     using str_list = std::vector<opt_str>;                         ///< List of optional strings.
     using san_str = std::string;                                   ///< String representing a move in SAN.
@@ -50,8 +51,8 @@ struct EpdRecord {
 
     Position position;         ///< The position described by the record.
     opt_int acd;               ///< analysis count: depth.
-    opt_int acn;               ///< analysis count: nodes.
-    opt_int acs;               ///< analysis count: seconds.
+    opt_ull acn;               ///< analysis count: nodes.
+    opt_ull acs;               ///< analysis count: seconds.
     move_list bm;              ///< best moves.
     str_list c = str_list(10); ///< comments.
     opt_int ce;                ///< centipawn evaluation.

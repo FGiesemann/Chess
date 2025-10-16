@@ -40,13 +40,27 @@ auto read_word(const std::string &line, size_t &index) -> std::string {
     return line.substr(start, index - start);
 }
 
-auto read_int(const std::string &line, size_t &index, EpdRecord::opt_int &opt_int) -> void {
+template<typename T>
+auto str_to_inttype(const std::string &str) -> T;
+
+template<>
+auto str_to_inttype<int>(const std::string &str) -> int {
+    return std::stoi(str);
+}
+
+template<>
+auto str_to_inttype<unsigned long long>(const std::string &str) -> unsigned long long {
+    return std::stoull(str);
+}
+
+template<typename T>
+auto read_int(const std::string &line, size_t &index, T &opt_int) -> void {
     advance(line, index);
     const auto start = index;
     while (index < line.length() && std::isdigit(line[index]) != 0) {
         ++index;
     }
-    opt_int = std::stoi(line.substr(start, index - start));
+    opt_int = str_to_inttype<typename T::value_type>(line.substr(start, index - start));
 }
 
 auto read_move(const std::string &line, size_t &index, EpdRecord::opt_move &opt_move) -> void {
