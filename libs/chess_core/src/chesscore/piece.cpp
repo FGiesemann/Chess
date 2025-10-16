@@ -10,7 +10,7 @@
 namespace chesscore {
 
 auto piece_type_from_index(std::size_t index) -> PieceType {
-    if (index >= 0 && index < piece_type_count) {
+    if (index < piece_type_count) {
         return all_piece_types[index];
     }
     throw ChessException("Invalid piece type index: " + std::to_string(index));
