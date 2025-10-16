@@ -92,11 +92,18 @@ auto read_string(const std::string &line, size_t &index, EpdRecord::opt_str &opt
     opt_str = get_string(line, index);
 }
 
+auto get_word_or_string(const std::string &line, size_t &index) -> std::string {
+    if (line[index] == '"') {
+        return get_string(line, index);
+    }
+    return read_word(line, index);
+}
+
 template<typename ListT>
 auto collect_operands(const std::string &line, size_t &index, ListT &list) -> void {
     advance(line, index);
     while (index < line.length() && line[index] != ';') {
-        const auto operand = read_word(line, index);
+        const auto operand = get_word_or_string(line, index);
         list.emplace_back(operand);
         advance(line, index);
     }
