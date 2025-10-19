@@ -360,6 +360,12 @@ auto write_opt_value(std::ostream &ostr, const std::string &opcode, const T &val
     }
 }
 
+auto write_opt_str(std::ostream &ostr, const std::string &opcode, const std::optional<std::string> &value) {
+    if (value.has_value()) {
+        ostr << ' ' << opcode << " \"" << value.value() << "\";";
+    }
+}
+
 auto write(std::ostream &ostr, const std::string &opcode, const EpdRecord::move_list &moves) {
     if (!moves.empty()) {
         ostr << ' ' << opcode;
@@ -457,11 +463,11 @@ auto write_epd_record(std::ostream &output, const EpdRecord &record) -> void {
     write_bool_if_true(output, "draw_claim", record.draw_claim);
     write_bool_if_true(output, "draw_offer", record.draw_offer);
     write_bool_if_true(output, "draw_reject", record.draw_reject);
-    write_opt_value(output, "eco", record.eco);
+    write_opt_str(output, "eco", record.eco);
     write_opt_value(output, "fmvn", record.fmvn);
     write_opt_value(output, "hmvc", record.hmvc);
-    write_opt_value(output, "id", record.id);
-    write_opt_value(output, "nic", record.nic);
+    write_opt_str(output, "id", record.id);
+    write_opt_str(output, "nic", record.nic);
     write(output, "noop", record.noop_ops); // puts every operand in double quotes...
     write_opt_value(output, "pm", record.pm);
     write(output, "pv", record.pv);
