@@ -57,10 +57,10 @@ struct EpdRecord {
     str_list c = str_list(10); ///< comments.
     opt_int ce;                ///< centipawn evaluation.
     opt_int dm;                ///< direct mate.
-    bool draw_accept;          ///< draw accept.
-    bool draw_claim;           ///< draw claim.
-    bool draw_offer;           ///< draw offer.
-    bool draw_reject;          ///< draw reject.
+    bool draw_accept{false};   ///< draw accept.
+    bool draw_claim{false};    ///< draw claim.
+    bool draw_offer{false};    ///< draw offer.
+    bool draw_reject{false};   ///< draw reject.
     opt_str eco;               ///< ECO code.
     opt_int fmvn;              ///< fullmove number.
     opt_int hmvc;              ///< halfmove clock.
@@ -70,7 +70,7 @@ struct EpdRecord {
     opt_move pm;               ///< predicted move.
     move_list pv;              ///< predicted variations.
     opt_int rc;                ///< repetition count.
-    bool resign;               ///< resign.
+    bool resign{false};        ///< resign.
     opt_move sm;               ///< supplied move.
     opt_int tcgs;              ///< telecommunication: game selector.
     player_identifier tcri;    ///< telecommunication: receiver identification.
@@ -82,6 +82,7 @@ struct EpdRecord {
 
 auto parse_epd_line(const std::string &line) -> EpdRecord;
 auto read_epd(std::istream &input) -> std::vector<EpdRecord>;
+auto write_epd_record(std::ostream &output, const EpdRecord &record) -> void;
 
 } // namespace chesscore
 

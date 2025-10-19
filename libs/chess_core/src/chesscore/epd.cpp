@@ -353,6 +353,51 @@ auto read_operation(const std::string &line, size_t &index, EpdRecord &record) -
     }
 }
 
+template<typename T>
+auto write_opt_value(std::ostream &ostr, const std::string &opcode, const T &value) {
+    if (value.has_value()) {
+        ostr << ' ' << opcode << ' ' << value.value() << ';';
+    }
+}
+
+auto write(std::ostream &ostr, const std::string &opcode, const EpdRecord::move_list &moves) {
+    if (!moves.empty()) {
+        ostr << ' ' << opcode;
+        for (const auto &move : moves) {
+            ostr << ' ' << move;
+        }
+        ostr << ';';
+    }
+}
+
+auto write(std::ostream &ostr, const std::string &opcode, const EpdRecord::str_list &value) {
+    for (size_t i = 0; i < value.size(); ++i) {
+        if (value[i].has_value()) {
+            ostr << ' ' << opcode << i << " \"" << value[i].value() << "\";";
+        }
+    }
+}
+
+auto write_strings(std::ostream &ostr, const std::string &opcode, const std::vector<std::string> &values) {
+    ostr << ' ' << opcode;
+    for (const auto &value : values) {
+        ostr << ' ' << '"' << value << '"';
+    }
+    ostr << ';';
+}
+
+auto write_bool_if_true(std::ostream &ostr, const std::string &opcode, bool value) {
+    if (value) {
+        ostr << ' ' << opcode << ';';
+    }
+}
+
+auto write(std::ostream &ostr, const std::string &opcode, const EpdRecord::player_identifier &value) {
+    if (!value.first.empty() && !value.second.empty()) {
+        ostr << ' ' << opcode << ' ' << value.first << " \"" << value.second << "\";";
+    }
+}
+
 } // namespace
 
 auto parse_epd_line(const std::string &line) -> EpdRecord {
@@ -389,6 +434,50 @@ auto read_epd(std::istream &input) -> std::vector<EpdRecord> {
     }
 
     return records;
+}
+
+auto write_epd_record(std::ostream &output, const EpdRecord &record) -> void {
+    output << chesscore::detail::placement_to_string(record.position.piece_placement()) << ' ';
+    output << (record.position.side_to_move() == Color::White ? 'w' : 'b') << ' ';
+    output << chesscore::detail::castling_rights_to_string(record.position.castling_rights()) << ' ';
+    if (record.position.en_passant_target().has_value()) {
+        output << to_string(record.position.en_passant_target().value());
+    } else {
+        output << "-";
+    }
+
+    write_opt_value(output, "acd", record.acd);
+    write_opt_value(output, "acn", record.acn);
+    write_opt_value(output, "acs", record.acs);
+    write(output, "bm", record.bm);
+    write(output, "c", record.c);
+    write_opt_value(output, "ce", record.ce);
+    write_opt_value(output, "dm", record.dm);
+    write_bool_if_true(output, "draw_accept", record.draw_accept);
+    write_bool_if_true(output, "draw_claim", record.draw_claim);
+    write_bool_if_true(output, "draw_offer", record.draw_offer);
+    write_bool_if_true(output, "draw_reject", record.draw_reject);
+    write_opt_value(output, "eco", record.eco);
+    write_opt_value(output, "fmvn", record.fmvn);
+    write_opt_value(output, "hmvc", record.hmvc);
+    write_opt_value(output, "id", record.id);
+    write_opt_value(output, "nic", record.nic);
+    write(output, "noop", record.noop_ops); // puts every operand in double quotes...
+    write_opt_value(output, "pm", record.pm);
+    write(output, "pv", record.pv);
+    write_opt_value(output, "rc", record.rc);
+    write_bool_if_true(output, "resign", record.resign);
+    write_opt_value(output, "sm", record.sm);
+    write_opt_value(output, "tcgs", record.tcgs);
+    write(output, "tcri", record.tcri);
+    write(output, "tcsi", record.tcsi);
+    write(output, "v", record.v);
+
+    for (const auto &command : record.unknown_commands) {
+        write_strings(output, command.opcode, command.operands);
+    }
+
+    output << '\n';
 }
 
 } // namespace chesscore
