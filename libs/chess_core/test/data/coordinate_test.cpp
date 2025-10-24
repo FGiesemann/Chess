@@ -181,3 +181,14 @@ TEST_CASE("Data.Coords.Square index", "[Square]") {
     CHECK(Square::A8.index() == 56);
     CHECK(Square::H8.index() == 63);
 }
+
+TEST_CASE("Data.Coords.Square mirroring", "[Square]") {
+    CHECK(Square::A1.mirrored() == Square{File{'a'}, Rank{8}});
+    CHECK(Square::C2.mirrored() == Square{File{'c'}, Rank{7}});
+    CHECK(Square::G3.mirrored() == Square{File{'g'}, Rank{6}});
+    CHECK(Square::E4.mirrored() == Square{File{'e'}, Rank{5}});
+    CHECK(Square::D5.mirrored() == Square{File{'d'}, Rank{4}});
+    CHECK(Square::H6.mirrored() == Square{File{'h'}, Rank{3}});
+    CHECK(Square::D7.mirrored() == Square{File{'d'}, Rank{2}});
+    CHECK(Square::B8.mirrored() == Square{File{'b'}, Rank{1}});
+}

@@ -209,6 +209,15 @@ public:
     static constexpr int count = File::max_file * Rank::max_rank;
 
     /**
+     * \brief Mirrors the rank at the center line.
+     *
+     * Mirrors the rank of the square at the center line (between ranks 4 and
+     * 5). This allows to "switch the player/color".
+     * \return The mirrored square.
+     */
+    auto mirrored() const -> Square { return Square{m_file, Rank{9 - m_rank.rank}}; }
+
+    /**
      * \brief Skip to the "next" square.
      *
      * Step from the current square to a following square. The squares are
