@@ -204,6 +204,11 @@ public:
     constexpr auto index() const -> size_t { return m_index; }
 
     /**
+     * \brief The number of squares on the board.
+     */
+    static constexpr int count = File::max_file * Rank::max_rank;
+
+    /**
      * \brief Skip to the "next" square.
      *
      * Step from the current square to a following square. The squares are
