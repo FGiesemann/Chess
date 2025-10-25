@@ -39,7 +39,7 @@ auto apply_san_move(const std::string &san_str, Context &context) -> bool {
     }
     const auto &san_move = *opt_san_move;
     const auto legal_moves = position.all_legal_moves();
-    const auto matched_moves = chessgame::match_san_move(san_move, legal_moves);
+    const auto matched_moves = chessgame::match_move(san_move, legal_moves);
 
     if (matched_moves.empty()) {
         std::cout << "The move is not allowed in this position!\n";
@@ -64,7 +64,7 @@ auto test_san_move(const std::string &san_str, Context &context) -> void {
     }
     const auto &san_move = *opt_san_move;
     const auto legal_moves = position.all_legal_moves();
-    const auto matched_moves = chessgame::match_san_move(san_move, legal_moves);
+    const auto matched_moves = chessgame::match_move(san_move, legal_moves);
 
     if (matched_moves.empty()) {
         std::cout << "The move is not allowed in this position!\n";
