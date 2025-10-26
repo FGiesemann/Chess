@@ -87,15 +87,23 @@ auto check_operation_end(const std::string &line, size_t &index) -> void {
 
 auto get_string(const std::string &line, size_t &index) -> std::string {
     advance(line, index);
-    if (index >= line.length() || line[index] != '"') {
-        throw InvalidEpd("Invalid string");
+    if (index >= line.length()) {
+        throw InvalidEpd("String expected");
     }
-    ++index;
-    const auto start = index;
-    while (index < line.length() && line[index] != '"') {
+    bool quoted = line[index] == '"';
+    if (quoted) {
         ++index;
     }
-    return line.substr(start, index++ - start);
+    char terminator = quoted ? '"' : ';';
+    const auto start = index;
+    while (index < line.length() && line[index] != terminator) {
+        ++index;
+    }
+    const std::string result = line.substr(start, index - start);
+    if (quoted) {
+        index += 1;
+    }
+    return result;
 }
 
 auto read_string(const std::string &line, size_t &index, EpdRecord::str_list &list, size_t list_index) -> void {

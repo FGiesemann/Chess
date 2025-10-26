@@ -101,9 +101,9 @@ TEST_CASE("Data.EPD.Parse.Operations.Operands", "[EPD]") {
 
     CHECK(record.bm == EpdRecord::move_list{"a4"});
     CHECK(record.id == "name");
-    CHECK(record.c[0].has_value());
+    REQUIRE(record.c[0].has_value());
     CHECK(record.c[0] == "comment0");
-    CHECK(record.c[1].has_value());
+    REQUIRE(record.c[1].has_value());
     CHECK(record.c[1] == "comment1");
     CHECK(record.acd == 3);
     CHECK(record.acn == 5'285'839'593ULL);
@@ -139,4 +139,15 @@ rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
     CHECK(records[1].position.en_passant_target() == Square::A6);
     CHECK(records[2].position.castling_rights() == CastlingRights::all());
     CHECK(records[3].id == "test");
+}
+
+TEST_CASE("Data.EPD.Non conformant.Unquoted string", "[EPD]") {
+    const std::string epd_data = R"(8/3r4/pr1Pk1p1/8/7P/6P1/3R3K/5R2 w - - c0 Comment without quote characters; id TflDn; bm Re2+;)";
+    EpdRecord record;
+    CHECK_NOTHROW(record = parse_epd_line(epd_data));
+
+    REQUIRE(record.c[0].has_value());
+    CHECK(record.c[0] == "Comment without quote characters");
+    CHECK(record.id == "TflDn");
+    CHECK(record.bm == EpdRecord::move_list{"Re2+"});
 }
