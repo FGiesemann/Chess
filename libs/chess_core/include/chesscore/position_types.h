@@ -126,6 +126,14 @@ struct PositionState {
     int halfmove_clock{0};                                  ///< Half-move clock for the fifty-move rule.
     CastlingRights castling_rights{CastlingRights::none()}; ///< Castling rights.
     std::optional<Square> en_passant_target{};              ///< A possible en passant target square.
+
+    /**
+     * \brief Comparison of two PositionStates.
+     *
+     * \param rhs The state to compare to.
+     * \return If the states are equal.
+     */
+    auto operator==(const PositionState &rhs) const -> bool;
 };
 
 } // namespace chesscore

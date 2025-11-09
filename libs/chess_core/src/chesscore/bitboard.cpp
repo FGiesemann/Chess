@@ -484,4 +484,8 @@ auto Bitboard::find_king(Color color) const -> std::optional<Square> {
     return {};
 }
 
+auto Bitboard::operator==(const Bitboard &rhs) const -> bool {
+    return m_bitmaps == rhs.m_bitmaps;
+}
+
 } // namespace chesscore

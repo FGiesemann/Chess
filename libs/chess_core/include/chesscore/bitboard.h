@@ -283,6 +283,14 @@ public:
      * \return If the square is attacked by a sliding piece.
      */
     auto sliding_piece_attacks(const Square &square, Color piece_color) const -> bool;
+
+    /**
+     * \brief Comparison of two Bitboards.
+     *
+     * \param rhs The bitboard to compare to.
+     * \return If the bitboards are equal.
+     */
+    auto operator==(const Bitboard &rhs) const -> bool;
 private:
     std::array<Bitmap, 12> m_bitmaps{};
     Bitmap m_white_pieces{};

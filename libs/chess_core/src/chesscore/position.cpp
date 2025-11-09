@@ -147,4 +147,8 @@ auto Position::piece_placement() const -> PiecePlacement {
     return pieces;
 }
 
+auto Position::operator==(const Position &rhs) const -> bool {
+    return m_board == rhs.m_board && m_state == rhs.m_state;
 }
+
+} // namespace chesscore

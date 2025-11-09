@@ -17,4 +17,9 @@ auto check_state_symbol(CheckState state) -> std::string {
     return "";
 }
 
+auto PositionState::operator==(const PositionState &rhs) const -> bool {
+    return side_to_move == rhs.side_to_move && fullmove_number == rhs.fullmove_number && halfmove_clock == rhs.halfmove_clock && castling_rights == rhs.castling_rights &&
+           en_passant_target == rhs.en_passant_target;
 }
+
+} // namespace chesscore

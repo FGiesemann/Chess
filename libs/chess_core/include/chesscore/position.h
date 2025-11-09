@@ -46,6 +46,13 @@ public:
                         } {}
 
     /**
+     * \brief Create the starting position.
+     *
+     * \return The starting position.
+     */
+    static auto start_position() -> Position { return Position{FenString::starting_position()}; }
+
+    /**
      * \brief Access the board representation.
      *
      * The board representation manages the pieces on the board.
@@ -158,6 +165,14 @@ public:
      * \return The piece placement.
      */
     auto piece_placement() const -> PiecePlacement;
+
+    /**
+     * \brief Comparison of two positions.
+     *
+     * \param rhs The position to compare to.
+     * \return If the positions are equal.
+     */
+    auto operator==(const Position &rhs) const -> bool;
 private:
     Bitboard m_board{};      ///< Current placement of pieces on the board.
     PositionState m_state{}; ///< The current state of the position.
