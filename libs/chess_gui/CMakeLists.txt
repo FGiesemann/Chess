@@ -34,6 +34,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC chesscore::chesscore)
 target_link_libraries(${PROJECT_NAME} PUBLIC ChessGame::ChessGame)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Widgets Qt6::SvgWidgets)
 add_compiler_warnings(${PROJECT_NAME})
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
 
 install(TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}Targets
