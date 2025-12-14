@@ -54,6 +54,10 @@ auto piece_from_fen_letter(char letter) -> Piece {
     return Piece{.type = piece_type_from_char(letter), .color = Color::Black};
 }
 
+auto to_string(Color color) -> std::string {
+    return color == Color::White ? "White" : "Black";
+}
+
 auto placement_from_string(const std::string &str) -> PiecePlacement {
     PiecePlacement placement{};
     static constexpr size_t placement_length{64};

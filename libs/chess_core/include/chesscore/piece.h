@@ -75,6 +75,8 @@ auto piece_type_from_char(char letter) -> PieceType;
  */
 enum class Color { White, Black };
 
+auto to_string(Color color) -> std::string;
+
 /**
  * \brief Swap a color.
  *
