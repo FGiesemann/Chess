@@ -41,7 +41,7 @@ struct EpdRecord {
     using opt_str = std::optional<std::string>;                    ///< An optional string.
     using str_list = std::vector<opt_str>;                         ///< List of optional strings.
     using san_str = std::string;                                   ///< String representing a move in SAN.
-    using opt_move = std::optional<san_str>;                       ///< An optional move
+    using opt_move = std::optional<san_str>;                       ///< An optional move.
     using move_list = std::vector<san_str>;                        ///< A (possibly empty) list of moves.
     using player_identifier = std::pair<std::string, std::string>; ///< Identifier (email and name) of a player.
     struct unknown_command {
@@ -80,8 +80,10 @@ struct EpdRecord {
     std::vector<unknown_command> unknown_commands; ///< List of unknown commands with their operands.
 };
 
+using EpdSuite = std::vector<EpdRecord>;
+
 auto parse_epd_line(const std::string &line) -> EpdRecord;
-auto read_epd(std::istream &input) -> std::vector<EpdRecord>;
+auto read_epd(std::istream &input) -> EpdSuite;
 auto write_epd_record(std::ostream &output, const EpdRecord &record) -> void;
 
 } // namespace chesscore

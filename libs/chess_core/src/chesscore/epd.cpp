@@ -431,8 +431,8 @@ auto parse_epd_line(const std::string &line) -> EpdRecord {
     }
 }
 
-auto read_epd(std::istream &input) -> std::vector<EpdRecord> {
-    std::vector<EpdRecord> records;
+auto read_epd(std::istream &input) -> EpdSuite {
+    EpdSuite records;
     std::string line{};
     int line_number{0};
     try {
