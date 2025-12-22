@@ -6,6 +6,7 @@
 
 #include "chesscore/move.h"
 
+#include <ranges>
 #include <sstream>
 
 namespace chesscore {
@@ -64,6 +65,11 @@ auto move_list_contains_promotions(const MoveList &list, const Move &move) -> bo
            move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Knight, .color = color}}) &&
            move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Bishop, .color = color}}) &&
            move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Queen, .color = color}});
+}
+
+auto to_string(const MoveList &moves) -> std::string {
+    return std::views::transform(moves, [](const Move &move) -> std::string { return to_string(move); }) | std::views::join_with(std::string(", ")) |
+           std::ranges::to<std::string>();
 }
 
 } // namespace chesscore

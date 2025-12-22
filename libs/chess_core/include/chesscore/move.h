@@ -7,14 +7,15 @@
 #ifndef CHESSCORE_MOVE_H
 #define CHESSCORE_MOVE_H
 
-#include <algorithm>
-#include <optional>
-#include <vector>
-
 #include "chesscore/chesscore.h"
 #include "chesscore/piece.h"
 #include "chesscore/position_types.h"
 #include "chesscore/square.h"
+
+#include <algorithm>
+#include <optional>
+#include <string>
+#include <vector>
 
 namespace chesscore {
 
@@ -158,6 +159,8 @@ struct PromotionMoveCompare {
  * \brief A list of moves.
  */
 using MoveList = std::vector<Move>;
+
+auto to_string(const MoveList &moves) -> std::string;
 
 /**
  * \brief Checks if a move list contains a given move.
