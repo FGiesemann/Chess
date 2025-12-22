@@ -153,6 +153,18 @@ public:
     auto all_legal_moves(const PositionState &state) const -> MoveList;
 
     /**
+     * \brief Generate all legal capture moves.
+     *
+     * Generate a list of all legal capture moves for the current position. The
+     * function needs additional information of the current position, such as the
+     * player to move next, the available castling rights and the en-passant
+     * target square.
+     * \param state State of the current position.
+     * \return A list of all legal capture moves for the given position and player.
+     */
+    auto capture_moves(const PositionState &state) const -> MoveList;
+
+    /**
      * \brief Generate all moves for all knights.
      *
      * Generates the possible moves for the knights of the player to move.

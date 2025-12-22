@@ -139,6 +139,15 @@ public:
     auto all_legal_moves() const -> MoveList;
 
     /**
+     * \brief Generate all (legal) capture moves.
+     *
+     * Generate a list of all legal capture moves from the current position for
+     * the player to move.
+     * \return A list of all legal capture moves for the given position.
+     */
+    auto capture_moves() const -> MoveList;
+
+    /**
      * \brief Checks, if a king is under attack.
      *
      * Checks, if the king of the given color is under attack. If no king of the

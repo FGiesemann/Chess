@@ -192,6 +192,12 @@ auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
     return moves;
 }
 
+auto Bitboard::capture_moves(const PositionState &state) const -> MoveList {
+    MoveList moves = all_legal_moves(state);
+    moves.erase(std::remove_if(moves.begin(), moves.end(), [](const Move &move) { return !move.captured.has_value(); }), moves.end());
+    return moves;
+}
+
 auto Bitboard::all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
     const auto piece = Piece{.type = piece_type, .color = state.side_to_move};
     Bitmap pieces{bitmap(piece)};

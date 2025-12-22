@@ -110,6 +110,10 @@ auto Position::all_legal_moves() const -> MoveList {
     return m_board.all_legal_moves(state());
 }
 
+auto Position::capture_moves() const -> MoveList {
+    return m_board.capture_moves(state());
+}
+
 auto Position::is_king_in_check(Color color) const -> bool {
     const auto king_sq = m_board.find_king(color);
     if (king_sq.has_value()) {
