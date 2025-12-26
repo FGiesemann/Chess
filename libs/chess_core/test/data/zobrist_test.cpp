@@ -5,6 +5,8 @@
 
 #include <catch2/catch_all.hpp>
 
+#include "chesscore/fen.h"
+#include "chesscore/position.h"
 #include "chesscore/zobrist.h"
 
 using namespace chesscore;

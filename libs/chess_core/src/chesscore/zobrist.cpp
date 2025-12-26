@@ -5,6 +5,7 @@
 /** \file */
 
 #include "chesscore/zobrist.h"
+#include "chesscore/position.h"
 
 namespace chesscore {
 

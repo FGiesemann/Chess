@@ -8,7 +8,7 @@
 #define CHESSCORE_ZOBRIST_H
 
 #include "chesscore/piece.h"
-#include "chesscore/position.h"
+#include "chesscore/position_types.h"
 #include "chesscore/square.h"
 
 #include <array>
@@ -17,6 +17,8 @@
 #include <random>
 
 namespace chesscore {
+
+class Position;
 
 class ZobristKeys {
 public:
