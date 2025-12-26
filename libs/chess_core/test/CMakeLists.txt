@@ -4,6 +4,7 @@ add_executable(chesscore_tests
     data/fen_test.cpp
     data/move_test.cpp
     data/piece_test.cpp
+    data/zobrist_test.cpp
     
     bitboard/bitmap_test.cpp
     bitboard/bitboard_test.cpp
