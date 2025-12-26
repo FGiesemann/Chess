@@ -14,6 +14,7 @@ add_executable(chesscore_tests
     bitboard/move_generation_test.cpp
     bitboard/attack_test.cpp
 
+    position/hash_test.cpp
     position/make_move_test.cpp
     position/move_generation_test.cpp
     position/perft_test.cpp

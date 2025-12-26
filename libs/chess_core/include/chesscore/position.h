@@ -11,6 +11,7 @@
 #include "chesscore/board.h"
 #include "chesscore/fen.h"
 #include "chesscore/position_types.h"
+#include "chesscore/zobrist.h"
 
 namespace chesscore {
 
@@ -37,13 +38,15 @@ public:
      * \param fen The FEN string.
      */
     explicit Position(const FenString &fen)
-        : m_board{fen}, m_state{
-                            .side_to_move{fen.side_to_move()},
-                            .fullmove_number{fen.fullmove_number()},
-                            .halfmove_clock{fen.halfmove_clock()},
-                            .castling_rights{fen.castling_rights()},
-                            .en_passant_target{fen.en_passant_square()}
-                        } {}
+        : m_board{fen},
+          m_state{
+              .side_to_move{fen.side_to_move()},
+              .fullmove_number{fen.fullmove_number()},
+              .halfmove_clock{fen.halfmove_clock()},
+              .castling_rights{fen.castling_rights()},
+              .en_passant_target{fen.en_passant_square()}
+          },
+          m_hash{ZobristHash::from_position(*this)} {}
 
     /**
      * \brief Create the starting position.
@@ -176,6 +179,13 @@ public:
     auto piece_placement() const -> PiecePlacement;
 
     /**
+     * \brief Hash of the position.
+     *
+     * \return Hash of the position.
+     */
+    auto hash() const -> const ZobristHash & { return m_hash; }
+
+    /**
      * \brief Comparison of two positions.
      *
      * \param rhs The position to compare to.
@@ -185,7 +195,9 @@ public:
 private:
     Bitboard m_board{};      ///< Current placement of pieces on the board.
     PositionState m_state{}; ///< The current state of the position.
+    ZobristHash m_hash{};    ///< Hash of the position.
 
+    auto update_piece_hash(const Move &move) -> void;
     auto updateCastlingRights(const Move &move) -> void;
     auto updateFullmoveNumber() -> void;
     auto updateHalfmoveClock(const Move &move) -> void;

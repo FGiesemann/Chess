@@ -8,21 +8,30 @@
 namespace chesscore {
 
 auto Position::make_move(const Move &move) -> void {
+    update_piece_hash(move);
     m_board.make_move(move);
     updateFullmoveNumber();
     updateHalfmoveClock(move);
     updateEnPassant(move);
     updateCastlingRights(move);
     m_state.side_to_move = other_color(m_state.side_to_move);
+    m_hash.swap_side();
 }
 
-void Position::updateFullmoveNumber() {
+auto Position::update_piece_hash(const Move &move) -> void {
+    if (move.is_capture()) {
+        m_hash.clear_piece(move.captured.value(), move.to);
+    }
+    m_hash.move_piece(move.piece, move.from, move.to);
+}
+
+auto Position::updateFullmoveNumber() -> void {
     if (m_state.side_to_move == Color::Black) {
         m_state.fullmove_number++;
     }
 }
 
-void Position::updateHalfmoveClock(const Move &move) {
+auto Position::updateHalfmoveClock(const Move &move) -> void {
     if (move.is_capture() || move.piece.type == PieceType::Pawn) {
         m_state.halfmove_clock = 0;
     } else {
@@ -30,19 +39,20 @@ void Position::updateHalfmoveClock(const Move &move) {
     }
 }
 
-void Position::updateEnPassant(const Move &move) {
+auto Position::updateEnPassant(const Move &move) -> void {
     if (move.piece.type == PieceType::Pawn && move.is_double_step()) {
         if (move.from.rank().rank > move.to.rank().rank) {
             m_state.en_passant_target = Square{File{move.from.file().file}, Rank{move.from.rank().rank - 1}};
         } else {
             m_state.en_passant_target = Square{File{move.from.file().file}, Rank{move.from.rank().rank + 1}};
         }
+        m_hash.set_enpassant(move.from.file());
     } else {
         m_state.en_passant_target.reset();
     }
 }
 
-void Position::updateCastlingRights(const Move &move) {
+auto Position::updateCastlingRights(const Move &move) -> void {
     if (move.piece == Piece::WhiteKing) {
         m_state.castling_rights['K'] = false;
         m_state.castling_rights['Q'] = false;
