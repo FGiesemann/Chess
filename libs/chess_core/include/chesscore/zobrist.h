@@ -49,7 +49,7 @@ public:
     static auto piece_key(Piece piece, Square square) -> key_t { return m_piece_keys[piece_index(piece, square)]; }
     static auto piece_key(PieceType type, Color color, Square square) -> key_t { return piece_key(Piece{.type = type, .color = color}, square); }
     static auto castling_key(CastlingRights rights) -> key_t { return m_castling_keys[castling_index(rights)]; }
-    static auto enpassant_key(Rank rank) -> key_t { return m_enpassant_keys[rank.rank - Rank::min_rank]; }
+    static auto enpassant_key(File file) -> key_t { return m_enpassant_keys[file.file - File::min_file]; }
     static auto side_key() -> key_t { return m_side_key; }
 private:
     static bool m_initialized;
@@ -113,10 +113,10 @@ public:
         }
         return *this;
     }
-    auto set_enpassant(Rank rank) -> ZobristHash & {
+    auto set_enpassant(File file) -> ZobristHash & {
         clear_enpassant();
-        m_hash ^= ZobristKeys::enpassant_key(rank);
-        m_enpassant_target = rank;
+        m_hash ^= ZobristKeys::enpassant_key(file);
+        m_enpassant_target = file;
         return *this;
     }
     auto set_castling(CastlingRights rights) -> ZobristHash & {
@@ -132,7 +132,7 @@ public:
     auto operator==(const ZobristHash &rhs) const -> bool { return m_hash == rhs.m_hash; }
 private:
     key_t m_hash{0};
-    std::optional<Rank> m_enpassant_target{std::nullopt};
+    std::optional<File> m_enpassant_target{std::nullopt};
     static std::optional<key_t> m_starting_position_hash;
 };
 

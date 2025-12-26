@@ -21,8 +21,8 @@ TEST_CASE("Data.Zobrist.ZobristKeys.Nonzero", "[zobrist]") {
 
     CHECK(ZobristKeys::side_key() != 0);
 
-    for (int rank = Rank::min_rank; rank <= Rank::max_rank; ++rank) {
-        CHECK(ZobristKeys::enpassant_key(Rank{rank}) != 0);
+    for (int file = File::min_file; file <= File::max_file; ++file) {
+        CHECK(ZobristKeys::enpassant_key(File{file}) != 0);
     }
 
     CastlingRights rights{};
@@ -106,16 +106,28 @@ TEST_CASE("Data.Zobrist.ZobristHash.Swapping Side", "[zobrist]") {
 TEST_CASE("Data.Zobrist.ZobristHash.En Passant", "[zobrist]") {
     const auto hash = ZobristHash::starting_position_hash();
     auto hash2 = hash;
-    hash2.set_enpassant(Rank{2});
+    hash2.set_enpassant(File{2});
     CHECK(hash2 != hash);
     hash2.clear_enpassant();
     CHECK(hash2 == hash);
     auto hash3 = hash;
-    hash2.set_enpassant(Rank{6});
-    hash3.set_enpassant(Rank{4});
+    hash2.set_enpassant(File{6});
+    hash3.set_enpassant(File{4});
     CHECK(hash2 != hash3);
-    hash3.set_enpassant(Rank{6});
+    hash3.set_enpassant(File{6});
     CHECK(hash2 == hash3);
+}
+
+TEST_CASE("Data.Zobrist.ZobristHash.En Passant FEN", "[zobrist]") {
+    const auto position = Position{FenString{"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"}};
+    const auto ref_hash = ZobristHash::from_position(position);
+
+    auto hash4 = ZobristHash::starting_position_hash();
+    hash4.move_piece(Piece::WhitePawn, Square::E2, Square::E4);
+    hash4.swap_side();
+    hash4.set_enpassant(File{'e'});
+
+    CHECK(ref_hash == hash4);
 }
 
 TEST_CASE("Data.Zobrist.ZobristHash.Castling", "[zobrist]") {
@@ -188,6 +200,13 @@ TEST_CASE("Data.Zobrist.ZobristHash.Position", "[zobrist]") {
     hash.clear_piece(Piece::BlackPawn, Square::B3);
     hash.move_piece(Piece::WhitePawn, Square::C2, Square::B3);
     hash.move_piece(Piece::BlackBishop, Square::C8, Square::B7);
-
     CHECK(hash == end_hash);
+
+    const auto position2 = Position{FenString{"rn1qk2r/pb1ppp1p/2p2np1/8/4P1P1/1PP2N2/P4P1P/R1BQ1RK1 b kq g3 0 10"}};
+    const auto hash2 = ZobristHash::from_position(position2);
+
+    hash.move_piece(Piece::WhitePawn, Square::G2, Square::G4);
+    hash.set_enpassant(File{7});
+    hash.swap_side();
+    CHECK(hash == hash2);
 }
