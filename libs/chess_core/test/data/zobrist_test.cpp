@@ -108,12 +108,13 @@ TEST_CASE("Data.Zobrist.ZobristHash.En Passant", "[zobrist]") {
     auto hash2 = hash;
     hash2.set_enpassant(File{2});
     CHECK(hash2 != hash);
-    hash2.clear_enpassant();
+    hash2.clear_enpassant(File{2});
     CHECK(hash2 == hash);
     auto hash3 = hash;
     hash2.set_enpassant(File{6});
     hash3.set_enpassant(File{4});
     CHECK(hash2 != hash3);
+    hash3.clear_enpassant(File{4});
     hash3.set_enpassant(File{6});
     CHECK(hash2 == hash3);
 }

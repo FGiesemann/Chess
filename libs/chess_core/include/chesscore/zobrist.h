@@ -106,17 +106,12 @@ public:
         m_hash ^= ZobristKeys::side_key();
         return *this;
     }
-    auto clear_enpassant() -> ZobristHash & {
-        if (m_enpassant_target.has_value()) {
-            m_hash ^= ZobristKeys::enpassant_key(*m_enpassant_target);
-            m_enpassant_target = std::nullopt;
-        }
+    auto clear_enpassant(File file) -> ZobristHash & {
+        m_hash ^= ZobristKeys::enpassant_key(file);
         return *this;
     }
     auto set_enpassant(File file) -> ZobristHash & {
-        clear_enpassant();
         m_hash ^= ZobristKeys::enpassant_key(file);
-        m_enpassant_target = file;
         return *this;
     }
     auto set_castling(CastlingRights rights) -> ZobristHash & {
@@ -132,7 +127,6 @@ public:
     auto operator==(const ZobristHash &rhs) const -> bool { return m_hash == rhs.m_hash; }
 private:
     key_t m_hash{0};
-    std::optional<File> m_enpassant_target{std::nullopt};
     static std::optional<key_t> m_starting_position_hash;
 };
 

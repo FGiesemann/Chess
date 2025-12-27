@@ -20,9 +20,27 @@ auto Position::make_move(const Move &move) -> void {
 
 auto Position::update_piece_hash(const Move &move) -> void {
     if (move.is_capture()) {
-        m_hash.clear_piece(move.captured.value(), move.to);
+        if (move.capturing_en_passant) {
+            m_hash.clear_piece(move.captured.value(), Square{move.to.file(), move.from.rank()});
+        } else {
+            m_hash.clear_piece(move.captured.value(), move.to);
+        }
     }
-    m_hash.move_piece(move.piece, move.from, move.to);
+    if (move.promoted) {
+        m_hash.clear_piece(move.piece, move.from);
+        m_hash.set_piece(move.promoted.value(), move.to);
+    } else {
+        m_hash.move_piece(move.piece, move.from, move.to);
+    }
+    if (move.is_castling()) {
+        if (move.from.file().file < move.to.file().file) {
+            // Kingside castling
+            m_hash.move_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'H'}, move.to.rank()}, Square{File{'F'}, move.to.rank()});
+        } else {
+            // Queenside castling
+            m_hash.move_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'A'}, move.to.rank()}, Square{File{'D'}, move.to.rank()});
+        }
+    }
 }
 
 auto Position::updateFullmoveNumber() -> void {
@@ -48,11 +66,15 @@ auto Position::updateEnPassant(const Move &move) -> void {
         }
         m_hash.set_enpassant(move.from.file());
     } else {
+        if (m_state.en_passant_target.has_value()) {
+            m_hash.clear_enpassant(m_state.en_passant_target->file());
+        }
         m_state.en_passant_target.reset();
     }
 }
 
 auto Position::updateCastlingRights(const Move &move) -> void {
+    CastlingRights old_rights = m_state.castling_rights;
     if (move.piece == Piece::WhiteKing) {
         m_state.castling_rights['K'] = false;
         m_state.castling_rights['Q'] = false;
@@ -82,6 +104,9 @@ auto Position::updateCastlingRights(const Move &move) -> void {
         } else if (move.to == Square::H8) {
             m_state.castling_rights['k'] = false;
         }
+    }
+    if (m_state.castling_rights != old_rights) {
+        m_hash.switch_castling(old_rights, m_state.castling_rights);
     }
 }
 
