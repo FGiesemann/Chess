@@ -49,7 +49,7 @@ public:
     static auto piece_key(Piece piece, Square square) -> key_t { return m_piece_keys[piece_index(piece, square)]; }
     static auto piece_key(PieceType type, Color color, Square square) -> key_t { return piece_key(Piece{.type = type, .color = color}, square); }
     static auto castling_key(CastlingRights rights) -> key_t { return m_castling_keys[castling_index(rights)]; }
-    static auto enpassant_key(File file) -> key_t { return m_enpassant_keys[file.file - File::min_file]; }
+    static auto enpassant_key(File file) -> key_t { return m_enpassant_keys[static_cast<size_t>(file.file - File::min_file)]; }
     static auto side_key() -> key_t { return m_side_key; }
 private:
     static bool m_initialized;
