@@ -8,7 +8,7 @@
 namespace chesscore {
 
 auto Position::make_move(const Move &move) -> void {
-    update_piece_hash(move);
+    move_piece_hash(move);
     m_board.make_move(move);
     updateFullmoveNumber();
     updateHalfmoveClock(move);
@@ -18,7 +18,7 @@ auto Position::make_move(const Move &move) -> void {
     m_hash.swap_side();
 }
 
-auto Position::update_piece_hash(const Move &move) -> void {
+auto Position::move_piece_hash(const Move &move) -> void {
     if (move.is_capture()) {
         if (move.capturing_en_passant) {
             m_hash.clear_piece(move.captured.value(), Square{move.to.file(), move.from.rank()});
@@ -111,12 +111,39 @@ auto Position::updateCastlingRights(const Move &move) -> void {
 }
 
 auto Position::unmake_move(const Move &move) -> void {
+    unmove_piece_hash(move);
     m_board.unmake_move(move);
     resetFullmoveNumber(move);
     resetHalfmoveClock(move);
     resetEnPassant(move);
     resetCastlingRights(move);
     m_state.side_to_move = other_color(m_state.side_to_move);
+    m_hash.swap_side();
+}
+
+auto Position::unmove_piece_hash(const Move &move) -> void {
+    if (move.promoted) {
+        m_hash.clear_piece(move.promoted.value(), move.to);
+        m_hash.set_piece(move.piece, move.from);
+    } else {
+        m_hash.move_piece(move.piece, move.to, move.from);
+    }
+    if (move.is_capture()) {
+        if (move.capturing_en_passant) {
+            m_hash.set_piece(move.captured.value(), Square{move.to.file(), move.from.rank()});
+        } else {
+            m_hash.set_piece(move.captured.value(), move.to);
+        }
+    }
+    if (move.is_castling()) {
+        if (move.from.file().file < move.to.file().file) {
+            // Kingside castling
+            m_hash.move_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'F'}, move.from.rank()}, Square{File{'H'}, move.from.rank()});
+        } else {
+            // Queenside castling
+            m_hash.move_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'D'}, move.from.rank()}, Square{File{'A'}, move.from.rank()});
+        }
+    }
 }
 
 auto Position::resetFullmoveNumber(const Move &move) -> void {
@@ -130,14 +157,21 @@ auto Position::resetHalfmoveClock(const Move &move) -> void {
 }
 
 auto Position::resetEnPassant(const Move &move) -> void {
+    if (m_state.en_passant_target.has_value()) {
+        m_hash.clear_enpassant(m_state.en_passant_target->file());
+    }
     if (move.en_passant_target_before.has_value()) {
         m_state.en_passant_target = move.en_passant_target_before;
+        m_hash.set_enpassant(m_state.en_passant_target->file());
     } else {
         m_state.en_passant_target.reset();
     }
 }
 
 auto Position::resetCastlingRights(const Move &move) -> void {
+    if (m_state.castling_rights != move.castling_rights_before) {
+        m_hash.switch_castling(m_state.castling_rights, move.castling_rights_before);
+    }
     m_state.castling_rights = move.castling_rights_before;
 }
 

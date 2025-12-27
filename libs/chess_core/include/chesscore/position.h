@@ -197,7 +197,8 @@ private:
     PositionState m_state{}; ///< The current state of the position.
     ZobristHash m_hash{};    ///< Hash of the position.
 
-    auto update_piece_hash(const Move &move) -> void;
+    auto move_piece_hash(const Move &move) -> void;
+    auto unmove_piece_hash(const Move &move) -> void;
     auto updateCastlingRights(const Move &move) -> void;
     auto updateFullmoveNumber() -> void;
     auto updateHalfmoveClock(const Move &move) -> void;
