@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(chesscore CONFIG REQUIRED COMPONENTS chesscore chesscore_io)
 find_package(chessgame REQUIRED)
 
+add_subdirectory(benchmark)
 add_subdirectory(bitmap_tool)
 add_subdirectory(chess_game)
 add_subdirectory(fen_display)
