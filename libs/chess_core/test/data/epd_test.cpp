@@ -70,6 +70,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Best Move", "[EPD]") {
     CHECK(position1.halfmove_clock() == 0);
     CHECK(position1.fullmove_number() == 1);
     CHECK(record1.bm == EpdRecord::move_list{"Re2+"});
+    CHECK(record1.unknown_commands.empty());
 
     const auto record2 = parse_epd_line("r1b2rk1/2q1b1pp/p2ppn2/1p6/3QP3/1BN1B3/PPP3PP/R4RK1 w - - bm Nd5 a4;");
     const auto position2 = record2.position;
@@ -105,6 +106,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Operands", "[EPD]") {
     CHECK(record.c[0] == "comment0");
     REQUIRE(record.c[1].has_value());
     CHECK(record.c[1] == "comment1");
+    CHECK_FALSE(record.c[2].has_value());
     CHECK(record.acd == 3);
     CHECK(record.acn == 5'285'839'593ULL);
     CHECK(record.noop_ops.size() == 5);
@@ -124,7 +126,25 @@ TEST_CASE("Data.EPD.Parse.Operations.Unknown Operation", "[EPD]") {
     CHECK(record.unknown_commands[0].operands == std::vector<std::string>{"123"});
 }
 
-TEST_CASE("Data.EPD.File", "[EPD]") {
+TEST_CASE("Data.EPD.Parse.Operations.Multiple unknowns", "[EPD]") {
+    const auto record = parse_epd_line(R"(rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - D 1 20; D 2 400; D 3 8902; D 4 197281; D 5 4865609; D 6 119060324;)");
+
+    CHECK(record.unknown_commands.size() == 6);
+    CHECK(record.unknown_commands[0].opcode == "D");
+    CHECK(record.unknown_commands[0].operands == std::vector<std::string>{"1", "20"});
+    CHECK(record.unknown_commands[1].opcode == "D");
+    CHECK(record.unknown_commands[1].operands == std::vector<std::string>{"2", "400"});
+    CHECK(record.unknown_commands[2].opcode == "D");
+    CHECK(record.unknown_commands[2].operands == std::vector<std::string>{"3", "8902"});
+    CHECK(record.unknown_commands[3].opcode == "D");
+    CHECK(record.unknown_commands[3].operands == std::vector<std::string>{"4", "197281"});
+    CHECK(record.unknown_commands[4].opcode == "D");
+    CHECK(record.unknown_commands[4].operands == std::vector<std::string>{"5", "4865609"});
+    CHECK(record.unknown_commands[5].opcode == "D");
+    CHECK(record.unknown_commands[5].operands == std::vector<std::string>{"6", "119060324"});
+}
+
+TEST_CASE("Data.EPD.File.Simple", "[EPD]") {
     const std::string epd_data = R"(r1b2rk1/2q1b1pp/p2ppn2/1p6/3QP3/1BN1B3/PPP3PP/R4RK1 w - - bm Nd5 a4;
 r2qr1k1/1b1pppbp/1p4p1/pP2P1B1/3N4/R7/1PP2PPP/3QR1K1 w - a6
 rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
@@ -139,6 +159,19 @@ rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
     CHECK(records[1].position.en_passant_target() == Square::A6);
     CHECK(records[2].position.castling_rights() == CastlingRights::all());
     CHECK(records[3].id == "test");
+}
+
+TEST_CASE("Data.EPD.File.Unknown Commands", "[EPD]") {
+    const std::string epd_data = R"(rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - D 1 20; D 2 400; D 3 8902; D 4 197281; D 5 4865609; D 6 119060324;
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - D 1 48; D 2 2039; D 3 97862; D 4 4085603; D 5 193690690; D 6 8031647685;
+)";
+
+    std::istringstream epd_file{epd_data};
+    const auto records = read_epd(epd_file);
+
+    CHECK(records.size() == 2);
+    CHECK(records[0].unknown_commands.size() == 6);
+    CHECK(records[1].unknown_commands.size() == 6);
 }
 
 TEST_CASE("Data.EPD.Non conformant.Unquoted string", "[EPD]") {

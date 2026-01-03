@@ -31,10 +31,16 @@ auto advance(const std::string &line, size_t &index) {
     }
 }
 
+auto skip_ws(const std::string &line, size_t &index) {
+    while (index < line.length() && (line[index] == '\n' || line[index] == '\r' || line[index] == ' ')) {
+        ++index;
+    }
+}
+
 auto read_word(const std::string &line, size_t &index) -> std::string {
     advance(line, index);
     const auto start = index;
-    while (index < line.length() && line[index] != ' ' && line[index] != ';') {
+    while (index < line.length() && line[index] != ' ' && line[index] != ';' && line[index] != '\n' && line[index] != '\r') {
         ++index;
     }
     return line.substr(start, index - start);
@@ -139,6 +145,7 @@ auto read_player_identifier(const std::string &line, size_t &index, EpdRecord::p
 
 auto read_operation(const std::string &line, size_t &index, EpdRecord &record) -> void {
     const auto opcode = read_word(line, index);
+
     static const std::unordered_map < std::string_view,
         void (*)(EpdRecord &, const std::string &, size_t &)> operation_handlers = {
             {"acd",
@@ -422,8 +429,10 @@ auto parse_epd_line(const std::string &line) -> EpdRecord {
         }
         EpdRecord record;
         record.position = Position{fen};
+        skip_ws(line, index);
         while (index < line.length()) {
             read_operation(line, index, record);
+            skip_ws(line, index);
         }
         return record;
     } catch (InvalidFen &error) {
