@@ -39,14 +39,19 @@ auto ChessBenchmark::run(int iterations) -> void {
 
         for (const auto &test : record.unknown_commands) {
             const auto depth = std::stoi(test.operands[0]);
-            if (m_max_depth > 0 && depth >= m_max_depth) {
+            const auto reference_node_count = std::stoull(test.operands[1]);
+            if (m_max_depth > 0 && depth > m_max_depth) {
                 continue;
             }
 
             std::vector<double> times;
             uint64_t nodes = 0;
             for (int i = 0; i < iterations; ++i) {
-                auto [iter_nodes, iter_time] = measure_single_perft(position, depth);
+                auto [leaf_nodes, iter_nodes, iter_time] = measure_single_perft(position, depth);
+                if (leaf_nodes != reference_node_count) {
+                    std::cerr << "ERROR: perft result " << leaf_nodes << " does not match expected count "
+                              << reference_node_count << '\n';
+                }
                 nodes = iter_nodes;
                 times.push_back(iter_time);
             }
@@ -70,14 +75,15 @@ auto ChessBenchmark::warmup(chesscore::Position position) -> void {
     chesscore::perft<chesscore::PerftMode::Benchmark>(position, 3, counter);
 }
 
-auto ChessBenchmark::measure_single_perft(chesscore::Position position, int depth) -> std::pair<uint64_t, double> {
+auto ChessBenchmark::measure_single_perft(chesscore::Position position, int depth)
+    -> std::tuple<std::uint64_t, std::uint64_t, double> {
     auto start = std::chrono::high_resolution_clock::now();
     chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
     chesscore::perft<chesscore::PerftMode::Benchmark>(position, depth, counter);
     auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> diff = end - start;
-    return {counter.total_nodes, diff.count()};
+    return {counter.leaf_nodes, counter.total_nodes, diff.count()};
 }
 
 auto ChessBenchmark::print_header() -> void {
@@ -87,7 +93,7 @@ auto ChessBenchmark::print_header() -> void {
 }
 
 auto ChessBenchmark::print_result(const std::string &name, std::uint64_t nodes, double time) -> void {
-    double mnps = (nodes / time) / 1'000.0;
+    double mnps = (static_cast<double>(nodes) / time) / 1'000.0;
     std::cout << std::left << std::setw(test_column_width) << name << std::right << std::setw(15) << nodes
               << std::setw(15) << std::fixed << std::setprecision(4) << time << std::setw(15) << std::fixed
               << std::setprecision(3) << mnps << std::endl;

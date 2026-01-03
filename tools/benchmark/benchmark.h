@@ -30,7 +30,8 @@ private:
     int m_max_depth = 0;
 
     static auto warmup(chesscore::Position position) -> void;
-    static auto measure_single_perft(chesscore::Position position, int depth) -> std::pair<uint64_t, double>;
+    static auto measure_single_perft(chesscore::Position position, int depth)
+        -> std::tuple<std::uint64_t, std::uint64_t, double>;
 
     static auto print_header() -> void;
     static auto print_result(const std::string &name, uint64_t nodes, double time) -> void;
