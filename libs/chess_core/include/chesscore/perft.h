@@ -26,8 +26,8 @@ enum class PerftMode {
 
 template<PerftMode Mode>
 struct PerftCounter {
-    std::uint64_t nodes{};
-    std::uint64_t totalNodes{};
+    std::uint64_t leaf_nodes{};
+    std::uint64_t total_nodes{};
 
     /**
      * \brief Count internal nodes.
@@ -35,9 +35,9 @@ struct PerftCounter {
      * Internal nodes are only counted with PerftMode::Benchmark. In
      * PerftMode::Verify, this code is completely removed.
      */
-    inline void countNode() {
+    inline void count_node() {
         if constexpr (Mode == PerftMode::Benchmark) {
-            totalNodes++;
+            total_nodes++;
         }
     }
 
@@ -46,22 +46,22 @@ struct PerftCounter {
      *
      * Leaf nodes are counted in verification and performance analysis modes.
      */
-    inline void countLeaf() { nodes++; }
+    inline void count_leaf_node() { leaf_nodes++; }
 };
 
 template<PerftMode Mode>
-void perftInternal(Position &position, int depth, PerftCounter<Mode> &counter) {
-    counter.countNode();
+auto perft(Position &position, int depth, PerftCounter<Mode> &counter) -> void {
+    counter.count_node();
 
     if (depth == 0) {
-        counter.countLeaf();
+        counter.count_leaf_node();
         return;
     }
 
     auto moves = position.all_legal_moves();
     for (const auto &move : moves) {
         position.make_move(move);
-        perftInternal<Mode>(position, depth - 1, counter);
+        perft<Mode>(position, depth - 1, counter);
         position.unmake_move(move);
     }
 }
