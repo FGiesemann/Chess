@@ -67,17 +67,17 @@ auto ChessBenchmark::run(int iterations) -> void {
 
 auto ChessBenchmark::warmup(chesscore::Position position) -> void {
     chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
-    chesscore::perftInternal<chesscore::PerftMode::Benchmark>(position, 3, counter);
+    chesscore::perft<chesscore::PerftMode::Benchmark>(position, 3, counter);
 }
 
 auto ChessBenchmark::measure_single_perft(chesscore::Position position, int depth) -> std::pair<uint64_t, double> {
     auto start = std::chrono::high_resolution_clock::now();
     chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
-    chesscore::perftInternal<chesscore::PerftMode::Benchmark>(position, depth, counter);
+    chesscore::perft<chesscore::PerftMode::Benchmark>(position, depth, counter);
     auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> diff = end - start;
-    return {counter.totalNodes, diff.count()};
+    return {counter.total_nodes, diff.count()};
 }
 
 auto ChessBenchmark::print_header() -> void {
