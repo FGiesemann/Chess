@@ -24,7 +24,8 @@ ChessBenchmark::ChessBenchmark(const std::filesystem::path &epd_file) {
 }
 
 auto ChessBenchmark::run(int iterations) -> void {
-    std::cout << "Starting Benchmark (" << iterations << " iterations per position)" << std::endl;
+    std::cout << "Starting Benchmark (" << iterations << " iterations per position) for " << m_test_suite.size()
+              << " positions\n";
     print_header();
 
     uint64_t grand_total_nodes = 0;
@@ -38,7 +39,7 @@ auto ChessBenchmark::run(int iterations) -> void {
 
         for (const auto &test : record.unknown_commands) {
             const auto depth = std::stoi(test.operands[0]);
-            if (depth >= m_max_depth) {
+            if (m_max_depth > 0 && depth >= m_max_depth) {
                 continue;
             }
 

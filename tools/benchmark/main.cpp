@@ -49,13 +49,18 @@ auto read_options(int argc, char *argv[]) -> Options {
 auto main(int argc, char *argv[]) -> int {
     const auto options = read_options(argc, argv);
 
-    std::filesystem::path epd_file{options.epd_file};
-    benchmark::ChessBenchmark benchmark{epd_file};
-    if (options.max_depth) {
-        benchmark.set_max_depth(*options.max_depth);
-    }
+    try {
+        std::filesystem::path epd_file{options.epd_file};
+        benchmark::ChessBenchmark benchmark{epd_file};
+        if (options.max_depth) {
+            benchmark.set_max_depth(*options.max_depth);
+        }
 
-    benchmark.run();
+        benchmark.run();
+    } catch (const benchmark::BenchmarkError &error) {
+        std::cerr << error.what() << std::endl;
+        return 1;
+    }
 
     return 0;
 }
