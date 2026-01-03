@@ -10,6 +10,7 @@
 
 struct Options {
     std::filesystem::path epd_file;
+    int iterations{5};
     std::optional<int> max_depth;
 };
 
@@ -18,6 +19,7 @@ auto print_usage() -> void {
     
 Options:
     -d, --depth <max_depth>  Maximum depth to search
+    -i, --iter <num>         Number of iterations per test case (default=5)
 )";
 }
 
@@ -35,6 +37,12 @@ auto read_options(int argc, char *argv[]) -> Options {
                 exit(1);
             }
             options.max_depth = std::stoi(argv[++i]);
+        } else if (arg == "-i" || arg == "--iter") {
+            if (i + 1 == argc) {
+                print_usage();
+                exit(1);
+            }
+            options.iterations = std::stoi(argv[++i]);
         } else {
             std::filesystem::path epd_file{arg};
             if (!epd_file.is_absolute()) {
@@ -56,7 +64,7 @@ auto main(int argc, char *argv[]) -> int {
             benchmark.set_max_depth(*options.max_depth);
         }
 
-        benchmark.run();
+        benchmark.run(options.iterations);
     } catch (const benchmark::BenchmarkError &error) {
         std::cerr << error.what() << std::endl;
         return 1;
