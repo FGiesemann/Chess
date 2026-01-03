@@ -31,7 +31,7 @@ auto to_string(const Move &move) -> std::string {
         sstr << "=" << move.promoted.value().piece_char_colorless();
     }
     if (move.capturing_en_passant) {
-        sstr << " (e.p.)";
+        sstr << " ep";
     }
     return sstr.str();
 }
