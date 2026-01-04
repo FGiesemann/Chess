@@ -8,3 +8,5 @@ target_link_libraries(test_game_filter
     chesscore::chesscore_io
     ChessGame::ChessGame
 )
+
+add_optimization_settings(test_game_filter)

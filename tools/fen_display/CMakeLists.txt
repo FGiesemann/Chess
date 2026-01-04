@@ -11,3 +11,5 @@ target_link_libraries(fen_display
 target_compile_options(fen_display PRIVATE
     "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
 )
+
+add_optimization_settings(fen_display)

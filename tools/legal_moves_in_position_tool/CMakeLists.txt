@@ -11,3 +11,5 @@ target_link_libraries(all_legal_moves
 target_compile_options(all_legal_moves PRIVATE
     "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
 )
+
+add_optimization_settings(all_legal_moves)

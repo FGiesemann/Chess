@@ -9,6 +9,18 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(chesscore CONFIG REQUIRED COMPONENTS chesscore chesscore_io)
 find_package(chessgame REQUIRED)
 
+include(FetchContent)
+FetchContent_Declare(
+    ChessBuild
+    GIT_REPOSITORY https://github.com/FGiesemann/ChessBuild.git
+    GIT_TAG        v0.8.4
+)
+FetchContent_MakeAvailable(ChessBuild)
+message(STATUS "CHESS BUILD MODULE DIR: ${CHESS_BUILD_MODULE_DIR}")
+list(APPEND CMAKE_MODULE_PATH ${CHESS_BUILD_MODULE_DIR})
+include(CompilerWarnings)
+include(CompilerSettings)
+
 add_subdirectory(benchmark)
 add_subdirectory(bitmap_tool)
 add_subdirectory(chess_game)

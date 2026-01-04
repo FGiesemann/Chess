@@ -14,3 +14,5 @@ target_link_libraries(chess_game
 target_compile_options(chess_game PRIVATE
     "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
 )
+
+add_optimization_settings(chess_game)

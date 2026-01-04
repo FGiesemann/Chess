@@ -9,3 +9,5 @@ target_link_libraries(perft
     chesscore::chesscore
     chesscore::chesscore_io
 )
+
+add_optimization_settings(perft)
