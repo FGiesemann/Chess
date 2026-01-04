@@ -7,7 +7,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
 option(BUILD_TESTING "Build unittests" OFF)
 
-include(cmake/compiler_warnings.cmake)
+include(FetchContent)
+FetchContent_Declare(
+    ChessBuild
+    GIT_REPOSITORY https://github.com/FGiesemann/ChessBuild.git
+    GIT_TAG        v0.8.4
+)
+FetchContent_MakeAvailable(ChessBuild)
+message(STATUS "CHESS BUILD MODULE DIR: ${CHESS_BUILD_MODULE_DIR}")
+list(APPEND CMAKE_MODULE_PATH ${CHESS_BUILD_MODULE_DIR})
+include(CompilerWarnings)
+include(CompilerSettings)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets SvgWidgets)
 qt_standard_project_setup()
@@ -34,6 +44,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC chesscore::chesscore)
 target_link_libraries(${PROJECT_NAME} PUBLIC ChessGame::ChessGame)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Widgets Qt6::SvgWidgets)
 add_compiler_warnings(${PROJECT_NAME})
+add_optimization_settings(${PROJECT_NAME})
 target_compile_options(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
 
 install(TARGETS ${PROJECT_NAME}
