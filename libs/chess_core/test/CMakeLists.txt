@@ -22,6 +22,7 @@ add_executable(chesscore_tests
     position/unmake_move_test.cpp
 )
 add_compiler_warnings(chesscore_tests)
+add_optimization_settings(chesscore_tests)
 target_compile_options(chesscore_tests PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
 target_link_libraries(chesscore_tests PRIVATE chesscore chesscore_io Catch2::Catch2WithMain)
 

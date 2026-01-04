@@ -7,7 +7,18 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
 option(BUILD_TESTING "Build unittests" ON)
 
-include(cmake/compiler_warnings.cmake)
+include(FetchContent)
+FetchContent_Declare(
+    ChessBuild
+    GIT_REPOSITORY https://github.com/FGiesemann/ChessBuild.git
+    GIT_TAG        main
+)
+FetchContent_MakeAvailable(ChessBuild)
+message(STATUS "CHESS BUILD MODULE DIR: ${CHESS_BUILD_MODULE_DIR}")
+list(APPEND CMAKE_MODULE_PATH ${CHESS_BUILD_MODULE_DIR})
+
+include(CompilerWarnings)
+include(CompilerSettings)
 
 add_library(${PROJECT_NAME}
     src/chesscore/bitboard.cpp
@@ -38,6 +49,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/EHsc>
 )
 add_compiler_warnings(${PROJECT_NAME})
+add_optimization_settings(${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}Targets
@@ -67,6 +79,7 @@ target_include_directories(${PROJECT_NAME}_io PUBLIC
 target_compile_features(${PROJECT_NAME}_io PUBLIC cxx_std_20)
 target_link_libraries(${PROJECT_NAME}_io PRIVATE ${PROJECT_NAME})
 add_compiler_warnings(${PROJECT_NAME}_io)
+add_optimization_settings(${PROJECT_NAME}_io)
 target_compile_options(${PROJECT_NAME}_io PRIVATE "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 target_compile_options(${PROJECT_NAME}_io PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
 install(TARGETS ${PROJECT_NAME}_io
