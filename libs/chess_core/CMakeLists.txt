@@ -21,7 +21,6 @@ include(CompilerSettings)
 
 add_library(${PROJECT_NAME}
     src/chesscore/bitboard.cpp
-    src/chesscore/bitboard_tables.cpp
     src/chesscore/bitmap.cpp
     src/chesscore/board.cpp
     src/chesscore/chesscore.cpp
