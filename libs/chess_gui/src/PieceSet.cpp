@@ -11,8 +11,6 @@
 #include <QDebug>
 #include <QFile>
 
-namespace chessgui {
-
 class PieceResourceInit {
 public:
     PieceResourceInit() { Q_INIT_RESOURCE(pieces); }
@@ -20,6 +18,8 @@ public:
 };
 
 static PieceResourceInit pieceResourceInit;
+
+namespace chessgui {
 
 PieceSet::PieceSet(const QString &folder) {
     for (auto color : {chesscore::Color::White, chesscore::Color::Black}) {
