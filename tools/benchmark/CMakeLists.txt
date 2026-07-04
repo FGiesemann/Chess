@@ -1,5 +1,6 @@
 add_executable(benchmark
     benchmark.cpp
+    engine_benchmark.cpp
     main.cpp
     perft_benchmark.cpp
 )

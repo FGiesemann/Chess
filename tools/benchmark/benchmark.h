@@ -6,6 +6,7 @@
 #ifndef CHESS_TOOLS_BENCHMARK_BENCHMARK_H
 #define CHESS_TOOLS_BENCHMARK_BENCHMARK_H
 
+#include "engine_benchmark.h"
 #include "perft_benchmark.h"
 
 #include <span>
@@ -15,12 +16,9 @@
 
 namespace benchmark {
 
-enum class Command { 
-    None, 
-    Perft, 
-};
+enum class Command { None, Perft, Engine };
 
-using Options = std::variant<benchmark::perft::Options>;
+using Options = std::variant<perft::Options, engine::Options>;
 
 struct Parameters {
     Command command{Command::None};

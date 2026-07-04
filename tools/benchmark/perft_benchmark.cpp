@@ -65,7 +65,7 @@ Options:
 
 auto run_benchmark(const Options &options) -> void {
     std::filesystem::path epd_file{options.epd_file};
-    benchmark::perft::Benchmark benchmark{epd_file};
+    Benchmark benchmark{epd_file};
     if (options.max_depth) {
         benchmark.set_max_depth(*options.max_depth);
     }

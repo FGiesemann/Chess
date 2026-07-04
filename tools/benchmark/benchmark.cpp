@@ -16,6 +16,8 @@ Commands:
     perft  
         quick benchmark for low-level routines (e. g. move generation, make move, unmake move)
 
+    engine
+        benchmark search algorithm on test positions
 
 Options:
     --help, -h
@@ -43,7 +45,10 @@ auto read_options(int argc, std::span<char *> argv) -> Parameters {
 
     if (command_str == "perft") {
         parameters.command = Command::Perft;
-        parameters.options = benchmark::perft::parse_perft_options(argv);
+        parameters.options = perft::parse_perft_options(argv);
+    } else if (command_str == "engine") {
+        parameters.command = Command::Engine;
+        parameters.options = engine::parse_engine_options(argv);
     } else {
         print_usage();
         exit(1);
@@ -55,7 +60,10 @@ auto read_options(int argc, std::span<char *> argv) -> Parameters {
 auto run_benchmark(const Parameters &parameters) -> void {
     switch (parameters.command) {
     case Command::Perft:
-        benchmark::perft::run_benchmark(std::get<0>(parameters.options));
+        perft::run_benchmark(std::get<perft::Options>(parameters.options));
+        break;
+    case Command::Engine:
+        engine::run_benchmark(std::get<engine::Options>(parameters.options));
         break;
     case Command::None:
         break;
