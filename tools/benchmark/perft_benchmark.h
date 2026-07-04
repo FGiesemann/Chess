@@ -26,14 +26,13 @@ auto run_benchmark(const Options &options) -> void;
 
 class Benchmark {
 public:
-    explicit Benchmark(const std::filesystem::path &epd_file);
-    auto set_max_depth(int depth) -> void { m_max_depth = depth; }
-
-    auto run(int iterations = 5) -> void;
+    explicit Benchmark(const Options &options);
+    auto run() -> void;
 private:
     static constexpr int test_column_width = 80;
     chesscore::EpdSuite m_test_suite;
     int m_max_depth = 0;
+    int m_iterations = 5;
 
     static auto warmup(chesscore::Position position) -> void;
     static auto measure_single_perft(chesscore::Position position, int depth) -> std::tuple<std::uint64_t, std::uint64_t, double>;

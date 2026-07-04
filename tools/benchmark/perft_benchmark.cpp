@@ -64,25 +64,23 @@ Options:
 }
 
 auto run_benchmark(const Options &options) -> void {
-    std::filesystem::path epd_file{options.epd_file};
-    Benchmark benchmark{epd_file};
-    if (options.max_depth) {
-        benchmark.set_max_depth(*options.max_depth);
-    }
-    benchmark.run(options.iterations);
+    Benchmark benchmark{options};
+    benchmark.run();
 }
 
-Benchmark::Benchmark(const std::filesystem::path &epd_file) {
+Benchmark::Benchmark(const Options &options) {
     m_test_suite = chesscore::EpdSuite{};
-    std::ifstream file(epd_file);
+    std::ifstream file(options.epd_file);
     if (!file.is_open()) {
-        throw BenchmarkError{"Unable to open EPD file: " + epd_file.string()};
+        throw BenchmarkError{"Unable to open EPD file: " + options.epd_file.string()};
     }
     m_test_suite = chesscore::read_epd(file);
+    m_iterations = options.iterations;
+    m_max_depth = options.max_depth.has_value() ? *options.max_depth : 0;
 }
 
-auto Benchmark::run(int iterations) -> void {
-    std::cout << "Starting Benchmark (" << iterations << " iterations per position) for " << m_test_suite.size() << " positions\n";
+auto Benchmark::run() -> void {
+    std::cout << "Starting Benchmark (" << m_iterations << " iterations per position) for " << m_test_suite.size() << " positions\n";
     print_header();
 
     uint64_t grand_total_nodes = 0;
@@ -103,7 +101,7 @@ auto Benchmark::run(int iterations) -> void {
 
             std::vector<double> times;
             uint64_t nodes = 0;
-            for (int i = 0; i < iterations; ++i) {
+            for (int i = 0; i < m_iterations; ++i) {
                 auto [leaf_nodes, iter_nodes, iter_time] = measure_single_perft(position, depth);
                 if (leaf_nodes != reference_node_count) {
                     std::cerr << "ERROR: perft result " << leaf_nodes << " does not match expected count " << reference_node_count << '\n';
