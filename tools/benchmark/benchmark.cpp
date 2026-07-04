@@ -3,103 +3,63 @@
  * Benchmarking tool for performance measurement                              *
  * ************************************************************************** */
 
-#include "benchmark.h"
-
-#include <chesscore/perft.h>
-
-#include <algorithm>
-#include <fstream>
 #include <iostream>
-#include <string>
+
+#include "benchmark.h"
 
 namespace benchmark {
 
-ChessBenchmark::ChessBenchmark(const std::filesystem::path &epd_file) {
-    m_test_suite = chesscore::EpdSuite{};
-    std::ifstream file(epd_file);
-    if (!file.is_open()) {
-        throw BenchmarkError{"Unable to open EPD file: " + epd_file.string()};
-    }
-    m_test_suite = chesscore::read_epd(file);
+auto print_usage() -> void {
+    std::cout << R"(Usage: benchmark [command] [options]
+    
+Commands:
+    perft  
+        quick benchmark for low-level routines (e. g. move generation, make move, unmake move)
+
+
+Options:
+    --help, -h
+        Display this help message and exit
+
+    [command] --help | -h
+        Display help for a specific command
+)";
 }
 
-auto ChessBenchmark::run(int iterations) -> void {
-    std::cout << "Starting Benchmark (" << iterations << " iterations per position) for " << m_test_suite.size() << " positions\n";
-    print_header();
-
-    uint64_t grand_total_nodes = 0;
-    double grand_total_time = 0.0;
-
-    for (const auto &record : m_test_suite) {
-        auto position = record.position;
-        const auto fen_str = chesscore::FenString{position.piece_placement(), position.state()};
-
-        warmup(position);
-
-        for (const auto &test : record.unknown_commands) {
-            const auto depth = std::stoi(test.operands[0]);
-            const auto reference_node_count = std::stoull(test.operands[1]);
-            if (m_max_depth > 0 && depth > m_max_depth) {
-                continue;
-            }
-
-            std::vector<double> times;
-            uint64_t nodes = 0;
-            for (int i = 0; i < iterations; ++i) {
-                auto [leaf_nodes, iter_nodes, iter_time] = measure_single_perft(position, depth);
-                if (leaf_nodes != reference_node_count) {
-                    std::cerr << "ERROR: perft result " << leaf_nodes << " does not match expected count " << reference_node_count << '\n';
-                }
-                nodes = iter_nodes;
-                times.push_back(iter_time);
-            }
-
-            const auto median_time = median(times);
-
-            print_result(fen_str.str() + " @ " + std::to_string(depth), nodes, median_time * 1000.0);
-
-            grand_total_nodes += nodes;
-            grand_total_time += median_time;
-        }
+auto read_options(int argc, std::span<char *> argv) -> Parameters {
+    if (argc < 2) {
+        print_usage();
+        exit(1);
     }
 
-    double final_mnps = (static_cast<double>(grand_total_nodes) / grand_total_time) / 1'000'000.0;
-    std::cout << std::string(test_column_width + 45, '-') << '\n';
-    std::cout << "Summary: " << std::fixed << std::setprecision(3) << final_mnps << " MNPS (Average of Medians)\n";
-}
+    Parameters parameters;
 
-auto ChessBenchmark::warmup(chesscore::Position position) -> void {
-    chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
-    chesscore::perft<chesscore::PerftMode::Benchmark>(position, 3, counter);
-}
-
-auto ChessBenchmark::measure_single_perft(chesscore::Position position, int depth) -> std::tuple<std::uint64_t, std::uint64_t, double> {
-    auto start = std::chrono::high_resolution_clock::now();
-    chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
-    chesscore::perft<chesscore::PerftMode::Benchmark>(position, depth, counter);
-    auto end = std::chrono::high_resolution_clock::now();
-
-    std::chrono::duration<double> diff = end - start;
-    return {counter.leaf_nodes, counter.total_nodes, diff.count()};
-}
-
-auto ChessBenchmark::print_header() -> void {
-    std::cout << std::left << std::setw(test_column_width) << "Position" << std::right << std::setw(15) << "Total Nodes" << std::setw(15) << "Time (ms)" << std::setw(15) << "MNPS" << '\n';
-    std::cout << std::string(test_column_width + 45, '-') << '\n';
-}
-
-auto ChessBenchmark::print_result(const std::string &name, std::uint64_t nodes, double time) -> void {
-    double mnps = (static_cast<double>(nodes) / time) / 1'000.0;
-    std::cout << std::left << std::setw(test_column_width) << name << std::right << std::setw(15) << nodes << std::setw(15) << std::fixed << std::setprecision(4) << time << std::setw(15) << std::fixed
-              << std::setprecision(3) << mnps << '\n';
-}
-
-auto ChessBenchmark::median(std::vector<double> &values) -> double {
-    std::ranges::sort(values);
-    if (values.size() % 2 == 0) {
-        return (values[values.size() / 2 - 1] + values[values.size() / 2]) / 2.0;
+    if (strncmp(argv[1], "--help", 6) == 0 || strncmp(argv[1], "-h", 2) == 0) {
+        print_usage();
+        exit(0);
     }
-    return values[values.size() / 2];
+
+    std::string command_str{argv[1]};
+
+    if (command_str == "perft") {
+        parameters.command = Command::Perft;
+        parameters.options = benchmark::perft::parse_perft_options(argv);
+    } else {
+        print_usage();
+        exit(1);
+    }
+
+    return parameters;
+}
+
+auto run_benchmark(const Parameters &parameters) -> void {
+    switch (parameters.command) {
+    case Command::Perft:
+        benchmark::perft::run_benchmark(std::get<0>(parameters.options));
+        break;
+    case Command::None:
+        break;
+    }
 }
 
 } // namespace benchmark

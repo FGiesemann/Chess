@@ -1,6 +1,7 @@
 add_executable(benchmark
-    main.cpp
     benchmark.cpp
+    main.cpp
+    perft_benchmark.cpp
 )
 
 target_link_libraries(benchmark
