@@ -7,6 +7,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <span>
 
 struct Options {
     std::filesystem::path epd_file;
@@ -23,7 +24,7 @@ Options:
 )";
 }
 
-auto read_options(int argc, char *argv[]) -> Options {
+auto read_options(int argc, std::span<char *> argv) -> Options {
     Options options;
     if (argc < 2) {
         print_usage();
@@ -55,7 +56,7 @@ auto read_options(int argc, char *argv[]) -> Options {
 }
 
 auto main(int argc, char *argv[]) -> int {
-    const auto options = read_options(argc, argv);
+    const auto options = read_options(argc, std::span<char *>(argv, argc));
 
     try {
         std::filesystem::path epd_file{options.epd_file};
@@ -66,7 +67,7 @@ auto main(int argc, char *argv[]) -> int {
 
         benchmark.run(options.iterations);
     } catch (const benchmark::BenchmarkError &error) {
-        std::cerr << error.what() << std::endl;
+        std::cerr << error.what() << '\n';
         return 1;
     }
 
