@@ -80,7 +80,7 @@ Benchmark::Benchmark(const Options &options) {
 }
 
 auto Benchmark::run() -> void {
-    std::cout << "Starting Benchmark (" << m_iterations << " iterations per position) for " << m_test_suite.size() << " positions\n";
+    std::cout << "Starting perft benchmark (" << m_iterations << " iterations per position) for " << m_test_suite.size() << " positions\n";
     print_header();
 
     uint64_t grand_total_nodes = 0;
