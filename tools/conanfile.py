@@ -9,7 +9,7 @@ class ChessToolsConan(ConanFile):
 
     settings = "os", "compiler", "build_type", "arch"
 
-    requires = ["chesscore/1.0.0", "chessgame/1.0.0"]
+    requires = ["chesscore/1.0.0", "chessgame/1.0.0", "chessengine/1.0.0"]
 
     def layout(self):
         cmake_layout(self)
