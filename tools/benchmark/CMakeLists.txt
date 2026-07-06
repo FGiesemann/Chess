@@ -8,6 +8,7 @@ add_executable(benchmark
 target_link_libraries(benchmark
     PRIVATE
     chesscore::chesscore
+    ChessEngine::ChessEngineLib
 )
 
 add_optimization_settings(benchmark)

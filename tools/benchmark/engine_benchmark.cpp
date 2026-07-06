@@ -7,6 +7,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <chessengine/chess_engine.h>
+
 #include "benchmark.h"
 #include "engine_benchmark.h"
 
@@ -90,7 +92,8 @@ auto Benchmark::run() -> void {
 }
 
 auto Benchmark::benchmark_position([[maybe_unused]] chesscore::Position position) -> std::tuple<int, std::uint64_t, double> {
-    // TODO: Run search on position and return statistics
+    chessengine::Config config{};
+    chessengine::ChessEngine engine{config};
     return {5, 1548650ULL, 10.0};
 }
 

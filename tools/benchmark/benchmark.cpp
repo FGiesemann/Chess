@@ -14,10 +14,10 @@ auto print_usage() -> void {
     
 Commands:
     perft  
-        quick benchmark for low-level routines (e. g. move generation, make move, unmake move)
+        performance benchmark for low-level routines (e. g. move generation, make move, unmake move)
 
     engine
-        benchmark search algorithm on test positions
+        benchmark computation performance of search algorithm on test positions
 
 Options:
     --help, -h
