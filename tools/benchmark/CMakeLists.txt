@@ -1,8 +1,8 @@
 add_executable(benchmark
-    benchmark.cpp
-    engine_benchmark.cpp
-    main.cpp
-    perft_benchmark.cpp
+    src/benchmark.cpp
+    src/engine_benchmark.cpp
+    src/main.cpp
+    src/perft_benchmark.cpp
 )
 
 target_link_libraries(benchmark
