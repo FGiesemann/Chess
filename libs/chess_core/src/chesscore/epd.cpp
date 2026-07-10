@@ -145,6 +145,10 @@ auto read_player_identifier(const std::string &line, size_t &index, EpdRecord::p
 
 auto read_operation(const std::string &line, size_t &index, EpdRecord &record) -> void {
     const auto opcode = read_word(line, index);
+    if (opcode.empty()) {
+        check_operation_end(line, index);
+        return;
+    }
 
     static const std::unordered_map < std::string_view,
         void (*)(EpdRecord &, const std::string &, size_t &)> operation_handlers = {

@@ -144,6 +144,16 @@ TEST_CASE("Data.EPD.Parse.Operations.Multiple unknowns", "[EPD]") {
     CHECK(record.unknown_commands[5].operands == std::vector<std::string>{"6", "119060324"});
 }
 
+TEST_CASE("Data.EPD.Parse.Operations.Empty", "[EPD]") {
+    const auto record = parse_epd_line(R"(rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - D 1 20; ; D 2 400;)");
+
+    CHECK(record.unknown_commands.size() == 2);
+    CHECK(record.unknown_commands[0].opcode == "D");
+    CHECK(record.unknown_commands[0].operands == std::vector<std::string>{"1", "20"});
+    CHECK(record.unknown_commands[1].opcode == "D");
+    CHECK(record.unknown_commands[1].operands == std::vector<std::string>{"2", "400"});
+}
+
 TEST_CASE("Data.EPD.File.Simple", "[EPD]") {
     const std::string epd_data = R"(r1b2rk1/2q1b1pp/p2ppn2/1p6/3QP3/1BN1B3/PPP3PP/R4RK1 w - - bm Nd5 a4;
 r2qr1k1/1b1pppbp/1p4p1/pP2P1B1/3N4/R7/1PP2PPP/3QR1K1 w - a6
