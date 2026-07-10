@@ -4,12 +4,9 @@
  * Performance Test (perft-Tool)                                              *
  * ************************************************************************** */
 
-#include <fstream>
 #include <iostream>
-#include <ranges>
 #include <span>
 #include <string>
-#include <vector>
 
 #include <chesscore_io/chesscore_io.h>
 
@@ -18,6 +15,16 @@
 #include "suite.h"
 
 enum class Command { None, Perft, Divide };
+
+auto get_command(std::string_view name) -> Command {
+    if (name == "perft") {
+        return Command::Perft;
+    }
+    if (name == "divide") {
+        return Command::Divide;
+    }
+    return Command::None;
+}
 
 auto to_string(Command command) -> std::string {
     switch (command) {
@@ -38,18 +45,19 @@ struct Options {
     int depth{0};
     std::string suite_path;
     std::string report_path;
+
+    static auto no_command() -> Options { return Options{.command = Command::None, .fen = "", .depth = 0, .suite_path = "", .report_path = ""}; }
 };
 
-auto parse_arguments(const std::vector<std::string> &argv) -> Options;
+auto parse_arguments(std::span<const char *> argv) -> Options;
 auto print_help() -> void;
 auto perform_perft(chesscore::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void;
 auto perform_divide(chesscore::Position &pos, int depth, bool perform_range, chesstools::perft::Reporter &reporter) -> void;
 auto print_divide_result(const chesstools::perft::DivideResult &result, chesstools::perft::Reporter &reporter) -> void;
 
-auto main(int argc, char *argv[]) -> int {
+auto main(int argc, const char *argv[]) -> int {
     try {
-        std::vector<std::string> arguments = {argv, argv + argc};
-        const auto options = parse_arguments(std::vector<std::string>{argv, argv + argc});
+        const auto options = parse_arguments(std::span<const char *>(argv, argc));
         chesstools::perft::Reporter reporter{options.report_path};
         if (!options.suite_path.empty()) {
             chesstools::perft::perform_perft_suite(options.suite_path, reporter);
@@ -97,61 +105,70 @@ auto print_divide_result(const chesstools::perft::DivideResult &result, chesstoo
         reporter << entry.move << ": " << entry.node_count << '\n';
         total_nodes += entry.node_count;
     }
-    reporter << "Duration: " << result.duration.count() << " us\n";
+    reporter << "\nDuration: " << result.duration.count() << " us\n";
     reporter << "Total nodes: " << total_nodes << '\n';
-    reporter << "Nodes per second: " << total_nodes / (result.duration.count() / 1000000.0) << '\n';
+    reporter << "Nodes per second: " << static_cast<double>(total_nodes) / (static_cast<double>(result.duration.count()) / 1000000.0) << '\n';
 }
 
-auto parse_arguments(const std::vector<std::string> &argv) -> Options {
+auto parse_arguments(std::span<const char *> argv) -> Options {
+    using namespace std::string_literals;
+
     Options options{};
     int unnamed_arg_index = 0;
-    for (int i = 1; i < argv.size(); ++i) {
-        if (argv[i] == "-h" || argv[i] == "--help") {
+    for (size_t i = 1; i < argv.size(); ++i) {
+        const std::string arg{argv[i]};
+
+        if (arg == "-h"s || arg == "--help"s) {
             print_help();
-            return {.command = Command::None};
+            return Options::no_command();
         }
-        if (argv[i] == "-c" || argv[i] == "--command") {
-            if (i + 1 < argv.size()) {
-                if (argv[i + 1] == "perft") {
-                    options.command = Command::Perft;
-                } else if (argv[i + 1] == "divide") {
-                    options.command = Command::Divide;
-                } else {
-                    std::cerr << "Unknown command: " << argv[i + 1] << '\n';
-                    print_help();
-                    return {.command = Command::None};
-                }
-                ++i;
-            }
-        } else if (argv[i] == "-r" || argv[i] == "--range") {
+
+        if (arg == "-r"s || arg == "--range"s) {
             options.perform_range = true;
-        } else if (argv[i] == "-s" || argv[i] == "--suite") {
-            if (i + 1 < argv.size()) {
-                options.suite_path = argv[i + 1];
-                ++i;
-            }
-        } else if (argv[i] == "-o" || argv[i] == "--output") {
-            if (i + 1 < argv.size()) {
-                options.report_path = argv[i + 1];
-                ++i;
-            }
-        } else {
+            continue;
+        }
+
+        if (arg[0] != '-') {
+            std::cout << "Reading unnamed argument " << arg << '\n';
             if (unnamed_arg_index == 0) {
-                options.fen = argv[i];
+                options.fen = arg;
             } else if (unnamed_arg_index == 1) {
-                options.depth = std::stoi(argv[i]);
+                options.depth = std::stoi(arg);
             } else {
-                std::cerr << "Unexpected argument: " << argv[i] << '\n';
+                std::cerr << "Unexpected argument: " << arg << '\n';
                 print_help();
-                return {.command = Command::None};
+                return Options::no_command();
             }
             ++unnamed_arg_index;
+            continue;
         }
+
+        if (i + 1 >= argv.size()) {
+            std::cerr << "Option " << arg << " requires an argument\n";
+            print_help();
+            return Options::no_command();
+        }
+        const std::string option_arg{argv[i + 1]};
+
+        if (arg == "-c"s || arg == "--command"s) {
+            const auto command = get_command(option_arg);
+            if (command == Command::None) {
+                std::cerr << "Unknown command: " << option_arg << '\n';
+                print_help();
+                return Options::no_command();
+            }
+            options.command = command;
+        } else if (arg == "-s"s || arg == "--suite"s) {
+            options.suite_path = option_arg;
+        } else if (arg == "-o"s || arg == "--output"s) {
+            options.report_path = option_arg;
+        }
+        ++i;
     }
     if (options.suite_path.empty() && unnamed_arg_index != 2) {
         std::cerr << "Missing arguments\n";
         print_help();
-        return {.command = Command::None};
+        return Options::no_command();
     }
     return options;
 }
@@ -165,7 +182,7 @@ Usage:
 Options:
     -c, --command <cmd>
         Command to execute. Availabe commands are
-        - perft  : Perfoamance test (default)
+        - perft  : Performance test (default)
         - divide : Divide test
     -r, --range
         Perform test over a range of depth starting with 1 and ending with the

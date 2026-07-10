@@ -18,7 +18,6 @@ auto create_perft_result(std::uint64_t count, const std::chrono::high_resolution
 } // namespace
 
 auto perft(chesscore::Position &pos, int depth) -> PerftResult {
-    PerftResult result{};
     const auto start_time = std::chrono::high_resolution_clock::now();
     if (depth == 0) {
         return create_perft_result(1, start_time);
