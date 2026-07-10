@@ -93,6 +93,14 @@ auto Benchmark::run() -> void {
         warmup(position);
 
         for (const auto &test : record.unknown_commands) {
+            if (test.opcode != "D") {
+                std::cerr << "HINT: test case with opcode " << test.opcode << " skipped\n";
+                continue;
+            }
+            if (test.operands.size() != 2) {
+                std::cerr << "ERROR: perft test case with opcode D must have two operands\n";
+                continue;
+            }
             const auto depth = std::stoi(test.operands[0]);
             const auto reference_node_count = std::stoull(test.operands[1]);
             if (m_max_depth > 0 && depth > m_max_depth) {

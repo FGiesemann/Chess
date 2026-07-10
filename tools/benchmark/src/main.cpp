@@ -16,6 +16,9 @@ auto main(int argc, char *argv[]) -> int {
     } catch (const benchmark::BenchmarkError &error) {
         std::cerr << error.what() << '\n';
         return 1;
+    } catch (const chesscore::InvalidEpd &error) {
+        std::cerr << error.what() << '\n';
+        return 1;
     }
 
     return 0;
