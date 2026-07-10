@@ -35,7 +35,7 @@ struct PerftCounter {
      * Internal nodes are only counted with PerftMode::Benchmark. In
      * PerftMode::Verify, this code is completely removed.
      */
-    inline void count_node() {
+    void count_node() {
         if constexpr (Mode == PerftMode::Benchmark) {
             total_nodes++;
         }
@@ -46,7 +46,7 @@ struct PerftCounter {
      *
      * Leaf nodes are counted in verification and performance analysis modes.
      */
-    inline void count_leaf_node() { leaf_nodes++; }
+    void count_leaf_node() { leaf_nodes++; }
 };
 
 template<PerftMode Mode>
