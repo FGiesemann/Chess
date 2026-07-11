@@ -30,10 +30,6 @@ public:
     InvalidFen(const std::string &message) : ChessException("Invalid FEN string: " + message) {}
 };
 
-static constexpr std::string_view empty_fen = "8/8/8/8/8/8/8/8 w - - 0 1"; ///< FEN string for an empy board.
-static constexpr std::string_view starting_position_fen =
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; ///< FEN string for the starting configuration of a chess game.
-
 /**
  * \brief Interpreter for FEN strings.
  *

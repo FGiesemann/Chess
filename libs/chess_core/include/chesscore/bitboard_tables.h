@@ -15,7 +15,7 @@
 
 namespace chesscore::bitmaps {
 
-using TargetTable = Table<Bitmap, 64, Square>;
+using TargetTable = Table<Bitmap, Square::count, Square>;
 
 inline constexpr TargetTable knight_target_table{
     Bitmap{0x0000000000020400ULL}, // A1
@@ -453,8 +453,8 @@ inline constexpr RayTargetTable ray_target_table{
 };
 // clang-format on
 
-using RankTable = Table<Bitmap, 8, Rank>;
-using FileTable = Table<Bitmap, 8, File>;
+using RankTable = Table<Bitmap, Rank::max_rank, Rank>;
+using FileTable = Table<Bitmap, File::max_file, File>;
 
 inline constexpr RankTable rank_table{
     Bitmap{0x00000000000000FFULL}, Bitmap{0x000000000000FF00ULL}, Bitmap{0x0000000000FF0000ULL}, Bitmap{0x00000000FF000000ULL},

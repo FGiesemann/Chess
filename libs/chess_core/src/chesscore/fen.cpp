@@ -11,6 +11,9 @@
 
 namespace chesscore {
 
+constexpr std::string_view empty_fen = "8/8/8/8/8/8/8/8 w - - 0 1";                                            ///< FEN string for an empy board.
+constexpr std::string_view starting_position_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; ///< FEN string for the starting configuration of a chess game.
+
 FenString::FenString() : FenString{std::string{empty_fen}} {}
 
 FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
@@ -251,7 +254,7 @@ auto placement_to_string(const PiecePlacement &placement) -> std::string {
     int blank_count{0};
     for (int row = Rank::max_rank - 1; row >= 0; --row) {
         for (int column = 0; column < File::max_file; ++column) {
-            size_t index = static_cast<size_t>(row * File::max_file + column);
+            std::size_t index = row * File::max_file + column;
             if (!placement[index].has_value()) {
                 ++blank_count;
             } else {

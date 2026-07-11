@@ -8,7 +8,6 @@
 #define CHESSCORE_BITBOARD_H
 
 #include <array>
-#include <cstdint>
 
 #include "chesscore/bitmap.h"
 #include "chesscore/board.h"
@@ -304,14 +303,15 @@ public:
      */
     auto operator==(const Bitboard &rhs) const -> bool;
 private:
-    std::array<Bitmap, 12> m_bitmaps{};
-    Bitmap m_white_pieces{};
-    Bitmap m_black_pieces{};
-    Bitmap m_all_pieces{};
+    constexpr static std::size_t BitmapCount = 12ULL;
+    std::array<Bitmap, BitmapCount> m_bitmaps{};
+    Bitmap m_white_pieces;
+    Bitmap m_black_pieces;
+    Bitmap m_all_pieces;
 
     enum class PawnCaptureDirection { West, East };
 
-    auto bitmap_index(const Piece &piece) const -> size_t {
+    static auto bitmap_index(const Piece &piece) -> size_t {
         const auto type_index = static_cast<unsigned int>(piece.type);
         const auto color_offset = (piece.color == Color::White) ? 0U : 6U;
         return type_index + color_offset;

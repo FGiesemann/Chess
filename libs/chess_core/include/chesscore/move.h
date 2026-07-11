@@ -7,7 +7,6 @@
 #ifndef CHESSCORE_MOVE_H
 #define CHESSCORE_MOVE_H
 
-#include "chesscore/chesscore.h"
 #include "chesscore/piece.h"
 #include "chesscore/position_types.h"
 #include "chesscore/square.h"
@@ -116,7 +115,7 @@ struct BasicMoveCompare {
      * \param move2 The second move to compare.
      * \return If the moves are equal according to the is_moving_same_piece function.
      */
-    auto operator()(const Move &move1, const Move &move2) -> bool;
+    auto operator()(const Move &move1, const Move &move2) const -> bool;
 };
 
 /**
@@ -125,7 +124,7 @@ struct BasicMoveCompare {
  * Compares two moves with the equality operator.
  */
 struct FullMoveCompare {
-    auto operator()(const Move &move1, const Move &move2) -> bool { return move1 == move2; }
+    auto operator()(const Move &move1, const Move &move2) const -> bool { return move1 == move2; }
 };
 
 /**
@@ -150,9 +149,9 @@ struct PromotionMoveCompare {
      * \param move2 The second move to compare.
      * \return If the moves are equal according to the is_moving_same_piece_and_promotes function.
      */
-    auto operator()(const Move &move1, const Move &move2) -> bool;
+    auto operator()(const Move &move1, const Move &move2) const -> bool;
 
-    const Piece promoted; ///< The promoted piece.
+    Piece promoted; ///< The promoted piece.
 };
 
 /**
@@ -175,7 +174,7 @@ auto to_string(const MoveList &moves) -> std::string;
  */
 template<typename BinaryPred = BasicMoveCompare>
 auto move_list_contains(const MoveList &list, const Move &move, BinaryPred pred = BasicMoveCompare{}) -> bool {
-    return std::any_of(list.begin(), list.end(), [&move, &pred](const Move &m) { return pred(m, move); });
+    return std::any_of(list.begin(), list.end(), [&move, &pred](const Move &candidate) -> bool { return pred(candidate, move); });
 }
 
 /**

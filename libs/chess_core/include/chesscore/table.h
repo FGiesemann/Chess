@@ -17,13 +17,13 @@ namespace chesscore {
  * The type has to provide an index() method that returns a size_t.
  */
 template<typename T>
-concept IndexType = requires(const T &i) {
-    { i.index() } -> std::convertible_to<std::size_t>;
+concept IndexType = requires(const T &index) {
+    { index.index() } -> std::convertible_to<std::size_t>;
 };
 
 template<typename T>
-concept IndexConvertible = requires(const T &i) {
-    { get_index(i) } -> std::convertible_to<std::size_t>;
+concept IndexConvertible = requires(const T &index) {
+    { get_index(index) } -> std::convertible_to<std::size_t>;
 };
 
 /**
@@ -59,7 +59,7 @@ public:
      *
      * \return The number of elements in the table.
      */
-    constexpr auto size() const -> std::size_t { return m_data.size(); }
+    [[nodiscard]] constexpr auto size() const -> std::size_t { return m_data.size(); }
 
     /**
      * \brief Index table entries.
@@ -69,7 +69,7 @@ public:
      * \return The element.
      */
     constexpr auto operator[](const IndexT &index) const -> const ElementT &
-    requires std::is_integral<IndexT>::value
+    requires std::is_integral_v<IndexT>
     {
         return m_data[index];
     }

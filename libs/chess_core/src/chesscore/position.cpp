@@ -195,13 +195,11 @@ auto Position::check_state() const -> CheckState {
     if (is_king_in_check(m_state.side_to_move)) {
         if (all_legal_moves().empty()) {
             return CheckState::Checkmate;
-        } else {
-            return CheckState::Check;
         }
-    } else {
-        if (all_legal_moves().empty()) {
-            return CheckState::Stalemate;
-        }
+        return CheckState::Check;
+    }
+    if (all_legal_moves().empty()) {
+        return CheckState::Stalemate;
     }
     return CheckState::None;
 }

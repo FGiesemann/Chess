@@ -49,33 +49,35 @@ struct EpdRecord {
         std::vector<std::string> operands;
     };
 
-    Position position;         ///< The position described by the record.
-    opt_int acd;               ///< analysis count: depth.
-    opt_ull acn;               ///< analysis count: nodes.
-    opt_ull acs;               ///< analysis count: seconds.
-    move_list bm;              ///< best moves.
-    str_list c = str_list(10); ///< comments.
-    opt_int ce;                ///< centipawn evaluation.
-    opt_int dm;                ///< direct mate.
-    bool draw_accept{false};   ///< draw accept.
-    bool draw_claim{false};    ///< draw claim.
-    bool draw_offer{false};    ///< draw offer.
-    bool draw_reject{false};   ///< draw reject.
-    opt_str eco;               ///< ECO code.
-    opt_int fmvn;              ///< fullmove number.
-    opt_int hmvc;              ///< halfmove clock.
-    opt_str id;                ///< id.
-    opt_str nic;               ///< New In Chess opening code.
-    str_list noop_ops;         ///< noop operands.
-    opt_move pm;               ///< predicted move.
-    move_list pv;              ///< predicted variations.
-    opt_int rc;                ///< repetition count.
-    bool resign{false};        ///< resign.
-    opt_move sm;               ///< supplied move.
-    opt_int tcgs;              ///< telecommunication: game selector.
-    player_identifier tcri;    ///< telecommunication: receiver identification.
-    player_identifier tcsi;    ///< telecommunication: sender identification.
-    str_list v = str_list(10); ///< variation names.
+    static constexpr std::size_t max_comments = 10;
+
+    Position position;                   ///< The position described by the record.
+    opt_int acd;                         ///< analysis count: depth.
+    opt_ull acn;                         ///< analysis count: nodes.
+    opt_ull acs;                         ///< analysis count: seconds.
+    move_list bm;                        ///< best moves.
+    str_list c = str_list(max_comments); ///< comments.
+    opt_int ce;                          ///< centipawn evaluation.
+    opt_int dm;                          ///< direct mate.
+    bool draw_accept{false};             ///< draw accept.
+    bool draw_claim{false};              ///< draw claim.
+    bool draw_offer{false};              ///< draw offer.
+    bool draw_reject{false};             ///< draw reject.
+    opt_str eco;                         ///< ECO code.
+    opt_int fmvn;                        ///< fullmove number.
+    opt_int hmvc;                        ///< halfmove clock.
+    opt_str id;                          ///< id.
+    opt_str nic;                         ///< New In Chess opening code.
+    str_list noop_ops;                   ///< noop operands.
+    opt_move pm;                         ///< predicted move.
+    move_list pv;                        ///< predicted variations.
+    opt_int rc;                          ///< repetition count.
+    bool resign{false};                  ///< resign.
+    opt_move sm;                         ///< supplied move.
+    opt_int tcgs;                        ///< telecommunication: game selector.
+    player_identifier tcri;              ///< telecommunication: receiver identification.
+    player_identifier tcsi;              ///< telecommunication: sender identification.
+    str_list v = str_list(max_comments); ///< variation names.
 
     std::vector<unknown_command> unknown_commands; ///< List of unknown commands with their operands.
 };

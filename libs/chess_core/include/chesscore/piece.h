@@ -7,12 +7,13 @@
 #ifndef CHESSCORE_PIECE_H
 #define CHESSCORE_PIECE_H
 
-#include "chesscore/chesscore.h"
+#include "chesscore/square.h"
 #include "chesscore/table.h"
 
 #include <array>
 #include <cstdint>
 #include <optional>
+#include <string>
 
 namespace chesscore {
 
@@ -24,13 +25,13 @@ enum class PieceType { Pawn, Rook, Knight, Bishop, Queen, King };
 /**
  * \brief Number of available piece types.
  */
-static constexpr int piece_type_count = 6;
+constexpr std::size_t piece_type_count = 6ULL;
 
 /**
  * \brief All the piece types.
  *
  */
-static constexpr std::array<PieceType, piece_type_count> all_piece_types{PieceType::Pawn, PieceType::Rook, PieceType::Knight, PieceType::Bishop, PieceType::Queen, PieceType::King};
+constexpr std::array<PieceType, piece_type_count> all_piece_types{PieceType::Pawn, PieceType::Rook, PieceType::Knight, PieceType::Bishop, PieceType::Queen, PieceType::King};
 
 /**
  * \brief Get the numeric index of a piece type.
@@ -47,7 +48,7 @@ constexpr auto get_index(const PieceType &type) -> std::size_t {
 /**
  * \brief All the piece types that a pawn can promote into.
  */
-static constexpr std::array<PieceType, 4> all_promotion_piece_types{PieceType::Rook, PieceType::Knight, PieceType::Bishop, PieceType::Queen};
+constexpr std::array<PieceType, 4> all_promotion_piece_types{PieceType::Rook, PieceType::Knight, PieceType::Bishop, PieceType::Queen};
 
 /**
  * \brief Give a piece type from an index.
@@ -126,15 +127,15 @@ struct Piece {
     static const Piece BlackKing;   ///< A black king.
     ///@}
 
-    auto piece_index() const -> size_t;
-    auto piece_char() const -> char;
-    auto piece_char_colorless() const -> char;
+    [[nodiscard]] auto piece_index() const -> std::size_t;
+    [[nodiscard]] auto piece_char() const -> char;
+    [[nodiscard]] auto piece_char_colorless() const -> char;
 };
 
-static constexpr size_t min_white_piece_index{0U};  ///< Index of the first white piece (white pawn)
-static constexpr size_t max_white_piece_index{5U};  ///< Index of the last white peice (white king)
-static constexpr size_t min_black_piece_index{6U};  ///< Index of the first black piece (black pawn)
-static constexpr size_t max_black_piece_index{11U}; ///< Index of the last black piece (black king)
+constexpr std::size_t min_white_piece_index{0U};  ///< Index of the first white piece (white pawn)
+constexpr std::size_t max_white_piece_index{5U};  ///< Index of the last white peice (white king)
+constexpr std::size_t min_black_piece_index{6U};  ///< Index of the first black piece (black pawn)
+constexpr std::size_t max_black_piece_index{11U}; ///< Index of the last black piece (black king)
 
 /**
  * \brief Converts a character to a piece.
@@ -155,7 +156,7 @@ auto piece_from_fen_letter(char letter) -> Piece;
  * The 64 squares are put into the list one rank after the other, starting with
  * rank 0.
  */
-using PiecePlacement = std::array<std::optional<Piece>, 64>;
+using PiecePlacement = std::array<std::optional<Piece>, Square::count>;
 
 /**
  * \brief Generate a piece placement from a string.

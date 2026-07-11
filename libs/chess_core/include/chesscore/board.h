@@ -8,12 +8,6 @@
 #define CHESSCORE_BOARD_H
 
 #include <array>
-#include <vector>
-
-#include "chesscore/chesscore.h"
-#include "chesscore/move.h"
-#include "chesscore/piece.h"
-#include "chesscore/position_types.h"
 
 namespace chesscore {
 

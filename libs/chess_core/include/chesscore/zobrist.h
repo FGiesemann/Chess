@@ -54,7 +54,7 @@ public:
 private:
     static bool m_initialized;
     static std::array<key_t, 2 * piece_type_count * Square::count> m_piece_keys;
-    static std::array<key_t, 16> m_castling_keys;
+    static std::array<key_t, CastlingRights::max_combinations> m_castling_keys;
     static std::array<key_t, Rank::max_rank> m_enpassant_keys;
     static key_t m_side_key; // black to move
 
@@ -66,16 +66,21 @@ private:
         return key;
     }
 
-    static auto piece_index(Piece piece, Square square) -> size_t {
+    static auto piece_index(Piece piece, Square square) -> std::size_t {
         size_t index = piece.color == Color::White ? 0 : piece_type_count * Square::count;
         return index + get_index(piece.type) * Square::count + square.index();
     }
 
-    static auto castling_index(CastlingRights rights) -> size_t {
-        size_t index = rights.black_queenside ? 1 : 0;
-        index += rights.black_kingside ? 2 : 0;
-        index += rights.white_queenside ? 4 : 0;
-        index += rights.white_kingside ? 8 : 0;
+    static auto castling_index(CastlingRights rights) -> std::size_t {
+        static constexpr std::size_t bit_0 = 1;
+        static constexpr std::size_t bit_1 = 2;
+        static constexpr std::size_t bit_2 = 4;
+        static constexpr std::size_t bit_3 = 8;
+
+        std::size_t index = rights.black_queenside ? bit_0 : 0;
+        index += rights.black_kingside ? bit_1 : 0;
+        index += rights.white_queenside ? bit_2 : 0;
+        index += rights.white_kingside ? bit_3 : 0;
         return index;
     }
 };

@@ -21,6 +21,8 @@ struct CastlingRights {
     bool black_kingside{false};  ///< Black can castle on the kingside.
     bool black_queenside{false}; ///< Black can castle on the queenside.
 
+    static constexpr std::size_t max_combinations = 16ULL;
+
     /**
      * \brief Quality comparison for castling availability.
      *
@@ -87,14 +89,14 @@ struct CastlingRights {
      *
      * \return Object that has all the castling rights.
      */
-    static auto all() -> CastlingRights { return CastlingRights{true, true, true, true}; }
+    static auto all() -> CastlingRights { return CastlingRights{.white_kingside = true, .white_queenside = true, .black_kingside = true, .black_queenside = true}; }
 
     /**
      * \brief Generate an object with no castling rights.
      *
      * \return Object that has no castling rights.
      */
-    static auto none() -> CastlingRights { return CastlingRights{false, false, false, false}; }
+    static auto none() -> CastlingRights { return CastlingRights{.white_kingside = false, .white_queenside = false, .black_kingside = false, .black_queenside = false}; }
 };
 
 /**
@@ -125,7 +127,7 @@ struct PositionState {
     int fullmove_number{1};                                 ///< Number of the next move.
     int halfmove_clock{0};                                  ///< Half-move clock for the fifty-move rule.
     CastlingRights castling_rights{CastlingRights::none()}; ///< Castling rights.
-    std::optional<Square> en_passant_target{};              ///< A possible en passant target square.
+    std::optional<Square> en_passant_target;                ///< A possible en passant target square.
 
     /**
      * \brief Comparison of two PositionStates.

@@ -16,7 +16,7 @@ namespace chesscore {
 namespace detail {
 
 constexpr auto charToLower(const char character) -> char {
-    return (character >= 'A' && character <= 'Z') ? character + ('a' - 'A') : character;
+    return (character >= 'A' && character <= 'Z') ? static_cast<char>(character + ('a' - 'A')) : character;
 }
 
 } // namespace detail
@@ -94,7 +94,7 @@ struct File {
 
 auto operator<(const File &lhs, const File &rhs) -> bool;
 
-static constexpr auto get_index(const File &file) -> int {
+constexpr auto get_index(const File &file) -> int {
     return file.file - 1;
 }
 
@@ -151,7 +151,7 @@ struct Rank {
 
 auto operator<(const Rank &lhs, const Rank &rhs) -> bool;
 
-static constexpr auto get_index(const Rank &rank) -> int {
+constexpr auto get_index(const Rank &rank) -> int {
     return rank.rank - 1;
 }
 
@@ -169,7 +169,7 @@ public:
      * \param file The file (column) of the square.
      * \param rank The rank (row) of the square.
      */
-    constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{static_cast<size_t>((m_rank.rank - 1) * 8 + m_file.file - 1)} {}
+    constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{static_cast<size_t>((m_rank.rank - 1) * File::max_file + m_file.file - 1)} {}
 
     /**
      * \brief Default construtor.
@@ -184,7 +184,7 @@ public:
      * The file (column) of the square.
      * \return The file.
      */
-    constexpr auto file() const -> const File & { return m_file; }
+    [[nodiscard]] constexpr auto file() const -> const File & { return m_file; }
 
     /**
      * \brief Access the rank of the square.
@@ -192,7 +192,7 @@ public:
      * The rank (row) of the square.
      * \return The rank.
      */
-    constexpr auto rank() const -> const Rank & { return m_rank; }
+    [[nodiscard]] constexpr auto rank() const -> const Rank & { return m_rank; }
 
     /**
      * \brief Gives a linear index for the square.
@@ -201,7 +201,7 @@ public:
      * H8 = 63.
      * \return Linear index of the square.
      */
-    constexpr auto index() const -> size_t { return m_index; }
+    [[nodiscard]] constexpr auto index() const -> size_t { return m_index; }
 
     /**
      * \brief The number of squares on the board.
@@ -215,7 +215,7 @@ public:
      * 5). This allows to "switch the player/color".
      * \return The mirrored square.
      */
-    auto mirrored() const -> Square { return Square{m_file, Rank{9 - m_rank.rank}}; }
+    [[nodiscard]] auto mirrored() const -> Square { return Square{m_file, Rank{Rank::max_rank + 1 - m_rank.rank}}; }
 
     /**
      * \brief Skip to the "next" square.
@@ -227,9 +227,9 @@ public:
      * \return The new Square.
      */
     constexpr auto operator+=(int squares) -> Square & {
-        m_index = std::clamp(m_index + static_cast<std::size_t>(squares), static_cast<std::size_t>(0U), static_cast<std::size_t>(63U));
-        m_file.file = m_index % 8 + 1;
-        m_rank.rank = static_cast<int>(m_index / 8) + 1;
+        m_index = std::clamp(m_index + static_cast<std::size_t>(squares), static_cast<std::size_t>(0U), static_cast<std::size_t>(Square::count - 1));
+        m_file.file = static_cast<int>(m_index % File::max_file + 1);
+        m_rank.rank = static_cast<int>(m_index / File::max_file) + 1;
         return *this;
     }
 
@@ -243,9 +243,9 @@ public:
      * \return The new Square.
      */
     constexpr auto operator-=(int squares) -> Square & {
-        m_index = static_cast<std::size_t>(std::clamp(static_cast<int>(m_index) - squares, 0, 63));
-        m_file.file = m_index % 8 + 1;
-        m_rank.rank = static_cast<int>(m_index / 8) + 1;
+        m_index = static_cast<std::size_t>(std::clamp(static_cast<int>(m_index) - squares, 0, Square::count - 1));
+        m_file.file = static_cast<int>(m_index % File::max_file + 1);
+        m_rank.rank = static_cast<int>(m_index / File::max_file) + 1;
         return *this;
     }
 

@@ -45,11 +45,11 @@ auto is_moving_same_piece_and_promotes(const Move &move1, const Move &move2, con
     return is_moving_same_piece(move1, move2) && move1.promoted == promoted;
 }
 
-auto BasicMoveCompare::operator()(const Move &move1, const Move &move2) -> bool {
+auto BasicMoveCompare::operator()(const Move &move1, const Move &move2) const -> bool {
     return is_moving_same_piece(move1, move2);
 }
 
-auto PromotionMoveCompare::operator()(const Move &move1, const Move &move2) -> bool {
+auto PromotionMoveCompare::operator()(const Move &move1, const Move &move2) const -> bool {
     return is_moving_same_piece_and_promotes(move1, move2, promoted);
 }
 

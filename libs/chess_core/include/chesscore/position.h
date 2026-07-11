@@ -193,9 +193,9 @@ public:
      */
     auto operator==(const Position &rhs) const -> bool;
 private:
-    Bitboard m_board{};      ///< Current placement of pieces on the board.
+    Bitboard m_board;        ///< Current placement of pieces on the board.
     PositionState m_state{}; ///< The current state of the position.
-    ZobristHash m_hash{};    ///< Hash of the position.
+    ZobristHash m_hash;      ///< Hash of the position.
 
     auto move_piece_hash(const Move &move) -> void;
     auto unmove_piece_hash(const Move &move) -> void;
