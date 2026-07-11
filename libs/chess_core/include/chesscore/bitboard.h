@@ -302,6 +302,14 @@ public:
      * \return If the bitboards are equal.
      */
     auto operator==(const Bitboard &rhs) const -> bool;
+
+    /**
+     * \brief Get the occupancy map.
+     *
+     * The occupancy map is a bitmap giving the position of all pieces on the board.
+     * \return The occupancy map.
+     */
+    [[nodiscard]] auto occupancy() const -> Bitmap { return m_all_pieces; }
 private:
     constexpr static std::size_t BitmapCount = 12ULL;
     std::array<Bitmap, BitmapCount> m_bitmaps{};

@@ -61,14 +61,14 @@ public:
      * The board representation manages the pieces on the board.
      * \return The board representation.
      */
-    auto board() const -> const Bitboard & { return m_board; }
+    [[nodiscard]] auto board() const -> const Bitboard & { return m_board; }
 
     /**
      * \brief Return the player to move next.
      *
      * \return The player to move next.
      */
-    auto side_to_move() const -> Color { return m_state.side_to_move; }
+    [[nodiscard]] auto side_to_move() const -> Color { return m_state.side_to_move; }
 
     /**
      * \brief Return the fullmove number.
@@ -78,14 +78,14 @@ public:
      * number increases, after Black plays.
      * \return The fullmove number.
      */
-    auto fullmove_number() const -> int { return m_state.fullmove_number; }
+    [[nodiscard]] auto fullmove_number() const -> int { return m_state.fullmove_number; }
 
     /**
      * \brief The halfmove clock.
      *
      * \return The halfmove clock.
      */
-    auto halfmove_clock() const -> int { return m_state.halfmove_clock; }
+    [[nodiscard]] auto halfmove_clock() const -> int { return m_state.halfmove_clock; }
 
     /**
      * \brief The current castling rights.
@@ -93,7 +93,7 @@ public:
      * Returns the rights to castle for each player.
      * \return The castling rights
      */
-    auto castling_rights() const -> CastlingRights { return m_state.castling_rights; }
+    [[nodiscard]] auto castling_rights() const -> CastlingRights { return m_state.castling_rights; }
 
     /**
      * \brief An optional en-passant target square.
@@ -104,7 +104,7 @@ public:
      * this is an empty optional.
      * \return The possible en-passant target square.
      */
-    auto en_passant_target() const -> std::optional<Square> { return m_state.en_passant_target; }
+    [[nodiscard]] auto en_passant_target() const -> std::optional<Square> { return m_state.en_passant_target; }
 
     /**
      * \brief Perform a move.
@@ -130,7 +130,7 @@ public:
      *
      * \return State of the position.
      */
-    auto state() const -> const PositionState & { return m_state; }
+    [[nodiscard]] auto state() const -> const PositionState & { return m_state; }
 
     /**
      * \brief Generate all legal moves.
@@ -139,7 +139,7 @@ public:
      * player to move.
      * \return A list of all legal moves for the given position.
      */
-    auto all_legal_moves() const -> MoveList;
+    [[nodiscard]] auto all_legal_moves() const -> MoveList;
 
     /**
      * \brief Generate all (legal) capture moves.
@@ -148,7 +148,7 @@ public:
      * the player to move.
      * \return A list of all legal capture moves for the given position.
      */
-    auto capture_moves() const -> MoveList;
+    [[nodiscard]] auto capture_moves() const -> MoveList;
 
     /**
      * \brief Checks, if a king is under attack.
@@ -158,7 +158,7 @@ public:
      * \param color The color
      * \return If the king of the given color is under attack.
      */
-    auto is_king_in_check(Color color) const -> bool;
+    [[nodiscard]] auto is_king_in_check(Color color) const -> bool;
 
     /**
      * \brief Determine the check state of the position.
@@ -168,7 +168,7 @@ public:
      * there are no legal moves, the player is in checkmate.
      * \return Check state for the player to move.
      */
-    auto check_state() const -> CheckState;
+    [[nodiscard]] auto check_state() const -> CheckState;
 
     /**
      * \brief Get the piece placement of the position.
@@ -176,14 +176,14 @@ public:
      * Creates the piece placement describing the pieces on the board.
      * \return The piece placement.
      */
-    auto piece_placement() const -> PiecePlacement;
+    [[nodiscard]] auto piece_placement() const -> PiecePlacement;
 
     /**
      * \brief Hash of the position.
      *
      * \return Hash of the position.
      */
-    auto hash() const -> const ZobristHash & { return m_hash; }
+    [[nodiscard]] auto hash() const -> const ZobristHash & { return m_hash; }
 
     /**
      * \brief Comparison of two positions.

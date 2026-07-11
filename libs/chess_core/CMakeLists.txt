@@ -26,6 +26,7 @@ add_library(${PROJECT_NAME}
     src/chesscore/chesscore.cpp
     src/chesscore/epd.cpp
     src/chesscore/fen.cpp
+    src/chesscore/magic.cpp
     src/chesscore/move.cpp
     src/chesscore/perft.cpp
     src/chesscore/piece.cpp
