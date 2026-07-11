@@ -51,7 +51,7 @@ public:
      * An empty bit map has no bits set.
      * \return If the bitmap is empty.
      */
-    constexpr auto empty() const -> bool { return m_bits == 0ull; }
+    [[nodiscard]] constexpr auto empty() const -> bool { return m_bits == 0ULL; }
 
     /**
      * \brief Query a bit in the bit map.
@@ -60,7 +60,7 @@ public:
      * \param square The position to query.
      * \return If the bit at the given position is set.
      */
-    constexpr auto get(const Square &square) const -> bool { return m_bits & bit_mask(square.index()); }
+    [[nodiscard]] constexpr auto get(const Square &square) const -> bool { return (m_bits & bit_mask(square.index())) != 0U; }
 
     /**
      * \brief Set a bit in the bit map.
@@ -91,7 +91,7 @@ public:
      *
      * \return The number of occupied squares.
      */
-    constexpr auto count() const -> int { return std::popcount(m_bits); }
+    [[nodiscard]] constexpr auto count() const -> int { return std::popcount(m_bits); }
 
     /**
      * \brief Equality comparison.
@@ -169,7 +169,7 @@ public:
      * This gives the 64 bits in a 64-bit unsigned integer.
      * \return The bits in the bitmap.
      */
-    constexpr auto bits() const -> std::uint64_t { return m_bits; }
+    [[nodiscard]] constexpr auto bits() const -> std::uint64_t { return m_bits; }
 
     /**
      * \brief Returns the number of empty squares before the first piece.
@@ -180,7 +180,7 @@ public:
      * returns 19.
      * \return The number of empty squares before the first piece is found.
      */
-    constexpr auto empty_squares_before() const -> int { return std::countr_zero(m_bits); }
+    [[nodiscard]] constexpr auto empty_squares_before() const -> int { return std::countr_zero(m_bits); }
 
     /**
      * \brief Returns the number of empty squares after the last piece.
@@ -191,7 +191,7 @@ public:
      * piece on C6, the function returns 21.
      * \return The number of empty squares after the last piece is found.
      */
-    constexpr auto empty_squares_after() const -> int { return std::countl_zero(m_bits); }
+    [[nodiscard]] constexpr auto empty_squares_after() const -> int { return std::countl_zero(m_bits); }
 private:
     std::uint64_t m_bits{};
 
