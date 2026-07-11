@@ -22,6 +22,7 @@ add_executable(chesscore_tests
     position/unmake_move_test.cpp
 
     magic/block_mask_test.cpp
+    magic/blocker_iteration_test.cpp
 )
 add_compiler_warnings(chesscore_tests)
 add_optimization_settings(chesscore_tests)

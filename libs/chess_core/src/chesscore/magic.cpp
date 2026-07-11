@@ -23,4 +23,8 @@ auto blocker_mask(PieceType piece_type, const Square &square) -> Bitmap {
     return Bitmap{};
 }
 
+auto next_blocker_config(Bitmap blockers, Bitmap mask) -> Bitmap {
+    return Bitmap{blockers.bits() - mask.bits()} & mask;
+}
+
 } // namespace chesscore

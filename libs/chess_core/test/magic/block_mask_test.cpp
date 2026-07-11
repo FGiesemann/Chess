@@ -9,11 +9,11 @@
 
 using namespace chesscore;
 
-TEST_CASE("Magic.BlockerMask.Non Sliding", "[magic]") {
+TEST_CASE("Magic.Blocker.Mask.Non Sliding", "[magic]") {
     CHECK(blocker_mask(PieceType::King, Square::A5).empty());
 }
 
-TEST_CASE("Magic.BlockerMask.Rook", "[magic]") {
+TEST_CASE("Magic.Blocker.Mask.Rook", "[magic]") {
     const auto mask1 = blocker_mask(PieceType::Rook, Square::E3);
     CHECK(mask1 == Bitmap{0x00101010106E1000ULL});
 
@@ -21,7 +21,7 @@ TEST_CASE("Magic.BlockerMask.Rook", "[magic]") {
     CHECK(mask2 == Bitmap{0x0080807E80808000ULL});
 }
 
-TEST_CASE("Magic.BlockerMask.Bishop", "[magic]") {
+TEST_CASE("Magic.Blocker.Mask.Bishop", "[magic]") {
     const auto mask1 = blocker_mask(PieceType::Bishop, Square::E3);
     CHECK(mask1 == Bitmap{0x0000024428002800ULL});
 
@@ -32,7 +32,7 @@ TEST_CASE("Magic.BlockerMask.Bishop", "[magic]") {
     CHECK(mask3 == Bitmap{0x000A000A10204000ULL});
 }
 
-TEST_CASE("Magic.BlockerMask.Queen", "[magic]") {
+TEST_CASE("Magic.Blocker.Mask.Queen", "[magic]") {
     const auto mask1 = blocker_mask(PieceType::Queen, Square::E3);
     CHECK(mask1 == Bitmap{0x00101254386E3800ULL});
 

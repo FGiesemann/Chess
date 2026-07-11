@@ -169,6 +169,19 @@ private:
  */
 [[nodiscard]] auto blocker_mask(PieceType piece_type, const Square &square) -> Bitmap;
 
+/**
+ * \brief Compute the next blocker configuration.
+ *
+ * Repeatedly calling this function will generate all possible blocker
+ * configurations for the given mask. The first call should be with
+ * blockers = 0.
+ * After a full cycle, the function generates blockers == 0 again.
+ * \param blockers The current blocker configuration.
+ * \param mask The blocker mask.
+ * \return The next blocker configuration.
+ */
+[[nodiscard]] auto next_blocker_config(Bitmap blockers, Bitmap mask) -> Bitmap;
+
 } // namespace chesscore
 
 #endif
