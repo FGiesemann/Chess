@@ -20,6 +20,8 @@ add_executable(chesscore_tests
     position/perft_test.cpp
     position/position_test.cpp
     position/unmake_move_test.cpp
+
+    magic/block_mask_test.cpp
 )
 add_compiler_warnings(chesscore_tests)
 add_optimization_settings(chesscore_tests)

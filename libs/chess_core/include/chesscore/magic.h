@@ -42,6 +42,11 @@ public:
     };
 
     /**
+     * \brief Type for storing the attacker table.
+     */
+    using AttackerTable = Table<Bitmap, TableSize, Index>;
+
+    /**
      * \brief Create a magic bitboard.
      *
      * \param magic_number Magic number for this magic bitboard.
@@ -136,14 +141,33 @@ public:
      * \return The table entry.
      */
     auto operator[](const Index &index) -> Bitmap & { return m_attacker_table[index]; }
+
+    /**
+     * \brief The whole table of attack boards.
+     *
+     * Not every index of it might actually have an entry.
+     * \return The table of attack bitmaps.
+     */
+    [[nodiscard]] auto table() const -> AttackerTable & { return m_attacker_table; }
 private:
     MagicNumber m_magic_number; ///< The magic number used in hashing
     std::uint64_t m_shift;      ///< The shift used in hashing
     Bitmap m_blocker_mask;      ///< The mask for extracting blockers
 
-    using AttackerTable = Table<Bitmap, TableSize, Index>;
     AttackerTable m_attacker_table{}; ///< The table of attack bitmaps
 };
+
+/**
+ * \brief Compute the blocker mask for a sliding piece.
+ *
+ * Computes the mask of potential blockers for a sliding piece of the given
+ * type, either Rook, Bishop, or Queen, standing on the given square.
+ * For other PieceTypes, an empty board is generated.
+ * \param piece_type Type of the sliding piece.
+ * \param square The starting square of the sliding piece.
+ * \return The block mask for the piece.
+ */
+[[nodiscard]] auto blocker_mask(PieceType piece_type, const Square &square) -> Bitmap;
 
 } // namespace chesscore
 
