@@ -161,7 +161,7 @@ private:
  * \brief Compute the blocker mask for a sliding piece.
  *
  * Computes the mask of potential blockers for a sliding piece of the given
- * type, either Rook, Bishop, or Queen, standing on the given square.
+ * type, either Rook or Bishop, standing on the given square.
  * For other PieceTypes, an empty board is generated.
  * \param piece_type Type of the sliding piece.
  * \param square The starting square of the sliding piece.
