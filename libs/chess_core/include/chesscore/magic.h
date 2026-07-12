@@ -103,6 +103,43 @@ struct MagicBitboard {
  */
 [[nodiscard]] auto next_blocker_config(Bitmap blockers, Bitmap mask) -> Bitmap;
 
+/**
+ * \brief Generate the attack bitmap for a sliding piece.
+ *
+ * The attack bitmap describes all the squares that the sliding piece can reach
+ * for the given configuration of blockers. If a square is occupied (blocked),
+ * the square is considered accessible, i.e. no color checking is performed.
+ * \param piece_type Type of the sliding piece.
+ * \param square The starting square of the sliding piece.
+ * \param blockers The configuration of blockers on the board.
+ * \return The attack bitmap for the sliding piece and the blocker configuration.
+ */
+[[nodiscard]] auto attack_bitmap(PieceType piece_type, const Square &square, Bitmap blockers) -> Bitmap;
+
+/**
+ * \brief Generate the attack bitmap for a rook.
+ *
+ * The attack bitmap describes all the squares that the rook can reach
+ * for the given configuration of blockers. If a square is occupied (blocked),
+ * the square is considered accessible, i.e. no color checking is performed.
+ * \param square The starting square of the rook.
+ * \param blockers The configuration of blockers on the board.
+ * \return The attack bitmap for the rook and the blocker configuration.
+ */
+[[nodiscard]] auto rook_attack_bitmap(const Square &square, Bitmap blockers) -> Bitmap;
+
+/**
+ * \brief Generate the attack bitmap for a bishop.
+ *
+ * The attack bitmap describes all the squares that the bishop can reach
+ * for the given configuration of blockers. If a square is occupied (blocked),
+ * the square is considered accessible, i.e. no color checking is performed.
+ * \param square The starting square of the bishop.
+ * \param blockers The configuration of blockers on the board.
+ * \return The attack bitmap for the bishop and the blocker configuration.
+ */
+[[nodiscard]] auto bishop_attack_bitmap(const Square &square, Bitmap blockers) -> Bitmap;
+
 } // namespace chesscore
 
 #endif

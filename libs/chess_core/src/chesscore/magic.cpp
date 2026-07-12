@@ -24,4 +24,22 @@ auto next_blocker_config(Bitmap blockers, Bitmap mask) -> Bitmap {
     return Bitmap{blockers.bits() - mask.bits()} & mask;
 }
 
+auto attack_bitmap(PieceType piece_type, const Square &square, Bitmap blockers) -> Bitmap {
+    if (piece_type == PieceType::Rook) {
+        return rook_attack_bitmap(square, blockers);
+    }
+    if (piece_type == PieceType::Bishop) {
+        return bishop_attack_bitmap(square, blockers);
+    }
+    return Bitmap{};
+}
+
+auto rook_attack_bitmap([[maybe_unused]] const Square &square, [[maybe_unused]] Bitmap blockers) -> Bitmap {
+    return Bitmap{};
+}
+
+auto bishop_attack_bitmap([[maybe_unused]] const Square &square, [[maybe_unused]] Bitmap blockers) -> Bitmap {
+    return Bitmap{};
+}
+
 } // namespace chesscore
