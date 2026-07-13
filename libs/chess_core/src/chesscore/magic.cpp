@@ -24,22 +24,25 @@ auto next_blocker_config(Bitmap blockers, Bitmap mask) -> Bitmap {
     return Bitmap{blockers.bits() - mask.bits()} & mask;
 }
 
-auto attack_bitmap(PieceType piece_type, const Square &square, Bitmap blockers) -> Bitmap {
-    if (piece_type == PieceType::Rook) {
-        return rook_attack_bitmap(square, blockers);
+auto attack_bitmap(PieceType piece_type, const Square &square, Bitmap blocker_config) -> Bitmap {
+    if (piece_type != PieceType::Rook && piece_type != PieceType::Bishop) {
+        return Bitmap{};
     }
-    if (piece_type == PieceType::Bishop) {
-        return bishop_attack_bitmap(square, blockers);
+
+    Bitmap attack_map{};
+    const auto ray_directions_for_piece = piece_ray_directions[piece_type];
+    for (const auto direction : all_ray_directions) {
+        if (ray_directions_for_piece & direction) {
+            auto targets = bitmaps::ray_target_table[direction][square];
+            const auto blockers = targets & blocker_config;
+            if (!blockers.empty()) {
+                const auto blocker_square = Square::A1 + (is_negative_direction(direction) ? 63 - blockers.empty_squares_after() : blockers.empty_squares_before());
+                targets ^= bitmaps::ray_target_table[direction][blocker_square];
+            }
+            attack_map |= targets;
+        }
     }
-    return Bitmap{};
-}
-
-auto rook_attack_bitmap([[maybe_unused]] const Square &square, [[maybe_unused]] Bitmap blockers) -> Bitmap {
-    return Bitmap{};
-}
-
-auto bishop_attack_bitmap([[maybe_unused]] const Square &square, [[maybe_unused]] Bitmap blockers) -> Bitmap {
-    return Bitmap{};
+    return attack_map;
 }
 
 } // namespace chesscore
