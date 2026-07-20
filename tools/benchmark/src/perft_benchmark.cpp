@@ -9,6 +9,7 @@
 #include <chesscore/perft.h>
 
 #include <algorithm>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -19,15 +20,15 @@ auto parse_perft_options(std::span<char *> argv) -> Options {
     Options options{.epd_file = "", .iterations = 5, .max_depth = std::nullopt};
 
     for (size_t i = 1; i < argv.size(); ++i) {
-        if (strncmp(argv[i], "--help", 6) == 0 || strncmp(argv[i], "-h", 2) == 0) {
+        if (std::strncmp(argv[i], "--help", 6) == 0 || std::strncmp(argv[i], "-h", 2) == 0) {
             print_perft_help();
             exit(0);
-        } else if (strncmp(argv[i], "--iter", 6) == 0 || strncmp(argv[i], "-i", 2) == 0) {
+        } else if (std::strncmp(argv[i], "--iter", 6) == 0 || std::strncmp(argv[i], "-i", 2) == 0) {
             if (i + 1 < argv.size()) {
                 options.iterations = std::stoi(argv[i + 1]);
                 ++i;
             }
-        } else if (strncmp(argv[i], "--depth", 6) == 0 || strncmp(argv[i], "-d", 2) == 0) {
+        } else if (std::strncmp(argv[i], "--depth", 6) == 0 || std::strncmp(argv[i], "-d", 2) == 0) {
             if (i + 1 < argv.size()) {
                 options.max_depth = std::stoi(argv[i + 1]);
                 ++i;
@@ -80,7 +81,8 @@ Benchmark::Benchmark(const Options &options) {
 }
 
 auto Benchmark::run() -> void {
-    std::cout << "Starting perft benchmark (" << m_iterations << " iterations per position) for " << m_test_suite.size() << " positions\n";
+    std::cout << "Starting perft benchmark (" << m_iterations << " iterations per position) for " << m_test_suite.size()
+              << " positions\n";
     print_header();
 
     uint64_t grand_total_nodes = 0;
@@ -112,7 +114,8 @@ auto Benchmark::run() -> void {
             for (int i = 0; i < m_iterations; ++i) {
                 auto [leaf_nodes, iter_nodes, iter_time] = measure_single_perft(position, depth);
                 if (leaf_nodes != reference_node_count) {
-                    std::cerr << "ERROR: perft result " << leaf_nodes << " does not match expected count " << reference_node_count << '\n';
+                    std::cerr << "ERROR: perft result " << leaf_nodes << " does not match expected count "
+                              << reference_node_count << '\n';
                 }
                 nodes = iter_nodes;
                 times.push_back(iter_time);
@@ -137,7 +140,8 @@ auto Benchmark::warmup(chesscore::Position position) -> void {
     chesscore::perft<chesscore::PerftMode::Benchmark>(position, 3, counter);
 }
 
-auto Benchmark::measure_single_perft(chesscore::Position position, int depth) -> std::tuple<std::uint64_t, std::uint64_t, double> {
+auto Benchmark::measure_single_perft(chesscore::Position position, int depth)
+    -> std::tuple<std::uint64_t, std::uint64_t, double> {
     auto start = std::chrono::high_resolution_clock::now();
     chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
     chesscore::perft<chesscore::PerftMode::Benchmark>(position, depth, counter);
@@ -148,13 +152,15 @@ auto Benchmark::measure_single_perft(chesscore::Position position, int depth) ->
 }
 
 auto Benchmark::print_header() -> void {
-    std::cout << std::left << std::setw(test_column_width) << "Position" << std::right << std::setw(15) << "Total Nodes" << std::setw(15) << "Time (ms)" << std::setw(15) << "MNPS" << '\n';
+    std::cout << std::left << std::setw(test_column_width) << "Position" << std::right << std::setw(15) << "Total Nodes"
+              << std::setw(15) << "Time (ms)" << std::setw(15) << "MNPS" << '\n';
     std::cout << std::string(test_column_width + 45, '-') << '\n';
 }
 
 auto Benchmark::print_result(const std::string &name, std::uint64_t nodes, double time) -> void {
     double mnps = (static_cast<double>(nodes) / time) / 1'000.0;
-    std::cout << std::left << std::setw(test_column_width) << name << std::right << std::setw(15) << nodes << std::setw(15) << std::fixed << std::setprecision(4) << time << std::setw(15) << std::fixed
+    std::cout << std::left << std::setw(test_column_width) << name << std::right << std::setw(15) << nodes
+              << std::setw(15) << std::fixed << std::setprecision(4) << time << std::setw(15) << std::fixed
               << std::setprecision(3) << mnps << '\n';
 }
 

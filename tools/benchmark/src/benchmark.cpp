@@ -3,7 +3,9 @@
  * Benchmarking tool for performance measurement                              *
  * ************************************************************************** */
 
+#include <cstring>
 #include <iostream>
+
 
 #include "benchmark.h"
 
@@ -36,7 +38,7 @@ auto read_options(int argc, std::span<char *> argv) -> Parameters {
 
     Parameters parameters;
 
-    if (strncmp(argv[1], "--help", 6) == 0 || strncmp(argv[1], "-h", 2) == 0) {
+    if (std::strncmp(argv[1], "--help", 6) == 0 || std::strncmp(argv[1], "-h", 2) == 0) {
         print_usage();
         exit(0);
     }
