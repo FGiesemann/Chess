@@ -29,6 +29,7 @@ struct GeneratorResult {
     std::uint64_t expected_entries{};
     std::uint64_t stored_entries{};
     std::uint64_t constructive_collisions{};
+    std::uint64_t max_index{};
     std::optional<std::uint64_t> collision_index;
     Table table;
 };
