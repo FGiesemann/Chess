@@ -1,5 +1,6 @@
 add_executable(magic_bitboard_generator
     main.cpp
+    magic_bitboard.cpp
 )
 
 target_link_libraries(magic_bitboard_generator
