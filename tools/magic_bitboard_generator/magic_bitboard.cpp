@@ -14,7 +14,7 @@ auto fill_table(const TableSpec &spec, const Magics &magics) -> GeneratorResult 
     result.expected_entries = chesscore::blocker_config_count(blocker_mask);
 
     chesscore::Bitmap blockers{};
-    do {
+    do { // NOLINT
         const auto index = chesscore::magic_index(blockers, magics.magic_number, magics.shift);
         result.max_index = std::max(result.max_index, index);
 
