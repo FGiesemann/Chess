@@ -32,3 +32,9 @@ TEST_CASE("Magic.Blocker.Mask.Bishop", "[magic]") {
     const auto mask3 = blocker_mask(PieceType::Bishop, Square::C6);
     CHECK(mask3 == Bitmap{0x000A000A10204000ULL});
 }
+
+TEST_CASE("Magic.Blocker.Config Count", "[magic]") {
+    CHECK(blocker_config_count(Bitmap{}) == 1);
+    CHECK(blocker_config_count(Bitmap{1ULL}) == 2);
+    CHECK(blocker_config_count(Bitmap{0x0005000004002030ULL}) == 64);
+}

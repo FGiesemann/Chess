@@ -95,6 +95,14 @@ struct MagicBitboard {
 [[nodiscard]] auto blocker_mask(PieceType piece_type, const Square &square) -> Bitmap;
 
 /**
+ * \brief The number of possible blocker configurations.
+ *
+ * \param blocker_mask The blocker mask.
+ * \return The number of possible blocker configurations.
+ */
+[[nodiscard]] auto blocker_config_count(Bitmap blocker_mask) -> std::uint64_t;
+
+/**
  * \brief Compute the next blocker configuration.
  *
  * Repeatedly calling this function will generate all possible blocker

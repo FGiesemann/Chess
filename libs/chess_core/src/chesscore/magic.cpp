@@ -20,6 +20,10 @@ auto blocker_mask(PieceType piece_type, const Square &square) -> Bitmap {
     return Bitmap{};
 }
 
+auto blocker_config_count(Bitmap blocker_mask) -> std::uint64_t {
+    return 1ULL << blocker_mask.count();
+}
+
 auto next_blocker_config(Bitmap blockers, Bitmap mask) -> Bitmap {
     return Bitmap{blockers.bits() - mask.bits()} & mask;
 }
