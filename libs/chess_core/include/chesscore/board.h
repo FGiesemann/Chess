@@ -8,6 +8,7 @@
 #define CHESSCORE_BOARD_H
 
 #include <array>
+#include <cstdint>
 
 namespace chesscore {
 
