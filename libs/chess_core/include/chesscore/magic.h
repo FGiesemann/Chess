@@ -14,6 +14,10 @@
 
 namespace chesscore {
 
+inline auto magic_index(const Bitmap &blockers, std::uint64_t magic_number, std::uint64_t shift) -> std::uint64_t {
+    return blockers.bits() * magic_number >> shift;
+}
+
 /**
  * \brief A table storing the attack bitboards for one piece type on a
  * particular suqare.
@@ -42,7 +46,7 @@ struct MagicBitboard {
      * \param blockers The blockers on the board.
      * \return The attack bitmap.
      */
-    [[nodiscard]] auto reachable_squares(const Bitmap &blockers) const -> Bitmap { return attack_table[compute_index(blockers)]; }
+    [[nodiscard]] auto reachable_squares(const Bitmap &blockers) const -> Bitmap { return attack_table[magic_index(blockers, magic_number, shift)]; }
 
     /**
      * \brief The attack bitmap for the sliding piece.
@@ -75,7 +79,7 @@ struct MagicBitboard {
      * \param blockers The blocker configuration.
      * \return The index of the attacker bitmap.
      */
-    [[nodiscard]] auto compute_index(const Bitmap &blockers) const -> std::uint64_t { return blockers.bits() * magic_number >> shift; }
+    [[nodiscard]] auto compute_index(const Bitmap &blockers) const -> std::uint64_t { return magic_index(blockers, magic_number, shift); }
 };
 
 /**
