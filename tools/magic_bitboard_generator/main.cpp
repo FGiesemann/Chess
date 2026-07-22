@@ -12,8 +12,8 @@ auto print_search_status(const SearchResult &result) -> void {
     if (stats.successful()) {
         std::cout << std::format(
             "Magic number: 0x{:016x} | Index bits: {} | Max index: {} | Constr. coll.: {} | Tries: {}\n",
-            result.magic_number, 64 - result.shift, stats.max_index, result.generator_result.constructive_collisions,
-            result.tries);
+            result.magics.magic_number, 64 - result.magics.shift, stats.max_index,
+            result.generator_result.constructive_collisions, result.tries);
     } else {
         std::cout << std::format("  Stored entries: {} / {}", stats.stored_entries, stats.expected_entries);
         if (stats.expected_entries != 0) {

@@ -67,8 +67,7 @@ auto MagicBitboardGenerator::update_result(SearchResult &search_result, const Ma
                                            const GeneratorResult &result) -> bool {
     if (result.successful()) {
         if (result.max_index < search_result.generator_result.max_index) {
-            search_result.magic_number = magics.magic_number;
-            search_result.shift = magics.shift;
+            search_result.magics = magics;
             search_result.generator_result = result;
             if (m_progress_callback) {
                 m_progress_callback(search_result);
@@ -77,8 +76,7 @@ auto MagicBitboardGenerator::update_result(SearchResult &search_result, const Ma
         }
         if (m_report_all_magics && m_progress_callback) {
             SearchResult r{search_result};
-            r.magic_number = magics.magic_number;
-            r.shift = magics.shift;
+            r.magics = magics;
             r.generator_result = result;
             m_progress_callback(r);
             return false;
