@@ -45,29 +45,48 @@ auto search_magic_number(const TableSpec &spec, const SearchParams &params) -> S
     std::mt19937_64 rng{params.rand_seed == 0 ? std::random_device{}() : params.rand_seed};
     std::uniform_int_distribution<std::uint64_t> dist{0, std::numeric_limits<std::uint64_t>::max()};
     SearchResult search_result{};
+    bool exit = false;
 
     std::uint64_t max_index{std::numeric_limits<std::uint64_t>::max()};
-    for (std::size_t i = 0; i < params.max_tries; ++i) {
-        search_result.tries++;
-        const auto magic_number = dist(rng);
-        const auto magics = Magics{.magic_number = magic_number, .shift = params.shift};
-        const auto result = fill_table(spec, magics);
-        if (search_result.magic_number == 0) {
-            search_result.generator_result = result;
+    for (std::uint64_t shift : params.shifts) {
+        if (exit) {
+            break;
         }
-        if (!result.collision_index.has_value()) {
-            if (result.max_index < max_index) {
-                max_index = result.max_index;
-                search_result.magic_number = magic_number;
+        for (std::size_t i = 0; !exit && i < params.max_tries; ++i) {
+            search_result.tries++;
+            const auto magic_number = dist(rng);
+            const auto magics = Magics{.magic_number = magic_number, .shift = shift};
+            const auto result = fill_table(spec, magics);
+            if (search_result.magic_number == 0) {
                 search_result.generator_result = result;
-                if (params.process_report_callback.has_value()) {
-                    params.process_report_callback.value()(search_result);
-                }
             }
-            if (params.early_exit) {
-                break;
+            if (!result.collision_index.has_value()) {
+                if (result.max_index < max_index) {
+                    max_index = result.max_index;
+                    search_result.magic_number = magic_number;
+                    search_result.shift = shift;
+                    search_result.generator_result = result;
+                    if (params.process_report_callback.has_value()) {
+                        params.process_report_callback.value()(search_result);
+                    }
+                }
+                if (params.early_exit) {
+                    exit = true;
+                }
             }
         }
     }
     return search_result;
+}
+
+auto make_shift_range(std::uint64_t start, std::uint64_t end) -> Shifts {
+    std::uint64_t inc = start < end ? 1 : -1;
+    Shifts shifts{};
+    for (std::uint64_t i = start; i != end; i += inc) {
+        shifts.push_back(i);
+    }
+    if (start != end) {
+        shifts.push_back(end);
+    }
+    return shifts;
 }

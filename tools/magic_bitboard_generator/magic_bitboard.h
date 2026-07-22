@@ -38,18 +38,22 @@ struct GeneratorResult {
 struct SearchResult {
     GeneratorResult generator_result;
     std::uint64_t magic_number{};
+    std::uint64_t shift{};
     std::uint64_t tries{};
 };
 
 using ProcessReportCallback = std::function<void(const SearchResult &)>;
+using Shifts = std::vector<std::uint64_t>;
 
 struct SearchParams {
     std::uint64_t rand_seed{};
     int max_tries{};
-    std::uint64_t shift{};
+    Shifts shifts;
     bool early_exit{false};
     std::optional<ProcessReportCallback> process_report_callback;
 };
+
+auto make_shift_range(std::uint64_t start, std::uint64_t end) -> Shifts;
 
 /**
  * \brief Try to fill a table with a given magic number and shift.
@@ -65,7 +69,7 @@ auto fill_table(const TableSpec &spec, const Magics &magics) -> GeneratorResult;
  * Tries different randomly selected magic numbers until either a table can be
  * generated or the maximum number of tries is reached.
  * \param spec Specification of piece type and square.
- * \param params Maximum number of tries and shift.
+ * \param params Maximum number of tries and shifts.
  * \return The search result.
  */
 auto search_magic_number(const TableSpec &spec, const SearchParams &params) -> SearchResult;

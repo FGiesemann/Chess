@@ -21,16 +21,18 @@ auto print_search_status(const SearchResult &result) -> void {
         std::cout << std::format("  Collision at index: {}\n", stats.collision_index.value());
     } else {
         std::cout << std::format("  Tries: {}\n", result.tries);
-        std::cout << std::format("Magic number: 0x{:016x}\n", result.magic_number);
+        std::cout << std::format("Magic number: 0x{:016x} | Index bits: {}\n", result.magic_number, 64 - result.shift);
     }
 }
 
 auto main(int argc, const char *argv[]) -> int {
     std::cout << "Magic Bitboard Generator\n";
 
-    const auto result = search_magic_number(
-        {.piece = chesscore::PieceType::Rook, .square = chesscore::Square::E4},
-        {.rand_seed = 0, .max_tries = 1'000'000'000, .shift = 64 - 11, .process_report_callback = print_search_status});
+    const auto result = search_magic_number({.piece = chesscore::PieceType::Rook, .square = chesscore::Square::E4},
+                                            {.rand_seed = 0,
+                                             .max_tries = 10'000'000,
+                                             .shifts = make_shift_range(64 - 12, 64 - 10),
+                                             .process_report_callback = print_search_status});
 
     print_search_status(result);
 }
