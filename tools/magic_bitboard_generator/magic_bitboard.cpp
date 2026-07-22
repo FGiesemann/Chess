@@ -60,6 +60,9 @@ auto search_magic_number(const TableSpec &spec, const SearchParams &params) -> S
                 max_index = result.max_index;
                 search_result.magic_number = magic_number;
                 search_result.generator_result = result;
+                if (params.process_report_callback.has_value()) {
+                    params.process_report_callback.value()(search_result);
+                }
             }
             if (params.early_exit) {
                 break;

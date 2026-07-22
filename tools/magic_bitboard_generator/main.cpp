@@ -7,12 +7,7 @@
 
 #include <iostream>
 
-auto main(int argc, const char *argv[]) -> int {
-    std::cout << "Magic Bitboard Generator\n";
-
-    const auto result = search_magic_number({.piece = chesscore::PieceType::Rook, .square = chesscore::Square::E4},
-                                            {.rand_seed = 0, .max_tries = 1'000'000, .shift = 64 - 11});
-
+auto print_search_status(const SearchResult &result) -> void {
     const auto stats = result.generator_result;
     std::cout << "Statistics:\n";
     std::cout << std::format("  Stored entries: {} / {}", stats.stored_entries, stats.expected_entries);
@@ -28,4 +23,14 @@ auto main(int argc, const char *argv[]) -> int {
         std::cout << std::format("  Tries: {}\n", result.tries);
         std::cout << std::format("Magic number: 0x{:016x}\n", result.magic_number);
     }
+}
+
+auto main(int argc, const char *argv[]) -> int {
+    std::cout << "Magic Bitboard Generator\n";
+
+    const auto result = search_magic_number(
+        {.piece = chesscore::PieceType::Rook, .square = chesscore::Square::E4},
+        {.rand_seed = 0, .max_tries = 1'000'000'000, .shift = 64 - 11, .process_report_callback = print_search_status});
+
+    print_search_status(result);
 }

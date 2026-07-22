@@ -10,6 +10,7 @@
 #include <chesscore/piece.h>
 #include <chesscore/square.h>
 
+#include <functional>
 #include <optional>
 #include <vector>
 
@@ -34,17 +35,20 @@ struct GeneratorResult {
     Table table;
 };
 
+struct SearchResult {
+    GeneratorResult generator_result;
+    std::uint64_t magic_number{};
+    std::uint64_t tries{};
+};
+
+using ProcessReportCallback = std::function<void(const SearchResult &)>;
+
 struct SearchParams {
     std::uint64_t rand_seed{};
     int max_tries{};
     std::uint64_t shift{};
     bool early_exit{false};
-};
-
-struct SearchResult {
-    GeneratorResult generator_result;
-    std::uint64_t magic_number{};
-    std::uint64_t tries{};
+    std::optional<ProcessReportCallback> process_report_callback;
 };
 
 /**
