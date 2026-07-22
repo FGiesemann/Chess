@@ -32,7 +32,8 @@ auto main(int argc, const char *argv[]) -> int {
                                             {.rand_seed = 0,
                                              .max_tries = 10'000'000,
                                              .shifts = make_shift_range(64 - 12, 64 - 10),
-                                             .process_report_callback = print_search_status});
+                                             .process_report_callback = print_search_status,
+                                             .report_all_magics = true});
 
     print_search_status(result);
 }

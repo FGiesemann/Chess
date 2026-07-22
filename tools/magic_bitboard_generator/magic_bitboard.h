@@ -51,6 +51,7 @@ struct SearchParams {
     Shifts shifts;
     bool early_exit{false};
     std::optional<ProcessReportCallback> process_report_callback;
+    bool report_all_magics{false};
 };
 
 auto make_shift_range(std::uint64_t start, std::uint64_t end) -> Shifts;

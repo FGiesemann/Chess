@@ -69,6 +69,12 @@ auto search_magic_number(const TableSpec &spec, const SearchParams &params) -> S
                     if (params.process_report_callback.has_value()) {
                         params.process_report_callback.value()(search_result);
                     }
+                } else if (params.report_all_magics && params.process_report_callback.has_value()) {
+                    SearchResult r{search_result};
+                    r.magic_number = magic_number;
+                    r.shift = shift;
+                    r.generator_result = result;
+                    params.process_report_callback.value()(r);
                 }
                 if (params.early_exit) {
                     exit = true;
