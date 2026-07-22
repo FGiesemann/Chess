@@ -34,6 +34,18 @@ struct GeneratorResult {
     Table table;
 };
 
+struct SearchParams {
+    std::uint64_t rand_seed{};
+    int max_tries{};
+    std::uint64_t shift{};
+};
+
+struct SearchResult {
+    GeneratorResult generator_result;
+    std::uint64_t magic_number{};
+    std::uint64_t tries{};
+};
+
 /**
  * \brief Try to fill a table with a given magic number and shift.
  *
@@ -41,5 +53,16 @@ struct GeneratorResult {
  * \param magics The magic numbers.
  */
 auto fill_table(const TableSpec &spec, const Magics &magics) -> GeneratorResult;
+
+/**
+ * \brief Try to find a magic number.
+ *
+ * Tries different randomly selected magic numbers until either a table can be
+ * generated or the maximum number of tries is reached.
+ * \param spec Specification of piece type and square.
+ * \param params Maximum number of tries and shift.
+ * \return The search result.
+ */
+auto search_magic_number(const TableSpec &spec, const SearchParams &params) -> SearchResult;
 
 #endif
