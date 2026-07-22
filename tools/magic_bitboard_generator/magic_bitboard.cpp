@@ -61,6 +61,9 @@ auto search_magic_number(const TableSpec &spec, const SearchParams &params) -> S
                 search_result.magic_number = magic_number;
                 search_result.generator_result = result;
             }
+            if (params.early_exit) {
+                break;
+            }
         }
     }
     return search_result;

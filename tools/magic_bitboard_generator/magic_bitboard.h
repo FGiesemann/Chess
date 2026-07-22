@@ -38,6 +38,7 @@ struct SearchParams {
     std::uint64_t rand_seed{};
     int max_tries{};
     std::uint64_t shift{};
+    bool early_exit{false};
 };
 
 struct SearchResult {
