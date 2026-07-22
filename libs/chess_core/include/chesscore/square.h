@@ -267,6 +267,7 @@ public:
      *
      * The square names correspond with the default naming of chess boards.
      */
+    // NOLINTBEGIN(readability-identifier-length)
     static const Square A1; ///< The square A1.
     static const Square A2; ///< The square A2.
     static const Square A3; ///< The square A3.
@@ -331,6 +332,7 @@ public:
     static const Square H6; ///< The square H6.
     static const Square H7; ///< The square H7.
     static const Square H8; ///< The square H8.
+    // NOLINTEND(readability-identifier-length)
     ///@}
 private:
     File m_file;      ///< The file (column) of the square.
