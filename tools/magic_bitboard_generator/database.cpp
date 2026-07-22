@@ -13,6 +13,15 @@ auto Record::set_magics(const Magics &magics, const TableStats &stats) -> void {
     m_magics_found = true;
 }
 
+auto RecordWriter::write(const Record &record) -> void {
+    // TODO
+}
+
+auto RecordReader::read() const -> Record {
+    // TODO
+    return Record{chesscore::PieceType::Rook, chesscore::Square::A1};
+}
+
 Database::Database() {
     for (chesscore::Square square = chesscore::Square::A1; square != chesscore::Square::H8; square += 1) {
         m_rook_records.emplace_back(chesscore::PieceType::Rook, square);
@@ -40,4 +49,13 @@ auto Database::record(chesscore::PieceType piece, const chesscore::Square &squar
         return m_bishop_records[square.index()];
     }
     throw chesscore::ChessException{"Invalid piece type"};
+}
+
+auto DatabaseWriter::write(const Database &database) -> void {
+    // TODO
+}
+
+auto DatabaseReader::read() const -> Database {
+    // TODO
+    return Database{};
 }
