@@ -9,6 +9,24 @@
 
 namespace chesscore {
 
+auto to_string(PieceType type) -> std::string {
+    switch (type) {
+    case PieceType::Pawn:
+        return "P";
+    case PieceType::Rook:
+        return "R";
+    case PieceType::Knight:
+        return "K";
+    case PieceType::Bishop:
+        return "B";
+    case PieceType::Queen:
+        return "Q";
+    case PieceType::King:
+        return "K";
+    }
+    throw ChessException("Invalid piece type");
+}
+
 auto piece_type_from_index(std::size_t index) -> PieceType {
     if (index < piece_type_count) {
         return all_piece_types[index];

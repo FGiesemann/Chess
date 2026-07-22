@@ -33,6 +33,8 @@ constexpr std::size_t piece_type_count = 6ULL;
  */
 constexpr std::array<PieceType, piece_type_count> all_piece_types{PieceType::Pawn, PieceType::Rook, PieceType::Knight, PieceType::Bishop, PieceType::Queen, PieceType::King};
 
+auto to_string(PieceType type) -> std::string;
+
 /**
  * \brief Get the numeric index of a piece type.
  *
