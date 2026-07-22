@@ -9,10 +9,10 @@
 
 #include <random>
 
-auto fill_table(const TableSpec &spec, const Magics &magics) -> GeneratorResult {
+auto MagicBitboardGenerator::fill_table(const Magics &magics) const -> GeneratorResult {
     GeneratorResult result{};
     result.table.reserve(1ULL << (64 - magics.shift));
-    const auto blocker_mask = chesscore::blocker_mask(spec.piece, spec.square);
+    const auto blocker_mask = chesscore::blocker_mask(m_spec.piece, m_spec.square);
     result.expected_entries = chesscore::blocker_config_count(blocker_mask);
 
     chesscore::Bitmap blockers{};
@@ -23,7 +23,7 @@ auto fill_table(const TableSpec &spec, const Magics &magics) -> GeneratorResult 
         if (index >= result.table.size()) {
             result.table.resize(index + 1);
         }
-        const auto attack_map = chesscore::attack_bitmap(spec.piece, spec.square, blockers);
+        const auto attack_map = chesscore::attack_bitmap(m_spec.piece, m_spec.square, blockers);
         const auto stored_map = result.table[index];
         if (!stored_map.empty()) {
             if (stored_map != attack_map) {
@@ -41,48 +41,50 @@ auto fill_table(const TableSpec &spec, const Magics &magics) -> GeneratorResult 
     return result;
 }
 
-auto search_magic_number(const TableSpec &spec, const SearchParams &params) -> SearchResult {
-    std::mt19937_64 rng{params.rand_seed == 0 ? std::random_device{}() : params.rand_seed};
+auto MagicBitboardGenerator::search(const SearchParams &params) -> SearchResult {
+    std::mt19937_64 rng{m_rand_seed == 0 ? std::random_device{}() : m_rand_seed};
     std::uniform_int_distribution<std::uint64_t> dist{0, std::numeric_limits<std::uint64_t>::max()};
     SearchResult search_result{};
-    bool exit = false;
+    search_result.generator_result.max_index = std::numeric_limits<std::uint64_t>::max();
 
-    std::uint64_t max_index{std::numeric_limits<std::uint64_t>::max()};
     for (std::uint64_t shift : params.shifts) {
-        if (exit) {
-            break;
-        }
-        for (std::size_t i = 0; !exit && i < params.max_tries; ++i) {
+        for (std::size_t i = 0; i < params.max_tries; ++i) {
             search_result.tries++;
             const auto magic_number = dist(rng);
             const auto magics = Magics{.magic_number = magic_number, .shift = shift};
-            const auto result = fill_table(spec, magics);
-            if (search_result.magic_number == 0) {
-                search_result.generator_result = result;
-            }
-            if (!result.collision_index.has_value()) {
-                if (result.max_index < max_index) {
-                    max_index = result.max_index;
-                    search_result.magic_number = magic_number;
-                    search_result.shift = shift;
-                    search_result.generator_result = result;
-                    if (params.process_report_callback.has_value()) {
-                        params.process_report_callback.value()(search_result);
-                    }
-                } else if (params.report_all_magics && params.process_report_callback.has_value()) {
-                    SearchResult r{search_result};
-                    r.magic_number = magic_number;
-                    r.shift = shift;
-                    r.generator_result = result;
-                    params.process_report_callback.value()(r);
-                }
-                if (params.early_exit) {
-                    exit = true;
-                }
+            const auto result = fill_table(magics);
+            const auto found = update_result(search_result, {.magic_number = magic_number, .shift = shift}, result);
+
+            if (found && m_early_exit) {
+                return search_result;
             }
         }
     }
     return search_result;
+}
+
+auto MagicBitboardGenerator::update_result(SearchResult &search_result, const Magics &magics,
+                                           const GeneratorResult &result) -> bool {
+    if (result.successful()) {
+        if (result.max_index < search_result.generator_result.max_index) {
+            search_result.magic_number = magics.magic_number;
+            search_result.shift = magics.shift;
+            search_result.generator_result = result;
+            if (m_progress_callback) {
+                m_progress_callback(search_result);
+            }
+            return true;
+        }
+        if (m_report_all_magics && m_progress_callback) {
+            SearchResult r{search_result};
+            r.magic_number = magics.magic_number;
+            r.shift = magics.shift;
+            r.generator_result = result;
+            m_progress_callback(r);
+            return false;
+        }
+    }
+    return false;
 }
 
 auto make_shift_range(std::uint64_t start, std::uint64_t end) -> Shifts {

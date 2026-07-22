@@ -28,12 +28,10 @@ auto print_search_status(const SearchResult &result) -> void {
 auto main(int argc, const char *argv[]) -> int {
     std::cout << "Magic Bitboard Generator\n";
 
-    const auto result = search_magic_number({.piece = chesscore::PieceType::Rook, .square = chesscore::Square::E4},
-                                            {.rand_seed = 0,
-                                             .max_tries = 10'000'000,
-                                             .shifts = make_shift_range(64 - 12, 64 - 10),
-                                             .process_report_callback = print_search_status,
-                                             .report_all_magics = true});
+    MagicBitboardGenerator generator{TableSpec{.piece = chesscore::PieceType::Rook, .square = chesscore::Square::E4}};
+    generator.set_progress_callback(print_search_status);
+
+    const auto result = generator.search({.max_tries = 10'000'000, .shifts = make_shift_range(64 - 12, 64 - 10)});
 
     print_search_status(result);
 }
