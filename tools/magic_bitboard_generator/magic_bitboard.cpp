@@ -42,7 +42,7 @@ auto fill_table(const TableSpec &spec, const Magics &magics) -> GeneratorResult 
 }
 
 auto search_magic_number(const TableSpec &spec, const SearchParams &params) -> SearchResult {
-    std::mt19937_64 rng{params.rand_seed};
+    std::mt19937_64 rng{params.rand_seed == 0 ? std::random_device{}() : params.rand_seed};
     std::uniform_int_distribution<std::uint64_t> dist{0, std::numeric_limits<std::uint64_t>::max()};
     SearchResult search_result{};
 

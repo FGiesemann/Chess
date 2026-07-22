@@ -10,9 +10,8 @@
 auto main(int argc, const char *argv[]) -> int {
     std::cout << "Magic Bitboard Generator\n";
 
-    const auto result = search_magic_number(
-        {.piece = chesscore::PieceType::Rook, .square = chesscore::Square::E4},
-        {.rand_seed = 0x1234567890ULL, .max_tries = 1'000'000, .shift = 64 - 11, .early_exit = true});
+    const auto result = search_magic_number({.piece = chesscore::PieceType::Rook, .square = chesscore::Square::E4},
+                                            {.rand_seed = 0, .max_tries = 1'000'000, .shift = 64 - 11});
 
     const auto stats = result.generator_result;
     std::cout << "Statistics:\n";
