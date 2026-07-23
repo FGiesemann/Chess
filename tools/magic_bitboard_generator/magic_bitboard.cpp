@@ -11,7 +11,10 @@
 
 auto MagicBitboardGenerator::fill_table(const Magics &magics) const -> GeneratorResult {
     GeneratorResult result{};
-    result.table.reserve(1ULL << (64 - magics.shift));
+    const std::size_t table_size = 1ULL << (64 - magics.shift);
+    result.table.resize(table_size);
+    std::vector<bool> occupied(table_size, false);
+
     const auto blocker_mask = chesscore::blocker_mask(m_spec.piece, m_spec.square);
     result.expected_entries = chesscore::blocker_config_count(blocker_mask);
 
@@ -20,18 +23,16 @@ auto MagicBitboardGenerator::fill_table(const Magics &magics) const -> Generator
         const auto index = chesscore::magic_index(blockers, magics.magic_number, magics.shift);
         result.max_index = std::max(result.max_index, index);
 
-        if (index >= result.table.size()) {
-            result.table.resize(index + 1);
-        }
         const auto attack_map = chesscore::attack_bitmap(m_spec.piece, m_spec.square, blockers);
-        const auto stored_map = result.table[index];
-        if (!stored_map.empty()) {
-            if (stored_map != attack_map) {
+
+        if (occupied[index]) {
+            if (result.table[index] != attack_map) {
                 result.collision_index = index;
                 return result;
             }
             result.constructive_collisions++;
         } else {
+            occupied[index] = true;
             result.stored_entries++;
             result.table[index] = attack_map;
         }
