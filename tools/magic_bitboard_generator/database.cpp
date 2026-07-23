@@ -23,6 +23,8 @@ auto RecordReader::read() const -> Record {
 }
 
 Database::Database() {
+    m_rook_records.reserve(64);
+    m_bishop_records.reserve(64);
     for (chesscore::Square square = chesscore::Square::A1; square != chesscore::Square::H8; square += 1) {
         m_rook_records.emplace_back(chesscore::PieceType::Rook, square);
         m_bishop_records.emplace_back(chesscore::PieceType::Bishop, square);
