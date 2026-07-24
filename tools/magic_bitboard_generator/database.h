@@ -12,6 +12,7 @@
 #include "magic_bitboard.h"
 
 #include <filesystem>
+#include <iosfwd>
 #include <vector>
 
 struct TableStats {
@@ -41,22 +42,12 @@ private:
 
 class RecordWriter {
 public:
-    explicit RecordWriter(std::filesystem::path path) : m_path{std::move(path)} {}
-
-    [[nodiscard]] auto path() const -> const std::filesystem::path & { return m_path; }
-
-    auto write(const Record &record) -> void;
-private:
-    std::filesystem::path m_path;
+    static auto write(const Record &record, std::ostream &ostream) -> void;
 };
 
 class RecordReader {
 public:
-    explicit RecordReader(std::filesystem::path path) : m_path{std::move(path)} {}
-
-    [[nodiscard]] auto read() const -> Record;
-private:
-    std::filesystem::path m_path;
+    static auto read(std::istream &istream) -> Record;
 };
 
 class Database {
@@ -65,6 +56,11 @@ public:
 
     [[nodiscard]] auto record(chesscore::PieceType piece, const chesscore::Square &square) const -> const Record &;
     [[nodiscard]] auto record(chesscore::PieceType piece, const chesscore::Square &square) -> Record &;
+
+    [[nodiscard]] auto rook_records() const -> const std::vector<Record> & { return m_rook_records; }
+    auto rook_records() -> std::vector<Record> & { return m_rook_records; }
+    [[nodiscard]] auto bishop_records() const -> const std::vector<Record> & { return m_bishop_records; }
+    auto bishop_records() -> std::vector<Record> & { return m_bishop_records; }
 private:
     std::vector<Record> m_rook_records;
     std::vector<Record> m_bishop_records;
