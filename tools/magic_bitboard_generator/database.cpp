@@ -17,6 +17,16 @@ auto Record::set_magics(const Magics &magics, const TableStats &stats) -> void {
     m_magics_found = true;
 }
 
+auto Record::update_magics(const Magics &magics, const TableStats &stats) -> void {
+    if (!m_magics_found) {
+        set_magics(magics, stats);
+    } else {
+        if (m_stats.max_index > stats.max_index) {
+            set_magics(magics, stats);
+        }
+    }
+}
+
 auto RecordWriter::write(const Record &record, std::ostream &ostream) -> void {
     ostream << std::format("{:c} {} {:1d}",
                            chesscore::Piece{.type = record.piece(), .color = chesscore::Color::White}.piece_char(),
@@ -38,11 +48,10 @@ auto RecordReader::read(std::istream &istream) -> Record {
     const auto piece = piece_char == 'R' ? chesscore::PieceType::Rook : chesscore::PieceType::Bishop;
     istream >> std::skipws;
 
-    unsigned char file_char{};
+    char file_char{};
     istream >> file_char;
     int rank{};
     istream >> rank;
-
     const chesscore::Square square{chesscore::File{file_char}, chesscore::Rank{rank}};
 
     Record record{piece, square};
