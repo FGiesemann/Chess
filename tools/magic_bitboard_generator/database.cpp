@@ -17,14 +17,16 @@ auto Record::set_magics(const Magics &magics, const TableStats &stats) -> void {
     m_magics_found = true;
 }
 
-auto Record::update_magics(const Magics &magics, const TableStats &stats) -> void {
+auto Record::update_magics(const Magics &magics, const TableStats &stats) -> bool {
     if (!m_magics_found) {
         set_magics(magics, stats);
-    } else {
-        if (m_stats.max_index > stats.max_index) {
-            set_magics(magics, stats);
-        }
+        return true;
     }
+    if (m_stats.max_index > stats.max_index) {
+        set_magics(magics, stats);
+        return true;
+    }
+    return false;
 }
 
 auto RecordWriter::write(const Record &record, std::ostream &ostream) -> void {

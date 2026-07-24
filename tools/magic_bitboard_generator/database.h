@@ -31,7 +31,7 @@ public:
     [[nodiscard]] auto stats() const -> const TableStats & { return m_stats; }
 
     auto set_magics(const Magics &magics, const TableStats &stats) -> void;
-    auto update_magics(const Magics &magics, const TableStats &stats) -> void;
+    auto update_magics(const Magics &magics, const TableStats &stats) -> bool;
 private:
     chesscore::PieceType m_piece;
     chesscore::Square m_square;
