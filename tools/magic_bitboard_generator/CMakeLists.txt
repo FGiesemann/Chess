@@ -2,6 +2,7 @@ add_executable(magic_bitboard_generator
     main.cpp
     magic_bitboard.cpp
     database.cpp
+    arg_parse.cpp
 )
 
 target_link_libraries(magic_bitboard_generator
