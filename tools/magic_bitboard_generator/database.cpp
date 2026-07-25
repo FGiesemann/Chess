@@ -11,6 +11,8 @@
 #include <format>
 #include <fstream>
 
+namespace magic_bitboard_generator {
+
 auto Record::set_magics(const Magics &magics, const TableStats &stats) -> void {
     m_magics = magics;
     m_stats = stats;
@@ -125,3 +127,5 @@ auto DatabaseReader::read() const -> Database {
     }
     return database;
 }
+
+} // namespace magic_bitboard_generator

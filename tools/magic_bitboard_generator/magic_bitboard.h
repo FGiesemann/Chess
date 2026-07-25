@@ -15,6 +15,8 @@
 #include <utility>
 #include <vector>
 
+namespace magic_bitboard_generator {
+
 /**
  * \brief A magic table specification.
  *
@@ -172,5 +174,7 @@ private:
 
     auto update_result(SearchResult &search_result, const Magics &magics, const GeneratorResult &result) -> bool;
 };
+
+} // namespace magic_bitboard_generator
 
 #endif

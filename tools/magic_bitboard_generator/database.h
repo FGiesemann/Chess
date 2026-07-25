@@ -15,6 +15,8 @@
 #include <iosfwd>
 #include <vector>
 
+namespace magic_bitboard_generator {
+
 struct TableStats {
     std::uint64_t max_index{};
     std::uint64_t constructive_collisions{};
@@ -84,5 +86,7 @@ public:
 private:
     std::filesystem::path m_path;
 };
+
+} // namespace magic_bitboard_generator
 
 #endif

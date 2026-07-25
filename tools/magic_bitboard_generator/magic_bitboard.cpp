@@ -9,6 +9,8 @@
 
 #include <random>
 
+namespace magic_bitboard_generator {
+
 auto MagicBitboardGenerator::fill_table(const Magics &magics) const -> GeneratorResult {
     GeneratorResult result{};
     const std::size_t table_size = 1ULL << (64 - magics.shift);
@@ -96,3 +98,5 @@ auto make_shift_range(std::uint64_t start, std::uint64_t end) -> Shifts {
     }
     return shifts;
 }
+
+} // namespace magic_bitboard_generator
