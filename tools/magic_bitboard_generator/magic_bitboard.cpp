@@ -50,7 +50,7 @@ auto MagicBitboardGenerator::search(const SearchParams &params) -> SearchResult 
     search_result.generator_result.max_index = std::numeric_limits<std::uint64_t>::max();
 
     for (std::uint64_t shift : params.shifts) {
-        for (std::size_t i = 0; i < params.max_tries; ++i) {
+        for (std::uint64_t i = 0; i < params.max_tries; ++i) {
             search_result.tries++;
             const auto magic_number = rng() & rng() & rng();
             const auto magics = Magics{.magic_number = magic_number, .shift = shift};

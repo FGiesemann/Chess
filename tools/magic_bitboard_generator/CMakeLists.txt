@@ -3,6 +3,7 @@ add_executable(magic_bitboard_generator
     magic_bitboard.cpp
     database.cpp
     arg_parse.cpp
+    search_scenario.cpp
 )
 
 target_link_libraries(magic_bitboard_generator

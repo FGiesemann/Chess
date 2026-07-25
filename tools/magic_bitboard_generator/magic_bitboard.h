@@ -104,8 +104,8 @@ auto make_shift_range(std::uint64_t start, std::uint64_t end) -> Shifts;
  * \brief Parameters for the search.
  */
 struct SearchParams {
-    int max_tries{}; //< Maximum number of candidate magic numbers.
-    Shifts shifts;   //< The shifts to check.
+    std::uint64_t max_tries{}; //< Maximum number of candidate magic numbers.
+    Shifts shifts;             //< The shifts to check.
 };
 
 /**

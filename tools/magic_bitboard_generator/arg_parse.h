@@ -38,7 +38,8 @@ struct Args {
     std::vector<chesscore::Square> squares;
     std::uint64_t magic_number{};
     std::vector<std::uint64_t> shifts;
-    std::string database;
+    std::string database{"magic_bitboard_database.txt"};
+    std::uint64_t iterations{1'000'000};
 };
 
 auto print_usage() -> void;

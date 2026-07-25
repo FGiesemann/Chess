@@ -23,6 +23,7 @@ Options:
     -h, --help         Print this help message
     -p, --piece        The type of the sliding piece
     -q, --square       The square on which the piece is placed
+    -i, --iter         The number of iterations
     -m, --magic        The magic number
     -s, --shift        The shift
     -d, --database     The database file
@@ -82,6 +83,9 @@ auto parse_arguments(const std::vector<std::string> &args) -> Args {
         } else if (arg == "-q" || arg == "--square") {
             result.squares = parse_squares(next_arg);
             ++i;
+        } else if (arg == "-i" || arg == "--iter") {
+            result.iterations = std::stoull(next_arg);
+            ++i;
         } else if (arg == "-m" || arg == "--magic") {
             if (next_arg.length() > 1 && next_arg.substr(0, 2) == "0x") {
                 result.magic_number = std::stoull(next_arg.substr(2), nullptr, 16);
@@ -95,6 +99,8 @@ auto parse_arguments(const std::vector<std::string> &args) -> Args {
         } else if (arg == "-d" || arg == "--database") {
             result.database = next_arg;
             ++i;
+        } else {
+            throw ArgError("Unknown argument: " + arg);
         }
     }
     return result;
