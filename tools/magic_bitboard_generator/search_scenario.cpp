@@ -30,10 +30,11 @@ auto print_search_status(Database &database, const Args &args, const TableSpec &
             write_database(database, args.database);
             better_result = true;
         }
-        std::cout << std::format(
-            "Magic number: 0x{:016x} | Index bits: {} | Max index: {}{} | Constr. coll.: {} | Tries: {}\n",
-            result.magics.magic_number, 64 - result.magics.shift, stats.max_index, better_result ? '*' : ' ',
-            result.generator_result.constructive_collisions, result.tries);
+        std::cout << std::format("Magic number: 0x{:016x} | Index bits: {:2d} | Max index: {:5d}{} {:5d} | Constr. "
+                                 "coll.: {:3d} | Tries: {}\n",
+                                 result.magics.magic_number, 64 - result.magics.shift, stats.max_index,
+                                 better_result ? '*' : ' ', result.generator_result.expected_entries,
+                                 result.generator_result.constructive_collisions, result.tries);
 
     } else {
         std::cout << std::format("  Stored entries: {} / {}", stats.stored_entries, stats.expected_entries);
