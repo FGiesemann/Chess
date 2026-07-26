@@ -18,6 +18,7 @@
 namespace magic_bitboard_generator {
 
 struct TableStats {
+    std::uint64_t blocker_configs{};
     std::uint64_t max_index{};
     std::uint64_t constructive_collisions{};
 };

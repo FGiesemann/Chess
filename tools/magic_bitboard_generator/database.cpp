@@ -36,8 +36,9 @@ auto RecordWriter::write(const Record &record, std::ostream &ostream) -> void {
                            chesscore::Piece{.type = record.piece(), .color = chesscore::Color::White}.piece_char(),
                            to_string(record.square()), record.has_magics() ? 1 : 0);
     if (record.has_magics()) {
-        ostream << std::format(" {:016x} {} {} {}", record.magics().magic_number, record.magics().shift,
-                               record.stats().max_index, record.stats().constructive_collisions);
+        ostream << std::format(" {:016x} {} {} {} {}", record.magics().magic_number, record.magics().shift,
+                               record.stats().max_index, record.stats().blocker_configs,
+                               record.stats().constructive_collisions);
     }
     ostream << '\n';
 }
@@ -66,10 +67,13 @@ auto RecordReader::read(std::istream &istream) -> Record {
         std::uint64_t shift{};
         istream >> std::hex >> magic_number >> std::dec >> shift;
         std::uint64_t max_index{};
+        std::uint64_t blocker_configs{};
         std::uint64_t constructive_collisions{};
-        istream >> max_index >> constructive_collisions;
+        istream >> max_index >> blocker_configs >> constructive_collisions;
         record.set_magics(Magics{.magic_number = magic_number, .shift = shift},
-                          TableStats{.max_index = max_index, .constructive_collisions = constructive_collisions});
+                          TableStats{.blocker_configs = blocker_configs,
+                                     .max_index = max_index,
+                                     .constructive_collisions = constructive_collisions});
     }
 
     return record;

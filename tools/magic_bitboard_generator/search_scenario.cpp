@@ -21,17 +21,20 @@ auto print_search_status(Database &database, const Args &args, const TableSpec &
     -> void {
     const auto stats = result.generator_result;
     if (stats.successful()) {
-        std::cout << std::format(
-            "Magic number: 0x{:016x} | Index bits: {} | Max index: {} | Constr. coll.: {} | Tries: {}\n",
-            result.magics.magic_number, 64 - result.magics.shift, stats.max_index,
-            result.generator_result.constructive_collisions, result.tries);
-
         Magics magics = result.magics;
-        TableStats stats{.max_index = result.generator_result.max_index,
+        TableStats stats{.blocker_configs = result.generator_result.expected_entries,
+                         .max_index = result.generator_result.max_index,
                          .constructive_collisions = result.generator_result.constructive_collisions};
+        bool better_result{false};
         if (database.record(table.piece, table.square).update_magics(magics, stats)) {
             write_database(database, args.database);
+            better_result = true;
         }
+        std::cout << std::format(
+            "Magic number: 0x{:016x} | Index bits: {} | Max index: {}{} | Constr. coll.: {} | Tries: {}\n",
+            result.magics.magic_number, 64 - result.magics.shift, stats.max_index, better_result ? '*' : ' ',
+            result.generator_result.constructive_collisions, result.tries);
+
     } else {
         std::cout << std::format("  Stored entries: {} / {}", stats.stored_entries, stats.expected_entries);
         if (stats.expected_entries != 0) {
@@ -62,8 +65,6 @@ auto search_magic(const Args &args) -> void {
                 [&](const SearchResult &result) -> void { print_search_status(database, args, table_spec, result); });
 
             const auto result = generator.search({.max_tries = args.iterations, .shifts = args.shifts});
-
-            print_search_status(database, args, table_spec, result);
         }
     }
     write_database(database, args.database);
