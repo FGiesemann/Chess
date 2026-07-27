@@ -17,8 +17,8 @@ auto write_database(const Database &db, const std::filesystem::path &database_pa
     DatabaseWriter{database_path}.write(db);
 }
 
-auto print_search_status(Database &database, const Args &args, const TableSpec &table, const SearchResult &result)
-    -> void {
+auto print_search_status(Database &database, const Args &args, const std::string &database_path, const TableSpec &table,
+                         const SearchResult &result) -> void {
     const auto stats = result.generator_result;
     if (stats.successful()) {
         Magics magics = result.magics;
@@ -27,7 +27,7 @@ auto print_search_status(Database &database, const Args &args, const TableSpec &
                          .constructive_collisions = result.generator_result.constructive_collisions};
         bool better_result{false};
         if (database.record(table.piece, table.square).update_magics(magics, stats)) {
-            write_database(database, args.database);
+            write_database(database, database_path);
             better_result = true;
         }
         std::cout << std::format("Magic number: 0x{:016x} | Index bits: {:2d} | Max index: {:5d}{} {:5d} | Constr. "
@@ -49,9 +49,11 @@ auto print_search_status(Database &database, const Args &args, const TableSpec &
 }
 
 auto search_magic(const Args &args) -> void {
+    const std::string database_path = args.database.empty() ? "magic_bitboard_database.txt" : args.database;
+
     Database database;
-    if (std::filesystem::exists(args.database)) {
-        DatabaseReader reader{args.database};
+    if (std::filesystem::exists(database_path)) {
+        DatabaseReader reader{database_path};
         database = reader.read();
     }
 
@@ -62,13 +64,14 @@ auto search_magic(const Args &args) -> void {
                       << to_string(table_spec.square) << '\n';
 
             MagicBitboardGenerator generator{table_spec};
-            generator.set_progress_callback(
-                [&](const SearchResult &result) -> void { print_search_status(database, args, table_spec, result); });
+            generator.set_progress_callback([&](const SearchResult &result) -> void {
+                print_search_status(database, args, database_path, table_spec, result);
+            });
 
             const auto result = generator.search({.max_tries = args.iterations, .shifts = args.shifts});
         }
     }
-    write_database(database, args.database);
+    write_database(database, database_path);
 }
 
 } // namespace magic_bitboard_generator::search_scenario
