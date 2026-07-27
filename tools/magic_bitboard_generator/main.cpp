@@ -5,6 +5,7 @@
 
 #include "arg_parse.h"
 
+#include "check_scenario.h"
 #include "search_scenario.h"
 
 #include <filesystem>
@@ -20,7 +21,7 @@ auto main(int argc, const char *argv[]) -> int {
         const auto args = parse_arguments(arguments);
 
         if (args.scenario == Scenario::Check) {
-            // class fill_table with the table spec and magics
+            check_scenario::check_magics(args);
         } else if (args.scenario == Scenario::Search) {
             search_scenario::search_magic(args);
         } else {
