@@ -173,7 +173,7 @@ private:
     ProcessReportCallback m_progress_callback;
     bool m_report_all_magics{false};
     std::uint64_t m_rand_seed{};
-    MagicPRNG m_prng;
+    MagicPRNG<> m_prng;
 
     auto update_result(SearchResult &search_result, const Magics &magics, const GeneratorResult &result) -> bool;
 };
