@@ -55,6 +55,8 @@ auto search_magic(const Args &args) -> void {
     if (std::filesystem::exists(database_path)) {
         DatabaseReader reader{database_path};
         database = reader.read();
+    } else {
+        std::cout << "No database found. Creating a new one.\n";
     }
 
     for (const auto piece : args.piece_types) {
