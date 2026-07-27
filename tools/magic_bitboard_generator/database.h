@@ -3,8 +3,8 @@
  * Search for magic numbers                                                   *
  * ************************************************************************** */
 
-#ifndef MAGIC_BITBOARD_DATABASE_H
-#define MAGIC_BITBOARD_DATABASE_H
+#ifndef MAGIC_BITBOARD_GENERATOR_DATABASE_H
+#define MAGIC_BITBOARD_GENERATOR_DATABASE_H
 
 #include <chesscore/piece.h>
 #include <chesscore/square.h>

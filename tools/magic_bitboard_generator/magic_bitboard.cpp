@@ -45,14 +45,14 @@ auto MagicBitboardGenerator::fill_table(const Magics &magics) const -> Generator
 }
 
 auto MagicBitboardGenerator::search(const SearchParams &params) -> SearchResult {
-    std::mt19937_64 rng{m_rand_seed == 0 ? std::random_device{}() : m_rand_seed};
+    m_prng.seed(m_rand_seed == 0 ? std::random_device{}() : m_rand_seed);
     SearchResult search_result{};
 
     for (std::uint64_t shift : params.shifts) {
         search_result.generator_result.max_index = std::numeric_limits<std::uint64_t>::max();
         for (std::uint64_t i = 0; i < params.max_tries; ++i) {
             search_result.tries++;
-            const auto magic_number = rng() & rng() & rng();
+            const auto magic_number = m_prng.get();
             const auto magics = Magics{.magic_number = magic_number, .shift = shift};
             const auto result = fill_table(magics);
             const auto updated = update_result(search_result, {.magic_number = magic_number, .shift = shift}, result);

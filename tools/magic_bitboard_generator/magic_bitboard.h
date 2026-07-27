@@ -3,8 +3,10 @@
  * Search for magic numbers                                                   *
  * ************************************************************************** */
 
-#ifndef MAGIC_BITBOARD_H
-#define MAGIC_BITBOARD_H
+#ifndef MAGIC_BITBOARD_GENERATOR_MAGIC_BITBOARD_H
+#define MAGIC_BITBOARD_GENERATOR_MAGIC_BITBOARD_H
+
+#include "magic_prng.h"
 
 #include <chesscore/bitmap.h>
 #include <chesscore/piece.h>
@@ -171,6 +173,7 @@ private:
     ProcessReportCallback m_progress_callback;
     bool m_report_all_magics{false};
     std::uint64_t m_rand_seed{};
+    MagicPRNG m_prng;
 
     auto update_result(SearchResult &search_result, const Magics &magics, const GeneratorResult &result) -> bool;
 };
