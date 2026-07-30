@@ -170,6 +170,15 @@ private:
     std::vector<Bitmap> m_attack_maps;              //< The list of attack maps.
     MagicTable m_magics;                            //< The list of magic parameters.
 
+    /**
+     * \brief Fill the attack map.
+     *
+     * Computes the attack maps from the given initialization data and store
+     * them in the list of attack maps.
+     * \param magics The magc parameters.
+     * \param square The square.
+     * \param offset The offset in the list of attack maps.
+     */
     auto fill_table(const Magics &magics, const Square &square, std::uint32_t offset) -> void;
 };
 
