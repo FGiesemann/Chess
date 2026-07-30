@@ -53,7 +53,8 @@ auto total_size(const MagicDataSet &data_set) -> std::size_t {
     return std::accumulate(data_set.begin(), data_set.end(), std::size_t{0}, [](std::size_t total, const MagicData &data) { return total + data.max_index + 1; });
 }
 
-auto MagicBitboard::init(const MagicDataSet &data) -> void {
+auto MagicBitboard::init() -> void {
+    const auto &data = *m_data_set;
     m_attack_maps.resize(total_size(data));
 
     std::uint32_t current_offset{0};

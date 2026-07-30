@@ -12,6 +12,8 @@
 #include "chesscore/position.h"
 #include "chesscore/table.h"
 
+#include <memory>
+
 namespace chesscore {
 
 /**
@@ -123,17 +125,19 @@ class MagicBitboard {
 public:
     using MagicTable = Table<Magics, Square::count, Square>; //< Type of the list of magic parameters.
 
+    MagicBitboard(PieceType piece_type, const MagicDataSet &data) : m_data_set{&data}, m_piece{piece_type} {}
+
     /**
      * \brief Initialize the magic bitboard.
      *
      * Initializes the attack maps with the given data.
-     * \param data The data for initialization.
      */
-    auto init(const MagicDataSet &data) -> void;
+    auto init() -> void;
 
     /**
      * \brief Access the table of magic parameters.
      *
+     * The table is updated during initialization (see init()).
      * \return The table of magic parameters.
      */
     [[nodiscard]] auto magics() const -> const MagicTable & { return m_magics; }
@@ -141,6 +145,7 @@ public:
     /**
      * \brief Access the table of magic parameters.
      *
+     * The table is updated during initialization (see init()).
      * \return The table of magic parameters.
      */
     [[nodiscard]] auto magics() -> MagicTable & { return m_magics; }
@@ -149,6 +154,8 @@ public:
      * \brief Get the attack map.
      *
      * Returns the attack map for the given square and position.
+     * \attention The MagicBitboard has to be initialized (see init())
+     * before calling this function!
      * \param square The square of the sliding piece.
      * \param position The position.
      * \return The attack map.
@@ -158,9 +165,10 @@ public:
         return m_attack_maps[magic.offset + magic_index(position.board().occupancy() & magic.blocker_mask, magic.magic_number, magic.shift)];
     }
 private:
-    PieceType m_piece;                 //< The piece type.
-    std::vector<Bitmap> m_attack_maps; //< The list of attack maps.
-    MagicTable m_magics;               //< The list of magic parameters.
+    std::shared_ptr<const MagicDataSet> m_data_set; //< Reference to the data set for initialization.
+    PieceType m_piece;                              //< The piece type.
+    std::vector<Bitmap> m_attack_maps;              //< The list of attack maps.
+    MagicTable m_magics;                            //< The list of magic parameters.
 
     auto fill_table(const Magics &magics, const Square &square, std::uint32_t offset) -> void;
 };
