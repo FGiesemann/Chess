@@ -40,11 +40,11 @@ public:
     explicit Position(const FenString &fen)
         : m_board{fen},
           m_state{
-              .side_to_move{fen.side_to_move()},
-              .fullmove_number{fen.fullmove_number()},
-              .halfmove_clock{fen.halfmove_clock()},
-              .castling_rights{fen.castling_rights()},
-              .en_passant_target{fen.en_passant_square()}
+              .side_to_move = fen.side_to_move(),
+              .fullmove_number = fen.fullmove_number(),
+              .halfmove_clock = fen.halfmove_clock(),
+              .castling_rights = fen.castling_rights(),
+              .en_passant_target = fen.en_passant_square()
           },
           m_hash{ZobristHash::from_position(*this)} {}
 
