@@ -14,73 +14,19 @@
 
 namespace chesscore {
 
-inline auto magic_index(const Bitmap &blockers, std::uint64_t magic_number, std::uint64_t shift) -> std::uint64_t {
+/**
+ * \brief Compute the magic index.
+ *
+ * The index is derived from the blocker configuration through hashing with
+ * a magic number.
+ * \param blockers The blocker configuration.
+ * \param magic_number The magic number.
+ * \param shift The shift.
+ * \return The index.
+ */
+inline auto magic_index(const Bitmap &blockers, std::uint64_t magic_number, std::uint8_t shift) -> std::uint64_t {
     return blockers.bits() * magic_number >> shift;
 }
-
-/**
- * \brief A table storing the attack bitboards for one piece type on a
- * particular suqare.
- *
- * The table is indexed by the blocker configuration around the sliding piece
- * (through hashing with a magic number).
- * \tparam TableSize Size of the table.
- */
-template<std::size_t TableSize>
-struct MagicBitboard {
-    std::uint64_t magic_number{}; ///< The magic number used in hashing
-    std::uint64_t shift{};        ///< The shift used in hashing
-    Bitmap blocker_mask;          ///< The mask for extracting blockers
-
-    /**
-     * \brief Type for storing the attack table.
-     */
-    using AttackTable = Table<Bitmap, TableSize, std::uint64_t>;
-    AttackTable attack_table{}; ///< The table of attack bitmaps
-
-    /**
-     * \brief The attack bitmap for the sliding piece.
-     *
-     * The bitmap of all reachable squares, i.e. the attack bitmap, depends on
-     * the distribution of blockers on the board.
-     * \param blockers The blockers on the board.
-     * \return The attack bitmap.
-     */
-    [[nodiscard]] auto reachable_squares(const Bitmap &blockers) const -> Bitmap { return attack_table[magic_index(blockers, magic_number, shift)]; }
-
-    /**
-     * \brief The attack bitmap for the sliding piece.
-     *
-     * The bitmap of all reachable squares, i.e. the attack bitmap, depends on
-     * the distribution of blockers on the board.
-     * \param board The board describing the position of pieces.
-     * \return The attack bitmap.
-     */
-    [[nodiscard]] auto reachable_squares(const Bitboard &board) const -> Bitmap {
-        const auto blockers = board.occupancy() & blocker_mask;
-        return reachable_squares(blockers);
-    }
-
-    /**
-     * \brief The attack bitmap for the sliding piece.
-     *
-     * The bitmap of all reachable squares, i.e. the attack bitmap, depends on
-     * the distribution of blockers on the board.
-     * \param position The position describing the position of pieces on the board.
-     * \return The attack bitmap.
-     */
-    [[nodiscard]] auto reachable_squares(const Position &position) const -> Bitmap { return reachable_squares(position.board()); }
-
-    /**
-     * \brief Compute the index from the blocker configuration.
-     *
-     * Applies the hash function to the blocker configuration to obtain the
-     * index for the attacker bitmap.
-     * \param blockers The blocker configuration.
-     * \return The index of the attacker bitmap.
-     */
-    [[nodiscard]] auto compute_index(const Bitmap &blockers) const -> std::uint64_t { return magic_index(blockers, magic_number, shift); }
-};
 
 /**
  * \brief Compute the blocker mask for a sliding piece.
@@ -127,6 +73,97 @@ struct MagicBitboard {
  * \return The attack bitmap for the sliding piece and the blocker configuration.
  */
 [[nodiscard]] auto attack_bitmap(PieceType piece_type, const Square &square, Bitmap blocker_config) -> Bitmap;
+
+/**
+ * \brief Magic parameters for a sliding piece.
+ *
+ * The parameters describe the magic bitboard for a sliding piece on a single
+ * square.
+ */
+struct Magics {
+    Bitmap blocker_mask;          //< Mask to extract blockers from the occupancy map.
+    std::uint64_t magic_number{}; //< The magic number.
+    std::uint32_t offset{};       //< The offset of the attack map in the magic table.
+    std::uint8_t shift{};         //< The shift for the index calculation.
+};
+
+/**
+ * \brief Data for initializing magic tables.
+ *
+ * The data contains the magic number and shift to be used for initialization of
+ * a magic table.
+ */
+struct MagicData {
+    std::uint64_t magic_number{}; //< The magic number.
+    std::uint32_t max_index{};    //< The highest index used.
+    std::uint8_t shift{};         //< The shift used in index calculation.
+};
+
+/**
+ * \brief A list of magic data for all squares.
+ *
+ * The list is indexed by square.
+ */
+using MagicDataSet = Table<MagicData, Square::count, Square>;
+
+/**
+ * \brief Compute the total size of the magic tables.
+ *
+ * \param data_set The data set.
+ * \return The total number of entries.
+ */
+auto total_size(const MagicDataSet &data_set) -> std::size_t;
+
+/**
+ * \brief A magic bitboard.
+ *
+ * The magic bitboard contains the attack maps for a sliding piece.
+ */
+class MagicBitboard {
+public:
+    using MagicTable = Table<Magics, Square::count, Square>; //< Type of the list of magic parameters.
+
+    /**
+     * \brief Initialize the magic bitboard.
+     *
+     * Initializes the attack maps with the given data.
+     * \param data The data for initialization.
+     */
+    auto init(const MagicDataSet &data) -> void;
+
+    /**
+     * \brief Access the table of magic parameters.
+     *
+     * \return The table of magic parameters.
+     */
+    [[nodiscard]] auto magics() const -> const MagicTable & { return m_magics; }
+
+    /**
+     * \brief Access the table of magic parameters.
+     *
+     * \return The table of magic parameters.
+     */
+    [[nodiscard]] auto magics() -> MagicTable & { return m_magics; }
+
+    /**
+     * \brief Get the attack map.
+     *
+     * Returns the attack map for the given square and position.
+     * \param square The square of the sliding piece.
+     * \param position The position.
+     * \return The attack map.
+     */
+    [[nodiscard]] auto attacks(const Square &square, const Position &position) const -> const Bitmap & {
+        const auto &magic = magics()[square];
+        return m_attack_maps[magic.offset + magic_index(position.board().occupancy() & magic.blocker_mask, magic.magic_number, magic.shift)];
+    }
+private:
+    PieceType m_piece;                 //< The piece type.
+    std::vector<Bitmap> m_attack_maps; //< The list of attack maps.
+    MagicTable m_magics;               //< The list of magic parameters.
+
+    auto fill_table(const Magics &magics, const Square &square, std::uint32_t offset) -> void;
+};
 
 } // namespace chesscore
 

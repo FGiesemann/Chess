@@ -74,6 +74,12 @@ public:
         return m_data[index];
     }
 
+    constexpr auto operator[](const IndexT &index) -> ElementT &
+    requires std::is_integral_v<IndexT>
+    {
+        return m_data[index];
+    }
+
     /**
      * \brief Index table entries.
      *
@@ -87,12 +93,33 @@ public:
         return m_data[index.index()];
     }
 
+    constexpr auto operator[](const IndexT &index) -> ElementT &
+    requires IndexType<IndexT>
+    {
+        return m_data[index.index()];
+    }
+
     constexpr auto operator[](const IndexT &index) const -> const ElementT &
     requires IndexConvertible<IndexT>
     {
         using UIndexT = std::make_unsigned_t<decltype(get_index(index))>;
         return m_data[static_cast<UIndexT>(get_index(index))];
     }
+
+    constexpr auto operator[](const IndexT &index) -> ElementT &
+    requires IndexConvertible<IndexT>
+    {
+        using UIndexT = std::make_unsigned_t<decltype(get_index(index))>;
+        return m_data[static_cast<UIndexT>(get_index(index))];
+    }
+
+    using iterator = std::array<ElementT, Size>::iterator;
+    using const_iterator = std::array<ElementT, Size>::const_iterator;
+
+    auto begin() -> iterator { return m_data.begin(); }
+    auto begin() const -> const_iterator { return m_data.begin(); }
+    auto end() -> iterator { return m_data.end(); }
+    auto end() const -> const_iterator { return m_data.end(); }
 private:
     std::array<ElementT, Size> m_data;
 };

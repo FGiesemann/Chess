@@ -49,4 +49,33 @@ auto attack_bitmap(PieceType piece_type, const Square &square, Bitmap blocker_co
     return attack_map;
 }
 
+auto total_size(const MagicDataSet &data_set) -> std::size_t {
+    return std::accumulate(data_set.begin(), data_set.end(), std::size_t{0}, [](std::size_t total, const MagicData &data) { return total + data.max_index + 1; });
+}
+
+auto MagicBitboard::init(const MagicDataSet &data) -> void {
+    m_attack_maps.resize(total_size(data));
+
+    std::uint32_t current_offset{0};
+    for (Square square = Square::A1; square != Square::H8; square += 1) {
+        m_magics[square].offset = current_offset;
+        m_magics[square].blocker_mask = blocker_mask(m_piece, square);
+        m_magics[square].shift = data[square].shift;
+        m_magics[square].magic_number = data[square].magic_number;
+
+        fill_table(m_magics[square], square, current_offset);
+        current_offset += data[square].max_index + 1;
+    }
+}
+
+auto MagicBitboard::fill_table(const Magics &magics, const Square &square, std::uint32_t offset) -> void {
+    chesscore::Bitmap blockers{};
+    do { // NOLINT(cppcoreguidelines-avoid-do-while)
+        const auto index = magic_index(blockers, magics.magic_number, magics.shift);
+        const auto attack_map = attack_bitmap(m_piece, square, blockers);
+        m_attack_maps[offset + index] = attack_map;
+        blockers = chesscore::next_blocker_config(blockers, magics.blocker_mask);
+    } while (!blockers.empty());
+}
+
 } // namespace chesscore
