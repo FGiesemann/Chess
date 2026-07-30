@@ -9,12 +9,9 @@
 #include "generate_scenario.h"
 #include "search_scenario.h"
 
-#include <filesystem>
 #include <iostream>
 
 using namespace magic_bitboard_generator;
-
-static const auto database_path = std::filesystem::path{"magic_bitboard_database.txt"};
 
 auto main(int argc, const char *argv[]) -> int {
     try {
