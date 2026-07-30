@@ -254,7 +254,7 @@ auto placement_to_string(const PiecePlacement &placement) -> std::string {
     int blank_count{0};
     for (int row = Rank::max_rank - 1; row >= 0; --row) {
         for (int column = 0; column < File::max_file; ++column) {
-            std::size_t index = row * File::max_file + column;
+            auto index = static_cast<std::size_t>(row) * File::max_file + static_cast<std::size_t>(column);
             if (!placement[index].has_value()) {
                 ++blank_count;
             } else {
