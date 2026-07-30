@@ -9,10 +9,9 @@
 
 #include "chesscore/bitboard.h"
 #include "chesscore/bitmap.h"
+#include "chesscore/chesscore.h"
 #include "chesscore/position.h"
 #include "chesscore/table.h"
-
-#include <memory>
 
 namespace chesscore {
 
@@ -155,20 +154,24 @@ public:
      *
      * Returns the attack map for the given square and position.
      * \attention The MagicBitboard has to be initialized (see init())
-     * before calling this function!
+     * before calling this function! It will throw an exception otherwise.
      * \param square The square of the sliding piece.
      * \param position The position.
      * \return The attack map.
      */
     [[nodiscard]] auto attacks(const Square &square, const Position &position) const -> const Bitmap & {
+        if (!m_initialized) {
+            throw ChessException{"MagicBitboard not initialized"};
+        }
         const auto &magic = magics()[square];
         return m_attack_maps[magic.offset + magic_index(position.board().occupancy() & magic.blocker_mask, magic.magic_number, magic.shift)];
     }
 private:
-    std::shared_ptr<const MagicDataSet> m_data_set; //< Reference to the data set for initialization.
-    PieceType m_piece;                              //< The piece type.
-    std::vector<Bitmap> m_attack_maps;              //< The list of attack maps.
-    MagicTable m_magics;                            //< The list of magic parameters.
+    const MagicDataSet *m_data_set;    //< Reference to the data set for initialization. (non-owning)
+    PieceType m_piece;                 //< The piece type.
+    std::vector<Bitmap> m_attack_maps; //< The list of attack maps.
+    MagicTable m_magics;               //< The list of magic parameters.
+    bool m_initialized{false};         //< Are the tables already initialized?
 
     /**
      * \brief Fill the attack map.
@@ -183,5 +186,13 @@ private:
 };
 
 } // namespace chesscore
+
+#include "magic_data.h"
+
+namespace chesscore {
+
+inline const MagicBitboard magic_rook_bitboard{PieceType::Rook, magic_rook_data};
+
+}
 
 #endif

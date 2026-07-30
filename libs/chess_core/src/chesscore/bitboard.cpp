@@ -5,6 +5,7 @@
 
 #include "chesscore/bitboard.h"
 #include "chesscore/bitboard_tables.h"
+#include "chesscore/magic.h"
 
 namespace chesscore {
 

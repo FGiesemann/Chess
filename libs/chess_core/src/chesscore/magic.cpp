@@ -54,6 +54,9 @@ auto total_size(const MagicDataSet &data_set) -> std::size_t {
 }
 
 auto MagicBitboard::init() -> void {
+    if (m_initialized) {
+        return;
+    }
     const auto &data = *m_data_set;
     m_attack_maps.resize(total_size(data));
 
@@ -67,6 +70,7 @@ auto MagicBitboard::init() -> void {
         fill_table(m_magics[square], square, current_offset);
         current_offset += data[square].max_index + 1;
     }
+    m_initialized = true;
 }
 
 auto MagicBitboard::fill_table(const Magics &magics, const Square &square, std::uint32_t offset) -> void {
