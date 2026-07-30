@@ -24,6 +24,7 @@ public:
 enum class Scenario {
     Check,
     Search,
+    Generate,
 
     Unknown
 };
@@ -39,6 +40,7 @@ struct Args {
     std::uint64_t magic_number{};
     std::vector<std::uint64_t> shifts;
     std::string database;
+    std::string output;
     std::uint64_t iterations{1'000'000};
 };
 

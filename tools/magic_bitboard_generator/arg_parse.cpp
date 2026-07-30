@@ -16,17 +16,18 @@ auto print_usage() -> void {
 Usage: magic_bitboard_generator <scenario> [options]
 
 Scenarios:
-    check         Check given magic numbers
-    search        Search for magic numbers
+    check            Check given magic numbers
+    search           Search for magic numbers
+    generate <path>  Generate header files
     
 Options:
-    -h, --help         Print this help message
-    -p, --piece        The type of the sliding piece
-    -q, --square       The square on which the piece is placed
-    -i, --iter         The number of iterations
-    -m, --magic        The magic number
-    -s, --shift        The shift
-    -d, --database     The database file
+    -h, --help       Print this help message
+    -p, --piece      The type of the sliding piece
+    -q, --square     The square on which the piece is placed
+    -i, --iter       The number of iterations
+    -m, --magic      The magic number
+    -s, --shift      The shift
+    -d, --database   The database file
 
 Hints:
     For the search scenario, the piece type can be given as R, B or RB for both.
@@ -34,6 +35,8 @@ Hints:
     comma separated list or a range (e. g. a1-c4).
     A range of shifts can be searched by specifying a start and an end value
     (e. g. 52-54).
+
+    The generate scenario needs a database file to generate the header files.
 )";
 }
 
@@ -77,6 +80,10 @@ auto parse_arguments(const std::vector<std::string> &args) -> Args {
             exit(0);
         } else if (arg == "check" || arg == "search") {
             result.scenario = scenario(arg);
+        } else if (arg == "generate") {
+            result.scenario = Scenario::Generate;
+            result.output = next_arg;
+            ++i;
         } else if (arg == "-p" || arg == "--piece") {
             result.piece_types = parse_piece_types(next_arg);
             ++i;
@@ -101,6 +108,15 @@ auto parse_arguments(const std::vector<std::string> &args) -> Args {
             ++i;
         } else {
             throw ArgError("Unknown argument: " + arg);
+        }
+    }
+
+    if (result.scenario == Scenario::Generate) {
+        if (result.database.empty()) {
+            throw ArgError("No database file specified");
+        }
+        if (result.output.empty()) {
+            throw ArgError("No output file specified");
         }
     }
     return result;
