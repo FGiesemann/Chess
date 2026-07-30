@@ -40,7 +40,7 @@ auto HeaderFile::write_data_set(const std::string &piece_name, const std::vector
 }
 
 auto HeaderFile::start_data_set(const std::string &piece_name) -> void {
-    m_file << "inline constexpr MagicDataSet magic_" << piece_name << "_data = {\n";
+    m_file << "inline constexpr MagicDataSet magic_" << piece_name << "_data{\n";
 }
 
 auto HeaderFile::write_record(const Record &record) -> void {
