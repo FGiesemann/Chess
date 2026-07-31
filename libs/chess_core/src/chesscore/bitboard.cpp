@@ -6,6 +6,7 @@
 #include "chesscore/bitboard.h"
 #include "chesscore/bitboard_tables.h"
 #include "chesscore/magic.h"
+#include "chesscore/move.h"
 #include "chesscore/piece.h"
 
 namespace chesscore {
@@ -187,6 +188,7 @@ auto Bitboard::reset_castling_rook(const Move &move) -> void {
 
 auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
     MoveList moves{};
+    moves.reserve(move_list_initial_size);
     all_knight_moves(moves, state);
     all_king_moves(moves, state);
     all_sliding_moves(moves, state);

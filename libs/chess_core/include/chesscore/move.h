@@ -12,6 +12,7 @@
 #include "chesscore/square.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <optional>
 #include <string>
 #include <vector>
@@ -158,6 +159,8 @@ struct PromotionMoveCompare {
  * \brief A list of moves.
  */
 using MoveList = std::vector<Move>;
+
+inline constexpr std::size_t move_list_initial_size = 128;
 
 auto to_string(const MoveList &moves) -> std::string;
 
