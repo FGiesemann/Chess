@@ -204,17 +204,14 @@ auto Bitboard::all_stepping_moves(PieceType piece_type, MoveList &moves, const P
     const auto piece = Piece{.type = piece_type, .color = state.side_to_move};
     Bitmap pieces{bitmap(piece)};
 
-    Square pos{Square::A1};
     while (!pieces.empty()) {
         const auto shift = pieces.empty_squares_before();
-        pos += shift;
-        pieces >>= shift;
+        const auto pos = Square::A1 + shift;
 
         auto targets = bitmaps::get_target_table(piece_type)[pos] & ~bitmap(state.side_to_move);
         extract_moves(targets, pos, piece, state, moves);
 
-        pos += 1;
-        pieces >>= 1;
+        pieces.clear_lowest_bit();
     }
 }
 
@@ -236,14 +233,11 @@ auto Bitboard::all_sliding_moves(MoveList &moves, const PositionState &state) co
 auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
     const auto piece = Piece{.type = piece_type, .color = state.side_to_move};
     auto squares = bitmap(piece);
-    Square square{Square::A1};
     while (!squares.empty()) {
         const auto shift = squares.empty_squares_before();
-        square += shift;
-        squares >>= shift;
+        const auto square = Square::A1 + shift;
         all_sliding_moves(piece, square, moves, state);
-        square += 1;
-        squares >>= 1;
+        squares.clear_lowest_bit();
     }
 }
 
@@ -337,11 +331,9 @@ auto Bitboard::sliding_piece_attacks(const Square &square, Color attacker_color)
 }
 
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
-    Square target_square{Square::A1};
     while (!targets.empty()) {
         const auto shift = targets.empty_squares_before();
-        target_square += shift;
-        targets >>= shift;
+        const auto target_square = Square::A1 + shift;
         store_move_if_legal(
             Move{
                 .from = from,
@@ -356,30 +348,24 @@ auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &pi
             },
             moves
         );
-        target_square += 1;
-        targets >>= 1;
+        targets.clear_lowest_bit();
     }
 }
 
 auto Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) const -> void {
-    Square target_square{Square::A1};
     while (!targets.empty()) {
         const auto shift = targets.empty_squares_before();
-        target_square += shift;
-        targets >>= shift;
+        const auto target_square = Square::A1 + shift;
         const auto source_square = state.side_to_move == Color::White ? (target_square - File::max_file * step_size) : (target_square + File::max_file * step_size);
         generate_pawn_moves(source_square, target_square, std::nullopt, false, state, moves);
-        target_square += 1;
-        targets >>= 1;
+        targets.clear_lowest_bit();
     }
 }
 
 auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void {
-    Square target_square{Square::A1};
     while (!targets.empty()) {
         const auto shift = targets.empty_squares_before();
-        target_square += shift;
-        targets >>= shift;
+        const auto target_square = Square::A1 + shift;
         const auto source_square = Square{
             File{direction == PawnCaptureDirection::East ? target_square.file().file - 1 : target_square.file().file + 1},
             Rank{state.side_to_move == Color::White ? target_square.rank().rank - 1 : target_square.rank().rank + 1},
@@ -388,8 +374,7 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
         generate_pawn_moves(
             source_square, target_square, captured.value_or(Piece{.type = PieceType::Pawn, .color = other_color(state.side_to_move)}), !captured.has_value(), state, moves
         );
-        target_square += 1;
-        targets >>= 1;
+        targets.clear_lowest_bit();
     }
 }
 
@@ -478,7 +463,7 @@ auto Bitboard::find_king(Color color) const -> std::optional<Square> {
     const auto map = bitmap(Piece{.type = PieceType::King, .color = color});
     if (!map.empty()) {
         const auto shift = map.empty_squares_before();
-        return Square{Square::A1 + shift};
+        return Square::A1 + shift;
     }
     return {};
 }

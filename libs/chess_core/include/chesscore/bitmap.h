@@ -192,6 +192,17 @@ public:
      * \return The number of empty squares after the last piece is found.
      */
     [[nodiscard]] constexpr auto empty_squares_after() const -> int { return std::countl_zero(m_bits); }
+
+    /**
+     * \brief Clear the lowest bit.
+     *
+     * Sets the lowest bit in the bitmap to zero.
+     * \return The modified bitmap.
+     */
+    constexpr auto clear_lowest_bit() -> Bitmap & {
+        m_bits &= m_bits - 1;
+        return *this;
+    }
 private:
     std::uint64_t m_bits{};
 
