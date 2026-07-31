@@ -136,25 +136,6 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.King Castling.Blocked", "[Bitboard][
     CHECK(move_list_contains(moves, Move{Square::E1, Square::F1, Piece::WhiteKing}));
 }
 
-TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Ray N", "[Bitboard][MoveGeneration]") {
-    Position position1{FenString{"8/5b2/2p1P2P/8/1pP2Rp1/6p1/3b4/8 w - - 0 1"}};
-    MoveList moves1{};
-    position1.board().all_moves_along_ray(Piece::WhiteRook, Square::F4, RayDirection::North, moves1, position1.state());
-    CHECK(moves1.size() == 3);
-    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F5, Piece::WhiteRook}));
-    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F6, Piece::WhiteRook}));
-    CHECK(move_list_contains(moves1, Move{Square::F4, Square::F7, Piece::WhiteRook, Piece::BlackBishop}));
-}
-
-TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Ray W", "[Bitboard][MoveGeneration]") {
-    Position position1{FenString{"8/5b2/2p1P2P/8/1pP2Rp1/6p1/3b4/8 w - - 0 1"}};
-    MoveList moves1{};
-    position1.board().all_moves_along_ray(Piece::WhiteRook, Square::F4, RayDirection::West, moves1, position1.state());
-    CHECK(moves1.size() == 2);
-    CHECK(move_list_contains(moves1, Move{Square::F4, Square::E4, Piece::WhiteRook}));
-    CHECK(move_list_contains(moves1, Move{Square::F4, Square::D4, Piece::WhiteRook}));
-}
-
 TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Rook (no check)", "[Bitboard][MoveGeneration]") {
     Position position1{FenString{"8/5b2/2p1P2P/8/1pP2Rp1/6p1/3b4/8 w - - 0 1"}};
     MoveList moves1{};

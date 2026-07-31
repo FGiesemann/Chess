@@ -204,18 +204,6 @@ public:
     auto all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void;
 
     /**
-     * \brief Generate all moves along a single direction.
-     *
-     * Generates the moves for a sliding piece along a single sliding direction.
-     * \param moving_piece The moving piece.
-     * \param start Starting suqare of the piece.
-     * \param direction The ray direction.
-     * \param moves The list, where the generated moves are added.
-     * \param state State of the current position.
-     */
-    auto all_moves_along_ray(const Piece &moving_piece, const Square &start, const RayDirection &direction, MoveList &moves, const PositionState &state) const -> void;
-
-    /**
      * \brief Generate all pawn moves for a player.
      *
      * Generates all the moves for all pawns of one player. This includes
@@ -336,10 +324,8 @@ private:
     [[nodiscard]] auto remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap;
 
     auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
-    [[nodiscard]] auto all_targets_along_ray(const Square &start, Color moving_color, const RayDirection &direction) const -> Bitmap;
     auto sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
     [[nodiscard]] auto get_attack_map(const Piece &piece, const Square &start) const -> Bitmap;
-    [[nodiscard]] auto attacked_from_ray(const Square &square, Color piece_color, RayDirection direction, PieceType attacker1, PieceType attacker2) const -> bool;
 
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
     auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) const -> void;

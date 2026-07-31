@@ -271,22 +271,6 @@ auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start,
     extract_moves(targets, start, moving_piece, state, moves);
 }
 
-auto Bitboard::all_targets_along_ray(const Square &start, Color moving_color, const RayDirection &direction) const -> Bitmap {
-    auto targets = bitmaps::ray_target_table[direction][start];
-    const auto blockers = targets & m_all_pieces;
-    if (!blockers.empty()) {
-        const auto blocker_square = Square::A1 + (is_negative_direction(direction) ? 63 - blockers.empty_squares_after() : blockers.empty_squares_before());
-        targets ^= bitmaps::ray_target_table[direction][blocker_square];
-    }
-    targets &= ~bitmap(moving_color);
-    return targets;
-}
-
-auto Bitboard::all_moves_along_ray(const Piece &moving_piece, const Square &start, const RayDirection &direction, MoveList &moves, const PositionState &state) const -> void {
-    const auto targets = all_targets_along_ray(start, state.side_to_move, direction);
-    extract_moves(targets, start, moving_piece, state, moves);
-}
-
 auto Bitboard::remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap {
     return bitmap & ~m_all_pieces;
 }
@@ -340,12 +324,6 @@ auto Bitboard::knight_attacks(const Square &square, Color knight_color) const ->
 auto Bitboard::king_attacks(const Square &square, Color king_color) const -> bool {
     const auto king = bitmap(Piece{.type = PieceType::King, .color = king_color});
     const auto attackers = bitmaps::get_target_table(PieceType::King)[square] & king;
-    return !attackers.empty();
-}
-
-auto Bitboard::attacked_from_ray(const Square &square, Color piece_color, RayDirection direction, PieceType attacker1, PieceType attacker2) const -> bool {
-    const auto targets = all_targets_along_ray(square, other_color(piece_color), direction);
-    const auto attackers = targets & (bitmap(Piece{.type = attacker1, .color = piece_color}) | bitmap(Piece{.type = attacker2, .color = piece_color}));
     return !attackers.empty();
 }
 
