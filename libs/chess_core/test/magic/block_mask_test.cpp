@@ -20,6 +20,9 @@ TEST_CASE("Magic.Blocker.Mask.Rook", "[magic]") {
 
     const auto mask2 = blocker_mask(PieceType::Rook, Square::H5);
     CHECK(mask2 == Bitmap{0x0080807E80808000ULL});
+
+    const auto mask3 = blocker_mask(PieceType::Rook, Square::H8);
+    CHECK(mask3 == Bitmap{0x7E80808080808000ULL});
 }
 
 TEST_CASE("Magic.Blocker.Mask.Bishop", "[magic]") {

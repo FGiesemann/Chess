@@ -6,6 +6,7 @@
 #include "chesscore/bitboard.h"
 #include "chesscore/bitboard_tables.h"
 #include "chesscore/magic.h"
+#include "chesscore/piece.h"
 
 namespace chesscore {
 
@@ -227,9 +228,9 @@ auto Bitboard::all_king_moves(MoveList &moves, const PositionState &state) const
 }
 
 auto Bitboard::all_sliding_moves(MoveList &moves, const PositionState &state) const -> void {
-    sliding_moves_for_type(PieceType::Queen, moves, state);
-    sliding_moves_for_type(PieceType::Bishop, moves, state);
     sliding_moves_for_type(PieceType::Rook, moves, state);
+    sliding_moves_for_type(PieceType::Bishop, moves, state);
+    sliding_moves_for_type(PieceType::Queen, moves, state);
 }
 
 auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
@@ -246,13 +247,28 @@ auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, con
     }
 }
 
-auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void {
-    const auto ray_directions_for_piece = piece_ray_directions[moving_piece.type];
-    for (auto direction : all_ray_directions) {
-        if (ray_directions_for_piece & direction) {
-            all_moves_along_ray(moving_piece, start, direction, moves, state);
-        }
+auto Bitboard::get_attack_map(const Piece &piece, const Square &start) const -> Bitmap {
+    Bitmap attacks{};
+    switch (piece.type) {
+    case PieceType::Rook:
+        attacks = magic_rook_bitboard.attacks(start, *this);
+        break;
+    case PieceType::Bishop:
+        attacks = magic_bishop_bitboard.attacks(start, *this);
+        break;
+    case PieceType::Queen:
+        attacks = magic_rook_bitboard.attacks(start, *this) | magic_bishop_bitboard.attacks(start, *this);
+        break;
+    default:
+        attacks = Bitmap{};
     }
+    attacks &= ~bitmap(piece.color);
+    return attacks;
+}
+
+auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void {
+    const auto targets = get_attack_map(moving_piece, start);
+    extract_moves(targets, start, moving_piece, state, moves);
 }
 
 auto Bitboard::all_targets_along_ray(const Square &start, Color moving_color, const RayDirection &direction) const -> Bitmap {

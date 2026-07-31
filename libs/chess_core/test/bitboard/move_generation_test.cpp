@@ -169,6 +169,11 @@ TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Rook (no check)", "[Bi
     CHECK(move_list_contains(moves1, Move{Square::F4, Square::F7, Piece::WhiteRook, Piece::BlackBishop}));
     CHECK(move_list_contains(moves1, Move{Square::F4, Square::E4, Piece::WhiteRook}));
     CHECK(move_list_contains(moves1, Move{Square::F4, Square::D4, Piece::WhiteRook}));
+
+    Position position2{FenString{"rnbqkbnr/pppppppp/8/8/8/N7/PPPPPPPP/R1BQKBNR b KQkq - 0 1"}};
+    MoveList moves2{};
+    position2.board().all_sliding_moves(Piece::BlackRook, Square::H8, moves2, position2.state());
+    CHECK(moves2.size() == 0);
 }
 
 TEST_CASE("Bitboard.Bitboard.MoveGeneration.SlidingPieces.Bishop (no check)", "[Bitboard][MoveGeneration]") {

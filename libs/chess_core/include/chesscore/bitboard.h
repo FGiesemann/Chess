@@ -338,6 +338,7 @@ private:
     auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
     [[nodiscard]] auto all_targets_along_ray(const Square &start, Color moving_color, const RayDirection &direction) const -> Bitmap;
     auto sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
+    [[nodiscard]] auto get_attack_map(const Piece &piece, const Square &start) const -> Bitmap;
     [[nodiscard]] auto attacked_from_ray(const Square &square, Color piece_color, RayDirection direction, PieceType attacker1, PieceType attacker2) const -> bool;
 
     auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;

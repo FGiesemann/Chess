@@ -21,6 +21,10 @@ TEST_CASE("Magic.Attack Map.Rook", "[magic]") {
     const auto blockers3 = Bitmap{0x0200580000020200ULL};
     const auto attack3 = Bitmap{0x02020D0202020000ULL};
     CHECK(attack_bitmap(PieceType::Rook, Square::B6, blockers3) == attack3);
+
+    const auto blockers4 = Bitmap{0x4080000000000000ULL};
+    const auto attack4 = Bitmap{0x4080000000000000ULL};
+    CHECK(attack_bitmap(PieceType::Rook, Square::H8, blockers4) == attack4);
 }
 
 TEST_CASE("Magic.Attack Map.Bishop", "[magic]") {

@@ -54,14 +54,12 @@ auto total_size(const MagicDataSet &data_set) -> std::size_t {
 }
 
 auto MagicBitboard::init() -> void {
-    if (m_initialized) {
-        return;
-    }
     const auto &data = *m_data_set;
     m_attack_maps.resize(total_size(data));
 
     std::uint32_t current_offset{0};
-    for (Square square = Square::A1; square != Square::H8; square += 1) {
+    Square square{Square::A1};
+    for (int i = 0; i < Square::count; ++i) {
         m_magics[square].offset = current_offset;
         m_magics[square].blocker_mask = blocker_mask(m_piece, square);
         m_magics[square].shift = data[square].shift;
@@ -69,8 +67,8 @@ auto MagicBitboard::init() -> void {
 
         fill_table(m_magics[square], square, current_offset);
         current_offset += data[square].max_index + 1;
+        square += 1;
     }
-    m_initialized = true;
 }
 
 auto MagicBitboard::fill_table(const Magics &magics, const Square &square, std::uint32_t offset) -> void {

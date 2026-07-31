@@ -9,7 +9,6 @@
 
 #include "chesscore/bitboard.h"
 #include "chesscore/bitmap.h"
-#include "chesscore/chesscore.h"
 #include "chesscore/position.h"
 #include "chesscore/table.h"
 
@@ -124,7 +123,7 @@ class MagicBitboard {
 public:
     using MagicTable = Table<Magics, Square::count, Square>; //< Type of the list of magic parameters.
 
-    MagicBitboard(PieceType piece_type, const MagicDataSet &data) : m_data_set{&data}, m_piece{piece_type} {}
+    MagicBitboard(PieceType piece_type, const MagicDataSet &data) : m_data_set{&data}, m_piece{piece_type} { init(); }
 
     /**
      * \brief Initialize the magic bitboard.
@@ -136,7 +135,6 @@ public:
     /**
      * \brief Access the table of magic parameters.
      *
-     * The table is updated during initialization (see init()).
      * \return The table of magic parameters.
      */
     [[nodiscard]] auto magics() const -> const MagicTable & { return m_magics; }
@@ -144,7 +142,6 @@ public:
     /**
      * \brief Access the table of magic parameters.
      *
-     * The table is updated during initialization (see init()).
      * \return The table of magic parameters.
      */
     [[nodiscard]] auto magics() -> MagicTable & { return m_magics; }
@@ -153,25 +150,29 @@ public:
      * \brief Get the attack map.
      *
      * Returns the attack map for the given square and position.
-     * \attention The MagicBitboard has to be initialized (see init())
-     * before calling this function! It will throw an exception otherwise.
      * \param square The square of the sliding piece.
      * \param position The position.
      * \return The attack map.
      */
-    [[nodiscard]] auto attacks(const Square &square, const Position &position) const -> const Bitmap & {
-        if (!m_initialized) {
-            throw ChessException{"MagicBitboard not initialized"};
-        }
+    [[nodiscard]] auto attacks(const Square &square, const Position &position) const -> const Bitmap & { return attacks(square, position.board()); }
+
+    /**
+     * \brief Get the attack map.
+     *
+     * Returns the attack map for the given square and bitboard.
+     * \param square The square of the sliding piece.
+     * \param bitboard The bitboard.
+     * \return The attack map.
+     */
+    [[nodiscard]] auto attacks(const Square &square, const Bitboard &bitboard) const -> const Bitmap & {
         const auto &magic = magics()[square];
-        return m_attack_maps[magic.offset + magic_index(position.board().occupancy() & magic.blocker_mask, magic.magic_number, magic.shift)];
+        return m_attack_maps[magic.offset + magic_index(bitboard.occupancy() & magic.blocker_mask, magic.magic_number, magic.shift)];
     }
 private:
     const MagicDataSet *m_data_set;    //< Reference to the data set for initialization. (non-owning)
     PieceType m_piece;                 //< The piece type.
     std::vector<Bitmap> m_attack_maps; //< The list of attack maps.
     MagicTable m_magics;               //< The list of magic parameters.
-    bool m_initialized{false};         //< Are the tables already initialized?
 
     /**
      * \brief Fill the attack map.
@@ -192,7 +193,8 @@ private:
 namespace chesscore {
 
 inline const MagicBitboard magic_rook_bitboard{PieceType::Rook, magic_rook_data};
+inline const MagicBitboard magic_bishop_bitboard{PieceType::Bishop, magic_bishop_data};
 
-}
+} // namespace chesscore
 
 #endif
