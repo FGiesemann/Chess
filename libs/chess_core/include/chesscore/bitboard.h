@@ -290,10 +290,10 @@ public:
      * \brief Checks, if a square is attacked by a sliding piece.
      *
      * \param square The square to be checked.
-     * \param piece_color Color of the attacking sliding piece.
+     * \param attacker_color Color of the attacking sliding piece.
      * \return If the square is attacked by a sliding piece.
      */
-    [[nodiscard]] auto sliding_piece_attacks(const Square &square, Color piece_color) const -> bool;
+    [[nodiscard]] auto sliding_piece_attacks(const Square &square, Color attacker_color) const -> bool;
 
     /**
      * \brief Comparison of two Bitboards.

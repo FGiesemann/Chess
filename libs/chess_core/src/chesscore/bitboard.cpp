@@ -349,15 +349,13 @@ auto Bitboard::attacked_from_ray(const Square &square, Color piece_color, RayDir
     return !attackers.empty();
 }
 
-auto Bitboard::sliding_piece_attacks(const Square &square, Color piece_color) const -> bool {
-    return attacked_from_ray(square, piece_color, RayDirection::North, PieceType::Rook, PieceType::Queen) ||
-           attacked_from_ray(square, piece_color, RayDirection::NorthEast, PieceType::Bishop, PieceType::Queen) ||
-           attacked_from_ray(square, piece_color, RayDirection::East, PieceType::Rook, PieceType::Queen) ||
-           attacked_from_ray(square, piece_color, RayDirection::SouthEast, PieceType::Bishop, PieceType::Queen) ||
-           attacked_from_ray(square, piece_color, RayDirection::South, PieceType::Rook, PieceType::Queen) ||
-           attacked_from_ray(square, piece_color, RayDirection::SouthWest, PieceType::Bishop, PieceType::Queen) ||
-           attacked_from_ray(square, piece_color, RayDirection::West, PieceType::Rook, PieceType::Queen) ||
-           attacked_from_ray(square, piece_color, RayDirection::NorthWest, PieceType::Bishop, PieceType::Queen);
+auto Bitboard::sliding_piece_attacks(const Square &square, Color attacker_color) const -> bool {
+    const auto attacks1 = get_attack_map(Piece{.type = PieceType::Rook, .color = other_color(attacker_color)}, square);
+    const auto attacks2 = get_attack_map(Piece{.type = PieceType::Bishop, .color = other_color(attacker_color)}, square);
+
+    return !((attacks1 & bitmap(Piece{.type = PieceType::Rook, .color = attacker_color})) | (attacks1 & bitmap(Piece{.type = PieceType::Queen, .color = attacker_color})) |
+             (attacks2 & bitmap(Piece{.type = PieceType::Bishop, .color = attacker_color})) | (attacks2 & bitmap(Piece{.type = PieceType::Queen, .color = attacker_color})))
+                .empty();
 }
 
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
