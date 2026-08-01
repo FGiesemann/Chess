@@ -244,22 +244,17 @@ auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, con
 }
 
 auto Bitboard::get_attack_map(const Piece &piece, const Square &start) const -> Bitmap {
-    Bitmap attacks{};
     switch (piece.type) {
     case PieceType::Rook:
-        attacks = magic_rook_bitboard.attacks(start, *this);
-        break;
+        return magic_rook_bitboard.attacks(start, *this) & ~bitmap(piece.color);
     case PieceType::Bishop:
-        attacks = magic_bishop_bitboard.attacks(start, *this);
+        return magic_bishop_bitboard.attacks(start, *this) & ~bitmap(piece.color);
         break;
     case PieceType::Queen:
-        attacks = magic_rook_bitboard.attacks(start, *this) | magic_bishop_bitboard.attacks(start, *this);
-        break;
+        return (magic_rook_bitboard.attacks(start, *this) | magic_bishop_bitboard.attacks(start, *this)) & ~bitmap(piece.color);
     default:
-        attacks = Bitmap{};
+        return Bitmap{};
     }
-    attacks &= ~bitmap(piece.color);
-    return attacks;
 }
 
 auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void {
@@ -325,11 +320,20 @@ auto Bitboard::king_attacks(const Square &square, Color king_color) const -> boo
 
 auto Bitboard::sliding_piece_attacks(const Square &square, Color attacker_color) const -> bool {
     const auto attacks1 = get_attack_map(Piece{.type = PieceType::Rook, .color = other_color(attacker_color)}, square);
+    if (!(attacks1 & bitmap(Piece{.type = PieceType::Rook, .color = attacker_color})).empty()) {
+        return true;
+    }
+    if (!(attacks1 & bitmap(Piece{.type = PieceType::Queen, .color = attacker_color})).empty()) {
+        return true;
+    }
     const auto attacks2 = get_attack_map(Piece{.type = PieceType::Bishop, .color = other_color(attacker_color)}, square);
-
-    return !((attacks1 & bitmap(Piece{.type = PieceType::Rook, .color = attacker_color})) | (attacks1 & bitmap(Piece{.type = PieceType::Queen, .color = attacker_color})) |
-             (attacks2 & bitmap(Piece{.type = PieceType::Bishop, .color = attacker_color})) | (attacks2 & bitmap(Piece{.type = PieceType::Queen, .color = attacker_color})))
-                .empty();
+    if (!(attacks2 & bitmap(Piece{.type = PieceType::Bishop, .color = attacker_color})).empty()) {
+        return true;
+    }
+    if (!(attacks2 & bitmap(Piece{.type = PieceType::Queen, .color = attacker_color})).empty()) {
+        return true;
+    }
+    return false;
 }
 
 auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
