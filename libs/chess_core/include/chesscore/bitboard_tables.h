@@ -453,8 +453,8 @@ inline constexpr RayTargetTable ray_target_table{
 };
 // clang-format on
 
-using RankTable = Table<Bitmap, Rank::max_rank, Rank>;
-using FileTable = Table<Bitmap, File::max_file, File>;
+using RankTable = Table<Bitmap, Rank::count, Rank>;
+using FileTable = Table<Bitmap, File::count, File>;
 
 inline constexpr RankTable rank_table{
     Bitmap{0x00000000000000FFULL}, Bitmap{0x000000000000FF00ULL}, Bitmap{0x0000000000FF0000ULL}, Bitmap{0x00000000FF000000ULL},

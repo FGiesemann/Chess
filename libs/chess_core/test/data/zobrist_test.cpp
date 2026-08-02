@@ -207,7 +207,7 @@ TEST_CASE("Data.Zobrist.ZobristHash.Position", "[zobrist]") {
     const auto hash2 = ZobristHash::from_position(position2);
 
     hash.move_piece(Piece::WhitePawn, Square::G2, Square::G4);
-    hash.set_enpassant(File{7});
+    hash.set_enpassant(File{'g'});
     hash.swap_side();
     CHECK(hash == hash2);
 }

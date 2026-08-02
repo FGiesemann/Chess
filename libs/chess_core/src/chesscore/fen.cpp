@@ -79,7 +79,7 @@ public:
             } else {
                 check_piece_letter(fen_string[pos]);
             }
-            if (file > ranks) {
+            if (file > File::count) {
                 throw InvalidFen{"Invalid FEN string: too many files"};
             }
             ++pos;
@@ -89,7 +89,6 @@ public:
     [[nodiscard]] auto position() const -> size_t { return pos; }
     [[nodiscard]] auto placement() const -> PiecePlacement { return piece_placement; }
 private:
-    static constexpr size_t ranks{8U};
     size_t pos{0};
     size_t rank{0U};
     size_t file{0U};
@@ -98,22 +97,22 @@ private:
     PiecePlacement piece_placement;
 
     void check_end_of_piece_placement() const {
-        if (rank != ranks - 1) {
+        if (rank != Rank::count - 1) {
             throw InvalidFen{"Invalid FEN string: missing ranks"};
         }
-        if (file != ranks) {
+        if (file != Rank::count) {
             throw InvalidFen{"Invalid FEN string: missing files"};
         }
     }
 
     void switch_to_next_rank() {
-        if (file != ranks) {
+        if (file != Rank::count) {
             throw InvalidFen{"Invalid FEN string: missing files"};
         }
         ++rank;
         file = 0;
         number_last = false;
-        if (rank >= ranks) {
+        if (rank >= Rank::count) {
             throw InvalidFen{"Too many ranks in FEN string"};
         }
     }
@@ -130,8 +129,8 @@ private:
         if (invalid_piece_letter(piece)) {
             throw InvalidFen{"Invalid piece type in FEN string"};
         }
-        if (file < ranks && rank < ranks) {
-            std::size_t rank_offset{((ranks - 1) - rank) * ranks};
+        if (file < File::count && rank < Rank::count) {
+            std::size_t rank_offset{(Rank::count - 1 - rank) * Rank::count};
             piece_placement.at(rank_offset + file) = piece_from_fen_letter(piece);
         }
         ++file;
@@ -215,7 +214,7 @@ auto check_en_passant_target_square(const std::string &fen_string, Color player_
     if ((player_to_move == Color::White && rank != '6') || (player_to_move == Color::Black && rank != '3')) {
         throw InvalidFen{"Invalid en passant target square in FEN string: " + std::string{rank}};
     }
-    return std::make_pair(Square{File{file}, Rank{rank - '1' + 1}}, pos + 3);
+    return std::make_pair(Square{File{file}, Rank{rank - '1'}}, pos + 3);
 }
 
 auto check_halfmove_clock(const std::string &fen_string, std::size_t pos) -> std::pair<int, std::size_t> {
@@ -252,9 +251,9 @@ auto check_fullmove_number(const std::string &fen_string, size_t pos) -> int {
 auto placement_to_string(const PiecePlacement &placement) -> std::string {
     std::string result;
     int blank_count{0};
-    for (int row = Rank::max_rank - 1; row >= 0; --row) {
-        for (int column = 0; column < File::max_file; ++column) {
-            auto index = static_cast<std::size_t>(row) * File::max_file + static_cast<std::size_t>(column);
+    for (int row = Rank::count - 1; row >= 0; --row) {
+        for (int column = 0; column < File::count; ++column) {
+            auto index = static_cast<std::size_t>(row) * File::count + static_cast<std::size_t>(column);
             if (!placement[index].has_value()) {
                 ++blank_count;
             } else {

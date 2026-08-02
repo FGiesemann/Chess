@@ -14,7 +14,7 @@ namespace chesscore {
 namespace {
 
 auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
-    return side_to_move == Color::White ? pawn << File::max_file : pawn >> File::max_file;
+    return side_to_move == Color::White ? pawn << File::count : pawn >> File::count;
 }
 
 auto shift_left(const Bitmap &bitmap) -> Bitmap {
@@ -362,7 +362,7 @@ auto Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionS
     while (!targets.empty()) {
         const auto shift = targets.empty_squares_before();
         const auto target_square = Square::A1 + shift;
-        const auto source_square = state.side_to_move == Color::White ? (target_square - File::max_file * step_size) : (target_square + File::max_file * step_size);
+        const auto source_square = state.side_to_move == Color::White ? (target_square - File::count * step_size) : (target_square + File::count * step_size);
         generate_pawn_moves(source_square, target_square, std::nullopt, false, state, moves);
         targets.clear_lowest_bit();
     }

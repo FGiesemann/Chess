@@ -24,12 +24,13 @@ constexpr auto charToLower(const char character) -> char {
 /**
  * \brief A file (column) on the board.
  *
- * A file is a column on the board. It can be specified by a number 1..8 or by a
+ * A file is a column on the board. It can be specified by a number 0..7 or by a
  * character a..h.
  */
 struct File {
-    static constexpr int min_file = 1; ///< The minimum allowed file number.
-    static constexpr int max_file = 8; ///< The maximum allowed file number.
+    static constexpr int min_file = 0; ///< The minimum allowed file number.
+    static constexpr int max_file = 7; ///< The maximum allowed file number.
+    static constexpr int count = 8;    ///< The number of files.
 
     /**
      * \brief A file from its name.
@@ -38,7 +39,7 @@ struct File {
      * so 'A'..'H' are also valid.
      * \param in_file A character in the range a..h (case insensitive).
      */
-    constexpr File(char in_file) : file{static_cast<int>(detail::charToLower(in_file) - 'a') + 1} {
+    constexpr File(char in_file) : file{static_cast<int>(detail::charToLower(in_file) - 'a')} {
         if (this->file < File::min_file || this->file > File::max_file) {
             throw OutOfRange{"File must be between 'a' and 'h'"};
         }
@@ -47,8 +48,8 @@ struct File {
     /**
      * \brief A file from its number.
      *
-     * The file is specified as a number in the range 1..8.
-     * \param in_file A number in the range 1..8.
+     * The file is specified as a number in the range 0..7.
+     * \param in_file A number in the range 0..7.
      */
     constexpr File(int in_file) : file{in_file} {
         if (file < File::min_file || file > File::max_file) {
@@ -56,7 +57,7 @@ struct File {
         }
     }
 
-    int file; ///< The file number (1..8).
+    int file; ///< The file number (0..7).
 
     /**
      * \brief Returns the file as a character.
@@ -76,7 +77,7 @@ struct File {
      * \return The modified file.
      */
     constexpr auto operator+=(int steps) -> File & {
-        file = (file + steps - 1) % max_file + 1;
+        file = (file + steps) % count;
         return *this;
     }
 
@@ -95,34 +96,35 @@ struct File {
 auto operator<(const File &lhs, const File &rhs) -> bool;
 
 constexpr auto get_index(const File &file) -> int {
-    return file.file - 1;
+    return file.file;
 }
 
 /**
  * \brief A rank (row) on the board.
  *
- * A rank is a row on the board. It can be specified by a number 1..8.
+ * A rank is a row on the board. It can be specified by a number 0..7.
  */
 struct Rank {
-    static constexpr int min_rank = 1; ///< The minimum allowed rank number.
-    static constexpr int max_rank = 8; ///< The maximum allowed rank number.
+    static constexpr int min_rank = 0; ///< The minimum allowed rank number.
+    static constexpr int max_rank = 7; ///< The maximum allowed rank number.
+    static constexpr int count = 8;    ///< The number of ranks.
 
-    static constexpr int white_pawn_double_step_rank = 2; ///< The rank number from where white pawns can double step.
-    static constexpr int black_pawn_double_step_rank = 7; ///< The rank number from where black pawns can double step.
+    static constexpr int white_pawn_double_step_rank = 1; ///< The rank number from where white pawns can double step.
+    static constexpr int black_pawn_double_step_rank = 6; ///< The rank number from where black pawns can double step.
 
     /**
      * \brief A rank from its number.
      *
-     * The rank is a number in the range 1..8.
-     * \param in_rank A number in the range 1..8.
+     * The rank is a number in the range 0..7.
+     * \param in_rank A number in the range 0..7.
      */
     constexpr Rank(int in_rank) : rank{in_rank} {
         if (rank < Rank::min_rank || rank > Rank::max_rank) {
-            throw OutOfRange{"Rank must be between 1 and 8"};
+            throw OutOfRange{"Rank must be between 0 and 7"};
         }
     }
 
-    int rank; ///< The rank number (1..8).
+    int rank; ///< The rank number (0..7).
 
     /**
      * \brief Step up.
@@ -133,7 +135,7 @@ struct Rank {
      * \return The modified rank.
      */
     constexpr auto operator+=(int steps) -> Rank & {
-        rank = (rank + steps - 1) % max_rank + 1;
+        rank = (rank + steps) % count;
         return *this;
     }
 
@@ -152,7 +154,7 @@ struct Rank {
 auto operator<(const Rank &lhs, const Rank &rhs) -> bool;
 
 constexpr auto get_index(const Rank &rank) -> int {
-    return rank.rank - 1;
+    return rank.rank;
 }
 
 /**
@@ -169,14 +171,14 @@ public:
      * \param file The file (column) of the square.
      * \param rank The rank (row) of the square.
      */
-    constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{static_cast<size_t>((m_rank.rank - 1) * File::max_file + m_file.file - 1)} {}
+    constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{static_cast<size_t>((m_rank.rank) * File::count + m_file.file)} {}
 
     /**
      * \brief Default construtor.
      *
      * Creates the Square::A1.
      */
-    constexpr Square() : Square(1, 1) {}
+    constexpr Square() : Square(0, 0) {}
 
     /**
      * \brief Access the file of the square.
@@ -206,7 +208,7 @@ public:
     /**
      * \brief The number of squares on the board.
      */
-    static constexpr int count = File::max_file * Rank::max_rank;
+    static constexpr int count = File::count * Rank::count;
 
     /**
      * \brief Mirrors the rank at the center line.
@@ -215,7 +217,7 @@ public:
      * 5). This allows to "switch the player/color".
      * \return The mirrored square.
      */
-    [[nodiscard]] auto mirrored() const -> Square { return Square{m_file, Rank{Rank::max_rank + 1 - m_rank.rank}}; }
+    [[nodiscard]] auto mirrored() const -> Square { return Square{m_file, Rank{Rank::max_rank - m_rank.rank}}; }
 
     /**
      * \brief Skip to the "next" square.
@@ -228,8 +230,8 @@ public:
      */
     constexpr auto operator+=(int squares) -> Square & {
         m_index = std::clamp(m_index + static_cast<std::size_t>(squares), static_cast<std::size_t>(0U), static_cast<std::size_t>(Square::count - 1));
-        m_file.file = static_cast<int>(m_index % File::max_file + 1);
-        m_rank.rank = static_cast<int>(m_index / File::max_file) + 1;
+        m_file.file = static_cast<int>(m_index % File::count);
+        m_rank.rank = static_cast<int>(m_index / File::count);
         return *this;
     }
 
@@ -244,8 +246,8 @@ public:
      */
     constexpr auto operator-=(int squares) -> Square & {
         m_index = static_cast<std::size_t>(std::clamp(static_cast<int>(m_index) - squares, 0, Square::count - 1));
-        m_file.file = static_cast<int>(m_index % File::max_file + 1);
-        m_rank.rank = static_cast<int>(m_index / File::max_file) + 1;
+        m_file.file = static_cast<int>(m_index % File::count);
+        m_rank.rank = static_cast<int>(m_index / File::count);
         return *this;
     }
 

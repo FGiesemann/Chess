@@ -7,8 +7,6 @@
 
 #include "chesscore/bitboard.h"
 #include "chesscore/fen.h"
-#include "chesscore/move.h"
-#include "chesscore/position.h"
 
 using namespace chesscore;
 
