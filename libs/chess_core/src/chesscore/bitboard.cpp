@@ -19,12 +19,12 @@ auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
 
 auto shift_left(const Bitmap &bitmap) -> Bitmap {
     // we remove pieces from the a-file, so they don't "wrap around" when shifting
-    return (bitmap & ~bitmaps::file_table[File::min_file]) >> 1;
+    return (bitmap & ~bitmaps::file_table[0]) >> 1;
 }
 
 auto shift_right(const Bitmap &bitmap) -> Bitmap {
     // we remove pieces from the h-file, so they don't "wrap around" when shifting
-    return (bitmap & ~bitmaps::file_table[File::max_file]) << 1;
+    return (bitmap & ~bitmaps::file_table[File::count - 1]) << 1;
 }
 
 } // namespace
@@ -50,7 +50,7 @@ auto Bitboard::generate_pawn_move(
 
 auto Bitboard::generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const
     -> void {
-    if (target.rank().rank == Rank::min_rank || target.rank().rank == Rank::max_rank) {
+    if (target.rank().rank == 0 || target.rank().rank == (Rank::count - 1)) {
         const auto color = state.side_to_move;
         for (const auto &type : all_promotion_piece_types) {
             generate_pawn_move(source, target, captured, en_passant, Piece{.type = type, .color = color}, state, moves);
@@ -62,8 +62,8 @@ auto Bitboard::generate_pawn_moves(const Square &source, const Square &target, s
 
 Bitboard::Bitboard(const FenString &fen) {
     const auto &placements{fen.piece_placement()};
-    for (int rank{Rank::min_rank}; rank <= Rank::max_rank; ++rank) {
-        for (int file{File::min_file}; file <= File::max_file; ++file) {
+    for (int rank{0}; rank < Rank::count; ++rank) {
+        for (int file{0}; file < File::count; ++file) {
             const auto square = Square{rank, file};
             const auto piece{placements[square.index()]};
             if (piece) {

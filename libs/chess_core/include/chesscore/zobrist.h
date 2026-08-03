@@ -55,7 +55,7 @@ private:
     static bool m_initialized;
     static std::array<key_t, 2 * piece_type_count * Square::count> m_piece_keys;
     static std::array<key_t, CastlingRights::max_combinations> m_castling_keys;
-    static std::array<key_t, Rank::max_rank> m_enpassant_keys;
+    static std::array<key_t, Rank::count> m_enpassant_keys;
     static key_t m_side_key; // black to move
 
     static auto generate_nonzero_key(std::mt19937_64 &rng, std::uniform_int_distribution<key_t> &dist) -> key_t {

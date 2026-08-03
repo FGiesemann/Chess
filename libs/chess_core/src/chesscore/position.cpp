@@ -206,8 +206,8 @@ auto Position::check_state() const -> CheckState {
 
 auto Position::piece_placement() const -> PiecePlacement {
     PiecePlacement pieces{};
-    for (int rank = Rank::max_rank; rank >= Rank::min_rank; --rank) {
-        for (int file = File::min_file; file <= File::max_file; ++file) {
+    for (int rank = Rank::count - 1; rank >= 0; --rank) {
+        for (int file = 0; file < File::count; ++file) {
             const Square square{file, rank};
             const auto piece = m_board.get_piece(square);
             if (piece) {

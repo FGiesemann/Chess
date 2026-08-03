@@ -13,9 +13,9 @@ namespace chesscore {
 
 auto operator<<(std::ostream &os, const Bitmap &bitmap) -> std::ostream & {
     os << "  a b c d e f g h\n";
-    for (int rank = chesscore::Rank::max_rank; rank >= chesscore::Rank::min_rank; --rank) {
+    for (int rank = chesscore::Rank::count - 1; rank >= 0; --rank) {
         os << rank << ' ';
-        for (int file = chesscore::File::min_file; file <= chesscore::File::max_file; ++file) {
+        for (int file = 0; file < chesscore::File::count; ++file) {
             const chesscore::Square square{file, rank};
             if (bitmap.get(square)) {
                 os << 'X';
@@ -57,7 +57,7 @@ auto as_grouped_bits(const Bitmap &bitmap) -> std::string {
     static constexpr int square_count = 64;
 
     for (int i = 0; i < square_count; ++i) {
-        if (i > 0 && i % chesscore::File::max_file == 0) {
+        if (i > 0 && i % chesscore::File::count == 0) {
             oss << '\'';
         }
         oss << ((bitmap.bits() >> (square_count - 1 - i)) & 1);

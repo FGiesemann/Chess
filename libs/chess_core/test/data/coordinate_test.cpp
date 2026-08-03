@@ -19,8 +19,6 @@ TEST_CASE("Data.Coords.Coordinates Checks", "[Square]") {
         CHECK(File('f').file == 5);
         CHECK(File('g').file == 6);
         CHECK(File('h').file == 7);
-
-        CHECK_THROWS_AS(File('i'), OutOfRange);
     }
 
     SECTION("File from character (upper case)") {
@@ -32,8 +30,6 @@ TEST_CASE("Data.Coords.Coordinates Checks", "[Square]") {
         CHECK(File('F').file == 5);
         CHECK(File('G').file == 6);
         CHECK(File('H').file == 7);
-
-        CHECK_THROWS_AS(File('I'), OutOfRange);
     }
 
     SECTION("File from number") {
@@ -45,8 +41,6 @@ TEST_CASE("Data.Coords.Coordinates Checks", "[Square]") {
         CHECK(File(5).file == 5);
         CHECK(File(6).file == 6);
         CHECK(File(7).file == 7);
-
-        CHECK_THROWS_AS(File(8), OutOfRange);
     }
 
     SECTION("File name") {
@@ -69,8 +63,6 @@ TEST_CASE("Data.Coords.Coordinates Checks", "[Square]") {
         CHECK(Rank(5).rank == 5);
         CHECK(Rank(6).rank == 6);
         CHECK(Rank(7).rank == 7);
-
-        CHECK_THROWS_AS(Rank(8), OutOfRange);
     }
 
     SECTION("Comparison operators") {

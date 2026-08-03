@@ -8,8 +8,7 @@
 #define CHESSCORE_SQUARE_H
 
 #include <algorithm>
-
-#include "chesscore/chesscore.h"
+#include <string>
 
 namespace chesscore {
 
@@ -28,9 +27,7 @@ constexpr auto charToLower(const char character) -> char {
  * character a..h.
  */
 struct File {
-    static constexpr int min_file = 0; ///< The minimum allowed file number.
-    static constexpr int max_file = 7; ///< The maximum allowed file number.
-    static constexpr int count = 8;    ///< The number of files.
+    static constexpr int count = 8; ///< The number of files.
 
     /**
      * \brief A file from its name.
@@ -39,11 +36,7 @@ struct File {
      * so 'A'..'H' are also valid.
      * \param in_file A character in the range a..h (case insensitive).
      */
-    constexpr File(char in_file) : file{static_cast<int>(detail::charToLower(in_file) - 'a')} {
-        if (this->file < File::min_file || this->file > File::max_file) {
-            throw OutOfRange{"File must be between 'a' and 'h'"};
-        }
-    }
+    constexpr File(char in_file) : file{static_cast<int>(detail::charToLower(in_file) - 'a')} {}
 
     /**
      * \brief A file from its number.
@@ -51,11 +44,7 @@ struct File {
      * The file is specified as a number in the range 0..7.
      * \param in_file A number in the range 0..7.
      */
-    constexpr File(int in_file) : file{in_file} {
-        if (file < File::min_file || file > File::max_file) {
-            throw OutOfRange{"File must be between 1 and 8"};
-        }
-    }
+    constexpr File(int in_file) : file{in_file} {}
 
     int file; ///< The file number (0..7).
 
@@ -105,9 +94,7 @@ constexpr auto get_index(const File &file) -> int {
  * A rank is a row on the board. It can be specified by a number 0..7.
  */
 struct Rank {
-    static constexpr int min_rank = 0; ///< The minimum allowed rank number.
-    static constexpr int max_rank = 7; ///< The maximum allowed rank number.
-    static constexpr int count = 8;    ///< The number of ranks.
+    static constexpr int count = 8; ///< The number of ranks.
 
     static constexpr int white_pawn_double_step_rank = 1; ///< The rank number from where white pawns can double step.
     static constexpr int black_pawn_double_step_rank = 6; ///< The rank number from where black pawns can double step.
@@ -118,11 +105,7 @@ struct Rank {
      * The rank is a number in the range 0..7.
      * \param in_rank A number in the range 0..7.
      */
-    constexpr Rank(int in_rank) : rank{in_rank} {
-        if (rank < Rank::min_rank || rank > Rank::max_rank) {
-            throw OutOfRange{"Rank must be between 0 and 7"};
-        }
-    }
+    constexpr Rank(int in_rank) : rank{in_rank} {}
 
     int rank; ///< The rank number (0..7).
 
@@ -217,7 +200,7 @@ public:
      * 5). This allows to "switch the player/color".
      * \return The mirrored square.
      */
-    [[nodiscard]] auto mirrored() const -> Square { return Square{m_file, Rank{Rank::max_rank - m_rank.rank}}; }
+    [[nodiscard]] auto mirrored() const -> Square { return Square{m_file, Rank{Rank::count - m_rank.rank - 1}}; }
 
     /**
      * \brief Skip to the "next" square.

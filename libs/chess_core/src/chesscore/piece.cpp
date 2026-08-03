@@ -4,6 +4,7 @@
  * ************************************************************************** */
 
 #include "chesscore/piece.h"
+#include "chesscore/chesscore.h"
 
 #include <cctype>
 

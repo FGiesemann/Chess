@@ -21,7 +21,7 @@ TEST_CASE("Data.Zobrist.ZobristKeys.Nonzero", "[zobrist]") {
 
     CHECK(ZobristKeys::side_key() != 0);
 
-    for (int file = File::min_file; file <= File::max_file; ++file) {
+    for (int file = 0; file < File::count; ++file) {
         CHECK(ZobristKeys::enpassant_key(File{file}) != 0);
     }
 

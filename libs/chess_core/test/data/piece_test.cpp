@@ -5,7 +5,9 @@
 
 #include <catch2/catch_all.hpp>
 
+#include "chesscore/chesscore.h"
 #include "chesscore/piece.h"
+
 
 using namespace chesscore;
 

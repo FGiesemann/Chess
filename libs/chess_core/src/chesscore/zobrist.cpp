@@ -12,7 +12,7 @@ namespace chesscore {
 bool ZobristKeys::m_initialized{false};
 std::array<ZobristKeys::key_t, 2 * piece_type_count * Square::count> ZobristKeys::m_piece_keys{};
 std::array<ZobristKeys::key_t, CastlingRights::max_combinations> ZobristKeys::m_castling_keys;
-std::array<ZobristKeys::key_t, Rank::max_rank> ZobristKeys::m_enpassant_keys;
+std::array<ZobristKeys::key_t, Rank::count> ZobristKeys::m_enpassant_keys;
 ZobristKeys::key_t ZobristKeys::m_side_key;
 
 std::optional<ZobristHash::key_t> ZobristHash::m_starting_position_hash{std::nullopt};

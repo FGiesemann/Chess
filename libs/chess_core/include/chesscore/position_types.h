@@ -7,8 +7,10 @@
 #ifndef CHESSCORE_POSITION_TYPES_H
 #define CHESSCORE_POSITION_TYPES_H
 
+#include "chesscore/chesscore.h"
 #include "chesscore/piece.h"
 #include "chesscore/square.h"
+
 
 namespace chesscore {
 

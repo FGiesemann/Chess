@@ -13,8 +13,8 @@ auto blocker_mask(PieceType piece_type, const Square &square) -> Bitmap {
         return bitmaps::bishop_target_table[square] & ~bitmaps::board_border;
     }
     if (piece_type == PieceType::Rook) {
-        return ((bitmaps::file_table[square.file()] & ~bitmaps::rank_table[Rank{Rank::min_rank}] & ~bitmaps::rank_table[Rank{Rank::max_rank}]) |
-                (bitmaps::rank_table[square.rank()] & ~bitmaps::file_table[File{File::min_file}] & ~bitmaps::file_table[File{File::max_file}])) &
+        return ((bitmaps::file_table[square.file()] & ~bitmaps::rank_table[Rank{0}] & ~bitmaps::rank_table[Rank{Rank::count - 1}]) |
+                (bitmaps::rank_table[square.rank()] & ~bitmaps::file_table[File{0}] & ~bitmaps::file_table[File{File::count - 1}])) &
                ~Bitmap{square};
     }
     return Bitmap{};
