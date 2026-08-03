@@ -85,7 +85,7 @@ private:
     static const qreal cell_size;
     QGraphicsScene m_scene;
     PieceSet m_piece_set;
-    std::array<ChessPiece *, chesscore::File::max_file * chesscore::Rank::max_rank> m_pieces{};
+    std::array<ChessPiece *, chesscore::File::count * chesscore::Rank::count> m_pieces{};
     QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;
     State m_state{State::Normal};
     ChessPiece *m_ghost_piece{};
