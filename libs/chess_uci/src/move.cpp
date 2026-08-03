@@ -90,8 +90,8 @@ auto parse_uci_move(const std::string &uci_str) -> std::expected<UCIMove, UCIPar
         return std::unexpected{UCIParserError{.type = UCIParserErrorType::InvalidPromotionPiece, .uci_str = uci_str}};
     }
 
-    chesscore::Square from = chesscore::Square{chesscore::File{uci_str[0]}, chesscore::Rank{uci_str[1] - '0'}};
-    chesscore::Square to = chesscore::Square{chesscore::File{uci_str[2]}, chesscore::Rank{uci_str[3] - '0'}};
+    chesscore::Square from = chesscore::Square{chesscore::File{uci_str[0]}, chesscore::Rank{uci_str[1] - '1'}};
+    chesscore::Square to = chesscore::Square{chesscore::File{uci_str[2]}, chesscore::Rank{uci_str[3] - '1'}};
     std::optional<chesscore::PieceType> promotion_piece{std::nullopt};
     if (uci_str.length() == max_uci_move_length) {
         promotion_piece = chesscore::piece_type_from_char(uci_str[4]);
