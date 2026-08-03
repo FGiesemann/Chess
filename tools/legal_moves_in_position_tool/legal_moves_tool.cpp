@@ -3,7 +3,6 @@
  * Data structures and algorithms for chess                                   *
  * ************************************************************************** */
 
-#include "chesscore/bitboard.h"
 #include "chesscore/position.h"
 #include "chesscore_io/chesscore_io.h"
 

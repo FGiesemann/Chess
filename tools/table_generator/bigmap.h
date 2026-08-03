@@ -15,7 +15,12 @@
 
 namespace chesscore::table_gen {
 
-enum class ShiftDirection { North, South, East, West };
+enum class ShiftDirection {
+    North,
+    South,
+    East,
+    West
+};
 
 class Bigmap {
 public:
@@ -30,11 +35,11 @@ public:
 
     auto shift(ShiftDirection dir, std::size_t steps = 1U) -> void;
 
-    auto extract_board() const -> Bitmap;
-    auto index(std::size_t row, std::size_t col) const -> std::size_t { return row * bigmap_width + col; }
+    [[nodiscard]] auto extract_board() const -> Bitmap;
+    static auto index(std::size_t row, std::size_t col) -> std::size_t { return row * bigmap_width + col; }
     static auto inside_board(std::size_t row, std::size_t col) -> bool;
 private:
-    Bitset m_bits{};
+    Bitset m_bits;
 };
 
 auto operator<<(std::ostream &os, const Bigmap &bigmap) -> std::ostream &;
