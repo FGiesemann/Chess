@@ -8,6 +8,7 @@
 #define CHESSCORE_SQUARE_H
 
 #include <algorithm>
+#include <cstdint>
 #include <string>
 
 namespace chesscore {
@@ -154,7 +155,7 @@ public:
      * \param file The file (column) of the square.
      * \param rank The rank (row) of the square.
      */
-    constexpr Square(const File &file, const Rank &rank) : m_file{file}, m_rank{rank}, m_index{static_cast<size_t>((m_rank.rank) * File::count + m_file.file)} {}
+    constexpr Square(const File &file, const Rank &rank) : m_index{static_cast<std::uint8_t>((rank.rank << 3) | file.file)} {}
 
     /**
      * \brief Default construtor.
@@ -163,13 +164,15 @@ public:
      */
     constexpr Square() : Square(0, 0) {}
 
+    static constexpr std::uint8_t file_mask = 0x07;
+
     /**
      * \brief Access the file of the square.
      *
      * The file (column) of the square.
      * \return The file.
      */
-    [[nodiscard]] constexpr auto file() const -> const File & { return m_file; }
+    [[nodiscard]] constexpr auto file() const -> File { return File{m_index & file_mask}; }
 
     /**
      * \brief Access the rank of the square.
@@ -177,7 +180,7 @@ public:
      * The rank (row) of the square.
      * \return The rank.
      */
-    [[nodiscard]] constexpr auto rank() const -> const Rank & { return m_rank; }
+    [[nodiscard]] constexpr auto rank() const -> Rank { return Rank{m_index >> 3}; }
 
     /**
      * \brief Gives a linear index for the square.
@@ -186,7 +189,7 @@ public:
      * H8 = 63.
      * \return Linear index of the square.
      */
-    [[nodiscard]] constexpr auto index() const -> size_t { return m_index; }
+    [[nodiscard]] constexpr auto index() const -> std::uint8_t { return m_index; }
 
     /**
      * \brief The number of squares on the board.
@@ -200,7 +203,7 @@ public:
      * 5). This allows to "switch the player/color".
      * \return The mirrored square.
      */
-    [[nodiscard]] auto mirrored() const -> Square { return Square{m_file, Rank{Rank::count - m_rank.rank - 1}}; }
+    [[nodiscard]] auto mirrored() const -> Square { return Square{file(), Rank{Rank::count - rank().rank - 1}}; }
 
     /**
      * \brief Skip to the "next" square.
@@ -212,9 +215,7 @@ public:
      * \return The new Square.
      */
     constexpr auto operator+=(int squares) -> Square & {
-        m_index = std::clamp(m_index + static_cast<std::size_t>(squares), static_cast<std::size_t>(0U), static_cast<std::size_t>(Square::count - 1));
-        m_file.file = static_cast<int>(m_index % File::count);
-        m_rank.rank = static_cast<int>(m_index / File::count);
+        m_index = std::clamp(static_cast<std::uint8_t>(m_index + squares), static_cast<std::uint8_t>(0U), static_cast<std::uint8_t>(Square::count - 1));
         return *this;
     }
 
@@ -228,9 +229,7 @@ public:
      * \return The new Square.
      */
     constexpr auto operator-=(int squares) -> Square & {
-        m_index = static_cast<std::size_t>(std::clamp(static_cast<int>(m_index) - squares, 0, Square::count - 1));
-        m_file.file = static_cast<int>(m_index % File::count);
-        m_rank.rank = static_cast<int>(m_index / File::count);
+        m_index = static_cast<std::uint8_t>(std::clamp(static_cast<int>(m_index) - squares, 0, Square::count - 1));
         return *this;
     }
 
@@ -320,10 +319,10 @@ public:
     // NOLINTEND(readability-identifier-length)
     ///@}
 private:
-    File m_file;      ///< The file (column) of the square.
-    Rank m_rank;      ///< The rank (row) of the square.
-    size_t m_index{}; ///< The linear index of the square.
+    std::uint8_t m_index{count}; ///< The linear index of the square.
 };
+
+static_assert(sizeof(Square) == 1, "Square must be 1 byte");
 
 /**
  * \brief Skip to the "next" square.
