@@ -7,8 +7,6 @@
 
 #include "chesscore/position.h"
 
-#include <ranges>
-
 using namespace chesscore;
 
 namespace {
@@ -17,9 +15,8 @@ auto find_move(const MoveList &moves, const Move &ref_move) -> Move {
     const auto item = std::ranges::find_if(moves, [&](const Move &m) -> bool { return is_moving_same_piece(m, ref_move); });
     if (item != moves.end()) {
         return *item;
-    } else {
-        throw ChessException("Could not find move");
     }
+    throw ChessException("Could not find move");
 }
 
 } // namespace
