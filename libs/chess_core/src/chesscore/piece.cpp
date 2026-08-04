@@ -12,6 +12,8 @@ namespace chesscore {
 
 auto to_string(PieceType type) -> std::string {
     switch (type) {
+    case PieceType::None:
+        return "X";
     case PieceType::Pawn:
         return "P";
     case PieceType::Rook:
@@ -30,7 +32,7 @@ auto to_string(PieceType type) -> std::string {
 
 auto piece_type_from_index(std::size_t index) -> PieceType {
     if (index < piece_type_count) {
-        return all_piece_types[index];
+        return static_cast<PieceType>(index);
     }
     throw ChessException("Invalid piece type index: " + std::to_string(index));
 }
@@ -54,23 +56,15 @@ auto piece_type_from_char(char letter) -> PieceType {
     }
 }
 
-auto Piece::piece_index() const -> size_t {
-    return get_index(type) + (color == Color::White ? 0 : piece_type_count);
-}
-
-auto Piece::piece_char() const -> char {
-    return "PRNBQKprnbqk"[piece_index()];
-}
-
-auto Piece::piece_char_colorless() const -> char {
-    return "PRNBQK"[get_index(type)];
+auto to_string(Piece piece) -> std::string {
+    return std::string{piece.piece_char()};
 }
 
 auto piece_from_fen_letter(char letter) -> Piece {
     if (std::isupper(letter) != 0) {
-        return Piece{.type = piece_type_from_char(letter), .color = Color::White};
+        return Piece{piece_type_from_char(letter), Color::White};
     }
-    return Piece{.type = piece_type_from_char(letter), .color = Color::Black};
+    return Piece{piece_type_from_char(letter), Color::Black};
 }
 
 auto to_string(Color color) -> std::string {
@@ -96,25 +90,11 @@ auto starting_piece_placement() -> PiecePlacement {
     return placement_from_string("RNBQKBNRPPPPPPPP________________________________pppppppprnbqkbnr");
 }
 
-const Piece Piece::WhitePawn{.type = PieceType::Pawn, .color = Color::White};
-const Piece Piece::WhiteRook{.type = PieceType::Rook, .color = Color::White};
-const Piece Piece::WhiteKnight{.type = PieceType::Knight, .color = Color::White};
-const Piece Piece::WhiteBishop{.type = PieceType::Bishop, .color = Color::White};
-const Piece Piece::WhiteQueen{.type = PieceType::Queen, .color = Color::White};
-const Piece Piece::WhiteKing{.type = PieceType::King, .color = Color::White};
-
-const Piece Piece::BlackPawn{.type = PieceType::Pawn, .color = Color::Black};
-const Piece Piece::BlackRook{.type = PieceType::Rook, .color = Color::Black};
-const Piece Piece::BlackKnight{.type = PieceType::Knight, .color = Color::Black};
-const Piece Piece::BlackBishop{.type = PieceType::Bishop, .color = Color::Black};
-const Piece Piece::BlackQueen{.type = PieceType::Queen, .color = Color::Black};
-const Piece Piece::BlackKing{.type = PieceType::King, .color = Color::Black};
-
 const PieceDirections piece_ray_directions{
     std::uint8_t{0b0000'0000}, // Pawn
-    std::uint8_t{0b0101'0101}, // Rook
     std::uint8_t{0b0000'0000}, // Knight
     std::uint8_t{0b1010'1010}, // Bishop
+    std::uint8_t{0b0101'0101}, // Rook
     std::uint8_t{0b1111'1111}, // Queen
     std::uint8_t{0b0000'0000}, // King
 };

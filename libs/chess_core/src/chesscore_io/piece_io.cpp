@@ -4,6 +4,7 @@
  * ************************************************************************** */
 
 #include "chesscore_io/piece_io.h"
+#include "chesscore/piece.h"
 
 #include <iostream>
 
@@ -11,6 +12,8 @@ namespace chesscore {
 
 auto operator<<(std::ostream &os, PieceType type) -> std::ostream & {
     switch (type) {
+    case PieceType::None:
+        return os << "X";
     case PieceType::Pawn:
         return os << "P";
     case PieceType::Rook:
@@ -32,11 +35,13 @@ auto operator<<(std::ostream &os, const Piece &piece) -> std::ostream & {
 }
 
 auto symbolic_name(const Piece &piece) -> std::string {
-    return color_name(piece.color) + symbolic_type_name(piece.type);
+    return color_name(piece.color()) + symbolic_type_name(piece.type());
 }
 
 auto symbolic_type_name(PieceType type) -> std::string {
     switch (type) {
+    case PieceType::None:
+        return "None";
     case PieceType::Pawn:
         return "Pawn";
     case PieceType::Rook:

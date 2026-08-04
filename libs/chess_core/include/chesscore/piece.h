@@ -20,7 +20,15 @@ namespace chesscore {
 /**
  * \brief Type of a piece.
  */
-enum class PieceType { Pawn, Rook, Knight, Bishop, Queen, King };
+enum class PieceType : std::int8_t {
+    Pawn = 0,
+    Knight = 1,
+    Bishop = 2,
+    Rook = 3,
+    Queen = 4,
+    King = 5,
+    None = 6,
+};
 
 /**
  * \brief Number of available piece types.
@@ -31,14 +39,14 @@ constexpr std::size_t piece_type_count = 6ULL;
  * \brief All the piece types.
  *
  */
-constexpr std::array<PieceType, piece_type_count> all_piece_types{PieceType::Pawn, PieceType::Rook, PieceType::Knight, PieceType::Bishop, PieceType::Queen, PieceType::King};
+constexpr std::array<PieceType, piece_type_count> all_piece_types{PieceType::Pawn, PieceType::Knight, PieceType::Bishop, PieceType::Rook, PieceType::Queen, PieceType::King};
 
 auto to_string(PieceType type) -> std::string;
 
 /**
  * \brief Get the numeric index of a piece type.
  *
- * The piece types are enumerated pawn = 0, rook = 1, knight = 2, bishop = 3,
+ * The piece types are enumerated pawn = 0, knight = 1, bishop = 2, rook = 3,
  * queen = 4, king = 5.
  * \param type The piece type.
  * \return The numerix index of the piece type.
@@ -76,7 +84,11 @@ auto piece_type_from_char(char letter) -> PieceType;
 /**
  * \brief Color of a piece or player.
  */
-enum class Color { White, Black };
+enum class Color : std::int8_t {
+    White = 0,
+    Black = 1,
+    None = 2,
+};
 
 auto to_string(Color color) -> std::string;
 
@@ -92,52 +104,115 @@ constexpr auto other_color(Color color) -> Color {
 }
 
 /**
- * \brief A game piece.
+ * \brief A chess piece.
  *
- * A piece is described by its type and color.
+ * A piece has a type and a color.
  */
-struct Piece {
-    PieceType type; ///< Type of the piece.
-    Color color;    ///< Color of the piece.
+class Piece {
+private:
+    /**
+     * \brief Single-byte values for pieces.
+     */
+    enum class Value : std::uint8_t {
+        WhitePawn = 0,   //< Value for a white pawn.
+        WhiteKnight = 1, //< Value for a white knight.
+        WhiteBishop = 2, //< Value for a white bishop.
+        WhiteRook = 3,   //< Value for a white rook.
+        WhiteQueen = 4,  //< Value for a white queen.
+        WhiteKing = 5,   //< Value for a white king.
+
+        BlackPawn = 8,    //< Value for a black pawn.
+        BlackKnight = 9,  //< Value for a black knight.
+        BlackBishop = 10, //< Value for a black bishop.
+        BlackRook = 11,   //< Value for a black rook.
+        BlackQueen = 12,  //< Value for a black queen.
+        BlackKing = 13,   //< Value for a black king.
+
+        None = 14, //< Sentinal value for no piece.
+    };
+    std::uint8_t m_piece{static_cast<std::int8_t>(Value::None)}; //< The value of the piece.
+    static constexpr std::uint8_t type_mask = 0x07;              //< Mask to extract the piece type from the value.
+    static constexpr std::uint8_t color_shift = 3;               //< Shift to extract the color from the value.
 
     /**
-     * \brief Equality comparison for pieces.
+     * \brief Construct a piece with a value.
      *
-     * Two pieces are equal if they have the same type and color.
-     * @param lhs Left-hand side of the comparison.
-     * @param rhs Right-hand side of the comparison.
-     * @return Equality of the pieces.
+     * \param value The value.
      */
-    friend auto operator==(const Piece &lhs, const Piece &rhs) -> bool = default;
-
-    ///@{
+    constexpr Piece(Value value) noexcept : m_piece{static_cast<std::uint8_t>(value)} {}
+public:
     /**
-     * \name Predefined chess pieces.
-     * \brief A set of pre-defines chess pieces for each player.
+     * \brief Construct an invalid (None) piece.
      */
-    static const Piece WhitePawn;   ///< A white pawn.
-    static const Piece WhiteRook;   ///< A white rook.
-    static const Piece WhiteKnight; ///< A white knight.
-    static const Piece WhiteBishop; ///< A white bishop.
-    static const Piece WhiteQueen;  ///< A white queen.
-    static const Piece WhiteKing;   ///<  A white king.
-    static const Piece BlackPawn;   ///< A black pawn.
-    static const Piece BlackRook;   ///< A black rook.
-    static const Piece BlackKnight; ///< A black knight.
-    static const Piece BlackBishop; ///< A black bishop.
-    static const Piece BlackQueen;  ///< A black queen.
-    static const Piece BlackKing;   ///< A black king.
-    ///@}
+    constexpr Piece() noexcept = default;
 
-    [[nodiscard]] auto piece_index() const -> std::size_t;
-    [[nodiscard]] auto piece_char() const -> char;
-    [[nodiscard]] auto piece_char_colorless() const -> char;
+    /**
+     * \brief Construct a Piece object with the given type and color.
+     *
+     * \param type The type of the piece.
+     * \param color The color of the piece.
+     */
+    Piece(PieceType type, Color color) noexcept : m_piece{static_cast<std::uint8_t>(static_cast<std::uint8_t>(type) | static_cast<std::uint8_t>(color) << color_shift)} {}
+
+    /** \brief Get the type of the piece. */
+    [[nodiscard]] constexpr auto type() const noexcept -> PieceType { return static_cast<PieceType>(m_piece & type_mask); }
+    /** \brief Get the color of the piece. */
+    [[nodiscard]] constexpr auto color() const noexcept -> Color { return static_cast<Color>(m_piece >> color_shift); }
+    /** \brief Get the value of the piece. */
+    [[nodiscard]] constexpr auto value() const noexcept -> std::uint8_t { return static_cast<std::uint8_t>(m_piece); }
+    /**
+     * \brief Compute an index for the piece.
+     *
+     * The dense index can be used to index into tables.
+     * \return An index of the piece.
+     */
+    [[nodiscard]] constexpr auto dense_index() const noexcept -> std::uint8_t { return static_cast<std::uint8_t>(m_piece - (color() == Color::Black ? 2 : 0)); }
+
+    /** \brief Get the character representation of the piece. */
+    [[nodiscard]] constexpr auto piece_char() const noexcept -> char { return "PNBRQKpnbrqk"[dense_index()]; }
+    /** \brief Get the character representation of the piece ignoring color. */
+    [[nodiscard]] constexpr auto piece_char_colorless() const noexcept -> char { return "PNBRQK."[get_index(type())]; }
+
+    constexpr auto operator==(const Piece &) const noexcept -> bool = default;
+
+    static const Piece None;
+    static const Piece WhitePawn;
+    static const Piece WhiteKnight;
+    static const Piece WhiteBishop;
+    static const Piece WhiteRook;
+    static const Piece WhiteQueen;
+    static const Piece WhiteKing;
+    static const Piece BlackPawn;
+    static const Piece BlackKnight;
+    static const Piece BlackBishop;
+    static const Piece BlackRook;
+    static const Piece BlackQueen;
+    static const Piece BlackKing;
 };
 
-constexpr std::size_t min_white_piece_index{0U};  ///< Index of the first white piece (white pawn)
-constexpr std::size_t max_white_piece_index{5U};  ///< Index of the last white peice (white king)
-constexpr std::size_t min_black_piece_index{6U};  ///< Index of the first black piece (black pawn)
-constexpr std::size_t max_black_piece_index{11U}; ///< Index of the last black piece (black king)
+static_assert(sizeof(Piece) == 1, "Piece must be 1 byte");
+
+inline constexpr Piece Piece::None{Piece::Value::None};
+inline constexpr Piece Piece::WhitePawn{Piece::Value::WhitePawn};
+inline constexpr Piece Piece::WhiteKnight{Piece::Value::WhiteKnight};
+inline constexpr Piece Piece::WhiteBishop{Piece::Value::WhiteBishop};
+inline constexpr Piece Piece::WhiteRook{Piece::Value::WhiteRook};
+inline constexpr Piece Piece::WhiteQueen{Piece::Value::WhiteQueen};
+inline constexpr Piece Piece::WhiteKing{Piece::Value::WhiteKing};
+inline constexpr Piece Piece::BlackPawn{Piece::Value::BlackPawn};
+inline constexpr Piece Piece::BlackKnight{Piece::Value::BlackKnight};
+inline constexpr Piece Piece::BlackBishop{Piece::Value::BlackBishop};
+inline constexpr Piece Piece::BlackRook{Piece::Value::BlackRook};
+inline constexpr Piece Piece::BlackQueen{Piece::Value::BlackQueen};
+inline constexpr Piece Piece::BlackKing{Piece::Value::BlackKing};
+
+/**
+ * \brief Convert a piece to string.
+ *
+ * \param piece The piece.
+ * \return A string representation of the piece.
+ */
+auto to_string(Piece piece) -> std::string;
 
 /**
  * \brief Converts a character to a piece.

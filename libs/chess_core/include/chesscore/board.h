@@ -13,8 +13,8 @@
 namespace chesscore {
 
 class Square;
-enum class PieceType;
-enum class Color;
+enum class PieceType : std::int8_t;
+enum class Color : std::int8_t;
 class FenString;
 
 /**

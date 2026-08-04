@@ -307,11 +307,7 @@ private:
 
     enum class PawnCaptureDirection { West, East };
 
-    static auto bitmap_index(const Piece &piece) -> size_t {
-        const auto type_index = static_cast<unsigned int>(piece.type);
-        const auto color_offset = (piece.color == Color::White) ? 0U : 6U;
-        return type_index + color_offset;
-    }
+    static auto bitmap_index(const Piece &piece) -> size_t { return piece.dense_index(); }
 
     [[nodiscard]] auto bitmap(const Piece &piece) const -> const Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
     auto bitmap(const Piece &piece) -> Bitmap & { return m_bitmaps[bitmap_index(piece)]; }

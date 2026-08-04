@@ -17,7 +17,7 @@ auto Move::operator==(const Move &rhs) const -> bool {
 
 auto to_string(const Move &move) -> std::string {
     std::stringstream sstr;
-    if (move.piece.type != PieceType::Pawn) {
+    if (move.piece.type() != PieceType::Pawn) {
         sstr << move.piece.piece_char_colorless();
     }
     sstr << move.from.file().name() << move.from.rank().rank;
@@ -54,17 +54,17 @@ auto PromotionMoveCompare::operator()(const Move &move1, const Move &move2) cons
 }
 
 auto move_list_contains_promotions(const MoveList &list, const Move &move) -> bool {
-    const auto color = move.piece.color;
+    const auto color = move.piece.color();
     return move_list_contains(
                list, move,
                PromotionMoveCompare{Piece{
-                   .type = PieceType::Rook,
-                   .color = color,
+                   PieceType::Rook,
+                   color,
                }}
            ) &&
-           move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Knight, .color = color}}) &&
-           move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Bishop, .color = color}}) &&
-           move_list_contains(list, move, PromotionMoveCompare{Piece{.type = PieceType::Queen, .color = color}});
+           move_list_contains(list, move, PromotionMoveCompare{Piece{PieceType::Knight, color}}) &&
+           move_list_contains(list, move, PromotionMoveCompare{Piece{PieceType::Bishop, color}}) &&
+           move_list_contains(list, move, PromotionMoveCompare{Piece{PieceType::Queen, color}});
 }
 
 auto to_string(const MoveList &moves) -> std::string {

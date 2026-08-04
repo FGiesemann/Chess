@@ -8,14 +8,13 @@
 #include "chesscore/chesscore.h"
 #include "chesscore/piece.h"
 
-
 using namespace chesscore;
 
 TEST_CASE("Data.Piece.Type from Index", "[Piece]") {
     CHECK(piece_type_from_index(0) == PieceType::Pawn);
-    CHECK(piece_type_from_index(1) == PieceType::Rook);
-    CHECK(piece_type_from_index(2) == PieceType::Knight);
-    CHECK(piece_type_from_index(3) == PieceType::Bishop);
+    CHECK(piece_type_from_index(1) == PieceType::Knight);
+    CHECK(piece_type_from_index(2) == PieceType::Bishop);
+    CHECK(piece_type_from_index(3) == PieceType::Rook);
     CHECK(piece_type_from_index(4) == PieceType::Queen);
     CHECK(piece_type_from_index(5) == PieceType::King);
     CHECK_THROWS_AS(piece_type_from_index(6), ChessException);
@@ -28,6 +27,13 @@ TEST_CASE("Data.Piece.Type from Char", "[Piece]") {
     CHECK(piece_type_from_char('q') == PieceType::Queen);
     CHECK(piece_type_from_char('k') == PieceType::King);
     CHECK(piece_type_from_char('p') == PieceType::Pawn);
+
+    CHECK(piece_type_from_char('R') == PieceType::Rook);
+    CHECK(piece_type_from_char('N') == PieceType::Knight);
+    CHECK(piece_type_from_char('B') == PieceType::Bishop);
+    CHECK(piece_type_from_char('Q') == PieceType::Queen);
+    CHECK(piece_type_from_char('K') == PieceType::King);
+    CHECK(piece_type_from_char('P') == PieceType::Pawn);
     CHECK_THROWS_AS(piece_type_from_char('a'), ChessException);
 }
 
@@ -59,4 +65,19 @@ TEST_CASE("Data.Piece.Letter colorless", "[Piece]") {
     CHECK(Piece::BlackBishop.piece_char_colorless() == 'B');
     CHECK(Piece::BlackQueen.piece_char_colorless() == 'Q');
     CHECK(Piece::BlackKing.piece_char_colorless() == 'K');
+}
+
+TEST_CASE("Data.Piece.Piece from Fen", "[Piece]") {
+    CHECK(piece_from_fen_letter('P') == Piece::WhitePawn);
+    CHECK(piece_from_fen_letter('R') == Piece::WhiteRook);
+    CHECK(piece_from_fen_letter('N') == Piece::WhiteKnight);
+    CHECK(piece_from_fen_letter('B') == Piece::WhiteBishop);
+    CHECK(piece_from_fen_letter('Q') == Piece::WhiteQueen);
+    CHECK(piece_from_fen_letter('K') == Piece::WhiteKing);
+    CHECK(piece_from_fen_letter('p') == Piece::BlackPawn);
+    CHECK(piece_from_fen_letter('r') == Piece::BlackRook);
+    CHECK(piece_from_fen_letter('n') == Piece::BlackKnight);
+    CHECK(piece_from_fen_letter('b') == Piece::BlackBishop);
+    CHECK(piece_from_fen_letter('q') == Piece::BlackQueen);
+    CHECK(piece_from_fen_letter('k') == Piece::BlackKing);
 }

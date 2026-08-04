@@ -28,7 +28,7 @@ namespace chesscore {
 struct Move {
     Square from;                                 ///< From where the piece is moved.
     Square to;                                   ///< To where the piece is moved.
-    Piece piece{Piece::WhitePawn};               ///< Which piece is moving.
+    Piece piece{Piece::None};                    ///< Which piece is moving.
     std::optional<Piece> captured{std::nullopt}; ///< If the move captures a piece, this is the captured piece.
     bool capturing_en_passant{false};            ///< If this move is capturing en passant
     std::optional<Piece> promoted{std::nullopt}; ///< If the move promotes a piece, this is the promoted piece.
@@ -43,7 +43,7 @@ struct Move {
      * A castling move is detected, when a King moves two squares to the side.
      * \return If this is a castling move.
      */
-    auto is_castling() const -> bool { return piece.type == PieceType::King && from.rank() == to.rank() && std::abs(from.file().file - to.file().file) == 2; }
+    [[nodiscard]] auto is_castling() const -> bool { return piece.type() == PieceType::King && from.rank() == to.rank() && std::abs(from.file().file - to.file().file) == 2; }
 
     /**
      * \brief If the move is a capture.
@@ -66,7 +66,7 @@ struct Move {
      *
      * \return If the move is a double-step of a pawn.
      */
-    auto is_double_step() const -> bool { return piece.type == PieceType::Pawn && std::abs(from.rank().rank - to.rank().rank) == 2 && from.file().file == to.file().file; }
+    auto is_double_step() const -> bool { return piece.type() == PieceType::Pawn && std::abs(from.rank().rank - to.rank().rank) == 2 && from.file().file == to.file().file; }
 
     auto operator==(const Move &rhs) const -> bool;
 };

@@ -73,14 +73,14 @@ TEST_CASE("Data.Zobrist.ZobristKeys.Nonzero", "[zobrist]") {
     for (const auto &type : all_piece_types) {
         Square square{Square::A1};
         for (int square_index = 0; square_index < Square::count; ++square_index) {
-            CHECK(ZobristKeys::piece_key(Piece{.type = type, .color = color}, square) != 0);
+            CHECK(ZobristKeys::piece_key(Piece{type, color}, square) != 0);
         }
     }
     color = Color::Black;
     for (const auto &type : all_piece_types) {
         Square square{Square::A1};
         for (int square_index = 0; square_index < Square::count; ++square_index) {
-            CHECK(ZobristKeys::piece_key(Piece{.type = type, .color = color}, square) != 0);
+            CHECK(ZobristKeys::piece_key(Piece{type, color}, square) != 0);
         }
     }
 }

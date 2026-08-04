@@ -21,6 +21,17 @@ TEST_CASE("Data.Move.Comparison", "[Move][Compare]") {
         .halfmove_clock_before = 0,
         .en_passant_target_before{}
     };
+    Move m1_p{
+        .from = Square::E2,
+        .to = Square::E4,
+        .piece = Piece::BlackPawn,
+        .captured{},
+        .capturing_en_passant{false},
+        .promoted{},
+        .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
+        .en_passant_target_before{}
+    };
     Move m2{
         .from = Square::E2,
         .to = Square::E4,
@@ -43,10 +54,8 @@ TEST_CASE("Data.Move.Comparison", "[Move][Compare]") {
     CHECK_FALSE(is_moving_same_piece(m1, m2));
 
     m2.to = Square::E4;
-    m1.piece.color = Color::Black;
-    CHECK_FALSE(is_moving_same_piece(m1, m2));
+    CHECK_FALSE(is_moving_same_piece(m1_p, m2));
 
-    m1.piece.color = Color::White;
     m2.captured = Piece::BlackPawn;
     CHECK_FALSE(is_moving_same_piece(m1, m2));
 

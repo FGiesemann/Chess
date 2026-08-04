@@ -80,7 +80,7 @@ public:
      * This gives access to the string representation of the FEN string.
      * \return The string representation of the FEN string.
      */
-    auto str() const -> const std::string & { return m_fen_string; }
+    [[nodiscard]] auto str() const -> const std::string & { return m_fen_string; }
 
     /**
      * \brief The piece placement.
@@ -88,7 +88,7 @@ public:
      * Access the piece placement as extracted from the FEN string.
      * \return Piece placement.
      */
-    auto piece_placement() const -> const PiecePlacement & { return m_piece_placement; }
+    [[nodiscard]] auto piece_placement() const -> const PiecePlacement & { return m_piece_placement; }
 
     /**
      * \brief The side to move next.
@@ -96,7 +96,7 @@ public:
      * Access the side to move next as extracted from the FEN string.
      * \return The side to move next.
      */
-    auto side_to_move() const -> Color { return m_side_to_move; }
+    [[nodiscard]] auto side_to_move() const -> Color { return m_side_to_move; }
 
     /**
      * \brief The castling rights.
@@ -105,7 +105,7 @@ public:
      * string.
      * \return The castling rights.
      */
-    auto castling_rights() const -> CastlingRights { return m_castling_rights; }
+    [[nodiscard]] auto castling_rights() const -> CastlingRights { return m_castling_rights; }
 
     /**
      * \brief The en passant target square.
@@ -114,7 +114,7 @@ public:
      * is returned here. Otherwise a nullopt is returned.
      * \return Potential en passant target square.
      */
-    auto en_passant_square() const -> std::optional<Square> { return m_en_passant; }
+    [[nodiscard]] auto en_passant_square() const -> std::optional<Square> { return m_en_passant; }
 
     /**
      * \brief Value of the halfmove clock.
@@ -122,7 +122,7 @@ public:
      * Access the value of the halfmove clock as extracted from the FEN string.
      * \return The value of the halfmove clock.
      */
-    auto halfmove_clock() const -> int { return m_halfmove_clock; }
+    [[nodiscard]] auto halfmove_clock() const -> int { return m_halfmove_clock; }
 
     /**
      * \brief The fullmove number.
@@ -130,7 +130,7 @@ public:
      * Access the fullmove number as extracted from the FEN string.
      * \return The fullmove number.
      */
-    auto fullmove_number() const -> int { return m_fullmove_number; }
+    [[nodiscard]] auto fullmove_number() const -> int { return m_fullmove_number; }
 private:
     std::string m_fen_string;
 

@@ -36,7 +36,7 @@ auto Bitboard::generate_pawn_move(
         Move{
             .from = source,
             .to = target,
-            .piece = Piece{.type = PieceType::Pawn, .color = state.side_to_move},
+            .piece = Piece{PieceType::Pawn, state.side_to_move},
             .captured = captured,
             .capturing_en_passant = en_passant,
             .promoted = promoted,
@@ -53,7 +53,7 @@ auto Bitboard::generate_pawn_moves(const Square &source, const Square &target, s
     if (target.rank().rank == 0 || target.rank().rank == (Rank::count - 1)) {
         const auto color = state.side_to_move;
         for (const auto &type : all_promotion_piece_types) {
-            generate_pawn_move(source, target, captured, en_passant, Piece{.type = type, .color = color}, state, moves);
+            generate_pawn_move(source, target, captured, en_passant, Piece{type, color}, state, moves);
         }
     } else {
         generate_pawn_move(source, target, captured, en_passant, std::nullopt, state, moves);
@@ -75,7 +75,7 @@ auto Bitboard::empty() const -> bool {
 }
 
 auto Bitboard::has_piece(const PieceType &piece_type) const -> bool {
-    return !(bitmap({.type = piece_type, .color = Color::White}) | bitmap({.type = piece_type, .color = Color::Black})).empty();
+    return !(bitmap(Piece{piece_type, Color::White}) | bitmap(Piece{piece_type, Color::Black})).empty();
 }
 
 auto Bitboard::has_piece(const Piece &piece) const -> bool {
@@ -94,18 +94,18 @@ auto Bitboard::set_piece(const Piece &piece, const Square &square) -> void {
     clear_square(square);
     bitmap(piece).set(square);
     m_all_pieces.set(square);
-    bitmap(piece.color).set(square);
+    bitmap(piece.color()).set(square);
 }
 
 auto Bitboard::get_piece(const Square &square) const -> std::optional<Piece> {
     if (!m_all_pieces.get(square)) {
         return {};
     }
-    const auto [min_index, max_index] =
-        (m_white_pieces.get(square)) ? std::make_pair(min_white_piece_index, max_white_piece_index) : std::make_pair(min_black_piece_index, max_black_piece_index);
-    for (size_t i = min_index; i <= max_index; ++i) {
-        if (m_bitmaps.at(i).get(square)) {
-            return Piece{.type = static_cast<PieceType>(i - min_index), .color = (i <= max_white_piece_index) ? Color::White : Color::Black};
+    const auto piece_color = m_white_pieces.get(square) ? Color::White : Color::Black;
+    for (auto type : all_piece_types) {
+        const auto piece = Piece{type, piece_color};
+        if (bitmap(piece).get(square)) {
+            return piece;
         }
     }
     return {};
@@ -145,12 +145,12 @@ auto Bitboard::make_move(const Move &move) -> void {
 void Bitboard::move_castling_rook(const Move &move) {
     if (move.from.file().file < move.to.file().file) {
         // Kingside castling
-        clear_square(Square{File{'H'}, move.to.rank()});                                                         // remove rook
-        set_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'F'}, move.to.rank()}); // place rook on f-file
+        clear_square(Square{File{'H'}, move.to.rank()});                                          // remove rook
+        set_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'F'}, move.to.rank()}); // place rook on f-file
     } else {
         // Queenside castling
-        clear_square(Square{File{'A'}, move.to.rank()});                                                         // remove rook
-        set_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'D'}, move.to.rank()}); // place rook on d-file
+        clear_square(Square{File{'A'}, move.to.rank()});                                          // remove rook
+        set_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'D'}, move.to.rank()}); // place rook on d-file
     }
 }
 
@@ -174,12 +174,12 @@ auto Bitboard::unmake_move(const Move &move) -> void {
 auto Bitboard::reset_castling_rook(const Move &move) -> void {
     if (move.from.file().file < move.to.file().file) {
         // Kingside castling
-        clear_square(Square{File{'F'}, move.from.rank()});                                                         // remove rook
-        set_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'H'}, move.from.rank()}); // place rook on h-file
+        clear_square(Square{File{'F'}, move.from.rank()});                                          // remove rook
+        set_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'H'}, move.from.rank()}); // place rook on h-file
     } else {
         // Queenside castling
-        clear_square(Square{File{'D'}, move.from.rank()});                                                         // remove rook
-        set_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'A'}, move.from.rank()}); // place rook on a-file
+        clear_square(Square{File{'D'}, move.from.rank()});                                          // remove rook
+        set_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'A'}, move.from.rank()}); // place rook on a-file
     }
 }
 
@@ -200,7 +200,7 @@ auto Bitboard::capture_moves(const PositionState &state) const -> MoveList {
 }
 
 auto Bitboard::all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
-    const auto piece = Piece{.type = piece_type, .color = state.side_to_move};
+    const auto piece = Piece{piece_type, state.side_to_move};
     Bitmap pieces{bitmap(piece)};
 
     while (!pieces.empty()) {
@@ -230,7 +230,7 @@ auto Bitboard::all_sliding_moves(MoveList &moves, const PositionState &state) co
 }
 
 auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
-    const auto piece = Piece{.type = piece_type, .color = state.side_to_move};
+    const auto piece = Piece{piece_type, state.side_to_move};
     auto squares = bitmap(piece);
     while (!squares.empty()) {
         const auto shift = squares.empty_squares_before();
@@ -241,14 +241,14 @@ auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, con
 }
 
 auto Bitboard::get_attack_map(const Piece &piece, const Square &start) const -> Bitmap {
-    switch (piece.type) {
+    switch (piece.type()) {
     case PieceType::Rook:
-        return magic_rook_bitboard.attacks(start, *this) & ~bitmap(piece.color);
+        return magic_rook_bitboard.attacks(start, *this) & ~bitmap(piece.color());
     case PieceType::Bishop:
-        return magic_bishop_bitboard.attacks(start, *this) & ~bitmap(piece.color);
+        return magic_bishop_bitboard.attacks(start, *this) & ~bitmap(piece.color());
         break;
     case PieceType::Queen:
-        return (magic_rook_bitboard.attacks(start, *this) | magic_bishop_bitboard.attacks(start, *this)) & ~bitmap(piece.color);
+        return (magic_rook_bitboard.attacks(start, *this) | magic_bishop_bitboard.attacks(start, *this)) & ~bitmap(piece.color());
     default:
         return Bitmap{};
     }
@@ -264,7 +264,7 @@ auto Bitboard::remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap {
 }
 
 auto Bitboard::all_pawn_moves(MoveList &moves, const PositionState &state) const -> void {
-    const auto pawns = bitmap(Piece{.type = PieceType::Pawn, .color = state.side_to_move});
+    const auto pawns = bitmap(Piece{PieceType::Pawn, state.side_to_move});
     const auto pawns_advance1 = step_pawns(pawns, state.side_to_move);
     const auto pawns_step1 = remove_occupied_squares(pawns_advance1);
     extract_pawn_moves(pawns_step1, 1, state, moves);
@@ -297,37 +297,37 @@ auto Bitboard::would_be_attacked(const Square &square, Color attacker_color, con
 }
 
 auto Bitboard::pawn_attacks(const Square &square, Color pawn_color) const -> bool {
-    const auto pawns = bitmap(Piece{.type = PieceType::Pawn, .color = pawn_color});
+    const auto pawns = bitmap(Piece{PieceType::Pawn, pawn_color});
     const auto stepped_pawns = step_pawns(pawns, pawn_color);
     const auto attacked_squares = shift_left(stepped_pawns) | shift_right(stepped_pawns);
     return attacked_squares.get(square);
 }
 
 auto Bitboard::knight_attacks(const Square &square, Color knight_color) const -> bool {
-    const auto knights = bitmap(Piece{.type = PieceType::Knight, .color = knight_color});
+    const auto knights = bitmap(Piece{PieceType::Knight, knight_color});
     const auto attackers = bitmaps::get_target_table(PieceType::Knight)[square] & knights;
     return !attackers.empty();
 }
 
 auto Bitboard::king_attacks(const Square &square, Color king_color) const -> bool {
-    const auto king = bitmap(Piece{.type = PieceType::King, .color = king_color});
+    const auto king = bitmap(Piece{PieceType::King, king_color});
     const auto attackers = bitmaps::get_target_table(PieceType::King)[square] & king;
     return !attackers.empty();
 }
 
 auto Bitboard::sliding_piece_attacks(const Square &square, Color attacker_color) const -> bool {
-    const auto attacks1 = get_attack_map(Piece{.type = PieceType::Rook, .color = other_color(attacker_color)}, square);
-    if (!(attacks1 & bitmap(Piece{.type = PieceType::Rook, .color = attacker_color})).empty()) {
+    const auto attacks1 = get_attack_map(Piece{PieceType::Rook, other_color(attacker_color)}, square);
+    if (!(attacks1 & bitmap(Piece{PieceType::Rook, attacker_color})).empty()) {
         return true;
     }
-    if (!(attacks1 & bitmap(Piece{.type = PieceType::Queen, .color = attacker_color})).empty()) {
+    if (!(attacks1 & bitmap(Piece{PieceType::Queen, attacker_color})).empty()) {
         return true;
     }
-    const auto attacks2 = get_attack_map(Piece{.type = PieceType::Bishop, .color = other_color(attacker_color)}, square);
-    if (!(attacks2 & bitmap(Piece{.type = PieceType::Bishop, .color = attacker_color})).empty()) {
+    const auto attacks2 = get_attack_map(Piece{PieceType::Bishop, other_color(attacker_color)}, square);
+    if (!(attacks2 & bitmap(Piece{PieceType::Bishop, attacker_color})).empty()) {
         return true;
     }
-    if (!(attacks2 & bitmap(Piece{.type = PieceType::Queen, .color = attacker_color})).empty()) {
+    if (!(attacks2 & bitmap(Piece{PieceType::Queen, attacker_color})).empty()) {
         return true;
     }
     return false;
@@ -374,9 +374,7 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
             Rank{state.side_to_move == Color::White ? target_square.rank().rank - 1 : target_square.rank().rank + 1},
         };
         const auto captured = get_piece(target_square);
-        generate_pawn_moves(
-            source_square, target_square, captured.value_or(Piece{.type = PieceType::Pawn, .color = other_color(state.side_to_move)}), !captured.has_value(), state, moves
-        );
+        generate_pawn_moves(source_square, target_square, captured.value_or(Piece{PieceType::Pawn, other_color(state.side_to_move)}), !captured.has_value(), state, moves);
         targets.clear_lowest_bit();
     }
 }
@@ -389,7 +387,7 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                 Move{
                     .from = Square::E1,
                     .to = Square::G1,
-                    .piece = Piece{.type = PieceType::King, .color = Color::White},
+                    .piece = Piece{PieceType::King, Color::White},
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
@@ -405,7 +403,7 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                 Move{
                     .from = Square::E1,
                     .to = Square::C1,
-                    .piece = Piece{.type = PieceType::King, .color = Color::White},
+                    .piece = Piece{PieceType::King, Color::White},
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
@@ -422,7 +420,7 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                 Move{
                     .from = Square::E8,
                     .to = Square::G8,
-                    .piece = Piece{.type = PieceType::King, .color = Color::Black},
+                    .piece = Piece{PieceType::King, Color::Black},
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
@@ -438,7 +436,7 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                 Move{
                     .from = Square::E8,
                     .to = Square::C8,
-                    .piece = Piece{.type = PieceType::King, .color = Color::Black},
+                    .piece = Piece{PieceType::King, Color::Black},
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
@@ -452,8 +450,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
 }
 
 auto Bitboard::store_move_if_legal(const Move &move, MoveList &moves) const -> void {
-    Color color = move.piece.color;
-    const auto king_square = move.piece.type == PieceType::King ? move.to : find_king(color);
+    Color color = move.piece.color();
+    const auto king_square = move.piece.type() == PieceType::King ? move.to : find_king(color);
     if (king_square.has_value()) {
         if (would_be_attacked(king_square.value(), other_color(color), move)) {
             return;
@@ -463,7 +461,7 @@ auto Bitboard::store_move_if_legal(const Move &move, MoveList &moves) const -> v
 }
 
 auto Bitboard::find_king(Color color) const -> std::optional<Square> {
-    const auto map = bitmap(Piece{.type = PieceType::King, .color = color});
+    const auto map = bitmap(Piece{PieceType::King, color});
     if (!map.empty()) {
         const auto shift = map.empty_squares_before();
         return Square::A1 + shift;

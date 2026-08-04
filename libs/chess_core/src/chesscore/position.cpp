@@ -35,10 +35,10 @@ auto Position::move_piece_hash(const Move &move) -> void {
     if (move.is_castling()) {
         if (move.from.file().file < move.to.file().file) {
             // Kingside castling
-            m_hash.move_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'H'}, move.to.rank()}, Square{File{'F'}, move.to.rank()});
+            m_hash.move_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'H'}, move.to.rank()}, Square{File{'F'}, move.to.rank()});
         } else {
             // Queenside castling
-            m_hash.move_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'A'}, move.to.rank()}, Square{File{'D'}, move.to.rank()});
+            m_hash.move_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'A'}, move.to.rank()}, Square{File{'D'}, move.to.rank()});
         }
     }
 }
@@ -50,7 +50,7 @@ auto Position::updateFullmoveNumber() -> void {
 }
 
 auto Position::updateHalfmoveClock(const Move &move) -> void {
-    if (move.is_capture() || move.piece.type == PieceType::Pawn) {
+    if (move.is_capture() || move.piece.type() == PieceType::Pawn) {
         m_state.halfmove_clock = 0;
     } else {
         m_state.halfmove_clock++;
@@ -58,7 +58,7 @@ auto Position::updateHalfmoveClock(const Move &move) -> void {
 }
 
 auto Position::updateEnPassant(const Move &move) -> void {
-    if (move.piece.type == PieceType::Pawn && move.is_double_step()) {
+    if (move.piece.type() == PieceType::Pawn && move.is_double_step()) {
         if (move.from.rank().rank > move.to.rank().rank) {
             m_state.en_passant_target = Square{File{move.from.file().file}, Rank{move.from.rank().rank - 1}};
         } else {
@@ -138,16 +138,16 @@ auto Position::unmove_piece_hash(const Move &move) -> void {
     if (move.is_castling()) {
         if (move.from.file().file < move.to.file().file) {
             // Kingside castling
-            m_hash.move_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'F'}, move.from.rank()}, Square{File{'H'}, move.from.rank()});
+            m_hash.move_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'F'}, move.from.rank()}, Square{File{'H'}, move.from.rank()});
         } else {
             // Queenside castling
-            m_hash.move_piece(Piece{.type = PieceType::Rook, .color = move.piece.color}, Square{File{'D'}, move.from.rank()}, Square{File{'A'}, move.from.rank()});
+            m_hash.move_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'D'}, move.from.rank()}, Square{File{'A'}, move.from.rank()});
         }
     }
 }
 
 auto Position::resetFullmoveNumber(const Move &move) -> void {
-    if (move.piece.color == Color::Black) {
+    if (move.piece.color() == Color::Black) {
         m_state.fullmove_number--;
     }
 }
@@ -206,13 +206,10 @@ auto Position::check_state() const -> CheckState {
 
 auto Position::piece_placement() const -> PiecePlacement {
     PiecePlacement pieces{};
-    for (int rank = Rank::count - 1; rank >= 0; --rank) {
-        for (int file = 0; file < File::count; ++file) {
-            const Square square{file, rank};
-            const auto piece = m_board.get_piece(square);
-            if (piece) {
-                pieces[square.index()] = piece.value();
-            }
+    for (auto square = Square::A1; square.valid(); ++square) {
+        const auto piece = m_board.get_piece(square);
+        if (piece) {
+            pieces[square.index()] = piece.value();
         }
     }
     return pieces;

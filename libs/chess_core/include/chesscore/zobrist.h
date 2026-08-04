@@ -47,7 +47,7 @@ public:
     static auto initialized() -> bool { return m_initialized; }
 
     static auto piece_key(Piece piece, Square square) -> key_t { return m_piece_keys[piece_index(piece, square)]; }
-    static auto piece_key(PieceType type, Color color, Square square) -> key_t { return piece_key(Piece{.type = type, .color = color}, square); }
+    static auto piece_key(PieceType type, Color color, Square square) -> key_t { return piece_key(Piece{type, color}, square); }
     static auto castling_key(CastlingRights rights) -> key_t { return m_castling_keys[castling_index(rights)]; }
     static auto enpassant_key(File file) -> key_t { return m_enpassant_keys[static_cast<size_t>(file.file)]; }
     static auto side_key() -> key_t { return m_side_key; }
@@ -67,8 +67,8 @@ private:
     }
 
     static auto piece_index(Piece piece, Square square) -> std::size_t {
-        size_t index = piece.color == Color::White ? 0 : piece_type_count * Square::count;
-        return index + get_index(piece.type) * Square::count + square.index();
+        size_t index = piece.color() == Color::White ? 0 : piece_type_count * Square::count;
+        return index + get_index(piece.type()) * Square::count + square.index();
     }
 
     static auto castling_index(CastlingRights rights) -> std::size_t {
