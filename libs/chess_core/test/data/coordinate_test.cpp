@@ -131,13 +131,11 @@ TEST_CASE("Data.Coords.Increments", "[Square]") {
     CHECK(square.rank().rank == 6);
     CHECK(square.index() == 52);
     square += 15;
-    CHECK(square.file().file == 7);
-    CHECK(square.rank().rank == 7);
-    CHECK(square.index() == 63);
+    CHECK_FALSE(square.valid());
 }
 
 TEST_CASE("Data.Coords.Decrements", "[Square]") {
-    CHECK(Square::A1 - 3 == Square::A1);
+    CHECK_FALSE((Square::A1 - 3).valid());
     CHECK(Square::E5 - 2 == Square::C5);
     CHECK(Square::F4 - 11 == Square::C3);
     CHECK(Square::E6 - 22 == Square::G3);

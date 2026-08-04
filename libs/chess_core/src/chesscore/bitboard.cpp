@@ -62,13 +62,10 @@ auto Bitboard::generate_pawn_moves(const Square &source, const Square &target, s
 
 Bitboard::Bitboard(const FenString &fen) {
     const auto &placements{fen.piece_placement()};
-    for (int rank{0}; rank < Rank::count; ++rank) {
-        for (int file{0}; file < File::count; ++file) {
-            const auto square = Square{rank, file};
-            const auto piece{placements[square.index()]};
-            if (piece) {
-                set_piece(piece.value(), square);
-            }
+    for (auto square = Square::A1; square.valid(); ++square) {
+        const auto piece{placements[square.index()]};
+        if (piece) {
+            set_piece(piece.value(), square);
         }
     }
 }

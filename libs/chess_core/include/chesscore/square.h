@@ -7,7 +7,6 @@
 #ifndef CHESSCORE_SQUARE_H
 #define CHESSCORE_SQUARE_H
 
-#include <algorithm>
 #include <cstdint>
 #include <string>
 
@@ -164,6 +163,9 @@ public:
      */
     constexpr Square() : Square(0, 0) {}
 
+    /**
+     * \brief Mask to extract the file from the square index.
+     */
     static constexpr std::uint8_t file_mask = 0x07;
 
     /**
@@ -210,12 +212,41 @@ public:
      *
      * Step from the current square to a following square. The squares are
      * enumerated according to their linear index, i.e., A1, B1, ..., H8.
-     * If the step count is too big, this is set to the last Square H8.
+     * No range checking is performed, steps can generate invalid squares!
      * \param squares The number of squares to skip.
      * \return The new Square.
      */
     constexpr auto operator+=(int squares) -> Square & {
-        m_index = std::clamp(static_cast<std::uint8_t>(m_index + squares), static_cast<std::uint8_t>(0U), static_cast<std::uint8_t>(Square::count - 1));
+        m_index = static_cast<std::uint8_t>(m_index + squares);
+        return *this;
+    }
+
+    /**
+     * \brief Skip to the "next" square.
+     *
+     * Step this square from the current square to a following square. No range
+     * checking is performed, steps can generate invalid squares!
+     * \return Reference to this updated square.
+     */
+    constexpr auto operator++() -> Square & { return *this += 1; }
+
+    constexpr auto operator++(int) -> Square {
+        Square old{*this};
+        operator++();
+        return old;
+    }
+
+    /**
+     * \brief Skip back to a "previous" square.
+     *
+     * Step from the current square to a previous square. The squares are
+     * enumerated according to their linear index, i.e., A1, B1, ..., H8.
+     * No range checking is performed, steps can generate invalid squares!
+     * \param squares The number of squares to skip.
+     * \return The new Square.
+     */
+    constexpr auto operator-=(int squares) -> Square & {
+        m_index = static_cast<std::uint8_t>(static_cast<int>(m_index) - squares);
         return *this;
     }
 
@@ -224,14 +255,32 @@ public:
      *
      * Step from the current square to a previous square. The squares are
      * enumerated according to their linear index, i.e., A1, B1, ..., H8.
-     * If the step count is too big, this is set to the first Square A1.
-     * \param squares The number of squares to skip.
+     * No range checking is performed, steps can generate invalid squares!
      * \return The new Square.
      */
-    constexpr auto operator-=(int squares) -> Square & {
-        m_index = static_cast<std::uint8_t>(std::clamp(static_cast<int>(m_index) - squares, 0, Square::count - 1));
-        return *this;
+    constexpr auto operator--() -> Square & { return *this -= 1; }
+
+    /**
+     * \brief Skip back to the "previous" square.
+     *
+     * Step from the current square to a previous square. The squares are
+     * enumerated according to their linear index, i.e., A1, B1, ..., H8.
+     * No range checking is performed, steps can generate invalid squares!
+     * \return The new Square.
+     */
+    constexpr auto operator--(int) -> Square {
+        Square old{*this};
+        operator--();
+        return old;
     }
+
+    /**
+     * \brief If the square is valid.
+     *
+     * Valid squares are in the range A1 to H8.
+     * \return If the square is valid.
+     */
+    [[nodiscard]] constexpr auto valid() const -> bool { return m_index < count; }
 
     /**
      * \brief Equality comparison for square positions.
@@ -332,7 +381,11 @@ static_assert(sizeof(Square) == 1, "Square must be 1 byte");
  * \param squares The number of squares to skip.
  * \return The new Square.
  */
-auto operator+(const Square &square, int squares) -> Square;
+inline auto operator+(const Square &square, int squares) -> Square {
+    Square result{square};
+    result += squares;
+    return result;
+}
 
 /**
  * \brief Skip to the "previous" square.
@@ -342,7 +395,11 @@ auto operator+(const Square &square, int squares) -> Square;
  * \param squares The number of squares to skip.
  * \return The new Square.
  */
-auto operator-(const Square &square, int squares) -> Square;
+inline auto operator-(const Square &square, int squares) -> Square {
+    Square result{square};
+    result -= squares;
+    return result;
+}
 
 auto to_string(const Square &square) -> std::string;
 

@@ -93,18 +93,6 @@ const Square Square::H7{File{'h'}, Rank{6}};
 const Square Square::H8{File{'h'}, Rank{7}};
 // NOLINTEND(readability-identifier-length,modernize-use-designated-initializers)
 
-auto operator+(const Square &square, int squares) -> Square {
-    Square result{square};
-    result += squares;
-    return result;
-}
-
-auto operator-(const Square &square, int squares) -> Square {
-    Square result{square};
-    result -= squares;
-    return result;
-}
-
 auto to_string(const Square &square) -> std::string {
     return std::string{square.file().name()} + std::to_string(square.rank().rank + 1);
 }
