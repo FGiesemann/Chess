@@ -195,7 +195,7 @@ auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
 
 auto Bitboard::capture_moves(const PositionState &state) const -> MoveList {
     MoveList moves = all_legal_moves(state);
-    moves.erase(std::remove_if(moves.begin(), moves.end(), [](const Move &move) { return !move.captured.has_value(); }), moves.end());
+    std::erase_if(moves, [](const Move &move) -> bool { return !move.captured.has_value(); });
     return moves;
 }
 
