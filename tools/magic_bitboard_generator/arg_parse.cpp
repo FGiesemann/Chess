@@ -94,7 +94,7 @@ auto parse_arguments(const std::vector<std::string> &args) -> Args {
             result.iterations = std::stoull(next_arg);
             ++i;
         } else if (arg == "-m" || arg == "--magic") {
-            if (next_arg.length() > 1 && next_arg.substr(0, 2) == "0x") {
+            if (next_arg.length() > 1 && next_arg.starts_with("0x")) {
                 result.magic_number = std::stoull(next_arg.substr(2), nullptr, 16);
             } else {
                 result.magic_number = std::stoull(next_arg);
@@ -147,7 +147,7 @@ auto read_square(const std::string &squares, std::size_t index) -> std::pair<che
         const auto &c2 = squares[index];
         if (c2 >= '1' && c2 <= '8') {
             const char rank = c2;
-            return std::make_pair(chesscore::Square{chesscore::File{file}, chesscore::Rank{rank - '1' + 1}}, index + 1);
+            return std::make_pair(chesscore::Square{chesscore::File{file}, chesscore::Rank{rank - '1'}}, index + 1);
         }
     }
     throw ArgError("Invalid square: " + squares);

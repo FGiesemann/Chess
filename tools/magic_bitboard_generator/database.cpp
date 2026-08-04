@@ -32,8 +32,7 @@ auto Record::update_magics(const Magics &magics, const TableStats &stats) -> boo
 }
 
 auto RecordWriter::write(const Record &record, std::ostream &ostream) -> void {
-    ostream << std::format("{:c} {} {:1d}",
-                           chesscore::Piece{.type = record.piece(), .color = chesscore::Color::White}.piece_char(),
+    ostream << std::format("{:c} {} {:1d}", chesscore::Piece{record.piece(), chesscore::Color::White}.piece_char(),
                            to_string(record.square()), record.has_magics() ? 1 : 0);
     if (record.has_magics()) {
         ostream << std::format(" {:016x} {} {} {} {}", record.magics().magic_number, record.magics().shift,

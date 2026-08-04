@@ -3,10 +3,7 @@
  * Data structures and algorithms for chess                                   *
  * ************************************************************************** */
 
-#include <bitset>
-#include <iomanip>
 #include <iostream>
-#include <sstream>
 #include <string>
 
 #include "chesscore/bitmap.h"
@@ -65,7 +62,7 @@ auto main() -> int {
             }
         } else {
             if (input.length() == 2 && input[0] >= 'a' && input[0] <= 'h' && input[1] >= '1' && input[1] <= '8') {
-                int file = input[0] - 'a' + 1;
+                int file = input[0] - 'a';
                 int rank = input[1] - '1';
                 chesscore::Square square{file, rank};
                 bitmap.toggle(square);
