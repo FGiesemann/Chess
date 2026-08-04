@@ -171,7 +171,7 @@ auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore:
         qreal item_x = static_cast<qreal>(piece_index) * selection_item_size;
         m_promotion_overlay_group->addToGroup(create_promotion_piece_selection_rect(item_x, selection_item_size, piece_type));
         QPointF piece_pos = QPointF(item_x + promotion_piece_padding, 0);
-        m_promotion_overlay_group->addToGroup(create_piece_item(chesscore::Piece{.type = piece_type, .color = color}, piece_size, piece_pos));
+        m_promotion_overlay_group->addToGroup(create_piece_item(chesscore::Piece{piece_type, color}, piece_size, piece_pos));
     }
 
     m_promotion_overlay_group->setPos(calculate_overlay_pos(target_square, overlay_size));

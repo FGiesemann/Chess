@@ -24,7 +24,7 @@ auto ChessboardController::on_square_clicked(const chesscore::Square &square) ->
 
     if (!m_selected_square.has_value()) {
         const auto opt_piece = m_current_position.board().get_piece(square);
-        if (opt_piece.has_value() && opt_piece.value().color == m_current_position.side_to_move()) {
+        if (opt_piece.has_value() && opt_piece.value().color() == m_current_position.side_to_move()) {
             start_possible_move(square, opt_piece.value());
         }
     } else {
@@ -60,7 +60,8 @@ auto ChessboardController::on_promotion_piece_selected(chesscore::PieceType type
     }
 
     if (m_promotion_move.promoted.has_value()) {
-        m_promotion_move.promoted.value().type = type;
+        const auto color = m_promotion_move.promoted.value().color();
+        m_promotion_move.promoted = chesscore::Piece{type, color};
     }
     perform_move(m_promotion_move);
 }
@@ -80,7 +81,7 @@ auto ChessboardController::try_move(chesscore::Square square) -> void {
         const auto move = *iter;
         if (move.is_pawn_promotion()) {
             m_promotion_move = move;
-            m_board_widget->showPromotionSelection(move.piece.color, move.to);
+            m_board_widget->showPromotionSelection(move.piece.color(), move.to);
         } else {
             perform_move(*iter);
         }
