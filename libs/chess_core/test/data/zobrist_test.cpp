@@ -27,46 +27,46 @@ TEST_CASE("Data.Zobrist.ZobristKeys.Nonzero", "[zobrist]") {
 
     CastlingRights rights{};
     CHECK(ZobristKeys::castling_key(rights) != 0);
-    rights.black_kingside = true;
+    rights.set_black_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // k
-    rights.black_kingside = false;
-    rights.black_queenside = true;
+    rights.set_black_king(false);
+    rights.set_black_queen(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // q
-    rights.black_kingside = true;
+    rights.set_black_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // kq
-    rights.black_kingside = false;
-    rights.black_queenside = false;
-    rights.white_kingside = true;
+    rights.set_black_king(false);
+    rights.set_black_queen(false);
+    rights.set_white_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // K
-    rights.black_kingside = true;
+    rights.set_black_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // Kk
-    rights.black_kingside = false;
-    rights.black_queenside = true;
+    rights.set_black_king(false);
+    rights.set_black_queen(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // Kq
-    rights.black_kingside = true;
+    rights.set_black_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // Kkq
-    rights.black_kingside = false;
-    rights.black_queenside = false;
-    rights.white_kingside = false;
-    rights.white_queenside = true;
+    rights.set_black_king(false);
+    rights.set_black_queen(false);
+    rights.set_white_king(false);
+    rights.set_white_queen(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // Q
-    rights.black_kingside = true;
+    rights.set_black_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // Qk
-    rights.black_kingside = false;
-    rights.black_queenside = true;
+    rights.set_black_king(false);
+    rights.set_black_queen(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // Qq
-    rights.black_kingside = true;
+    rights.set_black_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // Qkq
-    rights.black_kingside = false;
-    rights.black_queenside = false;
-    rights.white_kingside = true;
+    rights.set_black_king(false);
+    rights.set_black_queen(false);
+    rights.set_white_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // QK
-    rights.black_kingside = true;
+    rights.set_black_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // QKk
-    rights.black_kingside = false;
-    rights.black_queenside = true;
+    rights.set_black_king(false);
+    rights.set_black_queen(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // QKq
-    rights.black_kingside = true;
+    rights.set_black_king(true);
     CHECK(ZobristKeys::castling_key(rights) != 0); // QKkq
 
     auto color = Color::White;
@@ -132,9 +132,9 @@ TEST_CASE("Data.Zobrist.ZobristHash.En Passant FEN", "[zobrist]") {
 }
 
 TEST_CASE("Data.Zobrist.ZobristHash.Castling", "[zobrist]") {
-    CastlingRights rights1{true, false, false, false};
-    CastlingRights rights2{true, true, true, false};
-    CastlingRights rights3{false, false, true, true};
+    CastlingRights rights1{CastlingRights::white_king};
+    CastlingRights rights2{CastlingRights::white_king | CastlingRights::white_queen | CastlingRights::black_king};
+    CastlingRights rights3{CastlingRights::black_king | CastlingRights::black_queen};
 
     const auto hash = ZobristHash::starting_position_hash();
     auto hash2 = hash;
@@ -190,7 +190,7 @@ TEST_CASE("Data.Zobrist.ZobristHash.Position", "[zobrist]") {
     hash.move_piece(Piece::BlackPawn, Square::C7, Square::C6);
     hash.move_piece(Piece::WhiteBishop, Square::B5, Square::A4);
     hash.move_piece(Piece::BlackPawn, Square::B7, Square::B5);
-    hash.switch_castling(CastlingRights::all(), CastlingRights{false, false, true, true});
+    hash.switch_castling(CastlingRights::all(), CastlingRights{CastlingRights::black_king | CastlingRights::black_queen});
     hash.move_piece(Piece::WhiteKing, Square::E1, Square::G1);
     hash.move_piece(Piece::WhiteRook, Square::H1, Square::F1);
     hash.clear_piece(Piece::WhiteBishop, Square::A4);

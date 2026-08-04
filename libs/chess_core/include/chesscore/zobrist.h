@@ -77,10 +77,10 @@ private:
         static constexpr std::size_t bit_2 = 4;
         static constexpr std::size_t bit_3 = 8;
 
-        std::size_t index = rights.black_queenside ? bit_0 : 0;
-        index += rights.black_kingside ? bit_1 : 0;
-        index += rights.white_queenside ? bit_2 : 0;
-        index += rights.white_kingside ? bit_3 : 0;
+        std::size_t index = rights.can_black_queen() ? bit_0 : 0;
+        index += rights.can_black_king() ? bit_1 : 0;
+        index += rights.can_white_queen() ? bit_2 : 0;
+        index += rights.can_white_king() ? bit_3 : 0;
         return index;
     }
 };

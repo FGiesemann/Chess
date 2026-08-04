@@ -11,17 +11,30 @@
 #include "chesscore/piece.h"
 #include "chesscore/square.h"
 
-
 namespace chesscore {
 
 /**
  * \brief Describes the availability of castling for each player.
  */
-struct CastlingRights {
-    bool white_kingside{false};  ///< White can castle on the kingside.
-    bool white_queenside{false}; ///< White can castle on the queenside.
-    bool black_kingside{false};  ///< Black can castle on the kingside.
-    bool black_queenside{false}; ///< Black can castle on the queenside.
+class CastlingRights {
+public:
+    CastlingRights() = default;
+    explicit CastlingRights(std::uint8_t rights) : m_rights{rights} {}
+
+    static constexpr std::uint8_t white_king{0x01};
+    static constexpr std::uint8_t white_queen{0x02};
+    static constexpr std::uint8_t black_king{0x04};
+    static constexpr std::uint8_t black_queen{0x08};
+
+    [[nodiscard]] constexpr auto can_white_king() const -> bool { return (m_rights & white_king) > 0; }
+    [[nodiscard]] constexpr auto can_white_queen() const -> bool { return (m_rights & white_queen) > 0; }
+    [[nodiscard]] constexpr auto can_black_king() const -> bool { return (m_rights & black_king) > 0; }
+    [[nodiscard]] constexpr auto can_black_queen() const -> bool { return (m_rights & black_queen) > 0; }
+
+    constexpr auto set_white_king(bool allowed) -> void { m_rights = allowed ? (m_rights | white_king) : (m_rights & ~white_king); }
+    constexpr auto set_white_queen(bool allowed) -> void { m_rights = allowed ? (m_rights | white_queen) : (m_rights & ~white_queen); }
+    constexpr auto set_black_king(bool allowed) -> void { m_rights = allowed ? (m_rights | black_king) : (m_rights & ~black_king); }
+    constexpr auto set_black_queen(bool allowed) -> void { m_rights = allowed ? (m_rights | black_queen) : (m_rights & ~black_queen); }
 
     static constexpr std::size_t max_combinations = 16ULL;
 
@@ -46,41 +59,16 @@ struct CastlingRights {
      * \param piece The castling type as described above.
      * @return If the castling right is available.
      */
-    auto operator[](char piece) const -> const bool & {
+    auto operator[](char piece) const -> bool {
         switch (piece) {
         case 'K':
-            return white_kingside;
+            return can_white_king();
         case 'Q':
-            return white_queenside;
+            return can_white_queen();
         case 'k':
-            return black_kingside;
+            return can_black_king();
         case 'q':
-            return black_queenside;
-        default:
-            throw OutOfRange("Invalid castling type");
-        }
-    }
-
-    /**
-     * \brief Get the castling rights for a a player.
-     *
-     * Query the castling rights for a player and a side (kingside/queenside).
-     * The letter given has the same meaning as in a FEN string. (K = kingside
-     * castling of the white king, q = queenside castling of the black king,
-     * ...)
-     * \param piece The castling type as described above.
-     * @return If the castling right is available.
-     */
-    auto operator[](char piece) -> bool & {
-        switch (piece) {
-        case 'K':
-            return white_kingside;
-        case 'Q':
-            return white_queenside;
-        case 'k':
-            return black_kingside;
-        case 'q':
-            return black_queenside;
+            return can_black_queen();
         default:
             throw OutOfRange("Invalid castling type");
         }
@@ -91,15 +79,19 @@ struct CastlingRights {
      *
      * \return Object that has all the castling rights.
      */
-    static auto all() -> CastlingRights { return CastlingRights{.white_kingside = true, .white_queenside = true, .black_kingside = true, .black_queenside = true}; }
+    static auto all() -> CastlingRights { return CastlingRights{white_king | white_queen | black_king | black_queen}; }
 
     /**
      * \brief Generate an object with no castling rights.
      *
      * \return Object that has no castling rights.
      */
-    static auto none() -> CastlingRights { return CastlingRights{.white_kingside = false, .white_queenside = false, .black_kingside = false, .black_queenside = false}; }
+    static auto none() -> CastlingRights { return CastlingRights{}; }
+private:
+    std::uint8_t m_rights{};
 };
+
+static_assert(sizeof(CastlingRights) == 1, "CastlingRights must be 1 byte");
 
 /**
  * \brief Possible check states of a position.

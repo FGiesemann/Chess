@@ -174,20 +174,20 @@ auto check_castling_availability(const std::string &fen_string, std::size_t pos)
     if (std::ranges::find(valid_castlings, castling_string) == std::end(valid_castlings)) {
         throw InvalidFen{"Invalid castling availability in FEN string"};
     }
-    CastlingRights ability{};
+    auto ability = CastlingRights::none();
     for (size_t i = 0; i < castling_string.length(); ++i) {
         switch (castling_string[i]) {
         case 'K':
-            ability.white_kingside = true;
+            ability.set_white_king(true);
             break;
         case 'Q':
-            ability.white_queenside = true;
+            ability.set_white_queen(true);
             break;
         case 'k':
-            ability.black_kingside = true;
+            ability.set_black_king(true);
             break;
         case 'q':
-            ability.black_queenside = true;
+            ability.set_black_queen(true);
             break;
         default:
             break;
@@ -277,16 +277,16 @@ auto placement_to_string(const PiecePlacement &placement) -> std::string {
 
 auto castling_rights_to_string(const CastlingRights &castling_rights) -> std::string {
     std::string result;
-    if (castling_rights.white_kingside) {
+    if (castling_rights.can_white_king()) {
         result += 'K';
     }
-    if (castling_rights.white_queenside) {
+    if (castling_rights.can_white_queen()) {
         result += 'Q';
     }
-    if (castling_rights.black_kingside) {
+    if (castling_rights.can_black_king()) {
         result += 'k';
     }
-    if (castling_rights.black_queenside) {
+    if (castling_rights.can_black_queen()) {
         result += 'q';
     }
     if (result.empty()) {

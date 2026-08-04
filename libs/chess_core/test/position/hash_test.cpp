@@ -102,7 +102,7 @@ TEST_CASE("Position.Hashing.MakeMove.Castling", "[position][zobrist]") {
     auto hash2 = hash_w;
     hash2.move_piece(Piece::WhiteKing, Square::E1, Square::C1);
     hash2.move_piece(Piece::WhiteRook, Square::A1, Square::D1);
-    hash2.switch_castling(CastlingRights::all(), CastlingRights{false, false, true, true});
+    hash2.switch_castling(CastlingRights::all(), CastlingRights{CastlingRights::black_king | CastlingRights::black_queen});
     hash2.swap_side();
     CHECK(position2.hash() == hash2);
 
@@ -111,7 +111,7 @@ TEST_CASE("Position.Hashing.MakeMove.Castling", "[position][zobrist]") {
     auto hash3 = hash_w;
     hash3.move_piece(Piece::WhiteKing, Square::E1, Square::G1);
     hash3.move_piece(Piece::WhiteRook, Square::H1, Square::F1);
-    hash3.switch_castling(CastlingRights::all(), CastlingRights{false, false, true, true});
+    hash3.switch_castling(CastlingRights::all(), CastlingRights{CastlingRights::black_king | CastlingRights::black_queen});
     hash3.swap_side();
     CHECK(position3.hash() == hash3);
 
@@ -123,7 +123,7 @@ TEST_CASE("Position.Hashing.MakeMove.Castling", "[position][zobrist]") {
     auto hash4 = hash_b;
     hash4.move_piece(Piece::BlackKing, Square::E8, Square::C8);
     hash4.move_piece(Piece::BlackRook, Square::A8, Square::D8);
-    hash4.switch_castling(CastlingRights::all(), CastlingRights{true, true, false, false});
+    hash4.switch_castling(CastlingRights::all(), CastlingRights{CastlingRights::white_king | CastlingRights::white_queen});
     hash4.swap_side();
     CHECK(position4.hash() == hash4);
 
@@ -132,7 +132,7 @@ TEST_CASE("Position.Hashing.MakeMove.Castling", "[position][zobrist]") {
     auto hash5 = hash_b;
     hash5.move_piece(Piece::BlackKing, Square::E8, Square::G8);
     hash5.move_piece(Piece::BlackRook, Square::H8, Square::F8);
-    hash5.switch_castling(CastlingRights::all(), CastlingRights{true, true, false, false});
+    hash5.switch_castling(CastlingRights::all(), CastlingRights{CastlingRights::white_king | CastlingRights::white_queen});
     hash5.swap_side();
     CHECK(position5.hash() == hash5);
 }

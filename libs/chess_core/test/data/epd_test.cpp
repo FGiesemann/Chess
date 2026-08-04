@@ -39,8 +39,8 @@ TEST_CASE("Data.EPD.Parse.Positions.Position 2", "[EPD]") {
 
     CHECK(position.piece_placement() == placement_from_string("R____RK__PP___PP__N_B___P__Q_P_____pP_____p_____pp__bpppr_bqk__r"));
     CHECK(position.side_to_move() == Color::Black);
-    CHECK(position.castling_rights().black_kingside);
-    CHECK(position.castling_rights().black_queenside);
+    CHECK(position.castling_rights().can_black_king());
+    CHECK(position.castling_rights().can_black_queen());
     CHECK_FALSE(position.en_passant_target().has_value());
     CHECK(position.halfmove_clock() == 0);
     CHECK(position.fullmove_number() == 1);

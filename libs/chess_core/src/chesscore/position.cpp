@@ -76,33 +76,33 @@ auto Position::updateEnPassant(const Move &move) -> void {
 auto Position::updateCastlingRights(const Move &move) -> void {
     CastlingRights old_rights = m_state.castling_rights;
     if (move.piece == Piece::WhiteKing) {
-        m_state.castling_rights['K'] = false;
-        m_state.castling_rights['Q'] = false;
+        m_state.castling_rights.set_white_king(false);
+        m_state.castling_rights.set_white_queen(false);
     } else if (move.piece == Piece::WhiteRook) {
         if (move.from == Square::H1) {
-            m_state.castling_rights['K'] = false;
+            m_state.castling_rights.set_white_king(false);
         } else if (move.from == Square::A1) {
-            m_state.castling_rights['Q'] = false;
+            m_state.castling_rights.set_white_queen(false);
         }
     } else if (move.piece == Piece::BlackKing) {
-        m_state.castling_rights['k'] = false;
-        m_state.castling_rights['q'] = false;
+        m_state.castling_rights.set_black_king(false);
+        m_state.castling_rights.set_black_queen(false);
     } else if (move.piece == Piece::BlackRook) {
         if (move.from == Square::H8) {
-            m_state.castling_rights['k'] = false;
+            m_state.castling_rights.set_black_king(false);
         } else if (move.from == Square::A8) {
-            m_state.castling_rights['q'] = false;
+            m_state.castling_rights.set_black_queen(false);
         }
     }
     if (move.is_capture()) {
         if (move.to == Square::A1) {
-            m_state.castling_rights['Q'] = false;
+            m_state.castling_rights.set_white_queen(false);
         } else if (move.to == Square::H1) {
-            m_state.castling_rights['K'] = false;
+            m_state.castling_rights.set_white_king(false);
         } else if (move.to == Square::A8) {
-            m_state.castling_rights['q'] = false;
+            m_state.castling_rights.set_black_queen(false);
         } else if (move.to == Square::H8) {
-            m_state.castling_rights['k'] = false;
+            m_state.castling_rights.set_black_king(false);
         }
     }
     if (m_state.castling_rights != old_rights) {
