@@ -46,13 +46,13 @@ auto convert_legal_move(const UCIMove &move, const chesscore::Position &position
     result.piece = piece.value();
     result.to = move.to;
     if (move.promotion_piece.has_value()) {
-        result.promoted = chesscore::Piece{.type = move.promotion_piece.value(), .color = position.side_to_move()};
+        result.promoted = chesscore::Piece{move.promotion_piece.value(), position.side_to_move()};
     }
     const auto captured_piece = board.get_piece(move.to);
     if (captured_piece.has_value()) {
         result.captured = captured_piece.value();
     }
-    if (result.piece.type == chesscore::PieceType::Pawn) {
+    if (result.piece.type() == chesscore::PieceType::Pawn) {
         if (move.from.file() != move.to.file() && !captured_piece.has_value()) {
             result.capturing_en_passant = true;
             result.captured = board.get_piece(chesscore::Square{move.to.file(), move.from.rank()});
@@ -68,7 +68,7 @@ auto to_string(const UCIMove &move) -> std::string {
     std::string result{to_string(move.from)};
     result += to_string(move.to);
     if (move.promotion_piece.has_value()) {
-        result += chesscore::Piece{.type = move.promotion_piece.value(), .color = chesscore::Color::Black}.piece_char();
+        result += chesscore::Piece{move.promotion_piece.value(), chesscore::Color::Black}.piece_char();
     }
     return result;
 }
@@ -102,7 +102,7 @@ auto parse_uci_move(const std::string &uci_str) -> std::expected<UCIMove, UCIPar
 
 auto uci_move_matches(const UCIMove &uci_move, const chesscore::Move &move) -> bool {
     return move.from == uci_move.from && move.to == uci_move.to &&
-           ((move.promoted.has_value() && move.promoted.value().type == uci_move.promotion_piece) || (!move.promoted.has_value() && !uci_move.promotion_piece.has_value()));
+           ((move.promoted.has_value() && move.promoted.value().type() == uci_move.promotion_piece) || (!move.promoted.has_value() && !uci_move.promotion_piece.has_value()));
 }
 
 auto match_move(const UCIMove &move, const chesscore::MoveList &moves) -> chesscore::MoveList {

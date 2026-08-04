@@ -28,7 +28,7 @@ struct UCIMove {
     UCIMove(const chesscore::Square &from_sq, const chesscore::Square &to_sq, const std::optional<chesscore::PieceType> &prom_piece = std::nullopt)
         : from{from_sq}, to{to_sq}, promotion_piece{prom_piece} {}
     explicit UCIMove(const chesscore::Move &move)
-        : from{move.from}, to{move.to}, promotion_piece{move.promoted.has_value() ? std::optional<chesscore::PieceType>{move.promoted.value().type} : std::nullopt} {}
+        : from{move.from}, to{move.to}, promotion_piece{move.promoted.has_value() ? std::optional<chesscore::PieceType>{move.promoted.value().type()} : std::nullopt} {}
 
     auto operator==(const UCIMove &rhs) const -> bool { return from == rhs.from && to == rhs.to && promotion_piece == rhs.promotion_piece; }
 };
