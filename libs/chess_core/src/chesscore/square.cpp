@@ -91,6 +91,8 @@ const Square Square::H5{File{'h'}, Rank{4}};
 const Square Square::H6{File{'h'}, Rank{5}};
 const Square Square::H7{File{'h'}, Rank{6}};
 const Square Square::H8{File{'h'}, Rank{7}};
+
+const Square Square::Invalid{File{'a'}, Rank{8}};
 // NOLINTEND(readability-identifier-length,modernize-use-designated-initializers)
 
 auto to_string(const Square &square) -> std::string {

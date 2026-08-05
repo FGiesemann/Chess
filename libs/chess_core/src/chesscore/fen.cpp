@@ -30,9 +30,7 @@ FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
     m_fullmove_number = detail::check_fullmove_number(fen_string, half.second);
 }
 
-FenString::FenString(
-    const PiecePlacement &piece_placement, Color side_to_move, const CastlingRights &castling_rights, std::optional<Square> en_passant, int halfmove_clock, int fullmove_number
-)
+FenString::FenString(const PiecePlacement &piece_placement, Color side_to_move, const CastlingRights &castling_rights, Square en_passant, int halfmove_clock, int fullmove_number)
     : m_piece_placement{piece_placement}, m_side_to_move{side_to_move}, m_castling_rights{castling_rights}, m_en_passant{en_passant}, m_halfmove_clock{halfmove_clock},
       m_fullmove_number{fullmove_number} {
     m_fen_string = detail::placement_to_string(m_piece_placement) + " " + (m_side_to_move == Color::White ? "w" : "b") + " ";
@@ -41,8 +39,8 @@ FenString::FenString(
     } else {
         m_fen_string += '-';
     }
-    if (m_en_passant.has_value()) {
-        m_fen_string += " " + to_string(m_en_passant.value());
+    if (m_en_passant.valid()) {
+        m_fen_string += " " + to_string(m_en_passant);
     } else {
         m_fen_string += " -";
     }
@@ -196,12 +194,12 @@ auto check_castling_availability(const std::string &fen_string, std::size_t pos)
     return std::make_pair(ability, pos + castling_string.length() + 1);
 }
 
-auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t> {
+auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<Square, std::size_t> {
     if (pos > fen_string.length()) {
         throw InvalidFen{"Unexpected end of FEN string"};
     }
     if (fen_string[pos] == '-') {
-        return std::make_pair(std::nullopt, pos + 2);
+        return std::make_pair(Square::Invalid, pos + 2);
     }
     const char file = fen_string[pos];
     if (file < 'a' || file > 'h') {

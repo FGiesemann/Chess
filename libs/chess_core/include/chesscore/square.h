@@ -159,9 +159,9 @@ public:
     /**
      * \brief Default construtor.
      *
-     * Creates the Square::A1.
+     * Creates an invalid square.
      */
-    constexpr Square() : Square(0, 0) {}
+    constexpr Square() : Square(0, Rank::count) {}
 
     /**
      * \brief Mask to extract the file from the square index.
@@ -365,6 +365,8 @@ public:
     static const Square H6; ///< The square H6.
     static const Square H7; ///< The square H7.
     static const Square H8; ///< The square H8.
+
+    static const Square Invalid; ///< An invalid square.
     // NOLINTEND(readability-identifier-length)
     ///@}
 private:

@@ -39,8 +39,8 @@ auto operator<<(std::ostream &os, const Position &position) -> std::ostream & {
     os << position.side_to_move() << " to move\n";
     os << "Move counter: " << position.fullmove_number() << " | Halfmove counter " << position.halfmove_clock() << '\n';
     os << "Castling rights: " << position.castling_rights() << " | en passant: ";
-    if (position.en_passant_target().has_value()) {
-        os << position.en_passant_target().value();
+    if (position.en_passant_target().valid()) {
+        os << position.en_passant_target();
     } else {
         os << "-";
     }

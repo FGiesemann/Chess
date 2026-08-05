@@ -22,8 +22,8 @@ auto ZobristHash::from_position(const Position &position) -> ZobristHash {
     if (position.side_to_move() == Color::Black) {
         hash.swap_side();
     }
-    if (position.en_passant_target().has_value()) {
-        hash.set_enpassant(position.en_passant_target()->file());
+    if (position.en_passant_target().valid()) {
+        hash.set_enpassant(position.en_passant_target().file());
     }
     hash.set_castling(position.castling_rights());
     Square square{Square::A1};

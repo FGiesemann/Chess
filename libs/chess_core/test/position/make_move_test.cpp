@@ -63,7 +63,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     CHECK(position.board().get_piece(Square::C4) == Piece::WhiteBishop);
     CHECK(position.castling_rights() == CastlingRights::all());
     CHECK(position.side_to_move() == Color::Black);
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.halfmove_clock() == 1);
     CHECK(position.fullmove_number() == 2);
 
@@ -84,7 +84,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     CHECK_FALSE(position.castling_rights()['k']);
     CHECK_FALSE(position.castling_rights()['q']);
     CHECK(position.side_to_move() == Color::White);
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.halfmove_clock() == 2);
     CHECK(position.fullmove_number() == 3);
 
@@ -105,7 +105,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     CHECK_FALSE(position.castling_rights()['k']);
     CHECK_FALSE(position.castling_rights()['q']);
     CHECK(position.side_to_move() == Color::Black);
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.halfmove_clock() == 3);
     CHECK(position.fullmove_number() == 3);
 
@@ -127,7 +127,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     CHECK_FALSE(position.castling_rights()['k']);
     CHECK_FALSE(position.castling_rights()['q']);
     CHECK(position.side_to_move() == Color::White);
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.halfmove_clock() == 0);
     CHECK(position.fullmove_number() == 4);
 
@@ -150,7 +150,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     CHECK_FALSE(position.castling_rights()['k']);
     CHECK_FALSE(position.castling_rights()['q']);
     CHECK(position.side_to_move() == Color::Black);
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.halfmove_clock() == 1);
     CHECK(position.fullmove_number() == 4);
 }

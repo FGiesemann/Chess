@@ -66,10 +66,10 @@ auto Position::updateEnPassant(const Move &move) -> void {
         }
         m_hash.set_enpassant(move.from.file());
     } else {
-        if (m_state.en_passant_target.has_value()) {
-            m_hash.clear_enpassant(m_state.en_passant_target->file());
+        if (m_state.en_passant_target.valid()) {
+            m_hash.clear_enpassant(m_state.en_passant_target.file());
         }
-        m_state.en_passant_target.reset();
+        m_state.en_passant_target = Square::Invalid;
     }
 }
 
@@ -157,14 +157,14 @@ auto Position::resetHalfmoveClock(const Move &move) -> void {
 }
 
 auto Position::resetEnPassant(const Move &move) -> void {
-    if (m_state.en_passant_target.has_value()) {
-        m_hash.clear_enpassant(m_state.en_passant_target->file());
+    if (m_state.en_passant_target.valid()) {
+        m_hash.clear_enpassant(m_state.en_passant_target.file());
     }
-    if (move.en_passant_target_before.has_value()) {
+    if (move.en_passant_target_before.valid()) {
         m_state.en_passant_target = move.en_passant_target_before;
-        m_hash.set_enpassant(m_state.en_passant_target->file());
+        m_hash.set_enpassant(m_state.en_passant_target.file());
     } else {
-        m_state.en_passant_target.reset();
+        m_state.en_passant_target = Square::Invalid;
     }
 }
 
@@ -185,8 +185,8 @@ auto Position::capture_moves() const -> MoveList {
 
 auto Position::is_king_in_check(Color color) const -> bool {
     const auto king_sq = m_board.find_king(color);
-    if (king_sq.has_value()) {
-        return m_board.is_attacked(king_sq.value(), other_color(color));
+    if (king_sq.valid()) {
+        return m_board.is_attacked(king_sq, other_color(color));
     }
     return false;
 }

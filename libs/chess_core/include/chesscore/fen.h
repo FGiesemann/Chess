@@ -59,9 +59,7 @@ public:
      */
     explicit FenString(const std::string &fen_string);
 
-    FenString(
-        const PiecePlacement &piece_placement, Color side_to_move, const CastlingRights &castling_rights, std::optional<Square> en_passant, int halfmove_clock, int fullmove_number
-    );
+    FenString(const PiecePlacement &piece_placement, Color side_to_move, const CastlingRights &castling_rights, Square en_passant, int halfmove_clock, int fullmove_number);
 
     FenString(const PiecePlacement &piece_placement, const PositionState &state);
 
@@ -114,7 +112,7 @@ public:
      * is returned here. Otherwise a nullopt is returned.
      * \return Potential en passant target square.
      */
-    [[nodiscard]] auto en_passant_square() const -> std::optional<Square> { return m_en_passant; }
+    [[nodiscard]] auto en_passant_square() const -> Square { return m_en_passant; }
 
     /**
      * \brief Value of the halfmove clock.
@@ -137,7 +135,7 @@ private:
     PiecePlacement m_piece_placement;
     Color m_side_to_move;
     CastlingRights m_castling_rights;
-    std::optional<Square> m_en_passant;
+    Square m_en_passant;
     int m_halfmove_clock;
     int m_fullmove_number;
 };
@@ -147,7 +145,7 @@ namespace detail {
 auto check_piece_placement(const std::string &fen_string) -> std::pair<PiecePlacement, std::size_t>;
 auto check_side_to_move(const std::string &fen_string, std::size_t pos) -> std::pair<Color, std::size_t>;
 auto check_castling_availability(const std::string &fen_string, std::size_t pos) -> std::pair<CastlingRights, std::size_t>;
-auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<std::optional<Square>, std::size_t>;
+auto check_en_passant_target_square(const std::string &fen_string, Color player_to_move, std::size_t pos) -> std::pair<Square, std::size_t>;
 auto check_halfmove_clock(const std::string &fen_string, std::size_t pos) -> std::pair<int, std::size_t>;
 auto check_fullmove_number(const std::string &fen_string, std::size_t pos) -> int;
 

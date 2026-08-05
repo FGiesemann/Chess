@@ -104,7 +104,7 @@ public:
      * this is an empty optional.
      * \return The possible en-passant target square.
      */
-    [[nodiscard]] auto en_passant_target() const -> std::optional<Square> { return m_state.en_passant_target; }
+    [[nodiscard]] auto en_passant_target() const -> Square { return m_state.en_passant_target; }
 
     /**
      * \brief Perform a move.

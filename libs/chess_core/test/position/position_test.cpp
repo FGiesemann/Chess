@@ -16,7 +16,7 @@ TEST_CASE("Position.Bitboard.Init.Empty", "[Position][Init]") {
     CHECK(position.board().empty());
     CHECK(position.side_to_move() == Color::White);
     CHECK(position.castling_rights() == CastlingRights::none());
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.fullmove_number() == 1);
     CHECK(position.halfmove_clock() == 0);
 }
@@ -26,7 +26,7 @@ TEST_CASE("Position.Bitboard.Init.FEN", "[Position][Init][FEN]") {
     CHECK_FALSE(position1.board().empty());
     CHECK(position1.side_to_move() == Color::White);
     CHECK(position1.castling_rights() == CastlingRights::all());
-    CHECK_FALSE(position1.en_passant_target().has_value());
+    CHECK_FALSE(position1.en_passant_target().valid());
     CHECK(position1.fullmove_number() == 1);
     CHECK(position1.halfmove_clock() == 0);
     CHECK(position1.board().get_piece(Square::A1) == Piece::WhiteRook);
@@ -69,7 +69,7 @@ TEST_CASE("Position.Bitboard.Init.FEN", "[Position][Init][FEN]") {
     CHECK(position2.castling_rights()['Q']);
     CHECK_FALSE(position2.castling_rights()['k']);
     CHECK_FALSE(position2.castling_rights()['q']);
-    CHECK(position2.en_passant_target().value() == Square::H3);
+    CHECK(position2.en_passant_target() == Square::H3);
     CHECK(position2.fullmove_number() == 1);
     CHECK(position2.halfmove_clock() == 0);
     CHECK(position2.board().get_piece(Square::A1) == Piece::WhiteRook);

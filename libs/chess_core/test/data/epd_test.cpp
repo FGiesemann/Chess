@@ -16,7 +16,7 @@ TEST_CASE("Data.EPD.Parse.Positions.Starting", "[EPD]") {
     CHECK(position.piece_placement() == starting_piece_placement());
     CHECK(position.side_to_move() == Color::White);
     CHECK(position.castling_rights() == CastlingRights::all());
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.halfmove_clock() == 0);
     CHECK(position.fullmove_number() == 1);
 }
@@ -28,7 +28,7 @@ TEST_CASE("Data.EPD.Parse.Positions.Position 1", "[EPD]") {
     CHECK(position.piece_placement() == placement_from_string("_q___________KP______P_P_p__P_____Q_P___p___p_________pk________"));
     CHECK(position.side_to_move() == Color::White);
     CHECK(position.castling_rights() == CastlingRights::none());
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.halfmove_clock() == 0);
     CHECK(position.fullmove_number() == 1);
 }
@@ -41,7 +41,7 @@ TEST_CASE("Data.EPD.Parse.Positions.Position 2", "[EPD]") {
     CHECK(position.side_to_move() == Color::Black);
     CHECK(position.castling_rights().can_black_king());
     CHECK(position.castling_rights().can_black_queen());
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
     CHECK(position.halfmove_clock() == 0);
     CHECK(position.fullmove_number() == 1);
 }
@@ -53,8 +53,8 @@ TEST_CASE("Data.EPD.Parse.Positions.Position 3", "[EPD]") {
     CHECK(position.piece_placement() == placement_from_string("___QR_K__PP__PPPR__________N____pP__P_B__p____p__b_pppbpr__qr_k_"));
     CHECK(position.side_to_move() == Color::White);
     CHECK(position.castling_rights() == CastlingRights::none());
-    REQUIRE(position.en_passant_target().has_value());
-    CHECK(position.en_passant_target().value() == Square::A6);
+    REQUIRE(position.en_passant_target().valid());
+    CHECK(position.en_passant_target() == Square::A6);
     CHECK(position.halfmove_clock() == 0);
     CHECK(position.fullmove_number() == 1);
 }
@@ -66,7 +66,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Best Move", "[EPD]") {
     CHECK(position1.piece_placement() == placement_from_string("_____R_____R___K______P________P________pr_Pk_p____r____________"));
     CHECK(position1.side_to_move() == Color::White);
     CHECK(position1.castling_rights() == CastlingRights::none());
-    CHECK_FALSE(position1.en_passant_target().has_value());
+    CHECK_FALSE(position1.en_passant_target().valid());
     CHECK(position1.halfmove_clock() == 0);
     CHECK(position1.fullmove_number() == 1);
     CHECK(record1.bm == EpdRecord::move_list{"Re2+"});
@@ -78,7 +78,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Best Move", "[EPD]") {
     CHECK(position2.piece_placement() == placement_from_string("R____RK_PPP___PP_BN_B______QP____p______p__ppn____q_b_ppr_b__rk_"));
     CHECK(position2.side_to_move() == Color::White);
     CHECK(position1.castling_rights() == CastlingRights::none());
-    CHECK_FALSE(position2.en_passant_target().has_value());
+    CHECK_FALSE(position2.en_passant_target().valid());
     CHECK(position2.halfmove_clock() == 0);
     CHECK(position2.fullmove_number() == 1);
     CHECK(record2.bm == EpdRecord::move_list{"Nd5", "a4"});

@@ -277,7 +277,7 @@ auto Bitboard::all_pawn_moves(MoveList &moves, const PositionState &state) const
     extract_pawn_moves(pawns_step2, 2, state, moves);
 
     const auto captureable_pieces =
-        state.en_passant_target.has_value() ? bitmap(other_color(state.side_to_move)) | Bitmap{state.en_passant_target.value()} : bitmap(other_color(state.side_to_move));
+        state.en_passant_target.valid() ? bitmap(other_color(state.side_to_move)) | Bitmap{state.en_passant_target} : bitmap(other_color(state.side_to_move));
     const auto pawns_W = shift_left(pawns_advance1);
     const auto pawns_capture_W = pawns_W & captureable_pieces;
     extract_pawn_captures(pawns_capture_W, PawnCaptureDirection::West, state, moves);
@@ -452,15 +452,15 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
 auto Bitboard::store_move_if_legal(const Move &move, MoveList &moves) const -> void {
     Color color = move.piece.color();
     const auto king_square = move.piece.type() == PieceType::King ? move.to : find_king(color);
-    if (king_square.has_value()) {
-        if (would_be_attacked(king_square.value(), other_color(color), move)) {
+    if (king_square.valid()) {
+        if (would_be_attacked(king_square, other_color(color), move)) {
             return;
         }
     }
     moves.push_back(move);
 }
 
-auto Bitboard::find_king(Color color) const -> std::optional<Square> {
+auto Bitboard::find_king(Color color) const -> Square {
     const auto map = bitmap(Piece{PieceType::King, color});
     if (!map.empty()) {
         const auto shift = map.empty_squares_before();

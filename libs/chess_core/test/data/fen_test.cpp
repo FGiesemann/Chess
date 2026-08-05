@@ -33,7 +33,7 @@ TEST_CASE("Data.FEN.Read.Empty FEN string", "[FENString][Init]") {
     FenString empty_board{};
     CHECK(empty_board.str() == "8/8/8/8/8/8/8/8 w - - 0 1");
     CHECK(empty_board.side_to_move() == Color::White);
-    CHECK(empty_board.en_passant_square() == std::nullopt);
+    CHECK_FALSE(empty_board.en_passant_square().valid());
     CHECK(empty_board.halfmove_clock() == 0);
     CHECK(empty_board.fullmove_number() == 1);
 }
@@ -42,7 +42,7 @@ TEST_CASE("Data.FEN.Read.Starting position FEN string", "[FENString][Init]") {
     FenString starting_position{FenString::starting_position()};
     CHECK(starting_position.str() == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     CHECK(starting_position.side_to_move() == Color::White);
-    CHECK(starting_position.en_passant_square() == std::nullopt);
+    CHECK_FALSE(starting_position.en_passant_square().valid());
     CHECK(starting_position.halfmove_clock() == 0);
     CHECK(starting_position.fullmove_number() == 1);
 }
@@ -105,10 +105,8 @@ TEST_CASE("Data.FEN.Read.Castling availability", "[FENString][Validity]") {
 }
 
 TEST_CASE("Data.FEN.Read.En passant square", "[FENString][Validity]") {
-    CHECK(
-        detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Color::White, 51) == std::make_pair(std::optional<Square>{}, size_t{53})
-    );
-    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", Color::White, 20) == std::make_pair(std::optional<Square>{}, size_t{22}));
+    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Color::White, 51) == std::make_pair(Square::Invalid, size_t{53}));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", Color::White, 20) == std::make_pair(Square::Invalid, size_t{22}));
     CHECK(
         detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", Color::White, 51) ==
         std::make_pair(std::optional{Square::C6}, size_t{54})
@@ -167,14 +165,14 @@ TEST_CASE("Data.FEN.Read.Valid FEN strings", "[FENString][Validity]") {
     CHECK_NOTHROW(fen = FenString{"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"});
     CHECK(fen.side_to_move() == Color::Black);
     CHECK(fen.castling_rights() == CastlingRights::all());
-    CHECK_FALSE(fen.en_passant_square().has_value());
+    CHECK_FALSE(fen.en_passant_square().valid());
     CHECK(fen.halfmove_clock() == 1);
     CHECK(fen.fullmove_number() == 2);
 
     CHECK_NOTHROW(fen = FenString{"4k3/8/8/8/8/8/4P3/4K3 w - - 5 39"});
     CHECK(fen.side_to_move() == Color::White);
     CHECK(fen.castling_rights() == CastlingRights::none());
-    CHECK_FALSE(fen.en_passant_square().has_value());
+    CHECK_FALSE(fen.en_passant_square().valid());
     CHECK(fen.halfmove_clock() == 5);
     CHECK(fen.fullmove_number() == 39);
 }

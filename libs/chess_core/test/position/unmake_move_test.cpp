@@ -31,7 +31,7 @@ TEST_CASE("Position.UnmakeMove.SinglePawn", "[Position][UnmakeMove]") {
     CHECK(position.castling_rights()['Q']);
     CHECK(position.castling_rights()['k']);
     CHECK(position.castling_rights()['q']);
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
 }
 
 TEST_CASE("Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
@@ -49,7 +49,7 @@ TEST_CASE("Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
 
     CHECK(position.fullmove_number() == 9);
     CHECK(position.halfmove_clock() == 18);
-    CHECK(position.en_passant_target().value_or(Square::A1) == Square::B3);
+    CHECK(position.en_passant_target() == Square::B3);
     CHECK_FALSE(position.castling_rights()['K']);
     CHECK_FALSE(position.castling_rights()['Q']);
     CHECK_FALSE(position.castling_rights()['k']);
@@ -57,12 +57,12 @@ TEST_CASE("Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
     position.make_move(m);
     CHECK(position.fullmove_number() == 10);
     CHECK(position.halfmove_clock() == 0);
-    CHECK_FALSE(position.en_passant_target().has_value());
+    CHECK_FALSE(position.en_passant_target().valid());
 
     position.unmake_move(m);
     CHECK(position.fullmove_number() == 9);
     CHECK(position.halfmove_clock() == 18);
-    CHECK(position.en_passant_target().value_or(Square::A1) == Square::B3);
+    CHECK(position.en_passant_target() == Square::B3);
     CHECK_FALSE(position.castling_rights()['K']);
     CHECK_FALSE(position.castling_rights()['Q']);
     CHECK_FALSE(position.castling_rights()['k']);

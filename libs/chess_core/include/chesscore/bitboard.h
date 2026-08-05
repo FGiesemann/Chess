@@ -223,7 +223,7 @@ public:
      * \param color The color.
      * \return The square of the king, if found.
      */
-    [[nodiscard]] auto find_king(Color color) const -> std::optional<Square>;
+    [[nodiscard]] auto find_king(Color color) const -> Square;
 
     /**
      * \brief Check, if a square is under attack.
