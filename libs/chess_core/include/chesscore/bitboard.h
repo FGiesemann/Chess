@@ -87,7 +87,8 @@ public:
      * \brief Put a piece on the board.
      *
      * Places the given piece on the given square. If the square is already
-     * occupied, the new piece replaces the previous one.
+     * occupied, the new piece replaces the previous one. If the given piece is
+     * Piece::None (piece.is_piece() == false), the square is just cleared.
      * \param piece The piece to place.
      * \param square The square to place the piece on.
      */

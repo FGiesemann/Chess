@@ -12,7 +12,6 @@
 
 #include <array>
 #include <cstdint>
-#include <optional>
 #include <string>
 
 namespace chesscore {
@@ -176,6 +175,8 @@ public:
     /** \brief Get the character representation of the piece ignoring color. */
     [[nodiscard]] constexpr auto piece_char_colorless() const noexcept -> char { return "PNBRQK."[get_index(type())]; }
 
+    [[nodiscard]] constexpr auto is_piece() const noexcept -> bool { return m_piece != static_cast<std::uint8_t>(Value::None); }
+
     constexpr auto operator==(const Piece &) const noexcept -> bool = default;
 
     static const Piece None;
@@ -236,7 +237,7 @@ auto piece_from_fen_letter(char letter) noexcept -> Piece;
  * The 64 squares are put into the list one rank after the other, starting with
  * rank 0.
  */
-using PiecePlacement = std::array<std::optional<Piece>, Square::count>;
+using PiecePlacement = std::array<Piece, Square::count>;
 
 /**
  * \brief Generate a piece placement from a string.

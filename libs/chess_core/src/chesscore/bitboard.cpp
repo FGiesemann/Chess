@@ -64,9 +64,7 @@ Bitboard::Bitboard(const FenString &fen) {
     const auto &placements{fen.piece_placement()};
     for (auto square = Square::A1; square.valid(); ++square) {
         const auto piece{placements[square.index()]};
-        if (piece) {
-            set_piece(piece.value(), square);
-        }
+        set_piece(piece, square);
     }
 }
 
@@ -92,9 +90,11 @@ auto Bitboard::has_piece(const Square &square) const -> bool {
 
 auto Bitboard::set_piece(const Piece &piece, const Square &square) -> void {
     clear_square(square);
-    bitmap(piece).set(square);
-    m_all_pieces.set(square);
-    bitmap(piece.color()).set(square);
+    if (piece.is_piece()) {
+        bitmap(piece).set(square);
+        m_all_pieces.set(square);
+        bitmap(piece.color()).set(square);
+    }
 }
 
 auto Bitboard::get_piece(const Square &square) const -> std::optional<Piece> {

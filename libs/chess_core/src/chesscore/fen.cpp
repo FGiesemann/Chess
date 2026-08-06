@@ -252,14 +252,14 @@ auto placement_to_string(const PiecePlacement &placement) -> std::string {
     for (int row = Rank::count - 1; row >= 0; --row) {
         for (int column = 0; column < File::count; ++column) {
             auto index = static_cast<std::size_t>(row) * File::count + static_cast<std::size_t>(column);
-            if (!placement[index].has_value()) {
+            if (!placement[index].is_piece()) {
                 ++blank_count;
             } else {
                 if (blank_count > 0) {
                     result += std::to_string(blank_count);
                     blank_count = 0;
                 }
-                result += placement[index].value().piece_char();
+                result += placement[index].piece_char();
             }
         }
         if (blank_count > 0) {
