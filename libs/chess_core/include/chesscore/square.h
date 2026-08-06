@@ -14,7 +14,7 @@ namespace chesscore {
 
 namespace detail {
 
-constexpr auto charToLower(const char character) -> char {
+[[nodiscard]] constexpr auto charToLower(const char character) noexcept -> char {
     return (character >= 'A' && character <= 'Z') ? static_cast<char>(character + ('a' - 'A')) : character;
 }
 
@@ -36,7 +36,7 @@ struct File {
      * so 'A'..'H' are also valid.
      * \param in_file A character in the range a..h (case insensitive).
      */
-    constexpr File(char in_file) : file{static_cast<int>(detail::charToLower(in_file) - 'a')} {}
+    constexpr File(char in_file) noexcept : file{static_cast<int>(detail::charToLower(in_file) - 'a')} {}
 
     /**
      * \brief A file from its number.
@@ -44,7 +44,7 @@ struct File {
      * The file is specified as a number in the range 0..7.
      * \param in_file A number in the range 0..7.
      */
-    constexpr File(int in_file) : file{in_file} {}
+    constexpr File(int in_file) noexcept : file{in_file} {}
 
     int file; ///< The file number (0..7).
 
@@ -54,7 +54,7 @@ struct File {
      * The name of the file is a character in the range a..h.
      * \return The name of the file.
      */
-    [[nodiscard]] auto name() const -> char;
+    [[nodiscard]] constexpr auto name() const noexcept -> char { return static_cast<char>(file + 'a'); }
 
     /**
      * \brief Step to the right.
@@ -65,7 +65,7 @@ struct File {
      * \param steps Number of fields to step to the right.
      * \return The modified file.
      */
-    constexpr auto operator+=(int steps) -> File & {
+    constexpr auto operator+=(int steps) noexcept -> File & {
         file = (file + steps) % count;
         return *this;
     }
@@ -79,12 +79,14 @@ struct File {
      * @param rhs Right-hand side of the comparison.
      * @return Equality of the two files.
      */
-    friend auto operator==(const File &lhs, const File &rhs) -> bool { return lhs.file == rhs.file; }
+    [[nodiscard]] friend auto operator==(const File &lhs, const File &rhs) noexcept -> bool { return lhs.file == rhs.file; }
 };
 
-auto operator<(const File &lhs, const File &rhs) -> bool;
+[[nodiscard]] constexpr auto operator<(const File &lhs, const File &rhs) noexcept -> bool {
+    return lhs.file < rhs.file;
+}
 
-constexpr auto get_index(const File &file) -> int {
+[[nodiscard]] constexpr auto get_index(const File &file) noexcept -> int {
     return file.file;
 }
 
@@ -105,7 +107,7 @@ struct Rank {
      * The rank is a number in the range 0..7.
      * \param in_rank A number in the range 0..7.
      */
-    constexpr Rank(int in_rank) : rank{in_rank} {}
+    constexpr Rank(int in_rank) noexcept : rank{in_rank} {}
 
     int rank; ///< The rank number (0..7).
 
@@ -117,7 +119,7 @@ struct Rank {
      * \param steps Number of fields to step up.
      * \return The modified rank.
      */
-    constexpr auto operator+=(int steps) -> Rank & {
+    constexpr auto operator+=(int steps) noexcept -> Rank & {
         rank = (rank + steps) % count;
         return *this;
     }
@@ -131,12 +133,14 @@ struct Rank {
      * @param rhs Right-hand side of the comparison.
      * @return Equality of the two ranks.
      */
-    friend auto operator==(const Rank &lhs, const Rank &rhs) -> bool { return lhs.rank == rhs.rank; }
+    [[nodiscard]] friend auto operator==(const Rank &lhs, const Rank &rhs) noexcept -> bool { return lhs.rank == rhs.rank; }
 };
 
-auto operator<(const Rank &lhs, const Rank &rhs) -> bool;
+[[nodiscard]] constexpr auto operator<(const Rank &lhs, const Rank &rhs) noexcept -> bool {
+    return lhs.rank < rhs.rank;
+}
 
-constexpr auto get_index(const Rank &rank) -> int {
+[[nodiscard]] constexpr auto get_index(const Rank &rank) noexcept -> int {
     return rank.rank;
 }
 
@@ -154,14 +158,14 @@ public:
      * \param file The file (column) of the square.
      * \param rank The rank (row) of the square.
      */
-    constexpr Square(const File &file, const Rank &rank) : m_index{static_cast<std::uint8_t>((rank.rank << 3) | file.file)} {}
+    constexpr Square(const File &file, const Rank &rank) noexcept : m_index{static_cast<std::uint8_t>((rank.rank << 3) | file.file)} {}
 
     /**
      * \brief Default construtor.
      *
      * Creates an invalid square.
      */
-    constexpr Square() : Square(0, Rank::count) {}
+    constexpr Square() noexcept : Square(0, Rank::count) {}
 
     /**
      * \brief Mask to extract the file from the square index.
@@ -174,7 +178,7 @@ public:
      * The file (column) of the square.
      * \return The file.
      */
-    [[nodiscard]] constexpr auto file() const -> File { return File{m_index & file_mask}; }
+    [[nodiscard]] constexpr auto file() const noexcept -> File { return File{m_index & file_mask}; }
 
     /**
      * \brief Access the rank of the square.
@@ -182,7 +186,7 @@ public:
      * The rank (row) of the square.
      * \return The rank.
      */
-    [[nodiscard]] constexpr auto rank() const -> Rank { return Rank{m_index >> 3}; }
+    [[nodiscard]] constexpr auto rank() const noexcept -> Rank { return Rank{m_index >> 3}; }
 
     /**
      * \brief Gives a linear index for the square.
@@ -191,7 +195,7 @@ public:
      * H8 = 63.
      * \return Linear index of the square.
      */
-    [[nodiscard]] constexpr auto index() const -> std::uint8_t { return m_index; }
+    [[nodiscard]] constexpr auto index() const noexcept -> std::uint8_t { return m_index; }
 
     /**
      * \brief The number of squares on the board.
@@ -205,7 +209,7 @@ public:
      * 5). This allows to "switch the player/color".
      * \return The mirrored square.
      */
-    [[nodiscard]] auto mirrored() const -> Square { return Square{file(), Rank{Rank::count - rank().rank - 1}}; }
+    [[nodiscard]] auto mirrored() const noexcept -> Square { return Square{file(), Rank{Rank::count - rank().rank - 1}}; }
 
     /**
      * \brief Skip to the "next" square.
@@ -216,7 +220,7 @@ public:
      * \param squares The number of squares to skip.
      * \return The new Square.
      */
-    constexpr auto operator+=(int squares) -> Square & {
+    constexpr auto operator+=(int squares) noexcept -> Square & {
         m_index = static_cast<std::uint8_t>(m_index + squares);
         return *this;
     }
@@ -228,9 +232,9 @@ public:
      * checking is performed, steps can generate invalid squares!
      * \return Reference to this updated square.
      */
-    constexpr auto operator++() -> Square & { return *this += 1; }
+    constexpr auto operator++() noexcept -> Square & { return *this += 1; }
 
-    constexpr auto operator++(int) -> Square {
+    constexpr auto operator++(int) noexcept -> Square {
         Square old{*this};
         operator++();
         return old;
@@ -245,7 +249,7 @@ public:
      * \param squares The number of squares to skip.
      * \return The new Square.
      */
-    constexpr auto operator-=(int squares) -> Square & {
+    constexpr auto operator-=(int squares) noexcept -> Square & {
         m_index = static_cast<std::uint8_t>(static_cast<int>(m_index) - squares);
         return *this;
     }
@@ -258,7 +262,7 @@ public:
      * No range checking is performed, steps can generate invalid squares!
      * \return The new Square.
      */
-    constexpr auto operator--() -> Square & { return *this -= 1; }
+    constexpr auto operator--() noexcept -> Square & { return *this -= 1; }
 
     /**
      * \brief Skip back to the "previous" square.
@@ -268,7 +272,7 @@ public:
      * No range checking is performed, steps can generate invalid squares!
      * \return The new Square.
      */
-    constexpr auto operator--(int) -> Square {
+    constexpr auto operator--(int) noexcept -> Square {
         Square old{*this};
         operator--();
         return old;
@@ -280,7 +284,7 @@ public:
      * Valid squares are in the range A1 to H8.
      * \return If the square is valid.
      */
-    [[nodiscard]] constexpr auto valid() const -> bool { return m_index < count; }
+    [[nodiscard]] constexpr auto valid() const noexcept -> bool { return m_index < count; }
 
     /**
      * \brief Equality comparison for square positions.
@@ -291,7 +295,7 @@ public:
      * @param rhs Right-hand side of the comparison.
      * @return Equality of the two square positions.
      */
-    friend auto operator==(const Square &lhs, const Square &rhs) -> bool { return lhs.file() == rhs.file() && lhs.rank() == rhs.rank(); }
+    [[nodiscard]] friend auto operator==(const Square &lhs, const Square &rhs) noexcept -> bool { return lhs.file() == rhs.file() && lhs.rank() == rhs.rank(); }
 
     ///@{
     /**
@@ -366,12 +370,88 @@ public:
     static const Square H7; ///< The square H7.
     static const Square H8; ///< The square H8.
 
-    static const Square Invalid; ///< An invalid square.
+    static const Square None; ///< An invalid square.
     // NOLINTEND(readability-identifier-length)
     ///@}
 private:
     std::uint8_t m_index{count}; ///< The linear index of the square.
 };
+
+// NOLINTBEGIN(readability-identifier-length)
+inline constexpr Square Square::A1{File{'a'}, Rank{0}};
+inline constexpr Square Square::A2{File{'a'}, Rank{1}};
+inline constexpr Square Square::A3{File{'a'}, Rank{2}};
+inline constexpr Square Square::A4{File{'a'}, Rank{3}};
+inline constexpr Square Square::A5{File{'a'}, Rank{4}};
+inline constexpr Square Square::A6{File{'a'}, Rank{5}};
+inline constexpr Square Square::A7{File{'a'}, Rank{6}};
+inline constexpr Square Square::A8{File{'a'}, Rank{7}};
+
+inline constexpr Square Square::B1{File{'b'}, Rank{0}};
+inline constexpr Square Square::B2{File{'b'}, Rank{1}};
+inline constexpr Square Square::B3{File{'b'}, Rank{2}};
+inline constexpr Square Square::B4{File{'b'}, Rank{3}};
+inline constexpr Square Square::B5{File{'b'}, Rank{4}};
+inline constexpr Square Square::B6{File{'b'}, Rank{5}};
+inline constexpr Square Square::B7{File{'b'}, Rank{6}};
+inline constexpr Square Square::B8{File{'b'}, Rank{7}};
+
+inline constexpr Square Square::C1{File{'c'}, Rank{0}};
+inline constexpr Square Square::C2{File{'c'}, Rank{1}};
+inline constexpr Square Square::C3{File{'c'}, Rank{2}};
+inline constexpr Square Square::C4{File{'c'}, Rank{3}};
+inline constexpr Square Square::C5{File{'c'}, Rank{4}};
+inline constexpr Square Square::C6{File{'c'}, Rank{5}};
+inline constexpr Square Square::C7{File{'c'}, Rank{6}};
+inline constexpr Square Square::C8{File{'c'}, Rank{7}};
+
+inline constexpr Square Square::D1{File{'d'}, Rank{0}};
+inline constexpr Square Square::D2{File{'d'}, Rank{1}};
+inline constexpr Square Square::D3{File{'d'}, Rank{2}};
+inline constexpr Square Square::D4{File{'d'}, Rank{3}};
+inline constexpr Square Square::D5{File{'d'}, Rank{4}};
+inline constexpr Square Square::D6{File{'d'}, Rank{5}};
+inline constexpr Square Square::D7{File{'d'}, Rank{6}};
+inline constexpr Square Square::D8{File{'d'}, Rank{7}};
+
+inline constexpr Square Square::E1{File{'e'}, Rank{0}};
+inline constexpr Square Square::E2{File{'e'}, Rank{1}};
+inline constexpr Square Square::E3{File{'e'}, Rank{2}};
+inline constexpr Square Square::E4{File{'e'}, Rank{3}};
+inline constexpr Square Square::E5{File{'e'}, Rank{4}};
+inline constexpr Square Square::E6{File{'e'}, Rank{5}};
+inline constexpr Square Square::E7{File{'e'}, Rank{6}};
+inline constexpr Square Square::E8{File{'e'}, Rank{7}};
+
+inline constexpr Square Square::F1{File{'f'}, Rank{0}};
+inline constexpr Square Square::F2{File{'f'}, Rank{1}};
+inline constexpr Square Square::F3{File{'f'}, Rank{2}};
+inline constexpr Square Square::F4{File{'f'}, Rank{3}};
+inline constexpr Square Square::F5{File{'f'}, Rank{4}};
+inline constexpr Square Square::F6{File{'f'}, Rank{5}};
+inline constexpr Square Square::F7{File{'f'}, Rank{6}};
+inline constexpr Square Square::F8{File{'f'}, Rank{7}};
+
+inline constexpr Square Square::G1{File{'g'}, Rank{0}};
+inline constexpr Square Square::G2{File{'g'}, Rank{1}};
+inline constexpr Square Square::G3{File{'g'}, Rank{2}};
+inline constexpr Square Square::G4{File{'g'}, Rank{3}};
+inline constexpr Square Square::G5{File{'g'}, Rank{4}};
+inline constexpr Square Square::G6{File{'g'}, Rank{5}};
+inline constexpr Square Square::G7{File{'g'}, Rank{6}};
+inline constexpr Square Square::G8{File{'g'}, Rank{7}};
+
+inline constexpr Square Square::H1{File{'h'}, Rank{0}};
+inline constexpr Square Square::H2{File{'h'}, Rank{1}};
+inline constexpr Square Square::H3{File{'h'}, Rank{2}};
+inline constexpr Square Square::H4{File{'h'}, Rank{3}};
+inline constexpr Square Square::H5{File{'h'}, Rank{4}};
+inline constexpr Square Square::H6{File{'h'}, Rank{5}};
+inline constexpr Square Square::H7{File{'h'}, Rank{6}};
+inline constexpr Square Square::H8{File{'h'}, Rank{7}};
+
+inline constexpr Square Square::None{File{'a'}, Rank{8}};
+// NOLINTEND(readability-identifier-length)
 
 static_assert(sizeof(Square) == 1, "Square must be 1 byte");
 
@@ -383,7 +463,7 @@ static_assert(sizeof(Square) == 1, "Square must be 1 byte");
  * \param squares The number of squares to skip.
  * \return The new Square.
  */
-inline auto operator+(const Square &square, int squares) -> Square {
+[[nodiscard]] constexpr auto operator+(const Square &square, int squares) noexcept -> Square {
     Square result{square};
     result += squares;
     return result;
@@ -397,13 +477,15 @@ inline auto operator+(const Square &square, int squares) -> Square {
  * \param squares The number of squares to skip.
  * \return The new Square.
  */
-inline auto operator-(const Square &square, int squares) -> Square {
+[[nodiscard]] constexpr auto operator-(const Square &square, int squares) noexcept -> Square {
     Square result{square};
     result -= squares;
     return result;
 }
 
-auto to_string(const Square &square) -> std::string;
+[[nodiscard]] constexpr auto to_string(const Square &square) noexcept -> std::string {
+    return std::string{square.file().name()} + std::to_string(square.rank().rank + 1);
+}
 
 } // namespace chesscore
 

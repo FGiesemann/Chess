@@ -69,7 +69,7 @@ auto Position::updateEnPassant(const Move &move) -> void {
         if (m_state.en_passant_target.valid()) {
             m_hash.clear_enpassant(m_state.en_passant_target.file());
         }
-        m_state.en_passant_target = Square::Invalid;
+        m_state.en_passant_target = Square::None;
     }
 }
 
@@ -164,7 +164,7 @@ auto Position::resetEnPassant(const Move &move) -> void {
         m_state.en_passant_target = move.en_passant_target_before;
         m_hash.set_enpassant(m_state.en_passant_target.file());
     } else {
-        m_state.en_passant_target = Square::Invalid;
+        m_state.en_passant_target = Square::None;
     }
 }
 

@@ -121,7 +121,7 @@ struct PositionState {
     int fullmove_number{1};                                 ///< Number of the next move.
     int halfmove_clock{0};                                  ///< Half-move clock for the fifty-move rule.
     CastlingRights castling_rights{CastlingRights::none()}; ///< Castling rights.
-    Square en_passant_target{Square::Invalid};              ///< A possible en passant target square.
+    Square en_passant_target{Square::None};                 ///< A possible en passant target square.
 
     /**
      * \brief Comparison of two PositionStates.

@@ -199,7 +199,7 @@ auto check_en_passant_target_square(const std::string &fen_string, Color player_
         throw InvalidFen{"Unexpected end of FEN string"};
     }
     if (fen_string[pos] == '-') {
-        return std::make_pair(Square::Invalid, pos + 2);
+        return std::make_pair(Square::None, pos + 2);
     }
     const char file = fen_string[pos];
     if (file < 'a' || file > 'h') {

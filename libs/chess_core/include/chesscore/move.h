@@ -35,7 +35,7 @@ struct Move {
 
     CastlingRights castling_rights_before{CastlingRights::none()}; ///< Castling rights before the move.
     int halfmove_clock_before{};                                   ///< Halfmove clock before the move.
-    Square en_passant_target_before{Square::Invalid};              ///< En passant target square before the move.
+    Square en_passant_target_before{Square::None};                 ///< En passant target square before the move.
 
     /**
      * \brief If the move is a castling move.

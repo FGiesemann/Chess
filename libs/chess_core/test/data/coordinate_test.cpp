@@ -159,7 +159,7 @@ TEST_CASE("Data.Coords.Defined Squares", "[Square]") {
     CHECK(Square::H8.file().file == 7);
     CHECK(Square::H8.rank().rank == 7);
 
-    CHECK_FALSE(Square::Invalid.valid());
+    CHECK_FALSE(Square::None.valid());
 }
 
 TEST_CASE("Data.Coords.Square index", "[Square]") {

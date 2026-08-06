@@ -105,8 +105,8 @@ TEST_CASE("Data.FEN.Read.Castling availability", "[FENString][Validity]") {
 }
 
 TEST_CASE("Data.FEN.Read.En passant square", "[FENString][Validity]") {
-    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Color::White, 51) == std::make_pair(Square::Invalid, size_t{53}));
-    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", Color::White, 20) == std::make_pair(Square::Invalid, size_t{22}));
+    CHECK(detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Color::White, 51) == std::make_pair(Square::None, size_t{53}));
+    CHECK(detail::check_en_passant_target_square("8/8/8/8/8/8/8/8 w - - 0 1", Color::White, 20) == std::make_pair(Square::None, size_t{22}));
     CHECK(
         detail::check_en_passant_target_square("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq c6 0 1", Color::White, 51) ==
         std::make_pair(std::optional{Square::C6}, size_t{54})
