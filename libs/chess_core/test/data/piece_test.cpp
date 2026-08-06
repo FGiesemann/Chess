@@ -5,7 +5,6 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/chesscore.h"
 #include "chesscore/piece.h"
 
 using namespace chesscore;
@@ -17,7 +16,7 @@ TEST_CASE("Data.Piece.Type from Index", "[Piece]") {
     CHECK(piece_type_from_index(3) == PieceType::Rook);
     CHECK(piece_type_from_index(4) == PieceType::Queen);
     CHECK(piece_type_from_index(5) == PieceType::King);
-    CHECK_THROWS_AS(piece_type_from_index(6), ChessException);
+    CHECK(piece_type_from_index(6) == PieceType::None);
 }
 
 TEST_CASE("Data.Piece.Type from Char", "[Piece]") {
@@ -34,7 +33,7 @@ TEST_CASE("Data.Piece.Type from Char", "[Piece]") {
     CHECK(piece_type_from_char('Q') == PieceType::Queen);
     CHECK(piece_type_from_char('K') == PieceType::King);
     CHECK(piece_type_from_char('P') == PieceType::Pawn);
-    CHECK_THROWS_AS(piece_type_from_char('a'), ChessException);
+    CHECK(piece_type_from_char('a') == PieceType::None);
 }
 
 TEST_CASE("Data.Piece.Letter", "[Piece]") {

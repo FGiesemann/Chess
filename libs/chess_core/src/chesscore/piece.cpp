@@ -30,14 +30,7 @@ auto to_string(PieceType type) -> std::string {
     throw ChessException("Invalid piece type");
 }
 
-auto piece_type_from_index(std::size_t index) -> PieceType {
-    if (index < piece_type_count) {
-        return static_cast<PieceType>(index);
-    }
-    throw ChessException("Invalid piece type index: " + std::to_string(index));
-}
-
-auto piece_type_from_char(char letter) -> PieceType {
+auto piece_type_from_char(char letter) noexcept -> PieceType {
     switch (std::tolower(letter)) {
     case 'r':
         return PieceType::Rook;
@@ -52,22 +45,20 @@ auto piece_type_from_char(char letter) -> PieceType {
     case 'p':
         return PieceType::Pawn;
     default:
-        throw ChessException("Invalid piece type: " + std::string{letter});
+        return PieceType::None;
     }
 }
 
-auto to_string(Piece piece) -> std::string {
+auto to_string(Piece piece) noexcept -> std::string {
     return std::string{piece.piece_char()};
 }
 
-auto piece_from_fen_letter(char letter) -> Piece {
-    if (std::isupper(letter) != 0) {
-        return Piece{piece_type_from_char(letter), Color::White};
-    }
-    return Piece{piece_type_from_char(letter), Color::Black};
+auto piece_from_fen_letter(char letter) noexcept -> Piece {
+    const auto color = std::isupper(letter) != 0 ? Color::White : Color::Black;
+    return Piece{piece_type_from_char(letter), color};
 }
 
-auto to_string(Color color) -> std::string {
+auto to_string(Color color) noexcept -> std::string {
     return color == Color::White ? "White" : "Black";
 }
 

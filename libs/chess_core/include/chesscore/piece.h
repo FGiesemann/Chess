@@ -67,7 +67,9 @@ constexpr std::array<PieceType, 4> all_promotion_piece_types{PieceType::Rook, Pi
  * \param index The index.
  * \return Piece type corresponding to the index.
  */
-auto piece_type_from_index(std::size_t index) -> PieceType;
+constexpr auto piece_type_from_index(std::size_t index) noexcept -> PieceType {
+    return static_cast<PieceType>(index);
+}
 
 /**
  * \brief Converts a character to a piece type.
@@ -79,7 +81,7 @@ auto piece_type_from_index(std::size_t index) -> PieceType;
  * \return The piece type correspinding to the letter.
  * \throws ChessException If the letter does not signify a valid piece type.
  */
-auto piece_type_from_char(char letter) -> PieceType;
+auto piece_type_from_char(char letter) noexcept -> PieceType;
 
 /**
  * \brief Color of a piece or player.
@@ -90,7 +92,7 @@ enum class Color : std::int8_t {
     None = 2,
 };
 
-auto to_string(Color color) -> std::string;
+auto to_string(Color color) noexcept -> std::string;
 
 /**
  * \brief Swap a color.
@@ -99,7 +101,7 @@ auto to_string(Color color) -> std::string;
  * \param color The color to switch.
  * \return The switched color.
  */
-constexpr auto other_color(Color color) -> Color {
+constexpr auto other_color(Color color) noexcept -> Color {
     return color == Color::White ? Color::Black : Color::White;
 }
 
@@ -114,25 +116,26 @@ private:
      * \brief Single-byte values for pieces.
      */
     enum class Value : std::uint8_t {
-        WhitePawn = 0,   //< Value for a white pawn.
-        WhiteKnight = 1, //< Value for a white knight.
-        WhiteBishop = 2, //< Value for a white bishop.
-        WhiteRook = 3,   //< Value for a white rook.
-        WhiteQueen = 4,  //< Value for a white queen.
-        WhiteKing = 5,   //< Value for a white king.
+        WhitePawn = 0,   ///< Value for a white pawn.
+        WhiteKnight = 1, ///< Value for a white knight.
+        WhiteBishop = 2, ///< Value for a white bishop.
+        WhiteRook = 3,   ///< Value for a white rook.
+        WhiteQueen = 4,  ///< Value for a white queen.
+        WhiteKing = 5,   ///< Value for a white king.
 
-        BlackPawn = 8,    //< Value for a black pawn.
-        BlackKnight = 9,  //< Value for a black knight.
-        BlackBishop = 10, //< Value for a black bishop.
-        BlackRook = 11,   //< Value for a black rook.
-        BlackQueen = 12,  //< Value for a black queen.
-        BlackKing = 13,   //< Value for a black king.
+        BlackPawn = 8,    ///< Value for a black pawn.
+        BlackKnight = 9,  ///< Value for a black knight.
+        BlackBishop = 10, ///< Value for a black bishop.
+        BlackRook = 11,   ///< Value for a black rook.
+        BlackQueen = 12,  ///< Value for a black queen.
+        BlackKing = 13,   ///< Value for a black king.
 
-        None = 14, //< Sentinal value for no piece.
+        None = 14, ///< Sentinal value for no piece.
     };
-    std::uint8_t m_piece{static_cast<std::int8_t>(Value::None)}; //< The value of the piece.
-    static constexpr std::uint8_t type_mask = 0x07;              //< Mask to extract the piece type from the value.
-    static constexpr std::uint8_t color_shift = 3;               //< Shift to extract the color from the value.
+    std::uint8_t m_piece{static_cast<std::int8_t>(Value::None)}; ///< The value of the piece.
+
+    static constexpr std::uint8_t type_mask = 0x07; ///< Mask to extract the piece type from the value.
+    static constexpr std::uint8_t color_shift = 3;  ///< Shift to extract the color from the value.
 
     /**
      * \brief Construct a piece with a value.
@@ -152,7 +155,7 @@ public:
      * \param type The type of the piece.
      * \param color The color of the piece.
      */
-    Piece(PieceType type, Color color) noexcept : m_piece{static_cast<std::uint8_t>(static_cast<std::uint8_t>(type) | static_cast<std::uint8_t>(color) << color_shift)} {}
+    Piece(PieceType type, Color color) noexcept : m_piece{static_cast<std::uint8_t>(static_cast<std::uint8_t>(type) | (static_cast<std::uint8_t>(color) << color_shift))} {}
 
     /** \brief Get the type of the piece. */
     [[nodiscard]] constexpr auto type() const noexcept -> PieceType { return static_cast<PieceType>(m_piece & type_mask); }
@@ -169,7 +172,7 @@ public:
     [[nodiscard]] constexpr auto dense_index() const noexcept -> std::uint8_t { return static_cast<std::uint8_t>(m_piece - (color() == Color::Black ? 2 : 0)); }
 
     /** \brief Get the character representation of the piece. */
-    [[nodiscard]] constexpr auto piece_char() const noexcept -> char { return "PNBRQKpnbrqk"[dense_index()]; }
+    [[nodiscard]] constexpr auto piece_char() const noexcept -> char { return "PNBRQKpnbrqk."[dense_index()]; }
     /** \brief Get the character representation of the piece ignoring color. */
     [[nodiscard]] constexpr auto piece_char_colorless() const noexcept -> char { return "PNBRQK."[get_index(type())]; }
 
@@ -212,7 +215,7 @@ inline constexpr Piece Piece::BlackKing{Piece::Value::BlackKing};
  * \param piece The piece.
  * \return A string representation of the piece.
  */
-auto to_string(Piece piece) -> std::string;
+auto to_string(Piece piece) noexcept -> std::string;
 
 /**
  * \brief Converts a character to a piece.
@@ -224,7 +227,7 @@ auto to_string(Piece piece) -> std::string;
  * \return Piece Corresponding piece.
  * \throws ChessException If the letter does not signify a valid piece.
  */
-auto piece_from_fen_letter(char letter) -> Piece;
+auto piece_from_fen_letter(char letter) noexcept -> Piece;
 
 /**
  * \brief A description of pieces on a chess board.
