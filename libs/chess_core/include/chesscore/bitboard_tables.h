@@ -361,7 +361,7 @@ extern const TargetTable southwest_ray_target_table;
 extern const TargetTable west_ray_target_table;
 extern const TargetTable northwest_ray_target_table;
 
-inline auto get_target_table(const PieceType &piece_type) -> const TargetTable & {
+constexpr auto get_target_table(PieceType piece_type) -> const TargetTable & {
     std::array<const TargetTable *, piece_type_count - 1> target_tables{&knight_target_table, &bishop_target_table, &rook_target_table, &queen_target_table, &king_target_table};
     return *target_tables.at(get_index(piece_type) - 1);
 }

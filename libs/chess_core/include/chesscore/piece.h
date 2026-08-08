@@ -50,7 +50,7 @@ auto to_string(PieceType type) -> std::string;
  * \param type The piece type.
  * \return The numerix index of the piece type.
  */
-constexpr auto get_index(const PieceType &type) -> std::size_t {
+constexpr auto get_index(PieceType type) -> std::size_t {
     return static_cast<std::size_t>(type);
 }
 

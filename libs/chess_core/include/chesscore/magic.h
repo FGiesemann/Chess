@@ -24,7 +24,7 @@ namespace chesscore {
  * \param shift The shift.
  * \return The index.
  */
-inline auto magic_index(const Bitmap &blockers, std::uint64_t magic_number, std::uint8_t shift) -> std::uint64_t {
+inline auto magic_index(Bitmap blockers, std::uint64_t magic_number, std::uint8_t shift) -> std::uint64_t {
     return blockers.bits() * magic_number >> shift;
 }
 
@@ -38,7 +38,7 @@ inline auto magic_index(const Bitmap &blockers, std::uint64_t magic_number, std:
  * \param square The starting square of the sliding piece.
  * \return The block mask for the piece.
  */
-[[nodiscard]] auto blocker_mask(PieceType piece_type, const Square &square) -> Bitmap;
+[[nodiscard]] auto blocker_mask(PieceType piece_type, Square square) -> Bitmap;
 
 /**
  * \brief The number of possible blocker configurations.
@@ -72,7 +72,7 @@ inline auto magic_index(const Bitmap &blockers, std::uint64_t magic_number, std:
  * \param blocker_config The configuration of blockers on the board.
  * \return The attack bitmap for the sliding piece and the blocker configuration.
  */
-[[nodiscard]] auto attack_bitmap(PieceType piece_type, const Square &square, Bitmap blocker_config) -> Bitmap;
+[[nodiscard]] auto attack_bitmap(PieceType piece_type, Square square, Bitmap blocker_config) -> Bitmap;
 
 /**
  * \brief Magic parameters for a sliding piece.
@@ -154,7 +154,7 @@ public:
      * \param position The position.
      * \return The attack map.
      */
-    [[nodiscard]] auto attacks(const Square &square, const Position &position) const -> const Bitmap & { return attacks(square, position.board()); }
+    [[nodiscard]] auto attacks(Square square, const Position &position) const -> const Bitmap & { return attacks(square, position.board()); }
 
     /**
      * \brief Get the attack map.
@@ -164,7 +164,7 @@ public:
      * \param bitboard The bitboard.
      * \return The attack map.
      */
-    [[nodiscard]] auto attacks(const Square &square, const Bitboard &bitboard) const -> const Bitmap & {
+    [[nodiscard]] auto attacks(Square square, const Bitboard &bitboard) const -> const Bitmap & {
         const auto &magic = magics()[square];
         return m_attack_maps[magic.offset + magic_index(bitboard.occupancy() & magic.blocker_mask, magic.magic_number, magic.shift)];
     }
@@ -183,7 +183,7 @@ private:
      * \param square The square.
      * \param offset The offset in the list of attack maps.
      */
-    auto fill_table(const Magics &magics, const Square &square, std::uint32_t offset) -> void;
+    auto fill_table(const Magics &magics, Square square, std::uint32_t offset) -> void;
 };
 
 } // namespace chesscore

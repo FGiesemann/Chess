@@ -13,9 +13,9 @@
 
 namespace chesscore {
 
-auto operator<<(std::ostream &os, const File &file) -> std::ostream &;
-auto operator<<(std::ostream &os, const Rank &rank) -> std::ostream &;
-auto operator<<(std::ostream &, const Square &square) -> std::ostream &;
+auto operator<<(std::ostream &os, File file) -> std::ostream &;
+auto operator<<(std::ostream &os, Rank rank) -> std::ostream &;
+auto operator<<(std::ostream &os, Square square) -> std::ostream &;
 
 } // namespace chesscore
 

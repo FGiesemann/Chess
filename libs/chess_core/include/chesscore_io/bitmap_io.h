@@ -13,10 +13,10 @@
 
 namespace chesscore {
 
-auto operator<<(std::ostream &os, const Bitmap &bitmap) -> std::ostream &;
-auto as_grouped_hex(const Bitmap &bitmap) -> std::string;
-auto as_ull_hex(const Bitmap &bitmap) -> std::string;
-auto as_grouped_bits(const Bitmap &bitmap) -> std::string;
+auto operator<<(std::ostream &os, Bitmap bitmap) -> std::ostream &;
+auto as_grouped_hex(Bitmap bitmap) -> std::string;
+auto as_ull_hex(Bitmap bitmap) -> std::string;
+auto as_grouped_bits(Bitmap bitmap) -> std::string;
 
 } // namespace chesscore
 

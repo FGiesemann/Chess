@@ -53,7 +53,7 @@ public:
      * \param piece_type The piece type.
      * \return If there is a piece of the given type on the board.
      */
-    [[nodiscard]] auto has_piece(const PieceType &piece_type) const -> bool;
+    [[nodiscard]] auto has_piece(PieceType piece_type) const -> bool;
 
     /**
      * \brief Check if the bitboard has a piece of a certain color.
@@ -63,7 +63,7 @@ public:
      * \param piece The piece to check.
      * \return If there is a piece of the given color on the board.
      */
-    [[nodiscard]] auto has_piece(const Piece &piece) const -> bool;
+    [[nodiscard]] auto has_piece(Piece piece) const -> bool;
 
     /**
      * \brief Check if the bitboard has a piece of a certain color.
@@ -81,7 +81,7 @@ public:
      * \param square The square to check.
      * \return If there is a piece on the given square.
      */
-    [[nodiscard]] auto has_piece(const Square &square) const -> bool;
+    [[nodiscard]] auto has_piece(Square square) const -> bool;
 
     /**
      * \brief Put a piece on the board.
@@ -92,7 +92,7 @@ public:
      * \param piece The piece to place.
      * \param square The square to place the piece on.
      */
-    auto set_piece(const Piece &piece, const Square &square) -> void;
+    auto set_piece(Piece piece, Square square) -> void;
 
     /**
      * \brief Get the piece on the given square.
@@ -102,7 +102,7 @@ public:
      * \param square The square to get the piece from.
      * \return The piece on the square or an empty optional.
      */
-    [[nodiscard]] auto get_piece(const Square &square) const -> std::optional<Piece>;
+    [[nodiscard]] auto get_piece(Square square) const -> std::optional<Piece>;
 
     /**
      * \brief Remove a piece from the board.
@@ -111,7 +111,7 @@ public:
      * square, nothing happens.
      * \param square The square to clear.
      */
-    auto clear_square(const Square &square) -> void;
+    auto clear_square(Square square) -> void;
 
     /**
      * \brief Count the number of pieces of a certain type.
@@ -202,7 +202,7 @@ public:
      * \param moves The list, where the generated moves are added.
      * \param state State of the current position.
      */
-    auto all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void;
+    auto all_sliding_moves(Piece moving_piece, Square start, MoveList &moves, const PositionState &state) const -> void;
 
     /**
      * \brief Generate all pawn moves for a player.
@@ -234,7 +234,7 @@ public:
      * \param attacker_color Color of the attacker.
      * \return If the square is under attack.
      */
-    [[nodiscard]] auto is_attacked(const Square &square, Color attacker_color) const -> bool;
+    [[nodiscard]] auto is_attacked(Square square, Color attacker_color) const -> bool;
 
     /**
      * \brief Check, if a square would be under attack after a move.
@@ -246,7 +246,7 @@ public:
      * \param move The move to apply before the check.
      * \return If the square would be under attack after the move.
      */
-    [[nodiscard]] auto would_be_attacked(const Square &square, Color attacker_color, const Move &move) const -> bool;
+    [[nodiscard]] auto would_be_attacked(Square square, Color attacker_color, const Move &move) const -> bool;
 
     /**
      * \brief Checks, if a square is attacked by a pawn.
@@ -255,7 +255,7 @@ public:
      * \param pawn_color Color of the attacking pawn.
      * \return If the square is attacked by a pawn.
      */
-    [[nodiscard]] auto pawn_attacks(const Square &square, Color pawn_color) const -> bool;
+    [[nodiscard]] auto pawn_attacks(Square square, Color pawn_color) const -> bool;
 
     /**
      * \brief Checks, if a square is attacked by a knight.
@@ -264,7 +264,7 @@ public:
      * \param knight_color Color of the attacking knight.
      * \return If the square is attacked by a knight.
      */
-    [[nodiscard]] auto knight_attacks(const Square &square, Color knight_color) const -> bool;
+    [[nodiscard]] auto knight_attacks(Square square, Color knight_color) const -> bool;
 
     /**
      * \brief Checks, if a square is attacked by a king.
@@ -273,7 +273,7 @@ public:
      * \param king_color Color of the attacking king.
      * \return If the square is attacked by a king.
      */
-    [[nodiscard]] auto king_attacks(const Square &square, Color king_color) const -> bool;
+    [[nodiscard]] auto king_attacks(Square square, Color king_color) const -> bool;
 
     /**
      * \brief Checks, if a square is attacked by a sliding piece.
@@ -282,7 +282,7 @@ public:
      * \param attacker_color Color of the attacking sliding piece.
      * \return If the square is attacked by a sliding piece.
      */
-    [[nodiscard]] auto sliding_piece_attacks(const Square &square, Color attacker_color) const -> bool;
+    [[nodiscard]] auto sliding_piece_attacks(Square square, Color attacker_color) const -> bool;
 
     /**
      * \brief Comparison of two Bitboards.
@@ -308,28 +308,28 @@ private:
 
     enum class PawnCaptureDirection { West, East };
 
-    static auto bitmap_index(const Piece &piece) -> size_t { return piece.dense_index(); }
+    static auto bitmap_index(Piece piece) -> size_t { return piece.dense_index(); }
 
-    [[nodiscard]] auto bitmap(const Piece &piece) const -> const Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
-    auto bitmap(const Piece &piece) -> Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
+    [[nodiscard]] auto bitmap(Piece piece) const -> const Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
+    auto bitmap(Piece piece) -> Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
     [[nodiscard]] auto bitmap(const Color &color) const -> const Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
     auto bitmap(const Color &color) -> Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
 
     void move_castling_rook(const Move &move);
     void reset_castling_rook(const Move &move);
 
-    [[nodiscard]] auto remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap;
+    [[nodiscard]] auto remove_occupied_squares(Bitmap bitmap) const -> Bitmap;
 
     auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
     auto sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
-    [[nodiscard]] auto get_attack_map(const Piece &piece, const Square &start) const -> Bitmap;
+    [[nodiscard]] auto get_attack_map(Piece piece, Square start) const -> Bitmap;
 
-    auto extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void;
+    auto extract_moves(Bitmap targets, Square from, Piece piece, const PositionState &state, MoveList &moves) const -> void;
     auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) const -> void;
     auto extract_pawn_captures(Bitmap targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void;
-    auto generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void;
+    auto generate_pawn_moves(Square source, Square target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void;
     auto generate_pawn_move(
-        const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
+        Square source, Square target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
     ) const -> void;
     auto generate_castling_moves(MoveList &moves, const PositionState &state) const -> void;
 

@@ -30,11 +30,11 @@ auto operator<<(std::ostream &os, PieceType type) -> std::ostream & {
     return os << "<invalid piece type>";
 }
 
-auto operator<<(std::ostream &os, const Piece &piece) -> std::ostream & {
+auto operator<<(std::ostream &os, Piece piece) -> std::ostream & {
     return os << piece.piece_char();
 }
 
-auto symbolic_name(const Piece &piece) -> std::string {
+auto symbolic_name(Piece piece) -> std::string {
     return color_name(piece.color()) + symbolic_type_name(piece.type());
 }
 

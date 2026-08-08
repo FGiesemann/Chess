@@ -8,7 +8,7 @@
 
 namespace chesscore {
 
-auto blocker_mask(PieceType piece_type, const Square &square) -> Bitmap {
+auto blocker_mask(PieceType piece_type, Square square) -> Bitmap {
     if (piece_type == PieceType::Bishop) {
         return bitmaps::bishop_target_table[square] & ~bitmaps::board_border;
     }
@@ -28,7 +28,7 @@ auto next_blocker_config(Bitmap blockers, Bitmap mask) -> Bitmap {
     return Bitmap{blockers.bits() - mask.bits()} & mask;
 }
 
-auto attack_bitmap(PieceType piece_type, const Square &square, Bitmap blocker_config) -> Bitmap {
+auto attack_bitmap(PieceType piece_type, Square square, Bitmap blocker_config) -> Bitmap {
     if (piece_type != PieceType::Rook && piece_type != PieceType::Bishop) {
         return Bitmap{};
     }
@@ -71,7 +71,7 @@ auto MagicBitboard::init() -> void {
     }
 }
 
-auto MagicBitboard::fill_table(const Magics &magics, const Square &square, std::uint32_t offset) -> void {
+auto MagicBitboard::fill_table(const Magics &magics, Square square, std::uint32_t offset) -> void {
     chesscore::Bitmap blockers{};
     do { // NOLINT(cppcoreguidelines-avoid-do-while)
         const auto index = magic_index(blockers, magics.magic_number, magics.shift);

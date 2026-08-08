@@ -41,7 +41,7 @@ auto is_moving_same_piece(const Move &move1, const Move &move2) -> bool {
            move1.capturing_en_passant == move2.capturing_en_passant;
 }
 
-auto is_moving_same_piece_and_promotes(const Move &move1, const Move &move2, const Piece &promoted) -> bool {
+auto is_moving_same_piece_and_promotes(const Move &move1, const Move &move2, Piece promoted) -> bool {
     return is_moving_same_piece(move1, move2) && move1.promoted == promoted;
 }
 

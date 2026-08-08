@@ -79,14 +79,14 @@ struct File {
      * @param rhs Right-hand side of the comparison.
      * @return Equality of the two files.
      */
-    [[nodiscard]] friend auto operator==(const File &lhs, const File &rhs) noexcept -> bool { return lhs.file == rhs.file; }
+    [[nodiscard]] friend auto operator==(File lhs, File rhs) noexcept -> bool { return lhs.file == rhs.file; }
 };
 
-[[nodiscard]] constexpr auto operator<(const File &lhs, const File &rhs) noexcept -> bool {
+[[nodiscard]] constexpr auto operator<(File lhs, File rhs) noexcept -> bool {
     return lhs.file < rhs.file;
 }
 
-[[nodiscard]] constexpr auto get_index(const File &file) noexcept -> int {
+[[nodiscard]] constexpr auto get_index(File file) noexcept -> int {
     return file.file;
 }
 
@@ -133,14 +133,14 @@ struct Rank {
      * @param rhs Right-hand side of the comparison.
      * @return Equality of the two ranks.
      */
-    [[nodiscard]] friend auto operator==(const Rank &lhs, const Rank &rhs) noexcept -> bool { return lhs.rank == rhs.rank; }
+    [[nodiscard]] friend auto operator==(Rank lhs, Rank rhs) noexcept -> bool { return lhs.rank == rhs.rank; }
 };
 
-[[nodiscard]] constexpr auto operator<(const Rank &lhs, const Rank &rhs) noexcept -> bool {
+[[nodiscard]] constexpr auto operator<(Rank lhs, Rank rhs) noexcept -> bool {
     return lhs.rank < rhs.rank;
 }
 
-[[nodiscard]] constexpr auto get_index(const Rank &rank) noexcept -> int {
+[[nodiscard]] constexpr auto get_index(Rank rank) noexcept -> int {
     return rank.rank;
 }
 
@@ -158,7 +158,7 @@ public:
      * \param file The file (column) of the square.
      * \param rank The rank (row) of the square.
      */
-    constexpr Square(const File &file, const Rank &rank) noexcept : m_index{static_cast<std::uint8_t>((rank.rank << 3) | file.file)} {}
+    constexpr Square(File file, Rank rank) noexcept : m_index{static_cast<std::uint8_t>((rank.rank << 3) | file.file)} {}
 
     /**
      * \brief Default construtor.
@@ -295,7 +295,7 @@ public:
      * @param rhs Right-hand side of the comparison.
      * @return Equality of the two square positions.
      */
-    [[nodiscard]] friend auto operator==(const Square &lhs, const Square &rhs) noexcept -> bool { return lhs.file() == rhs.file() && lhs.rank() == rhs.rank(); }
+    [[nodiscard]] friend auto operator==(Square lhs, Square rhs) noexcept -> bool { return lhs.file() == rhs.file() && lhs.rank() == rhs.rank(); }
 
     ///@{
     /**
@@ -463,7 +463,7 @@ static_assert(sizeof(Square) == 1, "Square must be 1 byte");
  * \param squares The number of squares to skip.
  * \return The new Square.
  */
-[[nodiscard]] constexpr auto operator+(const Square &square, int squares) noexcept -> Square {
+[[nodiscard]] constexpr auto operator+(Square square, int squares) noexcept -> Square {
     Square result{square};
     result += squares;
     return result;
@@ -477,13 +477,13 @@ static_assert(sizeof(Square) == 1, "Square must be 1 byte");
  * \param squares The number of squares to skip.
  * \return The new Square.
  */
-[[nodiscard]] constexpr auto operator-(const Square &square, int squares) noexcept -> Square {
+[[nodiscard]] constexpr auto operator-(Square square, int squares) noexcept -> Square {
     Square result{square};
     result -= squares;
     return result;
 }
 
-[[nodiscard]] constexpr auto to_string(const Square &square) noexcept -> std::string {
+[[nodiscard]] constexpr auto to_string(Square square) noexcept -> std::string {
     return std::string{square.file().name()} + std::to_string(square.rank().rank + 1);
 }
 

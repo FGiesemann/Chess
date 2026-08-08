@@ -100,7 +100,7 @@ auto is_moving_same_piece(const Move &move1, const Move &move2) -> bool;
  * \param promoted The promoted piece.
  * \return If the moves are equal according to the criteria above.
  */
-auto is_moving_same_piece_and_promotes(const Move &move1, const Move &move2, const Piece &promoted) -> bool;
+auto is_moving_same_piece_and_promotes(const Move &move1, const Move &move2, Piece promoted) -> bool;
 
 /**
  * \brief Function object to compare moves.
@@ -139,7 +139,7 @@ struct PromotionMoveCompare {
      *
      * \param promoted_piece The promoted piece.
      */
-    PromotionMoveCompare(const Piece &promoted_piece) : promoted{promoted_piece} {}
+    PromotionMoveCompare(Piece promoted_piece) : promoted{promoted_piece} {}
 
     /**
      * \brief Comparison of two moves.

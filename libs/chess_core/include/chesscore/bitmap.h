@@ -35,7 +35,7 @@ public:
      * square.
      * \param square The square whose corresponding bit will be set.
      */
-    explicit constexpr Bitmap(const Square &square) { set(square); }
+    explicit constexpr Bitmap(Square square) { set(square); }
 
     /**
      * \brief Create a bit map with a given pattern.
@@ -60,7 +60,7 @@ public:
      * \param square The position to query.
      * \return If the bit at the given position is set.
      */
-    [[nodiscard]] constexpr auto get(const Square &square) const -> bool { return (m_bits & bit_mask(square.index())) != 0U; }
+    [[nodiscard]] constexpr auto get(Square square) const -> bool { return (m_bits & bit_mask(square.index())) != 0U; }
 
     /**
      * \brief Set a bit in the bit map.
@@ -68,7 +68,7 @@ public:
      * Set the bit at the position specified by the square.
      * \param square The position to set.
      */
-    constexpr auto set(const Square &square) -> void { m_bits |= bit_mask(square.index()); }
+    constexpr auto set(Square square) -> void { m_bits |= bit_mask(square.index()); }
 
     /**
      * \brief Clear a bit in the bit map.
@@ -76,7 +76,7 @@ public:
      * Sets the bit at the position specified by the square to 0.
      * \param square The Position to clear.
      */
-    constexpr auto clear(const Square &square) -> void { m_bits &= ~bit_mask(square.index()); }
+    constexpr auto clear(Square square) -> void { m_bits &= ~bit_mask(square.index()); }
 
     /**
      * \brief Toggle a bit in the bit map.
@@ -84,7 +84,7 @@ public:
      * Switches the bit at the given position from 0 to 1 and vice versa.
      * \param square The position to toggle.
      */
-    constexpr auto toggle(const Square &square) -> void { m_bits ^= bit_mask(square.index()); }
+    constexpr auto toggle(Square square) -> void { m_bits ^= bit_mask(square.index()); }
 
     /**
      * \brief Count the number of occupied squares.
@@ -98,7 +98,7 @@ public:
      *
      * Bitmaps are equal if they have the same bits set.
      */
-    friend constexpr auto operator==(const Bitmap &lhs, const Bitmap &rhs) -> bool { return lhs.m_bits == rhs.m_bits; }
+    friend constexpr auto operator==(Bitmap lhs, Bitmap rhs) -> bool { return lhs.m_bits == rhs.m_bits; }
 
     /**
      * \brief Bitwise and assignment.
@@ -108,7 +108,7 @@ public:
      * \param rhs The other bitmap.
      * \return The modified bitmap.
      */
-    constexpr auto operator&=(const Bitmap &rhs) -> Bitmap & {
+    constexpr auto operator&=(Bitmap rhs) -> Bitmap & {
         m_bits &= rhs.m_bits;
         return *this;
     }
@@ -121,7 +121,7 @@ public:
      * \param rhs The other bitmap.
      * \return The modified bitmap.
      */
-    constexpr auto operator|=(const Bitmap &rhs) -> Bitmap & {
+    constexpr auto operator|=(Bitmap rhs) -> Bitmap & {
         m_bits |= rhs.m_bits;
         return *this;
     }
@@ -134,7 +134,7 @@ public:
      * \param rhs The other bitmap.
      * \return The modified bitmap.
      */
-    constexpr auto operator^=(const Bitmap &rhs) -> Bitmap & {
+    constexpr auto operator^=(Bitmap rhs) -> Bitmap & {
         m_bits ^= rhs.m_bits;
         return *this;
     }
@@ -209,13 +209,15 @@ private:
     static constexpr auto bit_mask(size_t index) -> std::uint64_t { return 1ULL << index; }
 };
 
+static_assert(sizeof(Bitmap) == 8, "Bitmap must be 8 bytes");
+
 /**
  * \brief Bitwise or combination of bitmaps.
  *
  * Generates a new bitmap with a bit set if at least one of the corresponding
  * bits in the two bitmaps is set.
  */
-constexpr auto operator|(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
+constexpr auto operator|(Bitmap lhs, Bitmap rhs) -> Bitmap {
     Bitmap result{lhs};
     result |= rhs;
     return result;
@@ -227,7 +229,7 @@ constexpr auto operator|(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
  * Generates a new bitmap with a bit set if both the corresponding bits in the
  * two bitmaps are set.
  */
-constexpr auto operator&(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
+constexpr auto operator&(Bitmap lhs, Bitmap rhs) -> Bitmap {
     Bitmap result{lhs};
     result &= rhs;
     return result;
@@ -239,7 +241,7 @@ constexpr auto operator&(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
  * Generates a new bitmap with a bit set if the corresponding bits in the two
  * bitmaps are different.
  */
-constexpr auto operator^(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
+constexpr auto operator^(Bitmap lhs, Bitmap rhs) -> Bitmap {
     Bitmap result{lhs};
     result ^= rhs;
     return result;
@@ -253,7 +255,7 @@ constexpr auto operator^(const Bitmap &lhs, const Bitmap &rhs) -> Bitmap {
  * \param amount Amount to shift.
  * \return The shifted Bitmap.
  */
-constexpr auto operator<<(const Bitmap &bitmap, const int &amount) -> Bitmap {
+constexpr auto operator<<(Bitmap bitmap, const int &amount) -> Bitmap {
     Bitmap result{bitmap};
     result <<= amount;
     return result;
@@ -267,7 +269,7 @@ constexpr auto operator<<(const Bitmap &bitmap, const int &amount) -> Bitmap {
  * \param amount Amount to shift.
  * \return The shifted Bitmap.
  */
-constexpr auto operator>>(const Bitmap &bitmap, const int &amount) -> Bitmap {
+constexpr auto operator>>(Bitmap bitmap, const int &amount) -> Bitmap {
     Bitmap result{bitmap};
     result >>= amount;
     return result;
@@ -279,7 +281,7 @@ constexpr auto operator>>(const Bitmap &bitmap, const int &amount) -> Bitmap {
  * Generates a new bitmap with a bit set if the corresponding bit in the
  * bitmap is not set.
  */
-constexpr auto operator~(const Bitmap &bitmap) -> Bitmap {
+constexpr auto operator~(Bitmap bitmap) -> Bitmap {
     Bitmap result{~bitmap.bits()};
     return result;
 }

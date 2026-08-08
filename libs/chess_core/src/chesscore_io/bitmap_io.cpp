@@ -11,7 +11,7 @@
 
 namespace chesscore {
 
-auto operator<<(std::ostream &os, const Bitmap &bitmap) -> std::ostream & {
+auto operator<<(std::ostream &os, Bitmap bitmap) -> std::ostream & {
     os << "  a b c d e f g h\n";
     for (int rank = chesscore::Rank::count - 1; rank >= 0; --rank) {
         os << (rank + 1) << ' ';
@@ -30,7 +30,7 @@ auto operator<<(std::ostream &os, const Bitmap &bitmap) -> std::ostream & {
     return os;
 }
 
-auto as_grouped_hex(const Bitmap &bitmap) -> std::string {
+auto as_grouped_hex(Bitmap bitmap) -> std::string {
     std::stringstream oss;
     static constexpr int byte_count = 8;
 
@@ -45,13 +45,13 @@ auto as_grouped_hex(const Bitmap &bitmap) -> std::string {
     return oss.str();
 }
 
-auto as_ull_hex(const Bitmap &bitmap) -> std::string {
+auto as_ull_hex(Bitmap bitmap) -> std::string {
     std::stringstream oss;
     oss << "0x" << std::hex << std::setfill('0') << std::setw(16) << std::uppercase << bitmap.bits() << "ULL";
     return oss.str();
 }
 
-auto as_grouped_bits(const Bitmap &bitmap) -> std::string {
+auto as_grouped_bits(Bitmap bitmap) -> std::string {
     std::stringstream oss;
 
     static constexpr int square_count = 64;

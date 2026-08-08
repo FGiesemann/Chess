@@ -13,16 +13,16 @@ namespace chesscore {
 
 namespace {
 
-auto step_pawns(const Bitmap &pawn, Color side_to_move) -> Bitmap {
+auto step_pawns(Bitmap pawn, Color side_to_move) -> Bitmap {
     return side_to_move == Color::White ? pawn << File::count : pawn >> File::count;
 }
 
-auto shift_left(const Bitmap &bitmap) -> Bitmap {
+auto shift_left(Bitmap bitmap) -> Bitmap {
     // we remove pieces from the a-file, so they don't "wrap around" when shifting
     return (bitmap & ~bitmaps::file_table[0]) >> 1;
 }
 
-auto shift_right(const Bitmap &bitmap) -> Bitmap {
+auto shift_right(Bitmap bitmap) -> Bitmap {
     // we remove pieces from the h-file, so they don't "wrap around" when shifting
     return (bitmap & ~bitmaps::file_table[File::count - 1]) << 1;
 }
@@ -30,7 +30,7 @@ auto shift_right(const Bitmap &bitmap) -> Bitmap {
 } // namespace
 
 auto Bitboard::generate_pawn_move(
-    const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
+    Square source, Square target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
 ) const -> void {
     store_move_if_legal(
         Move{
@@ -48,8 +48,7 @@ auto Bitboard::generate_pawn_move(
     );
 }
 
-auto Bitboard::generate_pawn_moves(const Square &source, const Square &target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const
-    -> void {
+auto Bitboard::generate_pawn_moves(Square source, Square target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void {
     if (target.rank().rank == 0 || target.rank().rank == (Rank::count - 1)) {
         const auto color = state.side_to_move;
         for (const auto &type : all_promotion_piece_types) {
@@ -72,11 +71,11 @@ auto Bitboard::empty() const -> bool {
     return m_all_pieces.empty();
 }
 
-auto Bitboard::has_piece(const PieceType &piece_type) const -> bool {
+auto Bitboard::has_piece(PieceType piece_type) const -> bool {
     return !(bitmap(Piece{piece_type, Color::White}) | bitmap(Piece{piece_type, Color::Black})).empty();
 }
 
-auto Bitboard::has_piece(const Piece &piece) const -> bool {
+auto Bitboard::has_piece(Piece piece) const -> bool {
     return !bitmap(piece).empty();
 }
 
@@ -84,11 +83,11 @@ auto Bitboard::has_piece(const Color &color) const -> bool {
     return !bitmap(color).empty();
 }
 
-auto Bitboard::has_piece(const Square &square) const -> bool {
+auto Bitboard::has_piece(Square square) const -> bool {
     return m_all_pieces.get(square);
 }
 
-auto Bitboard::set_piece(const Piece &piece, const Square &square) -> void {
+auto Bitboard::set_piece(Piece piece, Square square) -> void {
     clear_square(square);
     if (piece.is_piece()) {
         bitmap(piece).set(square);
@@ -97,7 +96,7 @@ auto Bitboard::set_piece(const Piece &piece, const Square &square) -> void {
     }
 }
 
-auto Bitboard::get_piece(const Square &square) const -> std::optional<Piece> {
+auto Bitboard::get_piece(Square square) const -> std::optional<Piece> {
     if (!m_all_pieces.get(square)) {
         return {};
     }
@@ -111,7 +110,7 @@ auto Bitboard::get_piece(const Square &square) const -> std::optional<Piece> {
     return {};
 }
 
-auto Bitboard::clear_square(const Square &square) -> void {
+auto Bitboard::clear_square(Square square) -> void {
     const auto remove_from_square = ~Bitmap{square};
 
     for (auto &bitmap : m_bitmaps) {
@@ -240,7 +239,7 @@ auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, con
     }
 }
 
-auto Bitboard::get_attack_map(const Piece &piece, const Square &start) const -> Bitmap {
+auto Bitboard::get_attack_map(Piece piece, Square start) const -> Bitmap {
     switch (piece.type()) {
     case PieceType::Rook:
         return magic_rook_bitboard.attacks(start, *this) & ~bitmap(piece.color());
@@ -254,12 +253,12 @@ auto Bitboard::get_attack_map(const Piece &piece, const Square &start) const -> 
     }
 }
 
-auto Bitboard::all_sliding_moves(const Piece &moving_piece, const Square &start, MoveList &moves, const PositionState &state) const -> void {
+auto Bitboard::all_sliding_moves(Piece moving_piece, Square start, MoveList &moves, const PositionState &state) const -> void {
     const auto targets = get_attack_map(moving_piece, start);
     extract_moves(targets, start, moving_piece, state, moves);
 }
 
-auto Bitboard::remove_occupied_squares(const Bitmap &bitmap) const -> Bitmap {
+auto Bitboard::remove_occupied_squares(Bitmap bitmap) const -> Bitmap {
     return bitmap & ~m_all_pieces;
 }
 
@@ -286,36 +285,36 @@ auto Bitboard::all_pawn_moves(MoveList &moves, const PositionState &state) const
     extract_pawn_captures(pawns_capture_E, PawnCaptureDirection::East, state, moves);
 }
 
-auto Bitboard::is_attacked(const Square &square, Color attacker_color) const -> bool {
+auto Bitboard::is_attacked(Square square, Color attacker_color) const -> bool {
     return king_attacks(square, attacker_color) || pawn_attacks(square, attacker_color) || knight_attacks(square, attacker_color) || sliding_piece_attacks(square, attacker_color);
 }
 
-auto Bitboard::would_be_attacked(const Square &square, Color attacker_color, const Move &move) const -> bool {
+auto Bitboard::would_be_attacked(Square square, Color attacker_color, const Move &move) const -> bool {
     Bitboard test_board{*this};
     test_board.make_move(move);
     return test_board.is_attacked(square, attacker_color);
 }
 
-auto Bitboard::pawn_attacks(const Square &square, Color pawn_color) const -> bool {
+auto Bitboard::pawn_attacks(Square square, Color pawn_color) const -> bool {
     const auto pawns = bitmap(Piece{PieceType::Pawn, pawn_color});
     const auto stepped_pawns = step_pawns(pawns, pawn_color);
     const auto attacked_squares = shift_left(stepped_pawns) | shift_right(stepped_pawns);
     return attacked_squares.get(square);
 }
 
-auto Bitboard::knight_attacks(const Square &square, Color knight_color) const -> bool {
+auto Bitboard::knight_attacks(Square square, Color knight_color) const -> bool {
     const auto knights = bitmap(Piece{PieceType::Knight, knight_color});
     const auto attackers = bitmaps::get_target_table(PieceType::Knight)[square] & knights;
     return !attackers.empty();
 }
 
-auto Bitboard::king_attacks(const Square &square, Color king_color) const -> bool {
+auto Bitboard::king_attacks(Square square, Color king_color) const -> bool {
     const auto king = bitmap(Piece{PieceType::King, king_color});
     const auto attackers = bitmaps::get_target_table(PieceType::King)[square] & king;
     return !attackers.empty();
 }
 
-auto Bitboard::sliding_piece_attacks(const Square &square, Color attacker_color) const -> bool {
+auto Bitboard::sliding_piece_attacks(Square square, Color attacker_color) const -> bool {
     const auto attacks1 = get_attack_map(Piece{PieceType::Rook, other_color(attacker_color)}, square);
     if (!(attacks1 & bitmap(Piece{PieceType::Rook, attacker_color})).empty()) {
         return true;
@@ -333,7 +332,7 @@ auto Bitboard::sliding_piece_attacks(const Square &square, Color attacker_color)
     return false;
 }
 
-auto Bitboard::extract_moves(Bitmap targets, const Square &from, const Piece &piece, const PositionState &state, MoveList &moves) const -> void {
+auto Bitboard::extract_moves(Bitmap targets, Square from, Piece piece, const PositionState &state, MoveList &moves) const -> void {
     while (!targets.empty()) {
         const auto shift = targets.empty_squares_before();
         const auto target_square = Square::A1 + shift;
