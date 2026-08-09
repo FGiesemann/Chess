@@ -160,17 +160,14 @@ void Bitboard::move_castling_rook(const Move &move) {
 }
 
 auto Bitboard::unmake_move(const Move &move) -> void {
-    set_piece(move.piece, move.from);
-    if (move.captured) {
-        if (move.capturing_en_passant) {
-            set_piece(move.captured.value(), Square{move.to.file(), move.from.rank()});
-            clear_square(move.to);
-        } else {
-            set_piece(move.captured.value(), move.to);
-        }
-    } else {
-        clear_square(move.to);
+    toggle_piece(move.piece, move.from);
+    if (move.captured.has_value()) {
+        const auto captured_square = move.capturing_en_passant ? Square{move.to.file(), move.from.rank()} : move.to;
+        toggle_piece(move.captured.value(), captured_square);
     }
+    const auto target_piece = (move.promoted.has_value()) ? move.promoted.value() : move.piece;
+    toggle_piece(target_piece, move.to);
+
     if (move.is_castling()) {
         reset_castling_rook(move);
     }
