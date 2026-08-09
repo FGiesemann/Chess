@@ -96,6 +96,13 @@ auto Bitboard::set_piece(Piece piece, Square square) -> void {
     }
 }
 
+auto Bitboard::toggle_piece(Piece piece, Square square) -> void {
+    const auto mask = Bitmap{square};
+    bitmap(piece) ^= mask;
+    bitmap(piece.color()) ^= mask;
+    m_all_pieces ^= mask;
+}
+
 auto Bitboard::get_piece(Square square) const -> std::optional<Piece> {
     if (!m_all_pieces.get(square)) {
         return {};
@@ -127,17 +134,16 @@ auto Bitboard::piece_count(Piece piece) const -> int {
 }
 
 auto Bitboard::make_move(const Move &move) -> void {
-    clear_square(move.from);
-    if (move.promoted) {
-        set_piece(move.promoted.value(), move.to);
-    } else {
-        set_piece(move.piece, move.to);
+    toggle_piece(move.piece, move.from);
+    if (move.captured.has_value()) {
+        const auto captured_square = move.capturing_en_passant ? Square{move.to.file(), move.from.rank()} : move.to;
+        toggle_piece(move.captured.value(), captured_square);
     }
+    const auto target_piece = (move.promoted.has_value()) ? move.promoted.value() : move.piece;
+    toggle_piece(target_piece, move.to);
+
     if (move.is_castling()) {
         move_castling_rook(move);
-    }
-    if (move.capturing_en_passant) {
-        clear_square(Square{move.to.file(), move.from.rank()});
     }
 }
 

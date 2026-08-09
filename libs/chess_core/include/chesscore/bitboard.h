@@ -95,6 +95,15 @@ public:
     auto set_piece(Piece piece, Square square) -> void;
 
     /**
+     * \brief Toggles a piece on the board.
+     *
+     * Toggles the bit for the given piece on the given square.
+     * \param piece The piece.
+     * \param square The square.
+     */
+    auto toggle_piece(Piece piece, Square square) -> void;
+
+    /**
      * \brief Get the piece on the given square.
      *
      * Retrieves the piece on the given square. If there is no piece on the
