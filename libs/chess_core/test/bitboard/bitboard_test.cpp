@@ -103,6 +103,14 @@ TEST_CASE("Bitboard.Bitboard.Clear", "[Bitboard][Init]") {
     CHECK(bitboard.empty());
 }
 
+TEST_CASE("Bitboard.Bitboard.Toggle", "[Bitboard][Init]") {
+    Bitboard bitboard{FenString::starting_position()};
+    bitboard.toggle_piece(Piece::WhiteRook, Square::A1);
+    bitboard.toggle_piece(Piece::BlackPawn, Square::E5);
+    CHECK_FALSE(bitboard.get_piece(Square::A1).has_value());
+    CHECK(bitboard.get_piece(Square::E5).value() == Piece::BlackPawn);
+}
+
 TEST_CASE("Bitboard.Bitboard.Piece Count", "[Bitboard][Basic]") {
     Bitboard bitboard{FenString::starting_position()};
     CHECK(bitboard.piece_count(Piece::WhitePawn) == 8);

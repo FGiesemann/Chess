@@ -89,6 +89,7 @@ public:
      * Places the given piece on the given square. If the square is already
      * occupied, the new piece replaces the previous one. If the given piece is
      * Piece::None (piece.is_piece() == false), the square is just cleared.
+     * For faster placement (not replcaement!) of pieces, see toggle_piece.
      * \param piece The piece to place.
      * \param square The square to place the piece on.
      */
@@ -118,6 +119,7 @@ public:
      *
      * Removes a piece from the given square. If there is no piece on the given
      * square, nothing happens.
+     * For faster removing of a single (known) piece, see toggle_piece.
      * \param square The square to clear.
      */
     auto clear_square(Square square) -> void;
