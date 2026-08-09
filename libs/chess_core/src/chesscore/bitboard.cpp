@@ -148,14 +148,15 @@ auto Bitboard::make_move(const Move &move) -> void {
 }
 
 void Bitboard::move_castling_rook(const Move &move) {
+    const auto moving_rook = Piece{PieceType::Rook, move.piece.color()};
     if (move.from.file().file < move.to.file().file) {
         // Kingside castling
-        clear_square(Square{File{'H'}, move.to.rank()});                                          // remove rook
-        set_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'F'}, move.to.rank()}); // place rook on f-file
+        toggle_piece(moving_rook, Square{File{'H'}, move.to.rank()}); // remove rook
+        toggle_piece(moving_rook, Square{File{'F'}, move.to.rank()}); // place rook on f-file
     } else {
         // Queenside castling
-        clear_square(Square{File{'A'}, move.to.rank()});                                          // remove rook
-        set_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'D'}, move.to.rank()}); // place rook on d-file
+        toggle_piece(moving_rook, Square{File{'A'}, move.to.rank()}); // remove rook
+        toggle_piece(moving_rook, Square{File{'D'}, move.to.rank()}); // place rook on d-file
     }
 }
 
@@ -174,14 +175,15 @@ auto Bitboard::unmake_move(const Move &move) -> void {
 }
 
 auto Bitboard::reset_castling_rook(const Move &move) -> void {
+    const auto moving_rook = Piece{PieceType::Rook, move.piece.color()};
     if (move.from.file().file < move.to.file().file) {
         // Kingside castling
-        clear_square(Square{File{'F'}, move.from.rank()});                                          // remove rook
-        set_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'H'}, move.from.rank()}); // place rook on h-file
+        toggle_piece(moving_rook, Square{File{'F'}, move.from.rank()}); // remove rook
+        toggle_piece(moving_rook, Square{File{'H'}, move.from.rank()}); // place rook on h-file
     } else {
         // Queenside castling
-        clear_square(Square{File{'D'}, move.from.rank()});                                          // remove rook
-        set_piece(Piece{PieceType::Rook, move.piece.color()}, Square{File{'A'}, move.from.rank()}); // place rook on a-file
+        toggle_piece(moving_rook, Square{File{'D'}, move.from.rank()}); // remove rook
+        toggle_piece(moving_rook, Square{File{'A'}, move.from.rank()}); // place rook on a-file
     }
 }
 
