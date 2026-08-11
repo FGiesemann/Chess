@@ -6,6 +6,8 @@
 #include "chesscore/magic.h"
 #include "chesscore/bitboard_tables.h"
 
+#include <numeric>
+
 namespace chesscore {
 
 auto blocker_mask(PieceType piece_type, Square square) -> Bitmap {
