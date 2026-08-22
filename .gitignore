@@ -1,0 +1,11 @@
+# Build files
+CMakeUserPresets.json
+build/
+
+# IDE files
+.vscode/
+.cache/
+compile_commands.json
+
+# Puck files
+puck-build.json

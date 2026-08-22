@@ -1,0 +1,9 @@
+{
+    "projects": [
+        {
+            "name": "Chess",
+            "path": ".",
+            "repository_url": "gi1t@github.com:FGiesemann/Chess.git"
+        }
+    ]
+}
