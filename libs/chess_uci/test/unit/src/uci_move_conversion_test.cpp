@@ -32,7 +32,7 @@ auto check_unchecked_conversion(const UCIMove &move, const Position &position) -
 
 } // namespace
 
-TEST_CASE("Move.Conversion.Full", "[move_conversion]") {
+TEST_CASE("UCI.Move.Conversion.Full", "[move_conversion]") {
     const auto position = Position{FenString{"r3k3/pp4p1/2nb1q1r/8/1Pp3B1/4N3/4P1p1/RN1QK2R b KQq b3 0 1"}};
 
     check_move_conversion(UCIMove{Square::D6, Square::H2}, Move{.from = Square::D6, .to = Square::H2, .piece = Piece::BlackBishop}, position);
@@ -43,7 +43,7 @@ TEST_CASE("Move.Conversion.Full", "[move_conversion]") {
     CHECK_FALSE(convert_move(UCIMove{Square::E6, Square::E4}, position).has_value());
 }
 
-TEST_CASE("Move.Conversion.Unchecked", "[move_conversion]") {
+TEST_CASE("UCI.Move.Conversion.Unchecked", "[move_conversion]") {
     const auto position = Position{FenString{"r3k3/pp4p1/2nb1q1r/8/1Pp3B1/4N3/4P1p1/RN1QK2R b KQq b3 0 1"}};
 
     check_unchecked_conversion(UCIMove{Square::D6, Square::H2}, position);

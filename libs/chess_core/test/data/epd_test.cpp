@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Data.EPD.Parse.Positions.Starting", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Positions.Starting", "[EPD]") {
     const auto record = parse_epd_line("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -");
     const auto &position = record.position;
 
@@ -21,7 +21,7 @@ TEST_CASE("Data.EPD.Parse.Positions.Starting", "[EPD]") {
     CHECK(position.fullmove_number() == 1);
 }
 
-TEST_CASE("Data.EPD.Parse.Positions.Position 1", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Positions.Position 1", "[EPD]") {
     const auto record = parse_epd_line("8/6pk/p3p3/2Q1P3/1p2P3/5P1P/5KP1/1q6 w - -");
     const auto &position = record.position;
 
@@ -33,7 +33,7 @@ TEST_CASE("Data.EPD.Parse.Positions.Position 1", "[EPD]") {
     CHECK(position.fullmove_number() == 1);
 }
 
-TEST_CASE("Data.EPD.Parse.Positions.Position 2", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Positions.Position 2", "[EPD]") {
     const auto record = parse_epd_line("r1bqk2r/pp2bppp/2p5/3pP3/P2Q1P2/2N1B3/1PP3PP/R4RK1 b kq -");
     const auto &position = record.position;
 
@@ -46,7 +46,7 @@ TEST_CASE("Data.EPD.Parse.Positions.Position 2", "[EPD]") {
     CHECK(position.fullmove_number() == 1);
 }
 
-TEST_CASE("Data.EPD.Parse.Positions.Position 3", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Positions.Position 3", "[EPD]") {
     const auto record = parse_epd_line("r2qr1k1/1b1pppbp/1p4p1/pP2P1B1/3N4/R7/1PP2PPP/3QR1K1 w - a6");
     const auto &position = record.position;
 
@@ -59,7 +59,7 @@ TEST_CASE("Data.EPD.Parse.Positions.Position 3", "[EPD]") {
     CHECK(position.fullmove_number() == 1);
 }
 
-TEST_CASE("Data.EPD.Parse.Operations.Best Move", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Operations.Best Move", "[EPD]") {
     const auto record1 = parse_epd_line("8/3r4/pr1Pk1p1/8/7P/6P1/3R3K/5R2 w - - bm Re2+;");
     const auto &position1 = record1.position;
 
@@ -84,7 +84,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Best Move", "[EPD]") {
     CHECK(record2.bm == EpdRecord::move_list{"Nd5", "a4"});
 }
 
-TEST_CASE("Data.EPD.Parse.Operations.Multiple", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Operations.Multiple", "[EPD]") {
     const auto record =
         parse_epd_line(R"(r3k2r/pp4p1/2p1pnp1/3p1pn1/2PP4/1P2qPPP/P1Q3BK/3RBR2 b kq - bm Nxh3; id "arasan2024.200"; c0 "BOT ArasanX - BOT MateAI, lichess.org 2023";)");
 
@@ -95,7 +95,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Multiple", "[EPD]") {
     CHECK(record.c[0] == "BOT ArasanX - BOT MateAI, lichess.org 2023");
 }
 
-TEST_CASE("Data.EPD.Parse.Operations.Operands", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Operations.Operands", "[EPD]") {
     const auto record = parse_epd_line(
         R"(7b/8/kq6/8/8/1N2R3/K2P4/8 w - - bm a4; id "name"; c0 "comment0"; c1 "comment1"; acd 3; acn 5285839593; noop opA opB 123 "test operand" xyz; draw_reject; tcri player@server.de "Player Name";)"
     );
@@ -116,7 +116,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Operands", "[EPD]") {
     CHECK(record.tcri.second == "Player Name");
 }
 
-TEST_CASE("Data.EPD.Parse.Operations.Unknown Operation", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Operations.Unknown Operation", "[EPD]") {
     const auto record = parse_epd_line(R"(7b/8/kq6/8/8/1N2R3/K2P4/8 w - - bm a4; D 123; id "test";)");
 
     CHECK(record.bm == EpdRecord::move_list{"a4"});
@@ -126,7 +126,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Unknown Operation", "[EPD]") {
     CHECK(record.unknown_commands[0].operands == std::vector<std::string>{"123"});
 }
 
-TEST_CASE("Data.EPD.Parse.Operations.Multiple unknowns", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Operations.Multiple unknowns", "[EPD]") {
     const auto record = parse_epd_line(R"(rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - D 1 20; D 2 400; D 3 8902; D 4 197281; D 5 4865609; D 6 119060324;)");
 
     CHECK(record.unknown_commands.size() == 6);
@@ -144,7 +144,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Multiple unknowns", "[EPD]") {
     CHECK(record.unknown_commands[5].operands == std::vector<std::string>{"6", "119060324"});
 }
 
-TEST_CASE("Data.EPD.Parse.Operations.Empty", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Parse.Operations.Empty", "[EPD]") {
     const auto record = parse_epd_line(R"(rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - D 1 20; ; D 2 400;)");
 
     CHECK(record.unknown_commands.size() == 2);
@@ -154,7 +154,7 @@ TEST_CASE("Data.EPD.Parse.Operations.Empty", "[EPD]") {
     CHECK(record.unknown_commands[1].operands == std::vector<std::string>{"2", "400"});
 }
 
-TEST_CASE("Data.EPD.File.Simple", "[EPD]") {
+TEST_CASE("Core.Data.EPD.File.Simple", "[EPD]") {
     const std::string epd_data = R"(r1b2rk1/2q1b1pp/p2ppn2/1p6/3QP3/1BN1B3/PPP3PP/R4RK1 w - - bm Nd5 a4;
 r2qr1k1/1b1pppbp/1p4p1/pP2P1B1/3N4/R7/1PP2PPP/3QR1K1 w - a6
 rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
@@ -171,7 +171,7 @@ rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
     CHECK(records[3].id == "test");
 }
 
-TEST_CASE("Data.EPD.File.Unknown Commands", "[EPD]") {
+TEST_CASE("Core.Data.EPD.File.Unknown Commands", "[EPD]") {
     const std::string epd_data = R"(rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - D 1 20; D 2 400; D 3 8902; D 4 197281; D 5 4865609; D 6 119060324;
 r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - D 1 48; D 2 2039; D 3 97862; D 4 4085603; D 5 193690690; D 6 8031647685;
 )";
@@ -184,7 +184,7 @@ r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - D 1 48; D 2 203
     CHECK(records[1].unknown_commands.size() == 6);
 }
 
-TEST_CASE("Data.EPD.Non conformant.Unquoted string", "[EPD]") {
+TEST_CASE("Core.Data.EPD.Non conformant.Unquoted string", "[EPD]") {
     const std::string epd_data = R"(8/3r4/pr1Pk1p1/8/7P/6P1/3R3K/5R2 w - - c0 Comment without quote characters; id TflDn; bm Re2+;)";
     EpdRecord record;
     CHECK_NOTHROW(record = parse_epd_line(epd_data));

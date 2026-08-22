@@ -9,12 +9,12 @@
 using namespace chessuci;
 using namespace chesscore;
 
-TEST_CASE("Move.Matcher.Simple", "[move_matcher]") {
+TEST_CASE("UCI.Move.Matcher.Simple", "[move_matcher]") {
     CHECK(uci_move_matches(UCIMove{Square::E2, Square::E4}, Move{.from = Square::E2, .to = Square::E4, .piece = Piece::WhitePawn}));
     CHECK_FALSE(uci_move_matches(UCIMove{Square::A3, Square::E7}, Move{.from = Square::A4, .to = Square::B4, .piece = Piece::WhitePawn}));
 }
 
-TEST_CASE("Move.Matcher.Promotion", "[move_matcher]") {
+TEST_CASE("UCI.Move.Matcher.Promotion", "[move_matcher]") {
     CHECK(
         uci_move_matches(UCIMove{Square::C2, Square::C1, PieceType::Queen}, Move{.from = Square::C2, .to = Square::C1, .piece = Piece::BlackPawn, .promoted = Piece::BlackQueen})
     );

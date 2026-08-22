@@ -9,13 +9,13 @@
 
 using namespace chesscore;
 
-TEST_CASE("Bitboard.Bitmap.Empty", "[Bitmap][Basic]") {
+TEST_CASE("Core.Bitboard.Bitmap.Empty", "[Bitmap][Basic]") {
     Bitmap bitmap{};
     CHECK(bitmap.empty());
     CHECK_FALSE(bitmap.get(Square::C5));
 }
 
-TEST_CASE("Bitboard.Bitmap.Init", "[Bitmap][Basic]") {
+TEST_CASE("Core.Bitboard.Bitmap.Init", "[Bitmap][Basic]") {
     Bitmap bitmap{Square::C5};
     CHECK_FALSE(bitmap.empty());
     CHECK(bitmap.get(Square::C5));
@@ -33,7 +33,7 @@ TEST_CASE("Bitboard.Bitmap.Init", "[Bitmap][Basic]") {
     CHECK(bitmap2.get(Square::D5));
 }
 
-TEST_CASE("Bitboard.Bitmap.Set, clear", "[Bitmap][Basic]") {
+TEST_CASE("Core.Bitboard.Bitmap.Set, clear", "[Bitmap][Basic]") {
     Bitmap bitmap{};
     bitmap.set(Square::C5);
     CHECK_FALSE(bitmap.empty());
@@ -44,7 +44,7 @@ TEST_CASE("Bitboard.Bitmap.Set, clear", "[Bitmap][Basic]") {
     CHECK_FALSE(bitmap.get(Square::C5));
 }
 
-TEST_CASE("Bitboard.Bitmap.Toggle", "[Bitmap][Basic]") {
+TEST_CASE("Core.Bitboard.Bitmap.Toggle", "[Bitmap][Basic]") {
     Bitmap bitmap{};
     bitmap.toggle(Square::C5);
     CHECK_FALSE(bitmap.empty());
@@ -54,7 +54,7 @@ TEST_CASE("Bitboard.Bitmap.Toggle", "[Bitmap][Basic]") {
     CHECK_FALSE(bitmap.get(Square::C5));
 }
 
-TEST_CASE("Bitboard.Bitmap.Multiple suqares", "[Bitmap][Basic]") {
+TEST_CASE("Core.Bitboard.Bitmap.Multiple suqares", "[Bitmap][Basic]") {
     Bitmap bitmap{};
     bitmap.set(Square::C5);
     bitmap.set(Square::D4);
@@ -79,7 +79,7 @@ TEST_CASE("Bitboard.Bitmap.Multiple suqares", "[Bitmap][Basic]") {
     CHECK_FALSE(bitmap.get(Square::A1));
 }
 
-TEST_CASE("Bitboard.Bitmap.Count", "[Bitmap][Basic]") {
+TEST_CASE("Core.Bitboard.Bitmap.Count", "[Bitmap][Basic]") {
     Bitmap bitmap{};
     CHECK(bitmap.count() == 0);
     bitmap.set(Square::C5);
@@ -104,7 +104,7 @@ TEST_CASE("Bitboard.Bitmap.Count", "[Bitmap][Basic]") {
     CHECK(bitmap.count() == 0);
 }
 
-TEST_CASE("Bitboard.Bitmap.Comparison", "[Bitmap][Operators]") {
+TEST_CASE("Core.Bitboard.Bitmap.Comparison", "[Bitmap][Operators]") {
     Bitmap bitmap1{};
     Bitmap bitmap2{};
 
@@ -119,7 +119,7 @@ TEST_CASE("Bitboard.Bitmap.Comparison", "[Bitmap][Operators]") {
     CHECK(bitmap1 == bitmap2);
 }
 
-TEST_CASE("Bitboard.Bitmap.Bitwise operators", "[Bitmap][Operators]") {
+TEST_CASE("Core.Bitboard.Bitmap.Bitwise operators", "[Bitmap][Operators]") {
     Bitmap bitmap1{0x10'02'00'00'40'00'00'00ULL};
     Bitmap bitmap2{0x08'00'04'00'41'00'80'00ULL};
 
@@ -133,7 +133,7 @@ TEST_CASE("Bitboard.Bitmap.Bitwise operators", "[Bitmap][Operators]") {
     CHECK(bitmap3.bits() == 0xEF'FD'FF'FF'BF'FF'FF'FFULL);
 }
 
-TEST_CASE("Bitboard.Bitmap.Shift operators", "[Bitmap][Operators]") {
+TEST_CASE("Core.Bitboard.Bitmap.Shift operators", "[Bitmap][Operators]") {
     Bitmap bitmap{0x10'02'00'80'40'70'FF'00ULL};
 
     auto bitmap2 = bitmap << 1;

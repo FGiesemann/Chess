@@ -12,7 +12,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("UCIEngine.Construct Position.Start Position", "[uci_engine]") {
+TEST_CASE("Engine.UCIEngine.Construct Position.Start Position", "[uci_engine]") {
     chessuci::position_command command{.fen = chessuci::position_command::startpos, .moves = {}};
 
     const auto constructed = chessengine::construct_position(command);
@@ -20,7 +20,7 @@ TEST_CASE("UCIEngine.Construct Position.Start Position", "[uci_engine]") {
     CHECK(constructed.second.empty());
 }
 
-TEST_CASE("UCIEngine.Construct Position.Alternative start", "[uci_engine]") {
+TEST_CASE("Engine.UCIEngine.Construct Position.Alternative start", "[uci_engine]") {
     chessuci::position_command command{
         .fen = "r3k2r/pppq1ppp/2n5/3bp3/3P4/2N5/PPPQPPPP/R3K2R w KQkq - 3 12",
         .moves = {},
@@ -31,7 +31,7 @@ TEST_CASE("UCIEngine.Construct Position.Alternative start", "[uci_engine]") {
     CHECK(constructed.second.empty());
 }
 
-TEST_CASE("UCIEngine.Construct Position.Single move", "[uci_engine]") {
+TEST_CASE("Engine.UCIEngine.Construct Position.Single move", "[uci_engine]") {
     chessuci::position_command command{
         .fen = chessuci::position_command::startpos,
         .moves = {chessuci::UCIMove{Square::E2, Square::E4}},
@@ -46,7 +46,7 @@ TEST_CASE("UCIEngine.Construct Position.Single move", "[uci_engine]") {
     CHECK(constructed.second[0] == chessuci::UCIMove{Square::E2, Square::E4});
 }
 
-TEST_CASE("UCIEngine.Construct Position.Multiple moves", "[uci_engine]") {
+TEST_CASE("Engine.UCIEngine.Construct Position.Multiple moves", "[uci_engine]") {
     chessuci::position_command command{
         .fen = chessuci::position_command::startpos,
         .moves = {

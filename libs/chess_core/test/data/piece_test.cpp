@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Data.Piece.Type from Index", "[Piece]") {
+TEST_CASE("Core.Data.Piece.Type from Index", "[Piece]") {
     CHECK(piece_type_from_index(0) == PieceType::Pawn);
     CHECK(piece_type_from_index(1) == PieceType::Knight);
     CHECK(piece_type_from_index(2) == PieceType::Bishop);
@@ -19,7 +19,7 @@ TEST_CASE("Data.Piece.Type from Index", "[Piece]") {
     CHECK(piece_type_from_index(6) == PieceType::None);
 }
 
-TEST_CASE("Data.Piece.Type from Char", "[Piece]") {
+TEST_CASE("Core.Data.Piece.Type from Char", "[Piece]") {
     CHECK(piece_type_from_char('r') == PieceType::Rook);
     CHECK(piece_type_from_char('n') == PieceType::Knight);
     CHECK(piece_type_from_char('b') == PieceType::Bishop);
@@ -36,7 +36,7 @@ TEST_CASE("Data.Piece.Type from Char", "[Piece]") {
     CHECK(piece_type_from_char('a') == PieceType::None);
 }
 
-TEST_CASE("Data.Piece.Letter", "[Piece]") {
+TEST_CASE("Core.Data.Piece.Letter", "[Piece]") {
     CHECK(Piece::WhitePawn.piece_char() == 'P');
     CHECK(Piece::WhiteRook.piece_char() == 'R');
     CHECK(Piece::WhiteKnight.piece_char() == 'N');
@@ -51,7 +51,7 @@ TEST_CASE("Data.Piece.Letter", "[Piece]") {
     CHECK(Piece::BlackKing.piece_char() == 'k');
 }
 
-TEST_CASE("Data.Piece.Letter colorless", "[Piece]") {
+TEST_CASE("Core.Data.Piece.Letter colorless", "[Piece]") {
     CHECK(Piece::WhitePawn.piece_char_colorless() == 'P');
     CHECK(Piece::WhiteRook.piece_char_colorless() == 'R');
     CHECK(Piece::WhiteKnight.piece_char_colorless() == 'N');
@@ -66,7 +66,7 @@ TEST_CASE("Data.Piece.Letter colorless", "[Piece]") {
     CHECK(Piece::BlackKing.piece_char_colorless() == 'K');
 }
 
-TEST_CASE("Data.Piece.Piece from Fen", "[Piece]") {
+TEST_CASE("Core.Data.Piece.Piece from Fen", "[Piece]") {
     CHECK(piece_from_fen_letter('P') == Piece::WhitePawn);
     CHECK(piece_from_fen_letter('R') == Piece::WhiteRook);
     CHECK(piece_from_fen_letter('N') == Piece::WhiteKnight);

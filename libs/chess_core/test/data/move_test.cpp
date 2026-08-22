@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Data.Move.Comparison", "[Move][Compare]") {
+TEST_CASE("Core.Data.Move.Comparison", "[Move][Compare]") {
     Move m1{
         .from = Square::E2,
         .to = Square::E4,

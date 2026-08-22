@@ -9,12 +9,12 @@
 
 using namespace chesscore;
 
-TEST_CASE("Magic.Blocker.Mask.Non Sliding", "[magic]") {
+TEST_CASE("Core.Magic.Blocker.Mask.Non Sliding", "[magic]") {
     CHECK(blocker_mask(PieceType::King, Square::A5).empty());
     CHECK(blocker_mask(PieceType::Queen, Square::F2).empty());
 }
 
-TEST_CASE("Magic.Blocker.Mask.Rook", "[magic]") {
+TEST_CASE("Core.Magic.Blocker.Mask.Rook", "[magic]") {
     const auto mask1 = blocker_mask(PieceType::Rook, Square::E3);
     CHECK(mask1 == Bitmap{0x00101010106E1000ULL});
 
@@ -25,7 +25,7 @@ TEST_CASE("Magic.Blocker.Mask.Rook", "[magic]") {
     CHECK(mask3 == Bitmap{0x7E80808080808000ULL});
 }
 
-TEST_CASE("Magic.Blocker.Mask.Bishop", "[magic]") {
+TEST_CASE("Core.Magic.Blocker.Mask.Bishop", "[magic]") {
     const auto mask1 = blocker_mask(PieceType::Bishop, Square::E3);
     CHECK(mask1 == Bitmap{0x0000024428002800ULL});
 
@@ -36,7 +36,7 @@ TEST_CASE("Magic.Blocker.Mask.Bishop", "[magic]") {
     CHECK(mask3 == Bitmap{0x000A000A10204000ULL});
 }
 
-TEST_CASE("Magic.Blocker.Config Count", "[magic]") {
+TEST_CASE("Core.Magic.Blocker.Config Count", "[magic]") {
     CHECK(blocker_config_count(Bitmap{}) == 1);
     CHECK(blocker_config_count(Bitmap{1ULL}) == 2);
     CHECK(blocker_config_count(Bitmap{0x0005000004002030ULL}) == 64);

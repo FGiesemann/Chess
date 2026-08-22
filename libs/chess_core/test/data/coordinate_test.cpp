@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Data.Coords.Coordinates Checks", "[Square]") {
+TEST_CASE("Core.Data.Coords.Coordinates Checks", "[Square]") {
     SECTION("File from character (lower case)") {
         CHECK(File('a').file == 0);
         CHECK(File('b').file == 1);
@@ -80,7 +80,7 @@ TEST_CASE("Data.Coords.Coordinates Checks", "[Square]") {
     }
 }
 
-TEST_CASE("Data.Coords.Increments", "[Square]") {
+TEST_CASE("Core.Data.Coords.Increments", "[Square]") {
     File file{'a'};
     Rank rank{0};
 
@@ -134,14 +134,14 @@ TEST_CASE("Data.Coords.Increments", "[Square]") {
     CHECK_FALSE(square.valid());
 }
 
-TEST_CASE("Data.Coords.Decrements", "[Square]") {
+TEST_CASE("Core.Data.Coords.Decrements", "[Square]") {
     CHECK_FALSE((Square::A1 - 3).valid());
     CHECK(Square::E5 - 2 == Square::C5);
     CHECK(Square::F4 - 11 == Square::C3);
     CHECK(Square::E6 - 22 == Square::G3);
 }
 
-TEST_CASE("Data.Coords.Defined Squares", "[Square]") {
+TEST_CASE("Core.Data.Coords.Defined Squares", "[Square]") {
     CHECK(Square::A1.file().file == 0);
     CHECK(Square::A1.rank().rank == 0);
     CHECK(Square::A1.file().name() == 'a');
@@ -162,7 +162,7 @@ TEST_CASE("Data.Coords.Defined Squares", "[Square]") {
     CHECK_FALSE(Square::None.valid());
 }
 
-TEST_CASE("Data.Coords.Square index", "[Square]") {
+TEST_CASE("Core.Data.Coords.Square index", "[Square]") {
     CHECK(Square::A1.index() == 0);
     CHECK(Square::B1.index() == 1);
     CHECK(Square::H1.index() == 7);
@@ -172,7 +172,7 @@ TEST_CASE("Data.Coords.Square index", "[Square]") {
     CHECK(Square::H8.index() == 63);
 }
 
-TEST_CASE("Data.Coords.Square mirroring", "[Square]") {
+TEST_CASE("Core.Data.Coords.Square mirroring", "[Square]") {
     CHECK(Square::A1.mirrored() == Square{File{'a'}, Rank{7}});
     CHECK(Square::C2.mirrored() == Square{File{'c'}, Rank{6}});
     CHECK(Square::G3.mirrored() == Square{File{'g'}, Rank{5}});

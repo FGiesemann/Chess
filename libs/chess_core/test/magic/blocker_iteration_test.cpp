@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Magic.Blocker.Iteration.Single Bit", "[magic]") {
+TEST_CASE("Core.Magic.Blocker.Iteration.Single Bit", "[magic]") {
     const Bitmap mask{0x0000000000000001ULL};
 
     Bitmap blockers;
@@ -20,7 +20,7 @@ TEST_CASE("Magic.Blocker.Iteration.Single Bit", "[magic]") {
     CHECK(blockers.empty());
 }
 
-TEST_CASE("Magic.Blocker.Iteration.Consecutive Bits", "[magic]") {
+TEST_CASE("Core.Magic.Blocker.Iteration.Consecutive Bits", "[magic]") {
     const Bitmap mask{0x0000000000000003ULL};
 
     Bitmap blockers;
@@ -37,7 +37,7 @@ TEST_CASE("Magic.Blocker.Iteration.Consecutive Bits", "[magic]") {
     CHECK(blockers.empty());
 }
 
-TEST_CASE("Magic.Blocker.Iteration.Spread Bits", "[magic]") {
+TEST_CASE("Core.Magic.Blocker.Iteration.Spread Bits", "[magic]") {
     const Bitmap mask{0x000000000000002EULL};
 
     const std::array<Bitmap, 16> expected = {Bitmap{0x02ULL}, Bitmap{0x04ULL}, Bitmap{0x06ULL}, Bitmap{0x08ULL}, Bitmap{0x0AULL}, Bitmap{0x0CULL},
@@ -51,7 +51,7 @@ TEST_CASE("Magic.Blocker.Iteration.Spread Bits", "[magic]") {
     }
 }
 
-TEST_CASE("Magic.Blocker.Iteration.Sign Bit", "[magic]") {
+TEST_CASE("Core.Magic.Blocker.Iteration.Sign Bit", "[magic]") {
     const Bitmap mask{0xF000000000000000ULL};
 
     const std::array<Bitmap, 16> expected = {Bitmap{0x1000000000000000ULL}, Bitmap{0x2000000000000000ULL}, Bitmap{0x3000000000000000ULL}, Bitmap{0x4000000000000000ULL},

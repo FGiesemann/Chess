@@ -46,7 +46,7 @@ auto setup_test(const std::string &start_pos, const std::vector<UCIMove> &uci_mo
 
 } // namespace
 
-TEST_CASE("UCIEngine.Position.Continuation", "[uci_engine]") {
+TEST_CASE("Engine.UCIEngine.Position.Continuation", "[uci_engine]") {
     auto uci_engine = UCIAdapter<TestEngine>{};
     auto &test_engine = uci_engine.engine();
 
@@ -66,7 +66,7 @@ TEST_CASE("UCIEngine.Position.Continuation", "[uci_engine]") {
     CHECK(std::get<TestEngine::play_move_call>(log[4]).move == test_case.moves[1]);
 }
 
-TEST_CASE("UCIEngine.Position.Skip Call", "[uci_engine]") {
+TEST_CASE("Engine.UCIEngine.Position.Skip Call", "[uci_engine]") {
     auto uci_engine = UCIAdapter<TestEngine>{};
     auto &test_engine = uci_engine.engine();
 
@@ -102,7 +102,7 @@ TEST_CASE("UCIEngine.Position.Skip Call", "[uci_engine]") {
     CHECK(std::get<TestEngine::play_move_call>(log[10]).move == test_case.moves[4]);
 }
 
-TEST_CASE("UCIEngine.Position.Jump Back", "[uci_engine]") {
+TEST_CASE("Engine.UCIEngine.Position.Jump Back", "[uci_engine]") {
     auto uci_engine = UCIAdapter<TestEngine>{};
     auto &test_engine = uci_engine.engine();
 
@@ -129,7 +129,7 @@ TEST_CASE("UCIEngine.Position.Jump Back", "[uci_engine]") {
     CHECK(std::get<TestEngine::set_position_call>(log[7]).position == test_case.positions[1]);
 }
 
-TEST_CASE("UCIEngine.Position.Switch Line", "[uci_engine]") {
+TEST_CASE("Engine.UCIEngine.Position.Switch Line", "[uci_engine]") {
     auto uci_engine = UCIAdapter<TestEngine>{};
     auto &test_engine = uci_engine.engine();
 

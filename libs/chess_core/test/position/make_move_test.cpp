@@ -10,7 +10,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
+TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     Position position{FenString::starting_position()};
 
     Move m1{
@@ -155,7 +155,7 @@ TEST_CASE("Position.MakeMove", "[Position][MakeMove]") {
     CHECK(position.fullmove_number() == 4);
 }
 
-TEST_CASE("Position.MakeMove.Castling Rights", "[Position][MakeMove]") {
+TEST_CASE("Core.Position.MakeMove.Castling Rights", "[Position][MakeMove]") {
     Position position{FenString{"r3k2r/8/8/8/8/2B3n1/8/R3K2R w KQkq - 0 1"}};
 
     Move m1{

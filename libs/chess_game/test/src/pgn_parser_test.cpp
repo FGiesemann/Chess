@@ -91,7 +91,7 @@ auto has_no_following_move(const chessgame::Game &game, const GamePath &path) ->
 
 } // namespace
 
-TEST_CASE("PGN.Parser.Simple Linear Game", "[pgn]") {
+TEST_CASE("Game.PGN.Parser.Simple Linear Game", "[pgn]") {
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [White "Player W"]
@@ -114,7 +114,7 @@ TEST_CASE("PGN.Parser.Simple Linear Game", "[pgn]") {
     CHECK(has_no_following_move(game, mainline(7)));
 }
 
-TEST_CASE("PGN.Parser.Game with Comments", "[pgn]") {
+TEST_CASE("Game.PGN.Parser.Game with Comments", "[pgn]") {
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [White "Player W"]
@@ -146,7 +146,7 @@ his Queen Bishop.} 8...exd5 9. Bd3 Bb7 10. O-O c5 1-0)";
     check_move(game, mainline(20), Move{.from = Square::C7, .to = Square::C5, .piece = Piece::BlackPawn});
 }
 
-TEST_CASE("PGN.Parser.Game with NAG", "[pgn]") {
+TEST_CASE("Game.PGN.Parser.Game with NAG", "[pgn]") {
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [White "Player W"]
@@ -175,7 +175,7 @@ is in his favour (as he can immediately occupy it) - Alekhine} 1-0
     check_move(game, mainline(11), Move{.from = Square::D1, .to = Square::E2, .piece = Piece::WhiteQueen});
 }
 
-TEST_CASE("PGN.Parser.Alternative Start", "[pgn]") {
+TEST_CASE("Game.PGN.Parser.Alternative Start", "[pgn]") {
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [White "Player W"]
@@ -200,7 +200,7 @@ TEST_CASE("PGN.Parser.Alternative Start", "[pgn]") {
     check_move(game, mainline(9), Move{.from = Square::E1, .to = Square::F1, .piece = Piece::WhiteRook});
 }
 
-TEST_CASE("PGN.Parser.Game with RAV", "[pgn]") {
+TEST_CASE("Game.PGN.Parser.Game with RAV", "[pgn]") {
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [White "Player W"]
@@ -261,7 +261,7 @@ TEST_CASE("PGN.Parser.Game with RAV", "[pgn]") {
     CHECK(has_no_following_move(game, mainline(25) + var(1) + var(2) + mainline(1)));
 }
 
-TEST_CASE("PGN.Parser.Annotations", "[pgn]") {
+TEST_CASE("Game.PGN.Parser.Annotations", "[pgn]") {
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [White "Player W"]
@@ -305,7 +305,7 @@ is in his favour (as he can immediately occupy it) - Alekhine} 1-0
     );
 }
 
-TEST_CASE("PGN.Parser.Annotated with RAV", "[pgn]") {
+TEST_CASE("Game.PGN.Parser.Annotated with RAV", "[pgn]") {
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [White "Player W"]

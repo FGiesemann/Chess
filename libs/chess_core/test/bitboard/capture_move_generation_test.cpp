@@ -12,13 +12,13 @@
 
 using namespace chesscore;
 
-TEST_CASE("Bitboard.Bitboard.CaptureMoveGeneration.Starting Position", "[Bitboard][MoveGeneration]") {
+TEST_CASE("Core.Bitboard.Bitboard.CaptureMoveGeneration.Starting Position", "[Bitboard][MoveGeneration]") {
     Position position{FenString::starting_position()};
     MoveList moves = position.board().capture_moves(position.state());
     CHECK(moves.empty());
 }
 
-TEST_CASE("Bitboard.Bitboard.CaptureMoveGeneration.No Captures", "[Bitboard][MoveGeneration]") {
+TEST_CASE("Core.Bitboard.Bitboard.CaptureMoveGeneration.No Captures", "[Bitboard][MoveGeneration]") {
     Position position1{FenString{"rn1q1b1k/p3p1r1/2n5/5B2/2N2P1N/1P6/P1R5/R3KQ2 w - - 0 1"}};
     MoveList moves = position1.board().capture_moves(position1.state());
     CHECK(moves.empty());
@@ -28,7 +28,7 @@ TEST_CASE("Bitboard.Bitboard.CaptureMoveGeneration.No Captures", "[Bitboard][Mov
     CHECK(moves.empty());
 }
 
-TEST_CASE("Bitboard.Bitboard.CaptureMoveGeneration.Captures", "[Bitboard][MoveGeneration]") {
+TEST_CASE("Core.Bitboard.Bitboard.CaptureMoveGeneration.Captures", "[Bitboard][MoveGeneration]") {
     Position position1{FenString{"rn1q3k/p3pb1r/2n5/5Bp1/1N3P1N/1P3Q2/P1RP4/R3K3 w - - 0 1"}};
     MoveList moves = position1.board().capture_moves(position1.state());
     CHECK(moves.size() == 5);
@@ -49,7 +49,7 @@ TEST_CASE("Bitboard.Bitboard.CaptureMoveGeneration.Captures", "[Bitboard][MoveGe
     CHECK(move_list_contains(moves, Move{Square::H7, Square::H4, Piece::BlackRook, Piece::WhiteKnight}));
 }
 
-TEST_CASE("Bitboard.Bitboard.CaptureMoveGeneration.En Passant", "[Bitboard][MoveGeneration]") {
+TEST_CASE("Core.Bitboard.Bitboard.CaptureMoveGeneration.En Passant", "[Bitboard][MoveGeneration]") {
     Position position{FenString{"8/8/8/8/4Pp2/8/8/8 b - e3 0 1"}};
     MoveList moves = position.board().capture_moves(position.state());
     CHECK(moves.size() == 1);

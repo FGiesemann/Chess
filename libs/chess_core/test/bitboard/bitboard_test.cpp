@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Bitboard.Bitboard.Empty", "[Bitboard][Init]") {
+TEST_CASE("Core.Bitboard.Bitboard.Empty", "[Bitboard][Init]") {
     Bitboard bitboard{};
     CHECK(bitboard.empty());
     CHECK_FALSE(bitboard.has_piece(PieceType::Pawn));
@@ -17,7 +17,7 @@ TEST_CASE("Bitboard.Bitboard.Empty", "[Bitboard][Init]") {
     CHECK_FALSE(bitboard.has_piece(Color::White));
 }
 
-TEST_CASE("Bitboard.Bitboard.Set", "[Bitboard][Init]") {
+TEST_CASE("Core.Bitboard.Bitboard.Set", "[Bitboard][Init]") {
     Bitboard bitboard{};
     bitboard.set_piece(Piece::BlackBishop, Square::E2);
 
@@ -52,7 +52,7 @@ TEST_CASE("Bitboard.Bitboard.Set", "[Bitboard][Init]") {
     CHECK(bitboard.has_piece(Color::Black));
 }
 
-TEST_CASE("Bitboard.Bitboard.Get", "[Bitboard][Init]") {
+TEST_CASE("Core.Bitboard.Bitboard.Get", "[Bitboard][Init]") {
     Bitboard bitboard{};
     bitboard.set_piece(Piece::BlackBishop, Square::E2);
     bitboard.set_piece(Piece::WhiteKnight, Square::A1);
@@ -80,7 +80,7 @@ TEST_CASE("Bitboard.Bitboard.Get", "[Bitboard][Init]") {
     CHECK(p4 == Piece::WhiteRook);
 }
 
-TEST_CASE("Bitboard.Bitboard.Clear", "[Bitboard][Init]") {
+TEST_CASE("Core.Bitboard.Bitboard.Clear", "[Bitboard][Init]") {
     Bitboard bitboard{};
     bitboard.set_piece(Piece::BlackBishop, Square::E2);
     bitboard.set_piece(Piece::WhiteKnight, Square::A1);
@@ -103,7 +103,7 @@ TEST_CASE("Bitboard.Bitboard.Clear", "[Bitboard][Init]") {
     CHECK(bitboard.empty());
 }
 
-TEST_CASE("Bitboard.Bitboard.Toggle", "[Bitboard][Init]") {
+TEST_CASE("Core.Bitboard.Bitboard.Toggle", "[Bitboard][Init]") {
     Bitboard bitboard{FenString::starting_position()};
     bitboard.toggle_piece(Piece::WhiteRook, Square::A1);
     bitboard.toggle_piece(Piece::BlackPawn, Square::E5);
@@ -111,7 +111,7 @@ TEST_CASE("Bitboard.Bitboard.Toggle", "[Bitboard][Init]") {
     CHECK(bitboard.get_piece(Square::E5).value() == Piece::BlackPawn);
 }
 
-TEST_CASE("Bitboard.Bitboard.Piece Count", "[Bitboard][Basic]") {
+TEST_CASE("Core.Bitboard.Bitboard.Piece Count", "[Bitboard][Basic]") {
     Bitboard bitboard{FenString::starting_position()};
     CHECK(bitboard.piece_count(Piece::WhitePawn) == 8);
     CHECK(bitboard.piece_count(Piece::WhiteQueen) == 1);
@@ -123,7 +123,7 @@ TEST_CASE("Bitboard.Bitboard.Piece Count", "[Bitboard][Basic]") {
     CHECK(bitboard.piece_count(Piece::BlackBishop) == 1);
 }
 
-TEST_CASE("Bitboard.Bitboard.FromFEN", "[Bitboard][Init]") {
+TEST_CASE("Core.Bitboard.Bitboard.FromFEN", "[Bitboard][Init]") {
     Bitboard empty_bitboard{FenString{}};
     CHECK(empty_bitboard.empty());
     CHECK_FALSE(empty_bitboard.has_piece(PieceType::Pawn));

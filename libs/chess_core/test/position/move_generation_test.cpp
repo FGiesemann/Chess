@@ -11,7 +11,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Position.Bitboard.MoveGeneration (1)", "[Position][MoveGeneration]") {
+TEST_CASE("Core.Position.Bitboard.MoveGeneration (1)", "[Position][MoveGeneration]") {
     Position position{FenString{"2k2r2/3bp1q1/1bN5/8/8/4P1NQ/8/r2R2K1 w - - 0 1"}};
     MoveList moves = position.all_legal_moves();
     CHECK(moves.size() == 29);
@@ -63,7 +63,7 @@ TEST_CASE("Position.Bitboard.MoveGeneration (1)", "[Position][MoveGeneration]") 
     CHECK_FALSE(move_list_contains(moves, Move{Square::G1, Square::F2, Piece::WhiteKing}));
 }
 
-TEST_CASE("Position.Bitboard.MoveGeneration (2)", "[Position][MoveGeneration]") {
+TEST_CASE("Core.Position.Bitboard.MoveGeneration (2)", "[Position][MoveGeneration]") {
     Position position{FenString{"2k1r3/3p1N2/2b2pn1/q2N3P/1P2PQ2/P1R5/3B1P1p/R3K3 b - - 0 1"}};
     MoveList moves = position.all_legal_moves();
     CHECK(moves.size() == 33);

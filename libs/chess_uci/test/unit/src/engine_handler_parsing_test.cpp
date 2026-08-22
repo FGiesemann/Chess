@@ -29,7 +29,7 @@ auto parse_go(const std::string &go_str) -> go_command {
 
 } // namespace
 
-TEST_CASE("EngineHandler.Parser.Debug", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Parser.Debug", "[engine_handler]") {
     auto tokens = UCIHandler::tokenize("debug on");
     CHECK(UCIEngineHandler::parse_debug_command(tokens));
 
@@ -37,7 +37,7 @@ TEST_CASE("EngineHandler.Parser.Debug", "[engine_handler]") {
     CHECK_FALSE(UCIEngineHandler::parse_debug_command(tokens));
 }
 
-TEST_CASE("EngineHandler.Parser.Setoption", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Parser.Setoption", "[engine_handler]") {
     const auto command1 = parse_options("setoption name Selectivity value 3");
     CHECK(command1.name == "Selectivity");
     CHECK(command1.value == "3");
@@ -55,7 +55,7 @@ TEST_CASE("EngineHandler.Parser.Setoption", "[engine_handler]") {
     CHECK(command4.value == R"(c:\chess\tb\4;c:\chess\tb\5)");
 }
 
-TEST_CASE("EngineHandler.Parser.Position", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Parser.Position", "[engine_handler]") {
     const auto command1 = parse_position("position startpos");
     CHECK(command1.fen == "startpos");
     CHECK(command1.moves.empty());
@@ -73,7 +73,7 @@ TEST_CASE("EngineHandler.Parser.Position", "[engine_handler]") {
     CHECK(to_string(command3.moves[1]) == "e7e5");
 }
 
-TEST_CASE("EngineHandler.Parser.Go", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Parser.Go", "[engine_handler]") {
     const auto command1 = parse_go("go infinite");
     CHECK(command1.infinite);
 

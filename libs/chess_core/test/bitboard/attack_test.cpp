@@ -10,7 +10,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Bitboard.Bitboard.IsAttacked.PawnAttacks", "[Bitboard][Attacks]") {
+TEST_CASE("Core.Bitboard.Bitboard.IsAttacked.PawnAttacks", "[Bitboard][Attacks]") {
     Bitboard board{FenString{"r1N5/1Ppp4/5p2/2N3b1/pP3P1R/4rPP1/1p1P4/b7 w - - 0 1"}};
 
     CHECK(board.pawn_attacks(Square::A8, Color::White));
@@ -44,7 +44,7 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.PawnAttacks", "[Bitboard][Attacks]") {
     CHECK_FALSE(board.pawn_attacks(Square::A5, Color::Black));
 }
 
-TEST_CASE("Bitboard.Bitboard.IsAttacked.KnightAttacks", "[Bitboard][Attacks]") {
+TEST_CASE("Core.Bitboard.Bitboard.IsAttacked.KnightAttacks", "[Bitboard][Attacks]") {
     Bitboard board{FenString{"1n6/8/6N1/3n4/8/2N5/8/8 w - - 0 1"}};
 
     CHECK(board.knight_attacks(Square::A2, Color::White));
@@ -83,7 +83,7 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.KnightAttacks", "[Bitboard][Attacks]") {
     CHECK_FALSE(board.knight_attacks(Square::B8, Color::Black));
 }
 
-TEST_CASE("Bitboard.Bitboard.IsAttacked.SlidingPieceAttacks", "[Bitboard][Attacks]") {
+TEST_CASE("Core.Bitboard.Bitboard.IsAttacked.SlidingPieceAttacks", "[Bitboard][Attacks]") {
     Bitboard board{FenString{"8/1q1Bb3/6R1/2p1Rp2/6r1/1P1Q4/8/4b1B1 w - - 0 1"}};
 
     CHECK(board.sliding_piece_attacks(Square::B1, Color::White));
@@ -121,7 +121,7 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.SlidingPieceAttacks", "[Bitboard][Attack
     CHECK_FALSE(board.sliding_piece_attacks(Square::G7, Color::Black));
 }
 
-TEST_CASE("Bitboard.Bitboard.IsAttacked.ByWhite", "[Bitboard][Attacks]") {
+TEST_CASE("Core.Bitboard.Bitboard.IsAttacked.ByWhite", "[Bitboard][Attacks]") {
     Bitboard board{FenString{"5n2/2Q5/6k1/1B1n3P/4r3/R7/5N2/8 w - - 0 1"}};
 
     CHECK(board.is_attacked(Square::A1, Color::White)); // Rxa1
@@ -159,7 +159,7 @@ TEST_CASE("Bitboard.Bitboard.IsAttacked.ByWhite", "[Bitboard][Attacks]") {
     CHECK_FALSE(board.is_attacked(Square::H8, Color::White));
 }
 
-TEST_CASE("Bitboard.Bitboard.IsAttacked.ByBlack", "[Bitboard][Attacks]") {
+TEST_CASE("Core.Bitboard.Bitboard.IsAttacked.ByBlack", "[Bitboard][Attacks]") {
     Bitboard board{FenString{"q4n2/2Q5/6k1/1B1n3P/4r3/R7/5N2/2b5 b - - 0 1"}};
 
     CHECK(board.is_attacked(Square::A3, Color::Black)); // Bxa3 Qxa3

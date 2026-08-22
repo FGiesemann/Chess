@@ -47,7 +47,7 @@ auto check_full_move(PGNLexer &lexer, int number, const std::string &white_move,
 
 } // namespace
 
-TEST_CASE("PGN.Lexer.Single linear game", "[pgn]") {
+TEST_CASE("Game.PGN.Lexer.Single linear game", "[pgn]") {
     const std::string pgn_data{"[Event \"Test Event\"]\n"
                                "[Site \"Test Site\"]\n"
                                "[Date \"2020.01.01\"]\n"
@@ -84,7 +84,7 @@ TEST_CASE("PGN.Lexer.Single linear game", "[pgn]") {
     check_token(lexer, PGNLexer::TokenType::EndOfInput, 9);
 }
 
-TEST_CASE("PGN.Lexer.Promotions", "[pgn]") {
+TEST_CASE("Game.PGN.Lexer.Promotions", "[pgn]") {
     const std::string pgn_data{"[Event \"?\"]\n"
                                "[Site \"?\"]\n"
                                "[Date \"?\"]\n"
@@ -109,7 +109,7 @@ TEST_CASE("PGN.Lexer.Promotions", "[pgn]") {
     check_token(lexer, PGNLexer::TokenType::EndOfInput, 8);
 }
 
-TEST_CASE("PGN.Lexer.Commented game", "[pgn]") {
+TEST_CASE("Game.PGN.Lexer.Commented game", "[pgn]") {
     const std::string pgn_data{
         "[Event \"IBM Kasparov vs. Deep Blue Rematch\"]\n"
         "[Site \"New York, NY USA\"]\n"
@@ -166,7 +166,7 @@ TEST_CASE("PGN.Lexer.Commented game", "[pgn]") {
     check_token(lexer, PGNLexer::TokenType::EndOfInput, 14);
 }
 
-TEST_CASE("PGN.Lexer.Game with variations", "[pgn]") {
+TEST_CASE("Game.PGN.Lexer.Game with variations", "[pgn]") {
     const std::string pgn_data{
         "[Event \"Yugoslavian Club Championship\"]\n"
         "[Site \"Vrnjacka-Banja\"]\n"
@@ -243,13 +243,13 @@ TEST_CASE("PGN.Lexer.Game with variations", "[pgn]") {
     check_token(lexer, PGNLexer::TokenType::CloseParen, 15);
 }
 
-TEST_CASE("PGN.Lexer.Empty Input", "[pgn]") {
+TEST_CASE("Game.PGN.Lexer.Empty Input", "[pgn]") {
     auto pgn_stream = std::istringstream{};
     auto lexer = PGNLexer{&pgn_stream};
     check_token(lexer, PGNLexer::TokenType::EndOfInput);
 }
 
-TEST_CASE("PGN.Lexer.Unexpected End", "[pgn]") {
+TEST_CASE("Game.PGN.Lexer.Unexpected End", "[pgn]") {
     const std::string pgn_data{"[Event \"Test Event\"]\n\n"
                                "1. e4 e5 2. Nf3 Nc6 3."};
     auto pgn_stream = std::istringstream{pgn_data};
@@ -262,7 +262,7 @@ TEST_CASE("PGN.Lexer.Unexpected End", "[pgn]") {
     check_token(lexer, PGNLexer::TokenType::EndOfInput, 3);
 }
 
-TEST_CASE("PGN.Lexer.Invalid Result", "[pgn]") {
+TEST_CASE("Game.PGN.Lexer.Invalid Result", "[pgn]") {
     const std::string pgn_data{"[Event \"Test Event\"]\n\n"
                                "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 1/0"};
     auto pgn_stream = std::istringstream{pgn_data};

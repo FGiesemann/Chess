@@ -21,14 +21,14 @@ auto find_move(const MoveList &moves, const Move &ref_move) -> Move {
 
 } // namespace
 
-TEST_CASE("Position.Hashing.Initialization", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.Initialization", "[position][zobrist]") {
     const auto empty_position = Position{};
     const auto starting_position = Position::start_position();
     CHECK(empty_position.hash() == ZobristHash{});
     CHECK(starting_position.hash() == ZobristHash::starting_position_hash());
 }
 
-TEST_CASE("Position.Hashing.MakeMove.Simple", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.MakeMove.Simple", "[position][zobrist]") {
     auto position = Position::start_position();
     auto hash = ZobristHash::starting_position_hash();
 
@@ -43,7 +43,7 @@ TEST_CASE("Position.Hashing.MakeMove.Simple", "[position][zobrist]") {
     CHECK(position.hash() == hash);
 }
 
-TEST_CASE("Position.Hashing.MakeMove.En Passant", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.MakeMove.En Passant", "[position][zobrist]") {
     auto position = Position::start_position();
     auto hash = ZobristHash::starting_position_hash();
 
@@ -54,7 +54,7 @@ TEST_CASE("Position.Hashing.MakeMove.En Passant", "[position][zobrist]") {
     CHECK(position.hash() == hash);
 }
 
-TEST_CASE("Position.Hashing.MakeMove.Capture", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.MakeMove.Capture", "[position][zobrist]") {
     auto position = Position{FenString{"1k2b3/2n3n1/r6R/7Q/1B1pP3/3B4/6N1/2K5 b - e3 0 1"}};
     auto hash = ZobristHash::from_position(position);
 
@@ -78,7 +78,7 @@ TEST_CASE("Position.Hashing.MakeMove.Capture", "[position][zobrist]") {
     CHECK(position.hash() == hash);
 }
 
-TEST_CASE("Position.Hashing.MakeMove.En Passant Capture", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.MakeMove.En Passant Capture", "[position][zobrist]") {
     auto position = Position{FenString{"1k2b3/2n3n1/r6R/7Q/1B1pP3/3B4/6N1/2K5 b - e3 0 1"}};
     auto hash = ZobristHash::from_position(position);
 
@@ -90,7 +90,7 @@ TEST_CASE("Position.Hashing.MakeMove.En Passant Capture", "[position][zobrist]")
     CHECK(position.hash() == hash);
 }
 
-TEST_CASE("Position.Hashing.MakeMove.Castling", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.MakeMove.Castling", "[position][zobrist]") {
     const auto position_w = Position{FenString{"r3k2r/1pp2ppp/2n2n2/8/2B1PN2/2N2Q2/PPPP1PPP/R3K2R w KQkq - 0 1"}};
     const auto hash_w = ZobristHash::from_position(position_w);
 
@@ -134,7 +134,7 @@ TEST_CASE("Position.Hashing.MakeMove.Castling", "[position][zobrist]") {
     CHECK(position5.hash() == hash5);
 }
 
-TEST_CASE("Position.Hashing.MakeMove.Promotion", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.MakeMove.Promotion", "[position][zobrist]") {
     auto position_w = Position{FenString{"8/5P2/8/8/8/8/1p6/8 w - - 0 1"}};
     auto hash_w = ZobristHash::from_position(position_w);
 
@@ -154,7 +154,7 @@ TEST_CASE("Position.Hashing.MakeMove.Promotion", "[position][zobrist]") {
     CHECK(position_b.hash() == hash_b);
 }
 
-TEST_CASE("Position.Hashing.UnmakeMove.Simple", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.UnmakeMove.Simple", "[position][zobrist]") {
     auto position = Position{FenString{"r1bqkbnr/pppppppp/2n5/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 1"}};
     auto hash = ZobristHash::from_position(position);
     const auto move1 = Move{.from = Square::B8, .to = Square::C6, .piece = Piece::BlackKnight, .castling_rights_before = CastlingRights::all()};
@@ -172,7 +172,7 @@ TEST_CASE("Position.Hashing.UnmakeMove.Simple", "[position][zobrist]") {
     CHECK(position.hash() == ZobristHash::starting_position_hash());
 }
 
-TEST_CASE("Position.Hashing.UnmakeMove.En Passant", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.UnmakeMove.En Passant", "[position][zobrist]") {
     auto position = Position{FenString{"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"}};
     auto hash = ZobristHash::from_position(position);
 
@@ -184,7 +184,7 @@ TEST_CASE("Position.Hashing.UnmakeMove.En Passant", "[position][zobrist]") {
     CHECK(position.hash() == ZobristHash::starting_position_hash());
 }
 
-TEST_CASE("Position.Hashing.UnmakeMove.Capture", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.UnmakeMove.Capture", "[position][zobrist]") {
     auto position = Position{FenString{"1k2b3/2n3n1/r6R/7Q/1B1pP3/3B4/6N1/2K5 b - e3 0 1"}};
     const auto start_hash = ZobristHash::from_position(position);
     const auto move1 = find_move(position.all_legal_moves(), Move{.from = Square::A6, .to = Square::H6, .piece = Piece::BlackRook, .captured = Piece::WhiteRook});
@@ -216,7 +216,7 @@ TEST_CASE("Position.Hashing.UnmakeMove.Capture", "[position][zobrist]") {
     CHECK(position.hash() == start_hash);
 }
 
-TEST_CASE("Position.Hashing.UnmakeMove.En Passant Capture", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.UnmakeMove.En Passant Capture", "[position][zobrist]") {
     auto position = Position{FenString{"1k2b3/2n3n1/r6R/7Q/1B1pP3/3B4/6N1/2K5 b - e3 0 1"}};
     const auto start_hash = ZobristHash::from_position(position);
     const auto move =
@@ -233,7 +233,7 @@ TEST_CASE("Position.Hashing.UnmakeMove.En Passant Capture", "[position][zobrist]
     CHECK(position.hash() == start_hash);
 }
 
-TEST_CASE("Position.Hashing.UnmakeMove.Castling", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.UnmakeMove.Castling", "[position][zobrist]") {
     const auto position_w = Position{FenString{"r3k2r/1pp2ppp/2n2n2/8/2B1PN2/2N2Q2/PPPP1PPP/R3K2R w KQkq - 0 1"}};
     const auto start_hash_w = ZobristHash::from_position(position_w);
 
@@ -265,7 +265,7 @@ TEST_CASE("Position.Hashing.UnmakeMove.Castling", "[position][zobrist]") {
     CHECK(position4.hash() == start_hash_b);
 }
 
-TEST_CASE("Position.Hashing.UnmakeMove.Promotion", "[position][zobrist]") {
+TEST_CASE("Core.Position.Hashing.UnmakeMove.Promotion", "[position][zobrist]") {
     auto position_w = Position{FenString{"8/5P2/8/8/8/8/1p6/8 w - - 0 1"}};
     auto hash_w = ZobristHash::from_position(position_w);
     const auto move_w = find_move(position_w.all_legal_moves(), Move{.from = Square::F7, .to = Square::F8, .piece = Piece::WhitePawn, .promoted = Piece::WhiteQueen});

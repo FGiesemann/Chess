@@ -11,7 +11,7 @@
 
 using namespace chessuci;
 
-TEST_CASE("EngineHandler.Callback.No Callbacks", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Callback.No Callbacks", "[engine_handler]") {
     std::stringstream sstr{"quit\n"};
     UCIEngineHandler handler{sstr};
 
@@ -23,7 +23,7 @@ TEST_CASE("EngineHandler.Callback.No Callbacks", "[engine_handler]") {
     CHECK_FALSE(handler.is_running());
 }
 
-TEST_CASE("EngineHandler.Callback.UCI", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Callback.UCI", "[engine_handler]") {
     std::stringstream sstr{"uci\n"};
     UCIEngineHandler handler{sstr};
 
@@ -36,7 +36,7 @@ TEST_CASE("EngineHandler.Callback.UCI", "[engine_handler]") {
     // Stop shouldn't be necessary, will be called in handler's desctuctor anyway
 }
 
-TEST_CASE("EngineHandler.Callback.Debug", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Callback.Debug", "[engine_handler]") {
     std::stringstream sstr{"debug on\n"};
     UCIEngineHandler handler{sstr};
 
@@ -50,7 +50,7 @@ TEST_CASE("EngineHandler.Callback.Debug", "[engine_handler]") {
     handler.stop();
 }
 
-TEST_CASE("EngineHandler.Callback.Multiple", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Callback.Multiple", "[engine_handler]") {
     std::stringstream sstr{"debug on\ngo depth 5\n"};
     UCIEngineHandler handler{sstr};
 
@@ -69,7 +69,7 @@ TEST_CASE("EngineHandler.Callback.Multiple", "[engine_handler]") {
     handler.stop();
 }
 
-TEST_CASE("EngineHandler.Callback.Custom", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Callback.Custom", "[engine_handler]") {
     std::stringstream sstr{"perft 5\n"};
     UCIEngineHandler handler{sstr};
 
@@ -87,7 +87,7 @@ TEST_CASE("EngineHandler.Callback.Custom", "[engine_handler]") {
     handler.stop();
 }
 
-TEST_CASE("EngineHandler.Callback.Unknown", "[engine_handler]") {
+TEST_CASE("UCI.EngineHandler.Callback.Unknown", "[engine_handler]") {
     std::stringstream sstr{"unknown_command\n"};
     UCIEngineHandler handler{sstr};
 

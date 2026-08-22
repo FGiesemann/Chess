@@ -28,7 +28,7 @@ auto parse_option(const std::string &option_str) -> Option {
 
 } // namespace
 
-TEST_CASE("GuiHandler.Parser.Bestmove", "[gui_handler]") {
+TEST_CASE("UCI.GuiHandler.Parser.Bestmove", "[gui_handler]") {
     const auto info1 = parse_bestmove("bestmove e2e4");
     CHECK(to_string(info1.bestmove) == "e2e4");
 
@@ -38,7 +38,7 @@ TEST_CASE("GuiHandler.Parser.Bestmove", "[gui_handler]") {
     CHECK(to_string(info2.pondermove.value()) == "d2d3");
 }
 
-TEST_CASE("GuiHandler.Parser.Info", "[gui_handler]") {
+TEST_CASE("UCI.GuiHandler.Parser.Info", "[gui_handler]") {
     const auto info1 = parse_info("info depth 20 seldepth 25 currmovenumber 15 nps 3456789 pv a2a3 b7b5 a3a4");
     CHECK(info1.depth == 20);
     CHECK(info1.seldepth == 25);
@@ -73,7 +73,7 @@ TEST_CASE("GuiHandler.Parser.Info", "[gui_handler]") {
     CHECK(info4.multipv == 1);
 }
 
-TEST_CASE("GuiHandler.Parser.Option", "[gui_handler]") {
+TEST_CASE("UCI.GuiHandler.Parser.Option", "[gui_handler]") {
     const auto option1 = parse_option("option name UCI_EngineAbout type string default Shredder by Stefan Meyer-Kahlen, see www.shredderchess.com");
     CHECK(option1.name == "UCI_EngineAbout");
     CHECK(option1.type == Option::Type::String);

@@ -12,7 +12,7 @@
 
 using namespace chessgame;
 
-TEST_CASE("PGN.Writer.Metadata", "[pgn]") {
+TEST_CASE("Game.PGN.Writer.Metadata", "[pgn]") {
     GameMetadata metadata{};
     metadata.add("BlackFideId", "345377");
     metadata.add("Event", "Test Event");
@@ -43,7 +43,7 @@ TEST_CASE("PGN.Writer.Metadata", "[pgn]") {
 )");
 }
 
-TEST_CASE("PGN.Writer.GameTree", "[pgn]") {
+TEST_CASE("Game.PGN.Writer.GameTree", "[pgn]") {
     const std::string pgn_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [Date "2025.08.30"]
@@ -79,7 +79,7 @@ Bf4 g6) 4... c6 5. Ba4 d6)"
     );
 }
 
-TEST_CASE("PGN.Writer.Game", "[pgn]") {
+TEST_CASE("Game.PGN.Writer.Game", "[pgn]") {
     const std::string pgn_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [Date "2025.08.30"]
@@ -127,7 +127,7 @@ Bf4 g6) 4... c6 5. Ba4 d6 *
     );
 }
 
-TEST_CASE("PGN.Writer.Annotated", "[pgn]") {
+TEST_CASE("Game.PGN.Writer.Annotated", "[pgn]") {
     const std::string pgn_data = R"([Event "Test Event"]
 [Site "Test Site"]
 [Date "2025.08.30"]

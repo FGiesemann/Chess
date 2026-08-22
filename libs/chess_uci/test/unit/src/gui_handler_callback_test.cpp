@@ -24,7 +24,7 @@ inline auto get_test_binary_path(const std::string &name) -> std::string {
     return binary.string();
 }
 
-TEST_CASE("GuiHandler.Callback.No Callbacks", "[gui_handler]") {
+TEST_CASE("UCI.GuiHandler.Callback.No Callbacks", "[gui_handler]") {
     UCIGuiHandler handler{};
     auto binary = get_test_binary_path("test_echo");
 
@@ -39,7 +39,7 @@ TEST_CASE("GuiHandler.Callback.No Callbacks", "[gui_handler]") {
     CHECK_FALSE(handler.process().is_running());
 }
 
-TEST_CASE("EngineProcessMock", "[engine_process_mock]") {
+TEST_CASE("UCI.EngineProcessMock", "[engine_process_mock]") {
     test::EngineProcessMock mock;
 
     mock.when_receives("test", [](const std::string &) -> std::vector<std::string> { return {"response1", "response2"}; });
@@ -65,7 +65,7 @@ TEST_CASE("EngineProcessMock", "[engine_process_mock]") {
     CHECK_FALSE(mock.can_read());
 }
 
-TEST_CASE("GuiHandler.Callback.Quit", "[gui_handler]") {
+TEST_CASE("UCI.GuiHandler.Callback.Quit", "[gui_handler]") {
     std::promise<void> quit_done;
     auto quit_future = quit_done.get_future();
     auto mock_engine = std::make_unique<test::EngineProcessMock>();
@@ -82,7 +82,7 @@ TEST_CASE("GuiHandler.Callback.Quit", "[gui_handler]") {
     handler.stop();
 }
 
-TEST_CASE("GuiHandler.Callback.Isready", "[gui_handler]") {
+TEST_CASE("UCI.GuiHandler.Callback.Isready", "[gui_handler]") {
     auto mock_engine = std::make_unique<test::EngineProcessMock>();
     mock_engine->when_receives("isready", [](const std::string &) -> std::vector<std::string> { return {"readyok"}; });
 
@@ -97,7 +97,7 @@ TEST_CASE("GuiHandler.Callback.Isready", "[gui_handler]") {
     handler.stop();
 }
 
-TEST_CASE("GuiHandler.Callback.UCI", "[gui_handler]") {
+TEST_CASE("UCI.GuiHandler.Callback.UCI", "[gui_handler]") {
     auto mock_engine = std::make_unique<test::EngineProcessMock>();
     mock_engine->when_receives("uci", [](const std::string &) -> std::vector<std::string> { return {"id name test_engine", "id author test_author", "uciok"}; });
 
@@ -124,7 +124,7 @@ TEST_CASE("GuiHandler.Callback.UCI", "[gui_handler]") {
     handler.stop();
 }
 
-TEST_CASE("GuiHandler.Callback.Multiple", "[gui_handler]") {
+TEST_CASE("UCI.GuiHandler.Callback.Multiple", "[gui_handler]") {
     auto mock_engine = std::make_unique<test::EngineProcessMock>();
     mock_engine->when_receives("uci", [](const std::string &) -> std::vector<std::string> { return {"id name test_engine", "id author test_author", "uciok"}; });
     mock_engine->when_receives("isready", [](const std::string &) -> std::vector<std::string> { return {"readyok"}; });

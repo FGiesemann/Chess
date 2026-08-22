@@ -27,7 +27,7 @@ auto check_san_move(const Move &move, const SANMove &san_move, const MoveList &m
 
 } // namespace
 
-TEST_CASE("SAN.Generator.Simple Pawn Moves", "[san]") {
+TEST_CASE("Game.SAN.Generator.Simple Pawn Moves", "[san]") {
     const Position position{FenString{"r1q1krn1/1p4b1/2pn1p2/pP2p1p1/1N1pPP2/2Q2N2/1pP2PPP/5RK1 w - - 0 1"}};
     const auto moves = position.all_legal_moves();
 
@@ -43,7 +43,7 @@ TEST_CASE("SAN.Generator.Simple Pawn Moves", "[san]") {
     );
 }
 
-TEST_CASE("SAN.Generator.Pawn Moves", "[san]") {
+TEST_CASE("Game.SAN.Generator.Pawn Moves", "[san]") {
     const Position position{FenString{"r1q1krn1/1p4b1/2pn1p2/pP2p1p1/1N1pPP2/2Q2N2/1pP2PPP/5RK1 b - e3 0 1"}};
     const auto moves = position.all_legal_moves();
 
@@ -65,7 +65,7 @@ TEST_CASE("SAN.Generator.Pawn Moves", "[san]") {
     );
 }
 
-TEST_CASE("SAN.Generator.Simple Piece Moves", "[san]") {
+TEST_CASE("Game.SAN.Generator.Simple Piece Moves", "[san]") {
     const Position position{FenString{"5k2/2b5/4rN2/1n5b/5N2/1q5r/2R2Q2/4B3 w - - 0 1"}};
     const auto moves = position.all_legal_moves();
 
@@ -84,7 +84,7 @@ TEST_CASE("SAN.Generator.Simple Piece Moves", "[san]") {
     );
 }
 
-TEST_CASE("SAN.Generator.Disambiguation", "[san]") {
+TEST_CASE("Game.SAN.Generator.Disambiguation", "[san]") {
     Position positon{FenString{"4k3/8/2r2n2/4P2q/B7/n7/3nq2q/n4r2 b - - 0 1"}};
     const auto moves = positon.all_legal_moves();
 
@@ -106,7 +106,7 @@ TEST_CASE("SAN.Generator.Disambiguation", "[san]") {
     );
 }
 
-TEST_CASE("SAN.Generator.Castling Moves", "[san]") {
+TEST_CASE("Game.SAN.Generator.Castling Moves", "[san]") {
     const Position position_w{FenString{"r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"}};
     const auto white_moves = position_w.all_legal_moves();
     const Position position_b{FenString{"r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1"}};
@@ -130,7 +130,7 @@ TEST_CASE("SAN.Generator.Castling Moves", "[san]") {
     );
 }
 
-TEST_CASE("SAN.Generator.Invalid Move", "[san]") {
+TEST_CASE("Game.SAN.Generator.Invalid Move", "[san]") {
     Position position{FenString{"1k3q2/pp6/2n3n1/8/1B4P1/5rN1/2N5/R1K2Q2 w - - 0 1"}};
     const auto white_moves = position.all_legal_moves();
     position.make_move(Move{.from = Square::A1, .to = Square::B1, .piece = Piece::WhiteRook});

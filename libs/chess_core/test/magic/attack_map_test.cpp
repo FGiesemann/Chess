@@ -9,7 +9,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Magic.Attack Map.Rook", "[magic]") {
+TEST_CASE("Core.Magic.Attack Map.Rook", "[magic]") {
     const auto blockers1 = Bitmap{0x0004000022000000ULL};
     const auto attack1 = Bitmap{0x000404043A040404ULL};
     CHECK(attack_bitmap(PieceType::Rook, Square::C4, blockers1) == attack1);
@@ -27,7 +27,7 @@ TEST_CASE("Magic.Attack Map.Rook", "[magic]") {
     CHECK(attack_bitmap(PieceType::Rook, Square::H8, blockers4) == attack4);
 }
 
-TEST_CASE("Magic.Attack Map.Bishop", "[magic]") {
+TEST_CASE("Core.Magic.Attack Map.Bishop", "[magic]") {
     const auto blockers1 = Bitmap{0x0000200000000010ULL};
     const auto attack1 = Bitmap{0x000020110A000A11ULL};
     CHECK(attack_bitmap(PieceType::Bishop, Square::C3, blockers1) == attack1);

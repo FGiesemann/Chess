@@ -11,12 +11,12 @@
 
 using namespace chesscore;
 
-TEST_CASE("Data.Zobrist.ZobristKeys.Initialization", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristKeys.Initialization", "[zobrist]") {
     ZobristKeys::initialize();
     CHECK(ZobristKeys::initialized());
 }
 
-TEST_CASE("Data.Zobrist.ZobristKeys.Nonzero", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristKeys.Nonzero", "[zobrist]") {
     ZobristKeys::initialize();
 
     CHECK(ZobristKeys::side_key() != 0);
@@ -85,7 +85,7 @@ TEST_CASE("Data.Zobrist.ZobristKeys.Nonzero", "[zobrist]") {
     }
 }
 
-TEST_CASE("Data.Zobrist.ZobristHash.Initialization", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristHash.Initialization", "[zobrist]") {
     CHECK(ZobristHash{}.hash() == 0);
     CHECK(ZobristHash::starting_position_hash().hash() != 0);
 
@@ -94,7 +94,7 @@ TEST_CASE("Data.Zobrist.ZobristHash.Initialization", "[zobrist]") {
     CHECK(hash == ZobristHash::starting_position_hash());
 }
 
-TEST_CASE("Data.Zobrist.ZobristHash.Swapping Side", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristHash.Swapping Side", "[zobrist]") {
     const auto hash = ZobristHash::starting_position_hash();
     auto hash2 = hash;
     hash2.swap_side();
@@ -103,7 +103,7 @@ TEST_CASE("Data.Zobrist.ZobristHash.Swapping Side", "[zobrist]") {
     CHECK(hash2 == hash);
 }
 
-TEST_CASE("Data.Zobrist.ZobristHash.En Passant", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristHash.En Passant", "[zobrist]") {
     const auto hash = ZobristHash::starting_position_hash();
     auto hash2 = hash;
     hash2.set_enpassant(File{2});
@@ -119,7 +119,7 @@ TEST_CASE("Data.Zobrist.ZobristHash.En Passant", "[zobrist]") {
     CHECK(hash2 == hash3);
 }
 
-TEST_CASE("Data.Zobrist.ZobristHash.En Passant FEN", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristHash.En Passant FEN", "[zobrist]") {
     const auto position = Position{FenString{"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"}};
     const auto ref_hash = ZobristHash::from_position(position);
 
@@ -131,7 +131,7 @@ TEST_CASE("Data.Zobrist.ZobristHash.En Passant FEN", "[zobrist]") {
     CHECK(ref_hash == hash4);
 }
 
-TEST_CASE("Data.Zobrist.ZobristHash.Castling", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristHash.Castling", "[zobrist]") {
     CastlingRights rights1{CastlingRights::white_king};
     CastlingRights rights2{CastlingRights::white_king | CastlingRights::white_queen | CastlingRights::black_king};
     CastlingRights rights3{CastlingRights::black_king | CastlingRights::black_queen};
@@ -154,7 +154,7 @@ TEST_CASE("Data.Zobrist.ZobristHash.Castling", "[zobrist]") {
     CHECK(hash2 == hash4);
 }
 
-TEST_CASE("Data.Zobrist.ZobristHash.Pieces", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristHash.Pieces", "[zobrist]") {
     const auto hash = ZobristHash::starting_position_hash();
 
     auto hash2 = hash;
@@ -171,7 +171,7 @@ TEST_CASE("Data.Zobrist.ZobristHash.Pieces", "[zobrist]") {
     CHECK(hash2 == hash);
 }
 
-TEST_CASE("Data.Zobrist.ZobristHash.Position", "[zobrist]") {
+TEST_CASE("Core.Data.Zobrist.ZobristHash.Position", "[zobrist]") {
     const auto end_position = Position{FenString{"rn1qk2r/pb1ppp1p/2p2np1/8/4P3/1PP2N2/P4PPP/R1BQ1RK1 w kq - 1 10"}};
     const auto end_hash = ZobristHash::from_position(end_position);
 

@@ -26,7 +26,7 @@ auto check_single_move(const std::string &san_str, Color side_to_move, const Mov
 
 } // namespace
 
-TEST_CASE("SAN.Move Matcher.Move.Simple", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.Move.Simple", "[san][move_matcher]") {
     CHECK(san_move_matches(
         SANMove{.san_string = "e4", .moving_piece = Piece::WhitePawn, .target_square = Square::E4}, Move{.from = Square::E2, .to = Square::E4, .piece = Piece::WhitePawn}
     ));
@@ -64,7 +64,7 @@ TEST_CASE("SAN.Move Matcher.Move.Simple", "[san][move_matcher]") {
     ));
 }
 
-TEST_CASE("SAN.Move Matcher.Move.Capture", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.Move.Capture", "[san][move_matcher]") {
     CHECK(san_move_matches(
         SANMove{.san_string = "Qxg4", .moving_piece = Piece::WhiteQueen, .target_square = Square::G4, .capturing = true},
         Move{.from = Square::D1, .to = Square::G4, .piece = Piece::WhiteQueen, .captured = Piece::BlackQueen}
@@ -75,14 +75,14 @@ TEST_CASE("SAN.Move Matcher.Move.Capture", "[san][move_matcher]") {
     ));
 }
 
-TEST_CASE("SAN.Move Matcher.Move.Promotion", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.Move.Promotion", "[san][move_matcher]") {
     CHECK(san_move_matches(
         SANMove{.san_string = "c8=Q", .moving_piece = Piece::WhitePawn, .target_square = Square::C8, .promotion = Piece::WhiteQueen},
         Move{.from = Square::C7, .to = Square::C8, .piece = Piece::WhitePawn, .promoted = Piece::WhiteQueen}
     ));
 }
 
-TEST_CASE("SAN.Move Matcher.List.Unambiguous Moves", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.List.Unambiguous Moves", "[san][move_matcher]") {
     const MoveList moves{
         Move{.from = Square::A1, .to = Square::A5, .piece = Piece::WhiteRook},   // Ra5
         Move{.from = Square::C4, .to = Square::E3, .piece = Piece::BlackKnight}, // Ne3
@@ -107,7 +107,7 @@ TEST_CASE("SAN.Move Matcher.List.Unambiguous Moves", "[san][move_matcher]") {
     CHECK(move_list_contains(moves4, Move{.from = Square::G5, .to = Square::F3, .piece = Piece::BlackKnight}));
 }
 
-TEST_CASE("SAN.Move Matcher.List.Disambiguations", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.List.Disambiguations", "[san][move_matcher]") {
     const MoveList moves{
         Move{.from = Square::B4, .to = Square::D5, .piece = Piece::WhiteKnight}, // Nbd5
         Move{.from = Square::E3, .to = Square::D5, .piece = Piece::WhiteKnight}, // Ned5
@@ -142,7 +142,7 @@ TEST_CASE("SAN.Move Matcher.List.Disambiguations", "[san][move_matcher]") {
     CHECK(move_list_contains(moves2_3, Move{.from = Square::F6, .to = Square::F4, .piece = Piece::BlackRook}));
 }
 
-TEST_CASE("SAN.Move Matcher.List.Capture", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.List.Capture", "[san][move_matcher]") {
     const MoveList moves{
         Move{.from = Square::C1, .to = Square::G5, .piece = Piece::WhiteBishop, .captured = Piece::BlackQueen}, // Bxg5
         Move{.from = Square::E5, .to = Square::C4, .piece = Piece::BlackKnight, .captured = Piece::WhitePawn},  // Nxc4
@@ -158,7 +158,7 @@ TEST_CASE("SAN.Move Matcher.List.Capture", "[san][move_matcher]") {
     CHECK(move_list_contains(moves2, Move{.from = Square::E5, .to = Square::C4, .piece = Piece::BlackKnight, .captured = Piece::WhitePawn}));
 }
 
-TEST_CASE("SAN.Move Matcher.List.Promotion", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.List.Promotion", "[san][move_matcher]") {
     const MoveList moves{
         Move{.from = Square::E7, .to = Square::E8, .piece = Piece::WhitePawn, .promoted = Piece::WhiteQueen},                                // e8=Q
         Move{.from = Square::C2, .to = Square::C1, .piece = Piece::BlackPawn, .promoted = Piece::BlackKnight},                               // c1=N
@@ -214,7 +214,7 @@ TEST_CASE("SAN.Move Matcher.List.Promotion", "[san][move_matcher]") {
     CHECK(move_list_contains(moves7, Move{.from = Square::C7, .to = Square::C8, .piece = Piece::WhitePawn, .promoted = Piece::WhiteQueen}));
 }
 
-TEST_CASE("SAN.Move Matcher.Position.White", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.Position.White", "[san][move_matcher]") {
     const Position position_w{FenString{"3r4/ppP4k/1q2Np1r/b4Np1/1RP1B1nP/3n3P/P4B2/1KR5 w - - 0 1"}};
 
     const auto white_moves = position_w.all_legal_moves();
@@ -272,7 +272,7 @@ TEST_CASE("SAN.Move Matcher.Position.White", "[san][move_matcher]") {
     check_single_move("hxg4", Color::White, white_moves, Move{.from = Square::H3, .to = Square::G4, .piece = Piece::WhitePawn, .captured = Piece::BlackKnight});
 }
 
-TEST_CASE("SAN.Move Matcher.Position.Black", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.Position.Black", "[san][move_matcher]") {
     const Position position_b{FenString{"3r4/ppP4k/1q2Np1r/b4Np1/1RP1B1nP/3n3P/P4B2/1KR5 b - - 0 1"}};
     const auto black_moves = position_b.all_legal_moves();
     CHECK(black_moves.size() == 43);
@@ -321,7 +321,7 @@ TEST_CASE("SAN.Move Matcher.Position.Black", "[san][move_matcher]") {
     check_single_move("Kh8", Color::Black, black_moves, Move{.from = Square::H7, .to = Square::H8, .piece = Piece::BlackKing});
 }
 
-TEST_CASE("SAN.Move Matcher.Position.Disambiguation", "[san][move_matcher]") {
+TEST_CASE("Game.SAN.Move Matcher.Position.Disambiguation", "[san][move_matcher]") {
     const Position position{FenString{"3r1rk1/1p1bqp2/p1pR1p1p/8/4P3/P4B2/1PP1QPP1/3R3K w - - 0 22"}};
     const auto white_moves = position.all_legal_moves();
     check_single_move("Rd1d2", Color::White, white_moves, Move{.from = Square::D1, .to = Square::D2, .piece = Piece::WhiteRook});

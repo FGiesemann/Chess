@@ -11,7 +11,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
+TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
     Bitboard board{FenString::starting_position()};
 
     Move m1{
@@ -97,7 +97,7 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
     CHECK(board.get_piece(Square::F1) == Piece::WhiteRook);
 }
 
-TEST_CASE("Bitboard.Bitboard.MakeMove.Promotion", "[Bitboard][MakeMove]") {
+TEST_CASE("Core.Bitboard.Bitboard.MakeMove.Promotion", "[Bitboard][MakeMove]") {
     Bitboard board{FenString{"2kr4/p4P1p/1p6/8/2B3b1/2N2N2/PP1P2PP/2B1K3 w - - 0 1"}};
 
     Move m{
@@ -113,7 +113,7 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Promotion", "[Bitboard][MakeMove]") {
     CHECK(board.get_piece(Square::F8) == Piece::WhiteQueen);
 }
 
-TEST_CASE("Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
+TEST_CASE("Core.Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
     FenString fen{"r3k2r/ppp2ppp/8/8/8/8/PPP2PPP/R3K2R w KQkq - 0 1"};
     Bitboard board1{fen};
     Bitboard board2{fen};
@@ -174,7 +174,7 @@ TEST_CASE("Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
     CHECK(board4.get_piece(Square::D8) == Piece::BlackRook);
 }
 
-TEST_CASE("Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
+TEST_CASE("Core.Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
     Bitboard board1{FenString{"8/8/8/8/4Pp2/8/8/8 b - e3 0 1"}};
 
     Move b_capture_en_passant{

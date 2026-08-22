@@ -10,7 +10,7 @@
 
 using namespace chesscore;
 
-TEST_CASE("Position.UnmakeMove.SinglePawn", "[Position][UnmakeMove]") {
+TEST_CASE("Core.Position.UnmakeMove.SinglePawn", "[Position][UnmakeMove]") {
     Position position{FenString::starting_position()};
 
     Move move{
@@ -34,7 +34,7 @@ TEST_CASE("Position.UnmakeMove.SinglePawn", "[Position][UnmakeMove]") {
     CHECK_FALSE(position.en_passant_target().valid());
 }
 
-TEST_CASE("Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
+TEST_CASE("Core.Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
     Position position{FenString{"8/pp6/1q3n1B/8/1P6/2N2N2/6PP/6R1 b - b3 18 9"}};
 
     Move m{
