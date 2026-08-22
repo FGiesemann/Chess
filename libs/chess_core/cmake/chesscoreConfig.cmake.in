@@ -1,0 +1,30 @@
+@PACKAGE_INIT@
+
+set(${CMAKE_FIND_PACKAGE_NAME}_FOUND TRUE)
+
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+
+if (${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
+    foreach (_comp IN LISTS ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
+        if (_comp STREQUAL "chesscore_io")
+            if (TARGET chesscore::chesscore_io)
+                set(${CMAKE_FIND_PACKAGE_NAME}_${_comp}_FOUND TRUE)
+            else()
+                set(${CMAKE_FIND_PACKAGE_NAME}_${_comp}_FOUND FALSE)
+                if (${CMAKE_FIND_PACKAGE_NAME}_FIND_REQUIRED_${_comp})
+                    set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+                    set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "Required component \"${_comp}\" not found (target missing).")
+                endif()
+            endif()
+        endif()
+    endforeach()
+endif()
+
+check_required_components(chesscore)
+
+set(chesscore_INCLUDE_DIR "${PACKAGE_PREFIX_DIR}/include/chesscore")
+set(chesscore_LIBRARY chesscore::chesscore)
+if(chesscore_chesscore_io_FOUND)
+    set(chesscore_io_INCLUDE_DIR "${PACKAGE_PREFIX_DIR}/include/chesscore_io")
+    set(chesscore_io_LIBRARY chesscore::chesscore_io)
+endif()

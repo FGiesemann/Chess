@@ -1,0 +1,43 @@
+/* ************************************************************************** *
+ * Chess Core                                                                 *
+ * Data structures and algorithms for chess                                   *
+ * ************************************************************************** */
+
+#include <catch2/catch_all.hpp>
+
+#include "chesscore/magic.h"
+
+using namespace chesscore;
+
+TEST_CASE("Magic.Blocker.Mask.Non Sliding", "[magic]") {
+    CHECK(blocker_mask(PieceType::King, Square::A5).empty());
+    CHECK(blocker_mask(PieceType::Queen, Square::F2).empty());
+}
+
+TEST_CASE("Magic.Blocker.Mask.Rook", "[magic]") {
+    const auto mask1 = blocker_mask(PieceType::Rook, Square::E3);
+    CHECK(mask1 == Bitmap{0x00101010106E1000ULL});
+
+    const auto mask2 = blocker_mask(PieceType::Rook, Square::H5);
+    CHECK(mask2 == Bitmap{0x0080807E80808000ULL});
+
+    const auto mask3 = blocker_mask(PieceType::Rook, Square::H8);
+    CHECK(mask3 == Bitmap{0x7E80808080808000ULL});
+}
+
+TEST_CASE("Magic.Blocker.Mask.Bishop", "[magic]") {
+    const auto mask1 = blocker_mask(PieceType::Bishop, Square::E3);
+    CHECK(mask1 == Bitmap{0x0000024428002800ULL});
+
+    const auto mask2 = blocker_mask(PieceType::Bishop, Square::G8);
+    CHECK(mask2 == Bitmap{0x0020100804020000ULL});
+
+    const auto mask3 = blocker_mask(PieceType::Bishop, Square::C6);
+    CHECK(mask3 == Bitmap{0x000A000A10204000ULL});
+}
+
+TEST_CASE("Magic.Blocker.Config Count", "[magic]") {
+    CHECK(blocker_config_count(Bitmap{}) == 1);
+    CHECK(blocker_config_count(Bitmap{1ULL}) == 2);
+    CHECK(blocker_config_count(Bitmap{0x0005000004002030ULL}) == 64);
+}
