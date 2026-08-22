@@ -4,10 +4,11 @@
  * ************************************************************************** */
 
 #include "chesscore/bitboard.h"
-#include "chesscore/bitboard_tables.h"
 #include "chesscore/magic.h"
 #include "chesscore/move.h"
 #include "chesscore/piece.h"
+
+#include "bitboard_tables.h"
 
 namespace chesscore {
 

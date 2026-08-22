@@ -27,9 +27,9 @@ MultiSolutionFinder::~MultiSolutionFinder() {
 
 auto MultiSolutionFinder::process(chesscore::EpdRecord &record) -> void {
     m_current_record = &record;
-    int expected_depth = record.pv.size();
+    auto expected_depth = record.pv.size();
     std::string position_fen = chesscore::FenString{record.position.piece_placement(), record.position.state()}.str();
-    int max_variants = 5;
+    std::size_t max_variants = 5;
 
     m_received_callback = Callback::None;
     while (true) {
@@ -65,7 +65,6 @@ auto MultiSolutionFinder::search_info(const chessuci::search_info &info) -> void
         return;
     }
     if (info.score.has_value() && info.score.value().mate.has_value()) {
-        int mate = info.score->mate.value();
         if (!info.pv.empty()) {
             const auto &uci_move = info.pv.front();
             const auto move = convert_legal_move(uci_move, m_current_record->position);
@@ -85,6 +84,7 @@ auto MultiSolutionFinder::search_info(const chessuci::search_info &info) -> void
 }
 
 auto MultiSolutionFinder::bestmove(const chessuci::bestmove_info &info) -> void {
+    std::ignore = info;
     {
         std::scoped_lock lock{m_mutex};
         m_received_callback = Callback::BestMove;

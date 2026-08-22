@@ -1,18 +1,21 @@
-add_executable(chess_game
-    commands.cpp
-    main.cpp
-    user_io.cpp
-)
+add_executable(chess_game_tool)
 
-target_link_libraries(chess_game
+target_sources(chess_game_tool
     PRIVATE
-    chesscore::chesscore
-    chesscore::chesscore_io
-    ChessGame::ChessGame
+        commands.cpp
+        main.cpp
+        user_io.cpp
 )
 
-target_compile_options(chess_game PRIVATE
+target_link_libraries(chess_game_tool
+    PRIVATE
+        Chess::core
+        Chess::core_io
+        Chess::game
+)
+
+target_compile_options(chess_game_tool PRIVATE
     "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
 )
 
-add_optimization_settings(chess_game)
+add_optimization_settings(chess_game_tool)

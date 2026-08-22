@@ -1,115 +1,87 @@
-cmake_minimum_required(VERSION 3.20)
-project(ChessGui VERSION 1.0.0 LANGUAGES CXX)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
-option(BUILD_TESTING "Build unittests" OFF)
-
-include(FetchContent)
-FetchContent_Declare(
-    ChessBuild
-    GIT_REPOSITORY https://github.com/FGiesemann/ChessBuild.git
-    GIT_TAG        v0.8.6
-)
-FetchContent_MakeAvailable(ChessBuild)
-message(STATUS "CHESS BUILD MODULE DIR: ${CHESS_BUILD_MODULE_DIR}")
-list(APPEND CMAKE_MODULE_PATH ${CHESS_BUILD_MODULE_DIR})
-include(CompilerWarnings)
-include(CompilerSettings)
+# Chess Project - chess_gui
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets SvgWidgets)
 qt_standard_project_setup()
-set(CMAKE_AUTORCC ON)
 
-qt_add_library(${PROJECT_NAME} STATIC
-    include/chessgui/ChessboardController.h src/ChessboardController.cpp
-    include/chessgui/ChessboardError.h src/ChessboardError.cpp
-    include/chessgui/ChessboardWidget.h src/ChessboardWidget.cpp
-    include/chessgui/GraphicsItems.h src/GraphicsItems.cpp
-    include/chessgui/MoveTreeModel.h src/MoveTreeModel.cpp
-    include/chessgui/MoveTreeWidget.h src/MoveTreeWidget.cpp
-    include/chessgui/PieceSet.h src/PieceSet.cpp
+qt_add_library(chess_gui STATIC)
+add_library(Chess::gui ALIAS chess_gui)
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/data/pieces/pieces.qrc
-)    
-target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)    
-find_package(chesscore REQUIRED COMPONENTS chesscore)
-find_package(chessgame REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC chesscore::chesscore)
-target_link_libraries(${PROJECT_NAME} PUBLIC ChessGame::ChessGame)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Widgets Qt6::SvgWidgets)
-add_compiler_warnings(${PROJECT_NAME})
-add_optimization_settings(${PROJECT_NAME})
-target_compile_options(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+set(CHESS_GUI_SOURCES
+    src/ChessboardController.cpp
+    src/ChessboardError.cpp
+    src/ChessboardWidget.cpp
+    src/GraphicsItems.cpp
+    src/MoveTreeModel.cpp
+    src/MoveTreeWidget.cpp
+    src/PieceSet.cpp
 
-install(TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Targets
+    ${CMAKE_CURRENT_SOURCE_DIR}/data/pieces/pieces.qrc    
+)
+target_sources(chess_gui
+    PUBLIC
+        FILE_SET HEADERS
+            BASE_DIRS include
+            FILES
+                include/chessgui/ChessboardController.h
+                include/chessgui/ChessboardError.h
+                include/chessgui/ChessboardWidget.h
+                include/chessgui/GraphicsItems.h
+                include/chessgui/MoveTreeModel.h
+                include/chessgui/MoveTreeWidget.h
+                include/chessgui/PieceSet.h
+    PRIVATE
+        ${CHESS_GUI_SOURCES}
+)
+set_target_properties(chess_gui PROPERTIES
+    AUTOMOC ON
+    AUTORCC ON
+)   
+target_link_libraries(chess_gui PUBLIC Chess::core)
+target_link_libraries(chess_gui PUBLIC Chess::game)
+target_link_libraries(chess_gui PUBLIC Qt6::Widgets Qt6::SvgWidgets)
+add_compiler_warnings(chess_gui)
+add_optimization_settings(chess_gui)
+target_compile_options(chess_gui PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+
+install(TARGETS chess_gui
+    EXPORT ChessTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chessgui
-)
-install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/chessgui)
-install(EXPORT ${PROJECT_NAME}Targets
-    FILE ${PROJECT_NAME}Targets.cmake
-    NAMESPACE ${PROJECT_NAME}::
-    DESTINATION lib/cmake/${PROJECT_NAME}
-)
-set(${PROJECT_NAME}_VERSION ${PROJECT_VERSION})
-
-include(CMakePackageConfigHelpers)
-set(chessgui_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/chessgui")
-configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-    PATH_VARS
-        chessgui_INCLUDE_DIR
-)
-write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY AnyNewerVersion
-)
-
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chessgui
+    COMPONENT chess_gui
 )
 
 if(BUILD_DOCUMENTATION)
-    find_package(Doxygen)
-    if(DOXYGEN_FOUND)
-        set(DOXYGEN_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/api")
-        configure_file(
-            ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
-            ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile 
-            @ONLY
-        )
+    set(CHESS_GUI_DOXYGEN_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/api")
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile 
+        @ONLY
+    )
 
     add_custom_command(
-        OUTPUT ${DOXYGEN_OUTPUT_DIR}/html/index.html
+        OUTPUT ${CHESS_GUI_DOXYGEN_OUTPUT_DIR}/html/index.html
         COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        DEPENDS 
+            ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+            ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+            $<TARGET_PROPERTY:chess_gui,HEADER_SET_HEADERS>
+            ${CHESS_GUI_SOURCES}
         COMMAND_EXPAND_LISTS
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating documentation with Doxygen"
         VERBATIM
     )
 
-    add_custom_target(doc ALL DEPENDS ${DOXYGEN_OUTPUT_DIR}/html/index.html)
+    add_custom_target(chess_gui_docs ALL DEPENDS ${CHESS_GUI_DOXYGEN_OUTPUT_DIR}/html/index.html)
+    if (TARGET docs)
+        add_dependencies(docs chess_gui_docs)
+    endif()
 
-    install(DIRECTORY ${DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/${PROJECT_NAME}
+    install(DIRECTORY ${CHESS_GUI_DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/${PROJECT_NAME}
         PATTERN "*.map" EXCLUDE
         PATTERN "*.md5" EXCLUDE
     )
-    endif()
 endif()
-
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE DESTINATION share/doc/${PROJECT_NAME})
 
 add_subdirectory(testapp)

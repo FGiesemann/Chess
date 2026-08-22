@@ -1,11 +1,14 @@
-add_executable(bitmap_tool
-    bitmap_tool.cpp
+add_executable(bitmap_tool)
+
+target_sources(bitmap_tool
+    PRIVATE
+        bitmap_tool.cpp
 )
 
 target_link_libraries(bitmap_tool
     PRIVATE
-    chesscore::chesscore
-    chesscore::chesscore_io
+    Chess::core
+    Chess::core_io
 )
 
 target_compile_options(bitmap_tool PRIVATE

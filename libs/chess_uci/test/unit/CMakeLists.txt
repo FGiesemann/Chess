@@ -33,11 +33,10 @@ add_optimization_settings(chessuci_unittests)
 
 target_link_libraries(chessuci_unittests
     PRIVATE
-        ChessUCI
+        Chess::uci Chess::core_io
         Catch2::Catch2WithMain
 )
 
-include(Catch)
 catch_discover_tests(chessuci_unittests
     PROPERTIES TIMEOUT 20
 )

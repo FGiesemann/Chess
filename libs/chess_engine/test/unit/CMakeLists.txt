@@ -10,9 +10,8 @@ add_optimization_settings(chessengine_tests)
 target_compile_options(chessengine_tests PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
 target_link_libraries(chessengine_tests
   PRIVATE 
-  ChessEngineLib
+  Chess::engine
   Catch2::Catch2WithMain
 )
 
-include(Catch)
 catch_discover_tests(chessengine_tests)

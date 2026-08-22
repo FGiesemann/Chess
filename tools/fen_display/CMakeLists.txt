@@ -1,11 +1,14 @@
-add_executable(fen_display
-    fen_display.cpp
+add_executable(fen_display)
+
+target_sources(fen_display
+    PRIVATE
+        fen_display.cpp
 )
 
 target_link_libraries(fen_display
     PRIVATE
-    chesscore::chesscore
-    chesscore::chesscore_io
+    Chess::core
+    Chess::core_io
 )
 
 target_compile_options(fen_display PRIVATE

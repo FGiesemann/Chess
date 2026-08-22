@@ -4,7 +4,8 @@
  * ************************************************************************** */
 
 #include "chesscore/magic.h"
-#include "chesscore/bitboard_tables.h"
+
+#include "bitboard_tables.h"
 
 #include <numeric>
 

@@ -48,7 +48,7 @@ auto MagicBitboardGenerator::search(const SearchParams &params) -> SearchResult 
     m_prng.seed(m_rand_seed == 0 ? std::random_device{}() : m_rand_seed);
     SearchResult search_result{};
 
-    for (std::uint64_t shift : params.shifts) {
+    for (std::uint8_t shift : params.shifts) {
         search_result.generator_result.max_index = std::numeric_limits<std::uint64_t>::max();
         for (std::uint64_t i = 0; i < params.max_tries; ++i) {
             search_result.tries++;
@@ -65,8 +65,7 @@ auto MagicBitboardGenerator::search(const SearchParams &params) -> SearchResult 
     return search_result;
 }
 
-auto MagicBitboardGenerator::update_result(SearchResult &search_result, const Magics &magics,
-                                           const GeneratorResult &result) -> bool {
+auto MagicBitboardGenerator::update_result(SearchResult &search_result, const Magics &magics, const GeneratorResult &result) -> bool {
     if (result.successful()) {
         if (result.max_index < search_result.generator_result.max_index) {
             search_result.magics = magics;
@@ -87,10 +86,10 @@ auto MagicBitboardGenerator::update_result(SearchResult &search_result, const Ma
     return false;
 }
 
-auto make_shift_range(std::uint64_t start, std::uint64_t end) -> Shifts {
-    std::uint64_t inc = start < end ? 1 : -1;
+auto make_shift_range(std::uint8_t start, std::uint8_t end) -> Shifts {
+    std::uint8_t inc = start < end ? 1 : -1;
     Shifts shifts{};
-    for (std::uint64_t i = start; i != end; i += inc) {
+    for (std::uint8_t i = start; i != end; i += inc) {
         shifts.push_back(i);
     }
     if (start != end) {

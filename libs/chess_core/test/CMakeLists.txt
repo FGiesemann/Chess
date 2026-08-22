@@ -25,10 +25,12 @@ add_executable(chesscore_tests
     magic/blocker_iteration_test.cpp
     magic/attack_map_test.cpp
 )
+
 add_compiler_warnings(chesscore_tests)
 add_optimization_settings(chesscore_tests)
-target_compile_options(chesscore_tests PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
-target_link_libraries(chesscore_tests PRIVATE chesscore chesscore_io Catch2::Catch2WithMain)
 
-include(Catch)
+target_compile_options(chesscore_tests PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+
+target_link_libraries(chesscore_tests PRIVATE Chess::core Chess::core_io Catch2::Catch2WithMain)
+
 catch_discover_tests(chesscore_tests)

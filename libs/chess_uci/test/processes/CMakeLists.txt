@@ -33,7 +33,7 @@ add_executable(chessuci_processhandling_tests
 )
 target_link_libraries(chessuci_processhandling_tests
     PRIVATE
-        ChessUCI
+        Chess::uci
         Catch2::Catch2WithMain
 )
 target_compile_definitions(chessuci_processhandling_tests PRIVATE
@@ -61,5 +61,4 @@ if(UNIX)
     add_dependencies(chessuci_processhandling_tests test_zombie)
 endif()
 
-include(Catch)
 catch_discover_tests(chessuci_processhandling_tests PROPERTIES TIMEOUT 60)

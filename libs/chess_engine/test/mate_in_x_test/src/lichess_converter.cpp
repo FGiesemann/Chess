@@ -192,9 +192,9 @@ auto LichessConverter::write_all_puzzles() -> void {
 
 auto LichessConverter::write_puzzle_files() -> void {
     std::ofstream output{};
-    int current_depth{0};
+    std::size_t current_depth{0};
     for (const auto &record : m_puzzles) {
-        int depth = record.pv.size();
+        auto depth = record.pv.size();
         if (depth != current_depth) {
             output.close();
             output.open(m_output / (std::string{"mate_in_"} + std::to_string(depth) + std::string{".epd"}));

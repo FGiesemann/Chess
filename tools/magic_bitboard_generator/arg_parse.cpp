@@ -180,8 +180,8 @@ auto parse_squares(const std::string &squares) -> std::vector<chesscore::Square>
     return result;
 }
 
-auto read_shift(const std::string &shifts, std::size_t index) -> std::pair<std::uint64_t, std::size_t> {
-    std::uint64_t result{};
+auto read_shift(const std::string &shifts, std::size_t index) -> std::pair<std::uint8_t, std::size_t> {
+    std::uint8_t result{};
     while (index < shifts.length()) {
         const auto &c = shifts[index];
         if (c >= '0' && c <= '9') {
@@ -194,8 +194,8 @@ auto read_shift(const std::string &shifts, std::size_t index) -> std::pair<std::
     return std::make_pair(result, index);
 }
 
-auto parse_shifts(const std::string &shifts) -> std::vector<std::uint64_t> {
-    std::vector<std::uint64_t> result{};
+auto parse_shifts(const std::string &shifts) -> std::vector<std::uint8_t> {
+    std::vector<std::uint8_t> result{};
     for (std::size_t i = 0; i < shifts.length(); ++i) {
         const auto &c = shifts[i];
         if (c == ',') {

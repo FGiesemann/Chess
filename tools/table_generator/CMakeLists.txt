@@ -1,13 +1,16 @@
-add_executable(table_generator
-    main.cpp
-    bigmap.cpp
-    table_gen.cpp
-    patterns.cpp
+add_executable(table_generator)
+
+target_sources(table_generator
+    PRIVATE
+        main.cpp
+        bigmap.cpp
+        table_gen.cpp
+        patterns.cpp
 )
 
 target_link_libraries(table_generator
-    chesscore::chesscore
-    chesscore::chesscore_io
+    Chess::core
+    Chess::core_io
 )
 
 add_optimization_settings(table_generator)

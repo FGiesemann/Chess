@@ -37,7 +37,7 @@ struct TableSpec {
  */
 struct Magics {
     std::uint64_t magic_number; //< Magic number.
-    std::uint64_t shift;        //< Shift.
+    std::uint8_t shift;         //< Shift.
 };
 
 /**
@@ -89,7 +89,7 @@ using ProcessReportCallback = std::function<void(const SearchResult &)>;
 /**
  * \brief A list of shift values.
  */
-using Shifts = std::vector<std::uint64_t>;
+using Shifts = std::vector<std::uint8_t>;
 
 /**
  * \brief Make a continuous range of shifts.
@@ -100,7 +100,7 @@ using Shifts = std::vector<std::uint64_t>;
  * \param end Last shift in the sequence.
  * \return The sequence of shift values.
  */
-auto make_shift_range(std::uint64_t start, std::uint64_t end) -> Shifts;
+auto make_shift_range(std::uint8_t start, std::uint8_t end) -> Shifts;
 
 /**
  * \brief Parameters for the search.

@@ -1,6 +1,7 @@
-from conan import ConanFile
-from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
 import os
+
+from conan import ConanFile
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 
 
 class chesscoreRecipe(ConanFile):
@@ -27,7 +28,7 @@ class chesscoreRecipe(ConanFile):
     )
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=3.15]")
+        self.tool_requires("cmake/[>=3.23]")
 
     def requirements(self):
         self.test_requires("catch2/3.7.1")

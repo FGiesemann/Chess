@@ -7,12 +7,7 @@ qt_add_executable(testapp
 target_link_libraries(testapp
     PRIVATE
     Qt6::Widgets
-    ChessGui
+    Chess::gui
 )
 
 add_optimization_settings(testapp)
-
-# set_target_properties(testapp PROPERTIES
-#     WIN32_EXECUTABLE ON
-#     MACOSX_BUNDLE ON
-# )

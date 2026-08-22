@@ -35,7 +35,7 @@ auto split_into_words(std::string string, std::string delimiter) -> std::vector<
 
 auto lower_case(const std::string &str) -> std::string {
     std::string result{str};
-    std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
+    std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) -> char { return static_cast<char>(std::tolower(c)); });
     return result;
 }
 

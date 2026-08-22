@@ -4,8 +4,8 @@ add_executable(mate_in_x_test
 )
 target_link_libraries(mate_in_x_test
     PRIVATE
-    ChessEngineLib
-    ChessGame::ChessGame
+    Chess::engine
+    Chess::game
 )
 target_compile_options(mate_in_x_test PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
 add_optimization_settings(mate_in_x_test)
@@ -16,9 +16,9 @@ add_executable(lichess_converter
 )
 target_link_libraries(lichess_converter
     PRIVATE
-    chesscore::chesscore
-    ChessGame::ChessGame
-    ChessUCI::ChessUCI
+    Chess::core
+    Chess::game
+    Chess::uci
 )
 target_compile_features(lichess_converter PRIVATE cxx_std_23)
 target_compile_options(lichess_converter PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)

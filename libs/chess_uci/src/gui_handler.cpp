@@ -4,7 +4,8 @@
  * ************************************************************************** */
 
 #include "chessuci/gui_handler.h"
-#include "chessuci/string_conversion.h"
+
+#include "string_conversion.h"
 
 namespace chessuci {
 

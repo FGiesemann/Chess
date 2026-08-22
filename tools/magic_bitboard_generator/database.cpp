@@ -32,12 +32,11 @@ auto Record::update_magics(const Magics &magics, const TableStats &stats) -> boo
 }
 
 auto RecordWriter::write(const Record &record, std::ostream &ostream) -> void {
-    ostream << std::format("{:c} {} {:1d}", chesscore::Piece{record.piece(), chesscore::Color::White}.piece_char(),
-                           to_string(record.square()), record.has_magics() ? 1 : 0);
+    ostream << std::format("{:c} {} {:1d}", chesscore::Piece{record.piece(), chesscore::Color::White}.piece_char(), to_string(record.square()), record.has_magics() ? 1 : 0);
     if (record.has_magics()) {
-        ostream << std::format(" {:016x} {} {} {} {}", record.magics().magic_number, record.magics().shift,
-                               record.stats().max_index, record.stats().blocker_configs,
-                               record.stats().constructive_collisions);
+        ostream << std::format(
+            " {:016x} {} {} {} {}", record.magics().magic_number, record.magics().shift, record.stats().max_index, record.stats().blocker_configs, record.stats().constructive_collisions
+        );
     }
     ostream << '\n';
 }
@@ -63,16 +62,15 @@ auto RecordReader::read(std::istream &istream) -> Record {
     istream >> has_magics;
     if (has_magics == 1) {
         std::uint64_t magic_number{};
-        std::uint64_t shift{};
+        std::uint8_t shift{};
         istream >> std::hex >> magic_number >> std::dec >> shift;
         std::uint64_t max_index{};
         std::uint64_t blocker_configs{};
         std::uint64_t constructive_collisions{};
         istream >> max_index >> blocker_configs >> constructive_collisions;
-        record.set_magics(Magics{.magic_number = magic_number, .shift = shift},
-                          TableStats{.blocker_configs = blocker_configs,
-                                     .max_index = max_index,
-                                     .constructive_collisions = constructive_collisions});
+        record.set_magics(
+            Magics{.magic_number = magic_number, .shift = shift}, TableStats{.blocker_configs = blocker_configs, .max_index = max_index, .constructive_collisions = constructive_collisions}
+        );
     }
 
     return record;

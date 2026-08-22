@@ -80,7 +80,7 @@ auto mainline_plys(const chessgame::Game &game) -> std::size_t {
 }
 
 auto random_depth(std::size_t total_ply_count) -> std::size_t {
-    std::size_t max_depth = total_ply_count * max_ply_percentage;
-    std::size_t min_depth = total_ply_count * min_ply_percentage;
+    auto max_depth = static_cast<std::size_t>(total_ply_count * max_ply_percentage);
+    auto min_depth = static_cast<std::size_t>(total_ply_count * min_ply_percentage);
     return std::uniform_int_distribution<std::size_t>(min_depth, max_depth)(gen);
 }

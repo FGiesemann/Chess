@@ -1,10 +1,13 @@
-add_executable(pgn_parser
-    pgn_parser.cpp
+add_executable(pgn_parser)
+
+target_sources(pgn_parser
+    PRIVATE
+        pgn_parser.cpp
 )
 
 target_link_libraries(pgn_parser
     PRIVATE
-    ChessGame::ChessGame
+    Chess::game
 )
 
 target_compile_options(pgn_parser PRIVATE

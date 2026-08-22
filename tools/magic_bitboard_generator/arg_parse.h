@@ -38,7 +38,7 @@ struct Args {
     std::vector<chesscore::PieceType> piece_types;
     std::vector<chesscore::Square> squares;
     std::uint64_t magic_number{};
-    std::vector<std::uint64_t> shifts;
+    std::vector<std::uint8_t> shifts;
     std::string database;
     std::string output;
     std::uint64_t iterations{1'000'000};
@@ -49,7 +49,7 @@ auto convert_args(std::span<const char *> args) -> std::vector<std::string>;
 auto parse_arguments(const std::vector<std::string> &args) -> Args;
 auto parse_piece_types(const std::string &piece_types) -> std::vector<chesscore::PieceType>;
 auto parse_squares(const std::string &squares) -> std::vector<chesscore::Square>;
-auto parse_shifts(const std::string &shifts) -> std::vector<std::uint64_t>;
+auto parse_shifts(const std::string &shifts) -> std::vector<std::uint8_t>;
 
 } // namespace magic_bitboard_generator
 

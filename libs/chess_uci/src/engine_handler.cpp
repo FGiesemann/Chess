@@ -4,7 +4,8 @@
  * ************************************************************************** */
 
 #include "chessuci/engine_handler.h"
-#include "chessuci/string_conversion.h"
+
+#include "string_conversion.h"
 
 #include <algorithm>
 #include <ranges>

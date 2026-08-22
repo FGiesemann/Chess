@@ -1,150 +1,141 @@
-cmake_minimum_required(VERSION 3.24)
-project(chesscore VERSION 1.0.0 LANGUAGES CXX)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# Chess Project - chess_core
 
-set(CMAKE_CXX_EXTENSIONS OFF)
+add_library(chess_core)
+add_library(Chess::core ALIAS chess_core)
 
-option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
-option(BUILD_TESTING "Build unittests" ON)
-
-include(FetchContent)
-FetchContent_Declare(
-    ChessBuild
-    GIT_REPOSITORY https://github.com/FGiesemann/ChessBuild.git
-    GIT_TAG        v0.8.6
-)
-FetchContent_MakeAvailable(ChessBuild)
-message(STATUS "CHESS BUILD MODULE DIR: ${CHESS_BUILD_MODULE_DIR}")
-list(APPEND CMAKE_MODULE_PATH ${CHESS_BUILD_MODULE_DIR})
-include(CompilerWarnings)
-include(CompilerSettings)
-
-add_library(${PROJECT_NAME}
-    src/chesscore/bitboard.cpp
-    src/chesscore/bitmap.cpp
-    src/chesscore/board.cpp
-    src/chesscore/chesscore.cpp
-    src/chesscore/epd.cpp
-    src/chesscore/fen.cpp
-    src/chesscore/magic.cpp
-    src/chesscore/move.cpp
-    src/chesscore/perft.cpp
-    src/chesscore/piece.cpp
-    src/chesscore/position.cpp
-    src/chesscore/position_types.cpp
-    src/chesscore/square.cpp
-    src/chesscore/table.cpp
-    src/chesscore/zobrist.cpp
-)
-target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)
-target_compile_features(${PROJECT_NAME}
+target_sources(chess_core
+    PUBLIC
+    FILE_SET HEADERS
+        BASE_DIRS include
+        FILES
+            include/chesscore/bitboard.h
+            include/chesscore/bitmap.h
+            include/chesscore/board.h
+            include/chesscore/chesscore.h
+            include/chesscore/epd.h
+            include/chesscore/fen.h
+            include/chesscore/magic.h
+            include/chesscore/move.h
+            include/chesscore/perft.h
+            include/chesscore/piece.h
+            include/chesscore/position_types.h
+            include/chesscore/position.h
+            include/chesscore/square.h
+            include/chesscore/table.h
+            include/chesscore/zobrist.h
     PRIVATE
+        src/chesscore/bitboard_tables.h
+        src/chesscore/bitboard.cpp
+        src/chesscore/bitmap.cpp
+        src/chesscore/board.cpp
+        src/chesscore/chesscore.cpp
+        src/chesscore/epd.cpp
+        src/chesscore/fen.cpp
+        src/chesscore/magic.cpp
+        src/chesscore/move.cpp
+        src/chesscore/perft.cpp
+        src/chesscore/piece.cpp
+        src/chesscore/position.cpp
+        src/chesscore/position_types.cpp
+        src/chesscore/square.cpp
+        src/chesscore/table.cpp
+        src/chesscore/zobrist.cpp
+)
+
+target_compile_features(chess_core
+    PUBLIC
     cxx_std_23
 )
-target_compile_options(${PROJECT_NAME} PRIVATE
+target_compile_options(chess_core PUBLIC
     $<$<CXX_COMPILER_ID:MSVC>:/EHsc>
 )
-add_compiler_warnings(${PROJECT_NAME})
-add_optimization_settings(${PROJECT_NAME})
+add_compiler_warnings(chess_core)
+add_optimization_settings(chess_core)
 
-install(TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Targets
+install(TARGETS chess_core
+    EXPORT ChessTargets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    COMPONENT chess_core
+)
+
+add_library(chess_core_io)
+add_library(Chess::core_io ALIAS chess_core_io)
+
+target_sources(chess_core_io
+    PUBLIC
+    FILE_SET HEADERS
+        BASE_DIRS include
+        FILES
+            include/chesscore_io/bitboard_io.h
+            include/chesscore_io/bitmap_io.h
+            include/chesscore_io/move_io.h
+            include/chesscore_io/piece_io.h
+            include/chesscore_io/position_io.h
+            include/chesscore_io/square_io.h
+    PRIVATE
+        src/chesscore_io/bitboard_io.cpp
+        src/chesscore_io/bitmap_io.cpp
+        src/chesscore_io/move_io.cpp
+        src/chesscore_io/piece_io.cpp
+        src/chesscore_io/position_io.cpp
+        src/chesscore_io/square_io.cpp
+)
+
+target_compile_features(chess_core_io
+    PUBLIC
+    cxx_std_23
+)
+
+target_link_libraries(chess_core_io PUBLIC chess_core)
+add_compiler_warnings(chess_core_io)
+add_optimization_settings(chess_core_io)
+target_compile_options(chess_core_io PRIVATE "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+target_compile_options(chess_core_io PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+
+install(TARGETS chess_core_io
+    EXPORT ChessTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
-)
-install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/${PROJECT_NAME})
-install(EXPORT ${PROJECT_NAME}Targets
-    FILE ${PROJECT_NAME}Targets.cmake
-    NAMESPACE ${PROJECT_NAME}::
-    DESTINATION lib/cmake/${PROJECT_NAME}
-)
-set(${PROJECT_NAME}_VERSION ${PROJECT_VERSION})
-add_library(${PROJECT_NAME}_io
-    src/chesscore_io/bitboard_io.cpp
-    src/chesscore_io/bitmap_io.cpp
-    src/chesscore_io/move_io.cpp
-    src/chesscore_io/piece_io.cpp
-    src/chesscore_io/position_io.cpp
-    src/chesscore_io/square_io.cpp
-)
-target_include_directories(${PROJECT_NAME}_io PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)
-target_compile_features(${PROJECT_NAME}_io PUBLIC cxx_std_20)
-target_link_libraries(${PROJECT_NAME}_io PRIVATE ${PROJECT_NAME})
-add_compiler_warnings(${PROJECT_NAME}_io)
-add_optimization_settings(${PROJECT_NAME}_io)
-target_compile_options(${PROJECT_NAME}_io PRIVATE "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-target_compile_options(${PROJECT_NAME}_io PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
-install(TARGETS ${PROJECT_NAME}_io
-    EXPORT ${PROJECT_NAME}Targets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}_io
-)
-install(DIRECTORY include/${PROJECT_NAME}_io/ DESTINATION include/${PROJECT_NAME}_io)
-
-include(CMakePackageConfigHelpers)
-set(chesscore_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/chesscore")
-set(chesscore_IO_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/chesscore_io")
-configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-    PATH_VARS
-        chesscore_INCLUDE_DIR
-        chesscore_IO_INCLUDE_DIR
-)
-
-write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY AnyNewerVersion
-)
-
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chess_core_io
+    COMPONENT chess_core
 )
 
 if(BUILD_DOCUMENTATION)
-    find_package(Doxygen)
-    if(DOXYGEN_FOUND)
-        set(DOXYGEN_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/api")
-        configure_file(
-            ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
-            ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile 
-            @ONLY
-        )
+    set(CHESS_CORE_DOXYGEN_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/api")
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile 
+        @ONLY
+    )
 
     add_custom_command(
-        OUTPUT ${DOXYGEN_OUTPUT_DIR}/html/index.html
+        OUTPUT ${CHESS_CORE_DOXYGEN_OUTPUT_DIR}/html/index.html
         COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        DEPENDS 
+            ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+            ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+            $<TARGET_PROPERTY:chess_core,HEADER_SET_HEADERS>
+            $<TARGET_PROPERTY:chess_core,SOURCES>
         COMMAND_EXPAND_LISTS
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT "Generating documentation with Doxygen"
+        COMMENT "Generating doxygen documentation for chess_core"
         VERBATIM
     )
 
-    add_custom_target(doc ALL DEPENDS ${DOXYGEN_OUTPUT_DIR}/html/index.html)
+    add_custom_target(chess_core_docs ALL DEPENDS ${CHESS_CORE_DOXYGEN_OUTPUT_DIR}/html/index.html)
+    if (TARGET docs)
+        add_dependencies(docs chess_core_docs)
+    endif()
 
-    install(DIRECTORY ${DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/${PROJECT_NAME}
+    install(DIRECTORY ${CHESS_CORE_DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/chess_core
         PATTERN "*.map" EXCLUDE
         PATTERN "*.md5" EXCLUDE
     )
-    endif()
 endif()
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE DESTINATION share/doc/${PROJECT_NAME})
-
-if (NOT BUILD_TESTING STREQUAL OFF)
-    enable_testing()
-    find_package(Catch2 3 REQUIRED)
+if (BUILD_TESTING)
     add_subdirectory(test)
 endif()
