@@ -21,4 +21,5 @@ add_optimization_settings(chess_game_tool)
 install(TARGETS chess_game_tool
     EXPORT ChessTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT tools
 )

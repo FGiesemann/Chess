@@ -17,4 +17,5 @@ add_optimization_settings(pgn_parser)
 install(TARGETS pgn_parser
     EXPORT ChessTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT tools
 )

@@ -18,4 +18,5 @@ add_optimization_settings(fen_display)
 install(TARGETS fen_display
     EXPORT ChessTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT tools
 )

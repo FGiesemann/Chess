@@ -18,4 +18,5 @@ add_optimization_settings(bitmap_tool)
 install(TARGETS bitmap_tool
     EXPORT ChessTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT tools
 )

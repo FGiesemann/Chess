@@ -18,4 +18,5 @@ add_optimization_settings(all_legal_moves)
 install(TARGETS all_legal_moves
     EXPORT ChessTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT tools
 )

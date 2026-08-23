@@ -88,7 +88,9 @@ if(BUILD_DOCUMENTATION)
         add_dependencies(docs chess_uci_docs)
     endif()
 
-    install(DIRECTORY ${CHESS_UCI_DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/${PROJECT_NAME}
+    install(DIRECTORY ${CHESS_UCI_DOXYGEN_OUTPUT_DIR}/html/
+        DESTINATION share/doc/chess_uci
+        COMPONENT chess_uci
         PATTERN "*.map" EXCLUDE
         PATTERN "*.md5" EXCLUDE
     )

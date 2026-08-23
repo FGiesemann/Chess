@@ -83,7 +83,9 @@ if(BUILD_DOCUMENTATION)
         add_dependencies(docs chess_gui_docs)
     endif()
 
-    install(DIRECTORY ${CHESS_GUI_DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/${PROJECT_NAME}
+    install(DIRECTORY ${CHESS_GUI_DOXYGEN_OUTPUT_DIR}/html/
+        DESTINATION share/doc/chess_gui
+        COMPONENT chess_gui
         PATTERN "*.map" EXCLUDE
         PATTERN "*.md5" EXCLUDE
     )

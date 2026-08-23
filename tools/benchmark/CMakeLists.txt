@@ -20,4 +20,5 @@ add_compiler_warnings(benchmark)
 install(TARGETS benchmark
     EXPORT ChessTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT tools
 )

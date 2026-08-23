@@ -66,7 +66,9 @@ if(BUILD_DOCUMENTATION)
         add_dependencies(docs chess_game_docs)
     endif()
 
-    install(DIRECTORY ${CHESS_GAME_DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/chess_game
+    install(DIRECTORY ${CHESS_GAME_DOXYGEN_OUTPUT_DIR}/html/
+        DESTINATION share/doc/chess_game
+        COMPONENT chess_game
         PATTERN "*.map" EXCLUDE
         PATTERN "*.md5" EXCLUDE
     )

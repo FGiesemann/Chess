@@ -121,7 +121,9 @@ if(BUILD_DOCUMENTATION)
         add_dependencies(docs chess_core_docs)
     endif()
 
-    install(DIRECTORY ${CHESS_CORE_DOXYGEN_OUTPUT_DIR}/html DESTINATION share/doc/chess_core
+    install(DIRECTORY ${CHESS_CORE_DOXYGEN_OUTPUT_DIR}/html/
+        DESTINATION share/doc/chess_core
+        COMPONENT chess_core
         PATTERN "*.map" EXCLUDE
         PATTERN "*.md5" EXCLUDE
     )

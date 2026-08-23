@@ -23,4 +23,5 @@ add_optimization_settings(magic_bitboard_generator)
 install(TARGETS magic_bitboard_generator
     EXPORT ChessTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT tools
 )

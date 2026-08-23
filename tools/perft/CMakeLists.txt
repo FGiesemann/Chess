@@ -18,4 +18,5 @@ add_optimization_settings(perft)
 install(TARGETS perft
     EXPORT ChessTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT tools
 )
