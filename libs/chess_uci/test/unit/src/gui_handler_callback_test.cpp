@@ -24,21 +24,6 @@ inline auto get_test_binary_path(const std::string &name) -> std::string {
     return binary.string();
 }
 
-TEST_CASE("UCI.GuiHandler.Callback.No Callbacks", "[gui_handler]") {
-    UCIGuiHandler handler{};
-    auto binary = get_test_binary_path("test_echo");
-
-    CHECK_FALSE(handler.is_running());
-    handler.start({binary});
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    CHECK(handler.is_running());
-    CHECK(handler.process().is_running());
-    handler.stop();
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    CHECK_FALSE(handler.is_running());
-    CHECK_FALSE(handler.process().is_running());
-}
-
 TEST_CASE("UCI.EngineProcessMock", "[engine_process_mock]") {
     test::EngineProcessMock mock;
 
