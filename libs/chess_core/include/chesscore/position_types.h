@@ -117,9 +117,9 @@ enum class CheckState {
 auto check_state_symbol(CheckState state) -> std::string;
 
 struct PositionState {
-    Color side_to_move{Color::White};                       ///< The player who moves next.
     int fullmove_number{1};                                 ///< Number of the next move.
     int halfmove_clock{0};                                  ///< Half-move clock for the fifty-move rule.
+    Color side_to_move{Color::White};                       ///< The player who moves next.
     CastlingRights castling_rights{CastlingRights::none()}; ///< Castling rights.
     Square en_passant_target{Square::None};                 ///< A possible en passant target square.
 

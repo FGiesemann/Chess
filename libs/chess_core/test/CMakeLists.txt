@@ -1,4 +1,4 @@
-add_executable(chesscore_tests
+add_executable(chess_core_tests
     data/coordinate_test.cpp
     data/epd_test.cpp
     data/fen_test.cpp
@@ -26,11 +26,11 @@ add_executable(chesscore_tests
     magic/attack_map_test.cpp
 )
 
-add_compiler_warnings(chesscore_tests)
-add_optimization_settings(chesscore_tests)
+add_compiler_warnings(chess_core_tests)
+add_optimization_settings(chess_core_tests)
 
-enable_exception_handling(chesscore_tests)
+enable_exception_handling(chess_core_tests)
 
-target_link_libraries(chesscore_tests PRIVATE Chess::core Chess::core_io Catch2::Catch2WithMain)
+target_link_libraries(chess_core_tests PRIVATE Chess::core Chess::core_io Catch2::Catch2WithMain)
 
-catch_discover_tests(chesscore_tests)
+catch_discover_tests(chess_core_tests)

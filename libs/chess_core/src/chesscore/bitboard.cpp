@@ -41,8 +41,8 @@ auto Bitboard::generate_pawn_move(
             .captured = captured,
             .capturing_en_passant = en_passant,
             .promoted = promoted,
-            .castling_rights_before = state.castling_rights,
             .halfmove_clock_before = state.halfmove_clock,
+            .castling_rights_before = state.castling_rights,
             .en_passant_target_before = state.en_passant_target
         },
         moves
@@ -248,12 +248,11 @@ auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, con
 auto Bitboard::get_attack_map(Piece piece, Square start) const -> Bitmap {
     switch (piece.type()) {
     case PieceType::Rook:
-        return magic_rook_bitboard.attacks(start, *this) & ~bitmap(piece.color());
+        return get_magic_rook_bitboard().attacks(start, *this) & ~bitmap(piece.color());
     case PieceType::Bishop:
-        return magic_bishop_bitboard.attacks(start, *this) & ~bitmap(piece.color());
-        break;
+        return get_magic_bishop_bitboard().attacks(start, *this) & ~bitmap(piece.color());
     case PieceType::Queen:
-        return (magic_rook_bitboard.attacks(start, *this) | magic_bishop_bitboard.attacks(start, *this)) & ~bitmap(piece.color());
+        return (get_magic_rook_bitboard().attacks(start, *this) | get_magic_bishop_bitboard().attacks(start, *this)) & ~bitmap(piece.color());
     default:
         return Bitmap{};
     }
@@ -350,8 +349,8 @@ auto Bitboard::extract_moves(Bitmap targets, Square from, Piece piece, const Pos
                 .captured = get_piece(target_square),
                 .capturing_en_passant = false,
                 .promoted = {},
-                .castling_rights_before = state.castling_rights,
                 .halfmove_clock_before = state.halfmove_clock,
+                .castling_rights_before = state.castling_rights,
                 .en_passant_target_before = state.en_passant_target
             },
             moves
@@ -396,8 +395,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
-                    .castling_rights_before = state.castling_rights,
                     .halfmove_clock_before = state.halfmove_clock,
+                    .castling_rights_before = state.castling_rights,
                     .en_passant_target_before = state.en_passant_target
                 }
             );
@@ -412,8 +411,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
-                    .castling_rights_before = state.castling_rights,
                     .halfmove_clock_before = state.halfmove_clock,
+                    .castling_rights_before = state.castling_rights,
                     .en_passant_target_before = state.en_passant_target
                 }
             );
@@ -429,8 +428,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
-                    .castling_rights_before = state.castling_rights,
                     .halfmove_clock_before = state.halfmove_clock,
+                    .castling_rights_before = state.castling_rights,
                     .en_passant_target_before = state.en_passant_target
                 }
             );
@@ -445,8 +444,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
-                    .castling_rights_before = state.castling_rights,
                     .halfmove_clock_before = state.halfmove_clock,
+                    .castling_rights_before = state.castling_rights,
                     .en_passant_target_before = state.en_passant_target
                 }
             );

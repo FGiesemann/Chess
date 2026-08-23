@@ -6,6 +6,7 @@
 #ifndef CHESS_ENGINE_MAAT_LOGGER_H
 #define CHESS_ENGINE_MAAT_LOGGER_H
 
+#include <algorithm>
 #include <chrono>
 #include <fstream>
 #include <iomanip>
@@ -31,8 +32,7 @@ public:
     auto indent() -> void { m_indent += 2; }
     auto unindent() -> void {
         m_indent -= 2;
-        if (m_indent < 0)
-            m_indent = 0;
+        m_indent = std::max(m_indent, 0);
     }
 
     auto enable(const std::string &filepath, bool append = false) -> void {
@@ -108,8 +108,9 @@ private:
     int m_indent{0};
 
     auto log_internal(const std::string &tag, const std::string &message) -> void {
-        if (!m_file.is_open())
+        if (!m_file.is_open()) {
             return;
+        }
 
         auto now = std::chrono::system_clock::now();
         auto time = std::chrono::floor<std::chrono::milliseconds>(now);

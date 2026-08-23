@@ -17,8 +17,8 @@ TEST_CASE("Core.Position.UnmakeMove.SinglePawn", "[Position][UnmakeMove]") {
         .from = Square::E2,
         .to = Square::E4,
         .piece = Piece::WhitePawn,
-        .castling_rights_before{position.castling_rights()},
         .halfmove_clock_before = position.halfmove_clock(),
+        .castling_rights_before{position.castling_rights()},
     };
 
     position.make_move(move);
@@ -42,8 +42,8 @@ TEST_CASE("Core.Position.UnmakeMove.Capture", "[Position][UnmakeMove]") {
         .to = Square::G1,
         .piece = Piece::BlackQueen,
         .captured = Piece::WhiteRook,
-        .castling_rights_before = position.castling_rights(),
         .halfmove_clock_before = position.halfmove_clock(),
+        .castling_rights_before = position.castling_rights(),
         .en_passant_target_before = position.en_passant_target(),
     };
 

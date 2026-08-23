@@ -10,6 +10,42 @@
 
 namespace magic_bitboard_generator {
 
+namespace {
+
+auto read_square(const std::string &squares, std::size_t index) -> std::pair<chesscore::Square, std::size_t> {
+    const auto &character = squares[index];
+    if (character >= 'a' && character <= 'h') {
+        const char file = character;
+        ++index;
+        if (index >= squares.length()) {
+            throw ArgError("Invalid square: " + squares);
+        }
+        const auto &second_character = squares[index];
+        if (second_character >= '1' && second_character <= '8') {
+            const char rank = second_character;
+            return std::make_pair(chesscore::Square{chesscore::File{file}, chesscore::Rank{rank - '1'}}, index + 1);
+        }
+    }
+    throw ArgError("Invalid square: " + squares);
+}
+
+auto read_shift(const std::string &shifts, std::size_t index) -> std::pair<std::uint8_t, std::size_t> {
+    static constexpr int number_base = 10;
+    std::uint8_t result{};
+    while (index < shifts.length()) {
+        const auto &character = shifts[index];
+        if (character >= '0' && character <= '9') {
+            result = static_cast<std::uint8_t>(result * number_base + character - '0');
+            ++index;
+        } else {
+            break;
+        }
+    }
+    return std::make_pair(result, index);
+}
+
+} // namespace
+
 auto print_usage() -> void {
     std::cout << R"(Magic Bitboard Generator
     
@@ -70,6 +106,7 @@ auto to_string(Scenario scenario) -> std::string {
 }
 
 auto parse_arguments(const std::vector<std::string> &args) -> Args {
+    static constexpr int hex_base = 16;
     Args result{};
     for (std::size_t i = 0; i < args.size(); ++i) {
         const auto &arg = args[i];
@@ -95,7 +132,7 @@ auto parse_arguments(const std::vector<std::string> &args) -> Args {
             ++i;
         } else if (arg == "-m" || arg == "--magic") {
             if (next_arg.length() > 1 && next_arg.starts_with("0x")) {
-                result.magic_number = std::stoull(next_arg.substr(2), nullptr, 16);
+                result.magic_number = std::stoull(next_arg.substr(2), nullptr, hex_base);
             } else {
                 result.magic_number = std::stoull(next_arg);
             }
@@ -136,32 +173,15 @@ auto parse_piece_types(const std::string &piece_types) -> std::vector<chesscore:
     return result;
 }
 
-auto read_square(const std::string &squares, std::size_t index) -> std::pair<chesscore::Square, std::size_t> {
-    const auto &c = squares[index];
-    if (c >= 'a' && c <= 'h') {
-        const char file = c;
-        ++index;
-        if (index >= squares.length()) {
-            throw ArgError("Invalid square: " + squares);
-        }
-        const auto &c2 = squares[index];
-        if (c2 >= '1' && c2 <= '8') {
-            const char rank = c2;
-            return std::make_pair(chesscore::Square{chesscore::File{file}, chesscore::Rank{rank - '1'}}, index + 1);
-        }
-    }
-    throw ArgError("Invalid square: " + squares);
-}
-
 auto parse_squares(const std::string &squares) -> std::vector<chesscore::Square> {
     std::vector<chesscore::Square> result{};
     // squares can be a single square (a1), a list of squares (a1,b4,c5), a range (a1-c4) or a combination of those
     for (std::size_t i = 0; i < squares.length(); ++i) {
-        const auto &c = squares[i];
-        if (c == ',') {
+        const auto &character = squares[i];
+        if (character == ',') {
             continue;
         }
-        if (c == '-') {
+        if (character == '-') {
             if (result.empty()) {
                 throw ArgError("Invalid range of sqaures: " + squares);
             }
@@ -180,28 +200,14 @@ auto parse_squares(const std::string &squares) -> std::vector<chesscore::Square>
     return result;
 }
 
-auto read_shift(const std::string &shifts, std::size_t index) -> std::pair<std::uint8_t, std::size_t> {
-    std::uint8_t result{};
-    while (index < shifts.length()) {
-        const auto &c = shifts[index];
-        if (c >= '0' && c <= '9') {
-            result = result * 10 + c - '0';
-            ++index;
-        } else {
-            break;
-        }
-    }
-    return std::make_pair(result, index);
-}
-
 auto parse_shifts(const std::string &shifts) -> std::vector<std::uint8_t> {
     std::vector<std::uint8_t> result{};
     for (std::size_t i = 0; i < shifts.length(); ++i) {
-        const auto &c = shifts[i];
-        if (c == ',') {
+        const auto &character = shifts[i];
+        if (character == ',') {
             continue;
         }
-        if (c == '-') {
+        if (character == '-') {
             if (result.empty()) {
                 throw ArgError("Invalid range of shifts: " + shifts);
             }

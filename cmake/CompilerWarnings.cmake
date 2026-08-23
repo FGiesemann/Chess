@@ -11,6 +11,23 @@ function(add_compiler_warnings TARGET_NAME)
         $<$<CXX_COMPILER_ID:Clang>:-Wno-braced-scalar-init>
     )
 
+    # Disable warnings for padded structs
+    target_compile_options(${TARGET_NAME} PUBLIC
+        $<$<CXX_COMPILER_ID:Clang>:-Wno-padded>
+    )
+
+    # Disable warnings for unsafe buffer usage
+    target_compile_options(${TARGET_NAME} PUBLIC
+        $<$<CXX_COMPILER_ID:Clang>:-Wno-unsafe-buffer-usage>
+    )
+
+    # Disable warnings for switch-statements
+    target_compile_options(${TARGET_NAME} PUBLIC
+        $<$<CXX_COMPILER_ID:Clang>:-Wno-switch-default>
+        $<$<CXX_COMPILER_ID:Clang>:-Wno-switch-enum>
+        $<$<CXX_COMPILER_ID:Clang>:-Wno-covered-switch-default>
+    )
+
     # Disable C2y extension warnings
     target_compile_options(${TARGET_NAME} PUBLIC
         $<$<CXX_COMPILER_ID:Clang>:-Wno-c2y-extensions>

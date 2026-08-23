@@ -26,8 +26,8 @@ namespace magic_bitboard_generator {
  * (either rook or bishop) and the square on which the piece is placed.
  */
 struct TableSpec {
-    chesscore::PieceType piece{}; //< The type of the sliding piece.
-    chesscore::Square square;     //< The square on which the piece is placed.
+    chesscore::PieceType piece{}; ///< The type of the sliding piece.
+    chesscore::Square square;     ///< The square on which the piece is placed.
 };
 
 /**
@@ -36,8 +36,8 @@ struct TableSpec {
  * The magic bitboard is specified by its magic number and shift.
  */
 struct Magics {
-    std::uint64_t magic_number; //< Magic number.
-    std::uint8_t shift;         //< Shift.
+    std::uint64_t magic_number; ///< Magic number.
+    std::uint8_t shift;         ///< Shift.
 };
 
 /**
@@ -54,12 +54,12 @@ using Table = std::vector<chesscore::Bitmap>;
  * given magic values.
  */
 struct GeneratorResult {
-    std::uint64_t expected_entries{};             //< The number of blocker configurations.
-    std::uint64_t stored_entries{};               //< Number of entries that could be stored in the table.
-    std::uint64_t constructive_collisions{};      //< The number of constructive collisions during the generation.
-    std::uint64_t max_index{};                    //< The maximum index in the table.
-    std::optional<std::uint64_t> collision_index; //< The index at which a collision occurred.
-    Table table;                                  //< The generated table.
+    std::uint64_t expected_entries{};             ///< The number of blocker configurations.
+    std::uint64_t stored_entries{};               ///< Number of entries that could be stored in the table.
+    std::uint64_t constructive_collisions{};      ///< The number of constructive collisions during the generation.
+    std::uint64_t max_index{};                    ///< The maximum index in the table.
+    std::optional<std::uint64_t> collision_index; ///< The index at which a collision occurred.
+    Table table;                                  ///< The generated table.
 
     /**
      * \brief Check if the search was successful.
@@ -76,9 +76,9 @@ struct GeneratorResult {
  * The search result is a set of magic values and the table of magic bitboards.
  */
 struct SearchResult {
-    GeneratorResult generator_result; //< Result from filling the table with the found magics.
-    Magics magics{};                  //< The magic values.
-    std::uint64_t tries{};            //< Number of iterations until the magics were found.
+    GeneratorResult generator_result; ///< Result from filling the table with the found magics.
+    Magics magics{};                  ///< The magic values.
+    std::uint64_t tries{};            ///< Number of iterations until the magics were found.
 };
 
 /**
@@ -106,8 +106,8 @@ auto make_shift_range(std::uint8_t start, std::uint8_t end) -> Shifts;
  * \brief Parameters for the search.
  */
 struct SearchParams {
-    std::uint64_t max_tries{}; //< Maximum number of candidate magic numbers.
-    Shifts shifts;             //< The shifts to check.
+    std::uint64_t max_tries{}; ///< Maximum number of candidate magic numbers.
+    Shifts shifts;             ///< The shifts to check.
 };
 
 /**

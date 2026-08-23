@@ -81,10 +81,10 @@ inline auto magic_index(Bitmap blockers, std::uint64_t magic_number, std::uint8_
  * square.
  */
 struct Magics {
-    Bitmap blocker_mask;          //< Mask to extract blockers from the occupancy map.
-    std::uint64_t magic_number{}; //< The magic number.
-    std::uint32_t offset{};       //< The offset of the attack map in the magic table.
-    std::uint8_t shift{};         //< The shift for the index calculation.
+    Bitmap blocker_mask;          ///< Mask to extract blockers from the occupancy map.
+    std::uint64_t magic_number{}; ///< The magic number.
+    std::uint32_t offset{};       ///< The offset of the attack map in the magic table.
+    std::uint8_t shift{};         ///< The shift for the index calculation.
 };
 
 /**
@@ -94,9 +94,9 @@ struct Magics {
  * a magic table.
  */
 struct MagicData {
-    std::uint64_t magic_number{}; //< The magic number.
-    std::uint32_t max_index{};    //< The highest index used.
-    std::uint8_t shift{};         //< The shift used in index calculation.
+    std::uint64_t magic_number{}; ///< The magic number.
+    std::uint32_t max_index{};    ///< The highest index used.
+    std::uint8_t shift{};         ///< The shift used in index calculation.
 };
 
 /**
@@ -121,7 +121,7 @@ auto total_size(const MagicDataSet &data_set) -> std::size_t;
  */
 class MagicBitboard {
 public:
-    using MagicTable = Table<Magics, Square::count, Square>; //< Type of the list of magic parameters.
+    using MagicTable = Table<Magics, Square::count, Square>; ///< Type of the list of magic parameters.
 
     MagicBitboard(PieceType piece_type, const MagicDataSet &data) : m_data_set{&data}, m_piece{piece_type} { init(); }
 
@@ -169,10 +169,10 @@ public:
         return m_attack_maps[magic.offset + magic_index(bitboard.occupancy() & magic.blocker_mask, magic.magic_number, magic.shift)];
     }
 private:
-    const MagicDataSet *m_data_set;    //< Reference to the data set for initialization. (non-owning)
-    PieceType m_piece;                 //< The piece type.
-    std::vector<Bitmap> m_attack_maps; //< The list of attack maps.
-    MagicTable m_magics;               //< The list of magic parameters.
+    const MagicDataSet *m_data_set;    ///< Reference to the data set for initialization. (non-owning)
+    std::vector<Bitmap> m_attack_maps; ///< The list of attack maps.
+    MagicTable m_magics;               ///< The list of magic parameters.
+    PieceType m_piece;                 ///< The piece type.
 
     /**
      * \brief Fill the attack map.
@@ -192,8 +192,17 @@ private:
 
 namespace chesscore {
 
-inline const MagicBitboard magic_rook_bitboard{PieceType::Rook, magic_rook_data};
-inline const MagicBitboard magic_bishop_bitboard{PieceType::Bishop, magic_bishop_data};
+// inline const MagicBitboard magic_rook_bitboard{PieceType::Rook, magic_rook_data};
+// inline const MagicBitboard magic_bishop_bitboard{PieceType::Bishop, magic_bishop_data};
+
+inline auto get_magic_rook_bitboard() -> const MagicBitboard & {
+    static const MagicBitboard *const magic_rook_bitboard = new MagicBitboard{PieceType::Rook, magic_rook_data};
+    return *magic_rook_bitboard;
+}
+inline auto get_magic_bishop_bitboard() -> const MagicBitboard & {
+    static const MagicBitboard *const magic_bishop_bitboard = new MagicBitboard{PieceType::Bishop, magic_bishop_data};
+    return *magic_bishop_bitboard;
+}
 
 } // namespace chesscore
 

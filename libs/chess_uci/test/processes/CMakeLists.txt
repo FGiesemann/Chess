@@ -28,25 +28,25 @@ if(UNIX)
 endif()
 
 # The process handling tests
-add_executable(chessuci_processhandling_tests
+add_executable(chess_uci_processhandling_tests
     src/test_engine_process.cpp
 )
-target_link_libraries(chessuci_processhandling_tests
+target_link_libraries(chess_uci_processhandling_tests
     PRIVATE
         Chess::uci
         Catch2::Catch2WithMain
 )
-target_compile_definitions(chessuci_processhandling_tests PRIVATE
+target_compile_definitions(chess_uci_processhandling_tests PRIVATE
     TEST_BINARY_DIR="${CMAKE_CURRENT_BINARY_DIR}/test_binaries"
 )
-target_compile_options(chessuci_processhandling_tests
+target_compile_options(chess_uci_processhandling_tests
     PRIVATE
         "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
 )
-enable_exception_handling(chessuci_processhandling_tests)
-add_optimization_settings(chessuci_processhandling_tests)
+enable_exception_handling(chess_uci_processhandling_tests)
+add_optimization_settings(chess_uci_processhandling_tests)
 
-add_dependencies(chessuci_processhandling_tests
+add_dependencies(chess_uci_processhandling_tests
     test_echo
     test_immediate_exit
     test_hang
@@ -58,7 +58,7 @@ add_dependencies(chessuci_processhandling_tests
 )
 
 if(UNIX)
-    add_dependencies(chessuci_processhandling_tests test_zombie)
+    add_dependencies(chess_uci_processhandling_tests test_zombie)
 endif()
 
-catch_discover_tests(chessuci_processhandling_tests PROPERTIES TIMEOUT 60)
+catch_discover_tests(chess_uci_processhandling_tests PROPERTIES TIMEOUT 60)

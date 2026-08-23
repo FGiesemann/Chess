@@ -282,7 +282,7 @@ auto process_option_item(OptionItem &item_type, std::string &value, Option &opti
     case OptionItem::var_value:
         option.combo_values.push_back(value);
         break;
-    default:
+    case OptionItem::unknown:
         break;
     }
 

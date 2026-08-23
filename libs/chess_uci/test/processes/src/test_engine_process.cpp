@@ -30,7 +30,7 @@ TEST_CASE("UCI.ProcessTests.Process exits immediately", "[process][exit]") {
     auto process = chessuci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_immediate_exit");
-    process->start({binary, {"42"}}); // non-zero exit code signifies error
+    process->start({.executable = binary, .arguments = {"42"}}); // non-zero exit code signifies error
 
     auto exit_code = process->wait_for_exit(5000);
     REQUIRE(exit_code.has_value());
@@ -99,7 +99,7 @@ TEST_CASE("UCI.ProcessTests.Handle large output", "[process][io][stress]") {
 
     while (process->read_line(line)) {
         ++lines_read;
-        REQUIRE(line.find("Line") != std::string::npos);
+        REQUIRE(line.contains("Line"));
     }
 
     REQUIRE(lines_read == 1000);

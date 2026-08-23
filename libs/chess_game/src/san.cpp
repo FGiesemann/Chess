@@ -246,11 +246,8 @@ auto parse_castling_move(const std::string &san, chesscore::Color side_to_move, 
     }
     token = get_token(san_str);
     auto suffix_err = parse_suffixes(san, move, san_str, token);
-    if (suffix_err) {
-        return suffix_err;
-    }
     move.target_square = target_square;
-    return std::nullopt;
+    return suffix_err;
 }
 
 auto san_move_matches_any_piece_type(const SANMove &san_move, const chesscore::Move &move) -> bool {

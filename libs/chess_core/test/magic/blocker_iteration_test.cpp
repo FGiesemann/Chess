@@ -63,5 +63,5 @@ TEST_CASE("Core.Magic.Blocker.Iteration.Sign Bit", "[magic]") {
     for (const auto &expected_blocker : expected) {
         blockers = next_blocker_config(blockers, mask);
         CHECK(blockers == expected_blocker);
-    };
+    }
 }

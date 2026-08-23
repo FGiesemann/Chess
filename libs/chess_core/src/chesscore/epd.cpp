@@ -150,8 +150,9 @@ auto read_operation(const std::string &line, size_t &index, EpdRecord &record) -
         return;
     }
 
-    static const std::unordered_map < std::string_view,
-        void (*)(EpdRecord &, const std::string &, size_t &)> operation_handlers = {
+    using handler_map = std::unordered_map<std::string_view, void (*)(EpdRecord &, const std::string &, size_t &)>;
+
+    static const handler_map * const operation_handlers = new handler_map{
             {"acd",
              [](EpdRecord &in_record, const std::string &in_line, size_t &in_index) {
                  read_int(in_line, in_index, in_record.acd);
@@ -362,8 +363,8 @@ auto read_operation(const std::string &line, size_t &index, EpdRecord &record) -
              }},
         };
 
-    if (operation_handlers.contains(opcode)) {
-        operation_handlers.at(opcode)(record, line, index);
+    if (operation_handlers->contains(opcode)) {
+        operation_handlers->at(opcode)(record, line, index);
     } else {
         EpdRecord::unknown_command unknown;
         unknown.opcode = opcode;

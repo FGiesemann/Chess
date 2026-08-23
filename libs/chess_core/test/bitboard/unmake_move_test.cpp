@@ -14,7 +14,7 @@ using namespace chesscore;
 TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.SingleMove", "[Bitboard][UnmakeMove]") {
     Bitboard board{FenString::starting_position()};
 
-    Move m{.from = Square::E2, .to = Square::E4, .piece = Piece::WhitePawn, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0};
+    Move m{.from = Square::E2, .to = Square::E4, .piece = Piece::WhitePawn, .halfmove_clock_before = 0, .castling_rights_before{CastlingRights::all()}};
     board.make_move(m);
 
     CHECK_FALSE(board.get_piece(Square::E2).has_value());
@@ -29,7 +29,7 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Capture", "[Bitboard][UnmakeMove]")
     Bitboard board{FenString{"8/8/8/3p4/2B1P3/8/8/8 b - - 0 1"}};
 
     Move m{
-        .from = Square::D5, .to = Square::C4, .piece = Piece::BlackPawn, .captured{Piece::WhiteBishop}, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0
+        .from = Square::D5, .to = Square::C4, .piece = Piece::BlackPawn, .captured{Piece::WhiteBishop}, .halfmove_clock_before = 0, .castling_rights_before{CastlingRights::all()}
     };
     board.make_move(m);
     board.unmake_move(m);
@@ -46,8 +46,8 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.EnPassant", "[Bitboard][UnmakeMove]
         .piece = Piece::BlackPawn,
         .captured{Piece::WhitePawn},
         .capturing_en_passant = true,
+        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
-        .halfmove_clock_before = 0
     };
     board.make_move(m);
     CHECK_FALSE(board.get_piece(Square::F4).has_value());
@@ -71,29 +71,29 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Castling", "[Bitboard][UnmakeMove]"
         .from = Square::E1,
         .to = Square::G1,
         .piece = Piece::WhiteKing,
-        .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .castling_rights_before{CastlingRights::all()},
     };
     Move white_queenside_castling{
         .from = Square::E1,
         .to = Square::C1,
         .piece = Piece::WhiteKing,
-        .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .castling_rights_before{CastlingRights::all()},
     };
     Move black_kingside_castling{
         .from = Square::E8,
         .to = Square::G8,
         .piece = Piece::BlackKing,
-        .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .castling_rights_before{CastlingRights::all()},
     };
     Move black_queenside_castling{
         .from = Square::E8,
         .to = Square::C8,
         .piece = Piece::BlackKing,
-        .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .castling_rights_before{CastlingRights::all()},
     };
 
     board1.make_move(white_kingside_castling);
@@ -135,8 +135,8 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Promotion", "[Bitboard][UnmakeMove]
         .to = Square::E8,
         .piece = Piece::WhitePawn,
         .promoted{Piece::WhiteQueen},
-        .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .castling_rights_before{CastlingRights::all()},
     };
     board1.make_move(m1);
     board1.unmake_move(m1);
@@ -149,8 +149,8 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Promotion", "[Bitboard][UnmakeMove]
         .piece = Piece::WhitePawn,
         .captured{Piece::BlackRook},
         .promoted{Piece::WhiteQueen},
-        .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .castling_rights_before{CastlingRights::all()},
     };
     board2.make_move(m2);
     CHECK(board2.get_piece(Square::F8) == Piece::WhiteQueen);
@@ -165,29 +165,29 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Promotion", "[Bitboard][UnmakeMove]
 TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Sequence", "[Bitboard][UnmakeMove]") {
     Bitboard board{FenString::starting_position()};
 
-    Move m1{.from = Square::E2, .to = Square::E4, .piece = Piece::WhitePawn, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0};
+    Move m1{.from = Square::E2, .to = Square::E4, .piece = Piece::WhitePawn, .halfmove_clock_before = 0, .castling_rights_before{CastlingRights::all()}};
     Move m2{
         .from = Square::D7,
         .to = Square::D5,
         .piece = Piece::BlackPawn,
-        .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .castling_rights_before{CastlingRights::all()},
         .en_passant_target_before = Square::E3
     };
     Move m3{
         .from = Square::F1,
         .to = Square::C4,
         .piece = Piece::WhiteBishop,
-        .castling_rights_before{CastlingRights::all()},
         .halfmove_clock_before = 0,
+        .castling_rights_before{CastlingRights::all()},
         .en_passant_target_before = Square::D6
     };
-    Move m4{.from = Square::E8, .to = Square::D7, .piece = Piece::BlackKing, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0};
-    Move m5{.from = Square::G1, .to = Square::F3, .piece = Piece::WhiteKnight, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0};
+    Move m4{.from = Square::E8, .to = Square::D7, .piece = Piece::BlackKing, .halfmove_clock_before = 0, .castling_rights_before{CastlingRights::all()}};
+    Move m5{.from = Square::G1, .to = Square::F3, .piece = Piece::WhiteKnight, .halfmove_clock_before = 0, .castling_rights_before{CastlingRights::all()}};
     Move m6{
-        .from = Square::D5, .to = Square::C4, .piece = Piece::BlackPawn, .captured{Piece::WhiteBishop}, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0
+        .from = Square::D5, .to = Square::C4, .piece = Piece::BlackPawn, .captured{Piece::WhiteBishop}, .halfmove_clock_before = 0, .castling_rights_before{CastlingRights::all()}
     };
-    Move m7{.from = Square::E1, .to = Square::G1, .piece = Piece::WhiteKing, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0};
+    Move m7{.from = Square::E1, .to = Square::G1, .piece = Piece::WhiteKing, .halfmove_clock_before = 0, .castling_rights_before{CastlingRights::all()}};
     board.make_move(m1);
     board.make_move(m2);
     board.make_move(m3);
