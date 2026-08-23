@@ -44,3 +44,31 @@ add_subdirectory(tools/perft)
 add_subdirectory(tools/pgn_parser)
 add_subdirectory(tools/table_generator)
 add_subdirectory(tools/test_game_filter)
+
+install(EXPORT ChessTargets
+    FILE ChessTargets.cmake
+    NAMESPACE Chess::
+    DESTINATION lib/cmake/Chess
+)
+
+include(WriteBasicConfigVersionFile)
+
+write_basic_config_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/ChessConfigVersion.cmake"
+    VERSION 1.0.0
+    COMPATIBILITY SameMajorVersion
+)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ChessConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/ChessConfig.cmake"
+    INSTALL_DESTINATION lib/cmake/Chess
+)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/ChessConfigVersion.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/ChessConfig.cmake"
+    DESTINATION lib/cmake/Chess
+)
