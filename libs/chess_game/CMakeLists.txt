@@ -26,7 +26,7 @@ target_sources(chess_game
 )
 
 target_compile_features(chess_game PUBLIC cxx_std_23)
-target_compile_options(chess_game PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_exception_handling(chess_game)
 target_link_libraries(chess_game PUBLIC Chess::core)
 add_compiler_warnings(chess_game)
 add_optimization_settings(chess_game)

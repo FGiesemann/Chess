@@ -42,13 +42,8 @@ target_sources(chess_core
         src/chesscore/zobrist.cpp
 )
 
-target_compile_features(chess_core
-    PUBLIC
-    cxx_std_23
-)
-target_compile_options(chess_core PUBLIC
-    $<$<CXX_COMPILER_ID:MSVC>:/EHsc>
-)
+target_compile_features(chess_core PUBLIC cxx_std_23)
+enable_exception_handling(chess_core)
 add_compiler_warnings(chess_core)
 add_optimization_settings(chess_core)
 
@@ -84,16 +79,12 @@ target_sources(chess_core_io
         src/chesscore_io/square_io.cpp
 )
 
-target_compile_features(chess_core_io
-    PUBLIC
-    cxx_std_23
-)
-
+target_compile_features(chess_core_io PUBLIC cxx_std_23)
 target_link_libraries(chess_core_io PUBLIC chess_core)
 add_compiler_warnings(chess_core_io)
 add_optimization_settings(chess_core_io)
-target_compile_options(chess_core_io PRIVATE "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-target_compile_options(chess_core_io PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_utf8_output(chess_core_io)
+enable_exception_handling(chess_core_io)
 
 install(TARGETS chess_core_io
     EXPORT ChessTargets

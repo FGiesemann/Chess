@@ -7,7 +7,7 @@ add_executable(chessengine_tests
 )
 add_compiler_warnings(chessengine_tests)
 add_optimization_settings(chessengine_tests)
-target_compile_options(chessengine_tests PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_exception_handling(chessengine_tests)
 target_link_libraries(chessengine_tests
   PRIVATE 
   Chess::engine

@@ -32,16 +32,21 @@ target_sources(chess_gui
     PRIVATE
         ${CHESS_GUI_SOURCES}
 )
-set_target_properties(chess_gui PROPERTIES
-    AUTOMOC ON
-    AUTORCC ON
+set_target_properties(chess_gui
+    PROPERTIES
+        AUTOMOC ON
+        AUTORCC ON
 )   
-target_link_libraries(chess_gui PUBLIC Chess::core)
-target_link_libraries(chess_gui PUBLIC Chess::game)
-target_link_libraries(chess_gui PUBLIC Qt6::Widgets Qt6::SvgWidgets)
+target_link_libraries(chess_gui
+    PUBLIC
+        Chess::core
+        Chess::game
+        Qt6::Widgets
+        Qt6::SvgWidgets
+)
 add_compiler_warnings(chess_gui)
 add_optimization_settings(chess_gui)
-target_compile_options(chess_gui PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_exception_handling(chess_gui)
 
 install(TARGETS chess_gui
     EXPORT ChessTargets

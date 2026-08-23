@@ -49,3 +49,11 @@ function(add_optimization_settings TARGET_NAME)
         )
     endif()
 endfunction()
+
+function(enable_exception_handling TARGET_NAME)
+    target_compile_options(${TARGET_NAME} PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+endfunction()
+
+function(enable_utf8_output TARGET_NAME)
+    target_compile_options(${TARGET_NAME} PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+endfunction()

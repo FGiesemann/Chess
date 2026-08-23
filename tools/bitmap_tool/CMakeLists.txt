@@ -11,8 +11,6 @@ target_link_libraries(bitmap_tool
     Chess::core_io
 )
 
-target_compile_options(bitmap_tool PRIVATE
-    "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
-)
+enable_utf8_output(bitmap_tool)
 
 add_optimization_settings(bitmap_tool)

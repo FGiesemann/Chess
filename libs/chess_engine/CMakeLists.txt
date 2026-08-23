@@ -27,8 +27,7 @@ target_sources(chess_engine
 add_compiler_warnings(chess_engine)
 add_optimization_settings(chess_engine)
 target_compile_features(chess_engine PUBLIC cxx_std_23)
-target_compile_options(chess_engine PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
-
+enable_exception_handling(chess_engine)
 target_link_libraries(chess_engine
     PUBLIC
         Chess::core
@@ -40,9 +39,9 @@ add_executable(maat
 )
 add_compiler_warnings(maat)
 add_optimization_settings(maat)
+target_compile_features(maat PUBLIC cxx_std_23)
 target_link_libraries(maat PRIVATE chess_engine)
-target_compile_options(maat PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
-
+enable_exception_handling(maat)
 install(TARGETS chess_engine
     EXPORT ChessTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

@@ -7,7 +7,7 @@ add_executable(chessgame_tests
     src/san_parser_test.cpp
 )
 add_compiler_warnings(chessgame_tests)
-target_compile_options(chessgame_tests PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_exception_handling(chessgame_tests)
 target_link_libraries(chessgame_tests
   PRIVATE 
   Chess::game Chess::core_io

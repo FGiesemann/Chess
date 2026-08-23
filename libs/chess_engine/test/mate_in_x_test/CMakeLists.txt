@@ -7,7 +7,7 @@ target_link_libraries(mate_in_x_test
     Chess::engine
     Chess::game
 )
-target_compile_options(mate_in_x_test PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_exception_handling(mate_in_x_test)
 add_optimization_settings(mate_in_x_test)
 
 add_executable(lichess_converter
@@ -21,5 +21,5 @@ target_link_libraries(lichess_converter
     Chess::uci
 )
 target_compile_features(lichess_converter PRIVATE cxx_std_23)
-target_compile_options(lichess_converter PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_exception_handling(lichess_converter)
 add_optimization_settings(lichess_converter)

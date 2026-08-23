@@ -9,8 +9,8 @@ target_sources(perft
 
 target_link_libraries(perft
     PRIVATE
-    Chess::core
-    Chess::core_io
+        Chess::core
+        Chess::core_io
 )
 
 add_optimization_settings(perft)

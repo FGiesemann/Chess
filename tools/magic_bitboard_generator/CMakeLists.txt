@@ -13,11 +13,9 @@ target_sources(magic_bitboard_generator
 
 target_link_libraries(magic_bitboard_generator
     PRIVATE
-    Chess::core
+        Chess::core
 )
 
-target_compile_options(magic_bitboard_generator PRIVATE
-    "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
-)
+enable_utf8_output(magic_bitboard_generator)
 
 add_optimization_settings(magic_bitboard_generator)

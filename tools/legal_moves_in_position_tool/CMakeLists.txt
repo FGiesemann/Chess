@@ -11,8 +11,6 @@ target_link_libraries(all_legal_moves
     Chess::core_io
 )
 
-target_compile_options(all_legal_moves PRIVATE
-    "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
-)
+enable_utf8_output(all_legal_moves)
 
 add_optimization_settings(all_legal_moves)

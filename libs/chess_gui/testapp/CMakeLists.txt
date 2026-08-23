@@ -6,8 +6,8 @@ qt_add_executable(testapp
 
 target_link_libraries(testapp
     PRIVATE
-    Qt6::Widgets
-    Chess::gui
+        Qt6::Widgets
+        Chess::gui
 )
 
 add_optimization_settings(testapp)

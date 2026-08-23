@@ -11,7 +11,7 @@ function(add_test_binary TARGET_NAME SOURCE_FILE)
         PRIVATE
             "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
     )
-    target_compile_options(${TARGET_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+    enable_exception_handling(${TARGET_NAME})
 endfunction()
 
 # "Engine Simulations"
@@ -43,7 +43,7 @@ target_compile_options(chessuci_processhandling_tests
     PRIVATE
         "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
 )
-target_compile_options(chessuci_processhandling_tests PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_exception_handling(chessuci_processhandling_tests)
 add_optimization_settings(chessuci_processhandling_tests)
 
 add_dependencies(chessuci_processhandling_tests

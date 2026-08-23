@@ -14,8 +14,6 @@ target_link_libraries(chess_game_tool
         Chess::game
 )
 
-target_compile_options(chess_game_tool PRIVATE
-    "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
-)
+enable_utf8_output(chess_game_tool)
 
 add_optimization_settings(chess_game_tool)

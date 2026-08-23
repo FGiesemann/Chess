@@ -16,7 +16,7 @@ target_include_directories(chessuci_unittests
 target_compile_definitions(chessuci_unittests PRIVATE
     TEST_BINARY_DIR="${CMAKE_BINARY_DIR}/test/processes/test_binaries"
 )
-target_compile_options(chessuci_unittests PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/EHsc>)
+enable_exception_handling(chessuci_unittests)
 add_dependencies(chessuci_unittests
     test_echo
 )
@@ -33,10 +33,9 @@ add_optimization_settings(chessuci_unittests)
 
 target_link_libraries(chessuci_unittests
     PRIVATE
-        Chess::uci Chess::core_io
+        Chess::uci
+        Chess::core_io
         Catch2::Catch2WithMain
 )
 
-catch_discover_tests(chessuci_unittests
-    PROPERTIES TIMEOUT 20
-)
+catch_discover_tests(chessuci_unittests PROPERTIES TIMEOUT 20)

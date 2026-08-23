@@ -9,8 +9,9 @@ target_sources(table_generator
 )
 
 target_link_libraries(table_generator
-    Chess::core
-    Chess::core_io
+    PRIVATE
+        Chess::core
+        Chess::core_io
 )
 
 add_optimization_settings(table_generator)

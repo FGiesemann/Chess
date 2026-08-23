@@ -10,8 +10,8 @@ target_sources(benchmark
 
 target_link_libraries(benchmark
     PRIVATE
-    Chess::core
-    Chess::engine
+        Chess::core
+        Chess::engine
 )
 
 add_optimization_settings(benchmark)
