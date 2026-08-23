@@ -3,7 +3,7 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/gui_handler.h"
+#include "chess_uci/gui_handler.h"
 
 #include "string_conversion.h"
 

@@ -6,7 +6,7 @@
 #ifndef CHESSUCI_ENGINE_PROCESS_MOCK_H
 #define CHESSUCI_ENGINE_PROCESS_MOCK_H
 
-#include "chessuci/engine_process.h"
+#include "chess_uci/engine_process.h"
 
 #include <atomic>
 #include <functional>

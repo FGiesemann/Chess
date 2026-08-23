@@ -8,21 +8,21 @@ target_sources(chess_engine
         FILE_SET HEADERS
             BASE_DIRS include
             FILES
-                include/chessengine/chess_engine.h
-                include/chessengine/config.h
-                include/chessengine/evaluation.h
-                include/chessengine/logger.h
-                include/chessengine/test_engine.h
-                include/chessengine/types.h
-                include/chessengine/uci_adapter.h
+                include/chess_engine/chess_engine.h
+                include/chess_engine/config.h
+                include/chess_engine/evaluation.h
+                include/chess_engine/logger.h
+                include/chess_engine/test_engine.h
+                include/chess_engine/types.h
+                include/chess_engine/uci_adapter.h
     PRIVATE
-        src/chessengine/chess_engine.cpp
-        src/chessengine/config.cpp
-        src/chessengine/evaluation.cpp
-        src/chessengine/logger.cpp
-        src/chessengine/test_engine.cpp
-        src/chessengine/types.cpp
-        src/chessengine/uci_adapter.cpp
+        src/chess_engine/chess_engine.cpp
+        src/chess_engine/config.cpp
+        src/chess_engine/evaluation.cpp
+        src/chess_engine/logger.cpp
+        src/chess_engine/test_engine.cpp
+        src/chess_engine/types.cpp
+        src/chess_engine/uci_adapter.cpp
 )
 add_compiler_warnings(chess_engine)
 add_optimization_settings(chess_engine)
@@ -34,6 +34,14 @@ target_link_libraries(chess_engine
         Chess::uci
 )
 
+install(TARGETS chess_engine
+    EXPORT ChessTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    COMPONENT chess_engine
+)
+
 add_executable(maat
     src/app/main.cpp
 )
@@ -42,11 +50,10 @@ add_optimization_settings(maat)
 target_compile_features(maat PUBLIC cxx_std_23)
 target_link_libraries(maat PRIVATE chess_engine)
 enable_exception_handling(maat)
-install(TARGETS chess_engine
+
+install(TARGETS maat
     EXPORT ChessTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chess_engine
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT chess_engine
 )
 

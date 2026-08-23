@@ -5,7 +5,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chessengine/evaluation.h"
+#include "chess_engine/evaluation.h"
 using namespace chessengine;
 using namespace chesscore;
 

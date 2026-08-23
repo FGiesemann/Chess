@@ -1,4 +1,4 @@
-#include "chessuci/process_factory.h"
+#include "chess_uci/process_factory.h"
 #include <catch2/catch_test_macros.hpp>
 #include <filesystem>
 #include <string>

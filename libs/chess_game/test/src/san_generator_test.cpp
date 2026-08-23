@@ -5,11 +5,11 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/fen.h"
-#include "chesscore/position.h"
-#include "chesscore_io/chesscore_io.h"
+#include "chess_core/fen.h"
+#include "chess_core/position.h"
+#include "chess_core_io/chesscore_io.h"
 
-#include "chessgame/san.h"
+#include "chess_game/san.h"
 
 using namespace chessgame;
 using namespace chesscore;

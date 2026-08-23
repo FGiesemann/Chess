@@ -3,8 +3,8 @@
  * Representation of a single game of chess                                   *
  * ************************************************************************** */
 
-#include "chessgame/pgn.h"
-#include "chessgame/san.h"
+#include "chess_game/pgn.h"
+#include "chess_game/san.h"
 
 #include <algorithm>
 #include <cctype>

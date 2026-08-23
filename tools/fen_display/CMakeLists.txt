@@ -14,3 +14,8 @@ target_link_libraries(fen_display
 enable_utf8_output(fen_display)
 
 add_optimization_settings(fen_display)
+
+install(TARGETS fen_display
+    EXPORT ChessTargets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

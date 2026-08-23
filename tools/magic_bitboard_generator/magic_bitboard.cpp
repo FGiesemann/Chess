@@ -5,7 +5,7 @@
 
 #include "magic_bitboard.h"
 
-#include <chesscore/magic.h>
+#include <chess_core/magic.h>
 
 #include <random>
 

@@ -5,7 +5,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/epd.h"
+#include "chess_core/epd.h"
 
 using namespace chesscore;
 

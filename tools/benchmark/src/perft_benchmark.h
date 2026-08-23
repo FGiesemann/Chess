@@ -9,8 +9,8 @@
 #include <filesystem>
 #include <span>
 
-#include <chesscore/epd.h>
-#include <chesscore/position.h>
+#include <chess_core/epd.h>
+#include <chess_core/position.h>
 
 namespace benchmark::perft {
 

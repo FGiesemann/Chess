@@ -22,13 +22,13 @@ target_sources(chess_gui
         FILE_SET HEADERS
             BASE_DIRS include
             FILES
-                include/chessgui/ChessboardController.h
-                include/chessgui/ChessboardError.h
-                include/chessgui/ChessboardWidget.h
-                include/chessgui/GraphicsItems.h
-                include/chessgui/MoveTreeModel.h
-                include/chessgui/MoveTreeWidget.h
-                include/chessgui/PieceSet.h
+                include/chess_gui/ChessboardController.h
+                include/chess_gui/ChessboardError.h
+                include/chess_gui/ChessboardWidget.h
+                include/chess_gui/GraphicsItems.h
+                include/chess_gui/MoveTreeModel.h
+                include/chess_gui/MoveTreeWidget.h
+                include/chess_gui/PieceSet.h
     PRIVATE
         ${CHESS_GUI_SOURCES}
 )
@@ -52,7 +52,7 @@ install(TARGETS chess_gui
     EXPORT ChessTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chessgui
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     COMPONENT chess_gui
 )
 

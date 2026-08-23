@@ -4,7 +4,7 @@
  * ************************************************************************** */
 
 #include "table_gen.h"
-#include "chesscore_io/bitmap_io.h"
+#include "chess_core_io/bitmap_io.h"
 
 #include <iostream>
 

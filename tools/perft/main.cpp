@@ -8,7 +8,7 @@
 #include <span>
 #include <string>
 
-#include <chesscore_io/chesscore_io.h>
+#include <chess_core_io/chesscore_io.h>
 
 #include "perft.h"
 #include "reporter.h"

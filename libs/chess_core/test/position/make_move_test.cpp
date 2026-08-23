@@ -5,8 +5,8 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/bitboard.h"
-#include "chesscore/position.h"
+#include "chess_core/bitboard.h"
+#include "chess_core/position.h"
 
 using namespace chesscore;
 

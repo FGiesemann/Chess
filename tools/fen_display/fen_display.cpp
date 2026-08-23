@@ -3,9 +3,9 @@
  * Data structures and algorithms for chess                                   *
  * ************************************************************************** */
 
-#include "chesscore/bitboard.h"
-#include "chesscore/fen.h"
-#include "chesscore_io/bitboard_io.h"
+#include "chess_core/bitboard.h"
+#include "chess_core/fen.h"
+#include "chess_core_io/bitboard_io.h"
 
 #include <iostream>
 

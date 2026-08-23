@@ -3,9 +3,9 @@
  * Chess playing engine                                                       *
  * ************************************************************************** */
 
-#include "chessengine/chess_engine.h"
-#include "chessengine/logger.h"
-#include "chessengine/uci_adapter.h"
+#include "chess_engine/chess_engine.h"
+#include "chess_engine/logger.h"
+#include "chess_engine/uci_adapter.h"
 
 #include <iostream>
 #include <thread>

@@ -4,9 +4,9 @@
  * ************************************************************************** */
 
 #include "database.h"
-#include <chesscore/chesscore.h>
-#include <chesscore/piece.h>
-#include <chesscore/square.h>
+#include <chess_core/chesscore.h>
+#include <chess_core/piece.h>
+#include <chess_core/square.h>
 
 #include <format>
 #include <fstream>
@@ -35,7 +35,8 @@ auto RecordWriter::write(const Record &record, std::ostream &ostream) -> void {
     ostream << std::format("{:c} {} {:1d}", chesscore::Piece{record.piece(), chesscore::Color::White}.piece_char(), to_string(record.square()), record.has_magics() ? 1 : 0);
     if (record.has_magics()) {
         ostream << std::format(
-            " {:016x} {} {} {} {}", record.magics().magic_number, record.magics().shift, record.stats().max_index, record.stats().blocker_configs, record.stats().constructive_collisions
+            " {:016x} {} {} {} {}", record.magics().magic_number, record.magics().shift, record.stats().max_index, record.stats().blocker_configs,
+            record.stats().constructive_collisions
         );
     }
     ostream << '\n';
@@ -69,7 +70,8 @@ auto RecordReader::read(std::istream &istream) -> Record {
         std::uint64_t constructive_collisions{};
         istream >> max_index >> blocker_configs >> constructive_collisions;
         record.set_magics(
-            Magics{.magic_number = magic_number, .shift = shift}, TableStats{.blocker_configs = blocker_configs, .max_index = max_index, .constructive_collisions = constructive_collisions}
+            Magics{.magic_number = magic_number, .shift = shift},
+            TableStats{.blocker_configs = blocker_configs, .max_index = max_index, .constructive_collisions = constructive_collisions}
         );
     }
 

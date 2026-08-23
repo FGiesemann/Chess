@@ -10,8 +10,8 @@
 #include <filesystem>
 #include <span>
 
-#include <chesscore/epd.h>
-#include <chessengine/types.h>
+#include <chess_core/epd.h>
+#include <chess_engine/types.h>
 
 namespace benchmark::engine {
 

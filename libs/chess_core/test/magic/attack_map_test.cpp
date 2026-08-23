@@ -5,7 +5,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/magic.h"
+#include "chess_core/magic.h"
 
 using namespace chesscore;
 

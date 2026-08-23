@@ -1,0 +1,352 @@
+/* ************************************************************************** *
+ * Chess Core                                                                 *
+ * Data structures and algorithms for chess                                   *
+ * ************************************************************************** */
+/** \file */
+
+#ifndef CHESSCORE_BITBOARD_H
+#define CHESSCORE_BITBOARD_H
+
+#include <array>
+
+#include "chess_core/bitmap.h"
+#include "chess_core/board.h"
+#include "chess_core/fen.h"
+#include "chess_core/move.h"
+#include "chess_core/piece.h"
+#include "chess_core/square.h"
+
+namespace chesscore {
+
+/**
+ * \brief A bitboard stores the placement of pieces on the board.
+ *
+ * The bitboard contains Bitmaps that describe the placement of figures on the
+ * chess board.
+ */
+class Bitboard {
+public:
+    Bitboard() = default;
+
+    /**
+     * \brief Create a board with pieces described by a FEN string.
+     *
+     * Sets the pieces on the board according to the figure placement part of a
+     * FEN string.
+     * \param fen The FEN string.
+     */
+    explicit Bitboard(const FenString &fen);
+
+    /**
+     * \brief Check if the bitboard is empty.
+     *
+     * An empty bitboard has no pieces on it.
+     * \return If the bitboard is empty.
+     */
+    [[nodiscard]] auto empty() const -> bool;
+
+    /**
+     * \brief Check if the bitboard has a piece of a certain type.
+     *
+     * Checks, if there is a piece of the given piece type on the board. For
+     * checking a piece with a certain color, use the has_piece(Color)
+     * \param piece_type The piece type.
+     * \return If there is a piece of the given type on the board.
+     */
+    [[nodiscard]] auto has_piece(PieceType piece_type) const -> bool;
+
+    /**
+     * \brief Check if the bitboard has a piece of a certain color.
+     *
+     * Checks, if there is a piece of the given color on the board. For only
+     * checking the piece type ignoring the color, use the has_piece(PieceType).
+     * \param piece The piece to check.
+     * \return If there is a piece of the given color on the board.
+     */
+    [[nodiscard]] auto has_piece(Piece piece) const -> bool;
+
+    /**
+     * \brief Check if the bitboard has a piece of a certain color.
+     *
+     * Checks if any piece of the given color is on the board.
+     * \param color The color to check.
+     * \return If there is a piece of the given color on the board.
+     */
+    [[nodiscard]] auto has_piece(const Color &color) const -> bool;
+
+    /**
+     * \brief Check if the bitboard has a piece on a certain square.
+     *
+     * Checks a given suqare for a piece.
+     * \param square The square to check.
+     * \return If there is a piece on the given square.
+     */
+    [[nodiscard]] auto has_piece(Square square) const -> bool;
+
+    /**
+     * \brief Put a piece on the board.
+     *
+     * Places the given piece on the given square. If the square is already
+     * occupied, the new piece replaces the previous one. If the given piece is
+     * Piece::None (piece.is_piece() == false), the square is just cleared.
+     * For faster placement (not replcaement!) of pieces, see toggle_piece.
+     * \param piece The piece to place.
+     * \param square The square to place the piece on.
+     */
+    auto set_piece(Piece piece, Square square) -> void;
+
+    /**
+     * \brief Toggles a piece on the board.
+     *
+     * Toggles the bit for the given piece on the given square.
+     * \param piece The piece.
+     * \param square The square.
+     */
+    auto toggle_piece(Piece piece, Square square) -> void;
+
+    /**
+     * \brief Get the piece on the given square.
+     *
+     * Retrieves the piece on the given square. If there is no piece on the
+     * square, an empty optional is returned.
+     * \param square The square to get the piece from.
+     * \return The piece on the square or an empty optional.
+     */
+    [[nodiscard]] auto get_piece(Square square) const -> std::optional<Piece>;
+
+    /**
+     * \brief Remove a piece from the board.
+     *
+     * Removes a piece from the given square. If there is no piece on the given
+     * square, nothing happens.
+     * For faster removing of a single (known) piece, see toggle_piece.
+     * \param square The square to clear.
+     */
+    auto clear_square(Square square) -> void;
+
+    /**
+     * \brief Count the number of pieces of a certain type.
+     *
+     * \param piece The piece to count.
+     * \return The number of pieces of the given type.
+     */
+    [[nodiscard]] auto piece_count(Piece piece) const -> int;
+
+    /**
+     * \brief Make a move.
+     *
+     * Assumes, that the given move is valid in the current position. No checks
+     * are performed!
+     * \param move The move to apply in the current position.
+     */
+    auto make_move(const Move &move) -> void;
+
+    /**
+     * \brief Reverses a move.
+     *
+     * Recreates the state of the position before the move was made. This only
+     * works, if the given move was the last move applied to the board. No
+     * validity checks are performed!
+     * \param move The move to undo.
+     */
+    auto unmake_move(const Move &move) -> void;
+
+    /**
+     * \brief Generate all legal moves.
+     *
+     * Generate a list of all legal moves for the current position. The function
+     * needs additional information of the current position, such as the player
+     * to move next, the available castling rights and the en-passant target
+     * square.
+     * \param state State of the current position.
+     * \return A list of all legal moves for the given position and player.
+     */
+    [[nodiscard]] auto all_legal_moves(const PositionState &state) const -> MoveList;
+
+    /**
+     * \brief Generate all legal capture moves.
+     *
+     * Generate a list of all legal capture moves for the current position. The
+     * function needs additional information of the current position, such as the
+     * player to move next, the available castling rights and the en-passant
+     * target square.
+     * \param state State of the current position.
+     * \return A list of all legal capture moves for the given position and player.
+     */
+    [[nodiscard]] auto capture_moves(const PositionState &state) const -> MoveList;
+
+    /**
+     * \brief Generate all moves for all knights.
+     *
+     * Generates the possible moves for the knights of the player to move.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_knight_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    /**
+     * \brief Generate all moves for all kings.
+     *
+     * Generates the possible moves for the king(s) of the player to move.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_king_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    /**
+     * \brief Generate all moves for bishops, rooks and queens.
+     *
+     * Generates the possible moves for the bishops, rooks and queens of the
+     * player to move.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_sliding_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    /**
+     * \brief Generate all moves for a sliding piece.
+     *
+     * Generates the possible moves for a given sliding piece from the given
+     * starting square in te given position state.
+     * \param moving_piece The moving piece.
+     * \param start The square, where the piece starts.
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_sliding_moves(Piece moving_piece, Square start, MoveList &moves, const PositionState &state) const -> void;
+
+    /**
+     * \brief Generate all pawn moves for a player.
+     *
+     * Generates all the moves for all pawns of one player. This includes
+     *   - single step pawn pushes (including promotion),
+     *   - double step pawn pushes,
+     *   - captures by pawns (including en-passant captures)
+     * \param moves The list, where the generated moves are added.
+     * \param state State of the current position.
+     */
+    auto all_pawn_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    /**
+     * \brief Search the board for a king.
+     *
+     * Search the board for a king of the given color and return the square, if
+     * a king was found.
+     * \param color The color.
+     * \return The square of the king, if found.
+     */
+    [[nodiscard]] auto find_king(Color color) const -> Square;
+
+    /**
+     * \brief Check, if a square is under attack.
+     *
+     * Checks, if the given square is under attack by a piece of the gven color.
+     * \param square The square to be checked.
+     * \param attacker_color Color of the attacker.
+     * \return If the square is under attack.
+     */
+    [[nodiscard]] auto is_attacked(Square square, Color attacker_color) const -> bool;
+
+    /**
+     * \brief Check, if a square would be under attack after a move.
+     *
+     * Checks, if the given square woudl be under attack by a piece of the given
+     * color after the given move was applied.
+     * \param square The square to check.
+     * \param attacker_color Color or the attacker.
+     * \param move The move to apply before the check.
+     * \return If the square would be under attack after the move.
+     */
+    [[nodiscard]] auto would_be_attacked(Square square, Color attacker_color, const Move &move) const -> bool;
+
+    /**
+     * \brief Checks, if a square is attacked by a pawn.
+     *
+     * \param square The square to be checked.
+     * \param pawn_color Color of the attacking pawn.
+     * \return If the square is attacked by a pawn.
+     */
+    [[nodiscard]] auto pawn_attacks(Square square, Color pawn_color) const -> bool;
+
+    /**
+     * \brief Checks, if a square is attacked by a knight.
+     *
+     * \param square The square to be checked.
+     * \param knight_color Color of the attacking knight.
+     * \return If the square is attacked by a knight.
+     */
+    [[nodiscard]] auto knight_attacks(Square square, Color knight_color) const -> bool;
+
+    /**
+     * \brief Checks, if a square is attacked by a king.
+     *
+     * \param square The square to be checked.
+     * \param king_color Color of the attacking king.
+     * \return If the square is attacked by a king.
+     */
+    [[nodiscard]] auto king_attacks(Square square, Color king_color) const -> bool;
+
+    /**
+     * \brief Checks, if a square is attacked by a sliding piece.
+     *
+     * \param square The square to be checked.
+     * \param attacker_color Color of the attacking sliding piece.
+     * \return If the square is attacked by a sliding piece.
+     */
+    [[nodiscard]] auto sliding_piece_attacks(Square square, Color attacker_color) const -> bool;
+
+    /**
+     * \brief Comparison of two Bitboards.
+     *
+     * \param rhs The bitboard to compare to.
+     * \return If the bitboards are equal.
+     */
+    auto operator==(const Bitboard &rhs) const -> bool;
+
+    /**
+     * \brief Get the occupancy map.
+     *
+     * The occupancy map is a bitmap giving the position of all pieces on the board.
+     * \return The occupancy map.
+     */
+    [[nodiscard]] auto occupancy() const -> Bitmap { return m_all_pieces; }
+private:
+    constexpr static std::size_t BitmapCount = 12ULL;
+    std::array<Bitmap, BitmapCount> m_bitmaps{};
+    Bitmap m_white_pieces;
+    Bitmap m_black_pieces;
+    Bitmap m_all_pieces;
+
+    enum class PawnCaptureDirection { West, East };
+
+    static auto bitmap_index(Piece piece) -> size_t { return piece.dense_index(); }
+
+    [[nodiscard]] auto bitmap(Piece piece) const -> const Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
+    auto bitmap(Piece piece) -> Bitmap & { return m_bitmaps[bitmap_index(piece)]; }
+    [[nodiscard]] auto bitmap(const Color &color) const -> const Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
+    auto bitmap(const Color &color) -> Bitmap & { return color == Color::White ? m_white_pieces : m_black_pieces; }
+
+    void move_castling_rook(const Move &move);
+    void reset_castling_rook(const Move &move);
+
+    [[nodiscard]] auto remove_occupied_squares(Bitmap bitmap) const -> Bitmap;
+
+    auto all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
+    auto sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void;
+    [[nodiscard]] auto get_attack_map(Piece piece, Square start) const -> Bitmap;
+
+    auto extract_moves(Bitmap targets, Square from, Piece piece, const PositionState &state, MoveList &moves) const -> void;
+    auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) const -> void;
+    auto extract_pawn_captures(Bitmap targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void;
+    auto generate_pawn_moves(Square source, Square target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void;
+    auto generate_pawn_move(
+        Square source, Square target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
+    ) const -> void;
+    auto generate_castling_moves(MoveList &moves, const PositionState &state) const -> void;
+
+    auto store_move_if_legal(const Move &move, MoveList &moves) const -> void;
+};
+
+} // namespace chesscore
+
+#endif

@@ -1,7 +1,7 @@
-#include "chessgui/ChessboardController.h"
-#include "chessgui/ChessboardError.h"
-#include "chessgui/ChessboardWidget.h"
-#include "chessgui/PieceSet.h"
+#include "chess_gui/ChessboardController.h"
+#include "chess_gui/ChessboardError.h"
+#include "chess_gui/ChessboardWidget.h"
+#include "chess_gui/PieceSet.h"
 
 #include <QApplication>
 #include <QKeyEvent>

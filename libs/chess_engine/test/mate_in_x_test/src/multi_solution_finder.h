@@ -6,8 +6,8 @@
 #ifndef MATE_IN_X_TEST_MULTI_SOLUTION_FINDER_H
 #define MATE_IN_X_TEST_MULTI_SOLUTION_FINDER_H
 
-#include <chesscore/epd.h>
-#include <chessuci/gui_handler.h>
+#include <chess_core/epd.h>
+#include <chess_uci/gui_handler.h>
 
 #include <condition_variable>
 #include <mutex>

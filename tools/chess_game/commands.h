@@ -7,7 +7,7 @@
 #define CHESS_GAME_COMMANDS_H
 
 #include "context.h"
-#include <chessgame/san.h>
+#include <chess_game/san.h>
 
 auto reset_game(Context &context) -> void;
 auto print_game_status(const Context &context) -> void;

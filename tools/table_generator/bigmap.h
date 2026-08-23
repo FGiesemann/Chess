@@ -9,18 +9,13 @@
 #include <bitset>
 #include <iosfwd>
 
-#include "chesscore/bitmap.h"
+#include "chess_core/bitmap.h"
 #include "dimensions.h"
 #include "patterns.h"
 
 namespace chesscore::table_gen {
 
-enum class ShiftDirection {
-    North,
-    South,
-    East,
-    West
-};
+enum class ShiftDirection { North, South, East, West };
 
 class Bigmap {
 public:

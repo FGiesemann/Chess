@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include <chesscore/fen.h>
+#include <chess_core/fen.h>
 
 #include "reporter.h"
 

@@ -3,8 +3,8 @@
  * Data structures and algorithms for chess                                   *
  * ************************************************************************** */
 
-#include "chesscore/position.h"
-#include "chesscore_io/chesscore_io.h"
+#include "chess_core/position.h"
+#include "chess_core_io/chesscore_io.h"
 
 #include <cstring>
 #include <iostream>

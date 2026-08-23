@@ -8,8 +8,8 @@
 
 #include "multi_solution_finder.h"
 
-#include <chesscore/move.h>
-#include <chesscore/position.h>
+#include <chess_core/move.h>
+#include <chess_core/position.h>
 
 #include <cstddef>
 #include <filesystem>

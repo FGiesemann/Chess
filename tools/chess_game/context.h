@@ -6,7 +6,7 @@
 #ifndef CHESS_GAME_CONTEXT_H
 #define CHESS_GAME_CONTEXT_H
 
-#include <chessgame/game.h>
+#include <chess_game/game.h>
 
 struct Context {
     chessgame::Game game{};

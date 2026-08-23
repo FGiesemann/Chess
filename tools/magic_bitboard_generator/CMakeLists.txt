@@ -19,3 +19,8 @@ target_link_libraries(magic_bitboard_generator
 enable_utf8_output(magic_bitboard_generator)
 
 add_optimization_settings(magic_bitboard_generator)
+
+install(TARGETS magic_bitboard_generator
+    EXPORT ChessTargets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

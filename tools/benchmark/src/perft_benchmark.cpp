@@ -6,7 +6,7 @@
 #include "perft_benchmark.h"
 #include "benchmark.h"
 
-#include <chesscore/perft.h>
+#include <chess_core/perft.h>
 
 #include <algorithm>
 #include <cstring>
@@ -81,8 +81,7 @@ Benchmark::Benchmark(const Options &options) {
 }
 
 auto Benchmark::run() -> void {
-    std::cout << "Starting perft benchmark (" << m_iterations << " iterations per position) for " << m_test_suite.size()
-              << " positions\n";
+    std::cout << "Starting perft benchmark (" << m_iterations << " iterations per position) for " << m_test_suite.size() << " positions\n";
     print_header();
 
     uint64_t grand_total_nodes = 0;
@@ -114,8 +113,7 @@ auto Benchmark::run() -> void {
             for (int i = 0; i < m_iterations; ++i) {
                 auto [leaf_nodes, iter_nodes, iter_time] = measure_single_perft(position, depth);
                 if (leaf_nodes != reference_node_count) {
-                    std::cerr << "ERROR: perft result " << leaf_nodes << " does not match expected count "
-                              << reference_node_count << '\n';
+                    std::cerr << "ERROR: perft result " << leaf_nodes << " does not match expected count " << reference_node_count << '\n';
                 }
                 nodes = iter_nodes;
                 times.push_back(iter_time);
@@ -140,8 +138,7 @@ auto Benchmark::warmup(chesscore::Position position) -> void {
     chesscore::perft<chesscore::PerftMode::Benchmark>(position, 3, counter);
 }
 
-auto Benchmark::measure_single_perft(chesscore::Position position, int depth)
-    -> std::tuple<std::uint64_t, std::uint64_t, double> {
+auto Benchmark::measure_single_perft(chesscore::Position position, int depth) -> std::tuple<std::uint64_t, std::uint64_t, double> {
     auto start = std::chrono::high_resolution_clock::now();
     chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
     chesscore::perft<chesscore::PerftMode::Benchmark>(position, depth, counter);
@@ -152,16 +149,15 @@ auto Benchmark::measure_single_perft(chesscore::Position position, int depth)
 }
 
 auto Benchmark::print_header() -> void {
-    std::cout << std::left << std::setw(test_column_width) << "Position" << std::right << std::setw(15) << "Total Nodes"
-              << std::setw(15) << "Time (ms)" << std::setw(15) << "MNPS" << '\n';
+    std::cout << std::left << std::setw(test_column_width) << "Position" << std::right << std::setw(15) << "Total Nodes" << std::setw(15) << "Time (ms)" << std::setw(15) << "MNPS"
+              << '\n';
     std::cout << std::string(test_column_width + 45, '-') << '\n';
 }
 
 auto Benchmark::print_result(const std::string &name, std::uint64_t nodes, double time) -> void {
     double mnps = (static_cast<double>(nodes) / time) / 1'000.0;
-    std::cout << std::left << std::setw(test_column_width) << name << std::right << std::setw(15) << nodes
-              << std::setw(15) << std::fixed << std::setprecision(4) << time << std::setw(15) << std::fixed
-              << std::setprecision(3) << mnps << '\n';
+    std::cout << std::left << std::setw(test_column_width) << name << std::right << std::setw(15) << nodes << std::setw(15) << std::fixed << std::setprecision(4) << time
+              << std::setw(15) << std::fixed << std::setprecision(3) << mnps << '\n';
 }
 
 auto Benchmark::median(std::vector<double> &values) -> double {

@@ -3,12 +3,12 @@
  * Representation of a single game of chess                                   *
  * ************************************************************************** */
 
-#include "chessgame/san.h"
+#include "chess_game/san.h"
 #include <catch2/catch_all.hpp>
 #include <catch2/internal/catch_string_manip.hpp>
 
-#include "chesscore/move.h"
-#include "chesscore/position.h"
+#include "chess_core/move.h"
+#include "chess_core/position.h"
 
 using namespace chessgame;
 using namespace chesscore;

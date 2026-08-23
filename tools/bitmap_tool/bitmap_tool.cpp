@@ -6,8 +6,8 @@
 #include <iostream>
 #include <string>
 
-#include "chesscore/bitmap.h"
-#include "chesscore_io/bitmap_io.h"
+#include "chess_core/bitmap.h"
+#include "chess_core_io/bitmap_io.h"
 
 auto main() -> int {
     chesscore::Bitmap bitmap{};

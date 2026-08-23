@@ -5,8 +5,8 @@
 
 #include "commands.h"
 
-#include "chesscore_io/chesscore_io.h"
-#include "chessgame/san.h"
+#include "chess_core_io/chesscore_io.h"
+#include "chess_game/san.h"
 #include <iostream>
 #include <sstream>
 

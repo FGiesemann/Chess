@@ -5,10 +5,10 @@
 
 #include <catch2/catch_all.hpp>
 
-#include <chesscore/piece.h>
-#include <chesscore/square.h>
+#include <chess_core/piece.h>
+#include <chess_core/square.h>
 
-#include "chessgame/san.h"
+#include "chess_game/san.h"
 
 using namespace chessgame;
 using namespace chesscore;

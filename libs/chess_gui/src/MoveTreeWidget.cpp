@@ -3,7 +3,7 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#include "chessgui/MoveTreeWidget.h"
+#include "chess_gui/MoveTreeWidget.h"
 
 #include <QApplication>
 #include <QHeaderView>

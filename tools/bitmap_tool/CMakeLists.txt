@@ -14,3 +14,8 @@ target_link_libraries(bitmap_tool
 enable_utf8_output(bitmap_tool)
 
 add_optimization_settings(bitmap_tool)
+
+install(TARGETS bitmap_tool
+    EXPORT ChessTargets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

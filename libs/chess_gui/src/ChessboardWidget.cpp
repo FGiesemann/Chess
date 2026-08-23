@@ -3,7 +3,7 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#include "chessgui/ChessboardWidget.h"
+#include "chess_gui/ChessboardWidget.h"
 
 #include <QBrush>
 #include <QGraphicsRectItem>

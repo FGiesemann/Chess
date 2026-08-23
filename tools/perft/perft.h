@@ -7,8 +7,8 @@
 #ifndef CHESS_TOOLS_PERFT_PERFT_H
 #define CHESS_TOOLS_PERFT_PERFT_H
 
-#include <chesscore/bitboard.h>
-#include <chesscore/position.h>
+#include <chess_core/bitboard.h>
+#include <chess_core/position.h>
 
 #include <chrono>
 #include <vector>

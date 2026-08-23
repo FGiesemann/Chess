@@ -5,8 +5,8 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore_io/chesscore_io.h"
-#include "chessgame/pgn.h"
+#include "chess_core_io/chesscore_io.h"
+#include "chess_game/pgn.h"
 
 #include <algorithm>
 #include <sstream>

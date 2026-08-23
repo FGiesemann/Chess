@@ -3,8 +3,8 @@
 #include <random>
 #include <string>
 
-#include <chesscore/epd.h>
-#include <chessgame/pgn.h>
+#include <chess_core/epd.h>
+#include <chess_game/pgn.h>
 
 static constexpr size_t min_ply_count{40};
 static constexpr float max_ply_percentage{0.6f};

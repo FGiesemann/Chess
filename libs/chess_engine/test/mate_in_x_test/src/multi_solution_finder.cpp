@@ -5,7 +5,7 @@
 
 #include "multi_solution_finder.h"
 
-#include <chessgame/san.h>
+#include <chess_game/san.h>
 
 #include <fstream>
 #include <iostream>

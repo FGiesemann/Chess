@@ -3,10 +3,10 @@
  * Chess playing engine                                                       *
  * ************************************************************************** */
 
-#include "chessengine/uci_adapter.h"
+#include "chess_engine/uci_adapter.h"
 
-#include <chesscore/position.h>
-#include <chessuci/protocol.h>
+#include <chess_core/position.h>
+#include <chess_uci/protocol.h>
 
 #include <catch2/catch_all.hpp>
 

@@ -3,9 +3,9 @@
  * Representation of a single game of chess                                   *
  * ************************************************************************** */
 
-#include "chessgame/san.h"
+#include "chess_game/san.h"
 
-#include "chesscore/piece.h"
+#include "chess_core/piece.h"
 #include <ranges>
 #include <set>
 #include <sstream>

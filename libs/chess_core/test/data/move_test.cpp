@@ -5,7 +5,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/move.h"
+#include "chess_core/move.h"
 
 using namespace chesscore;
 

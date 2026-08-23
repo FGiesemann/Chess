@@ -5,7 +5,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/square.h"
+#include "chess_core/square.h"
 
 using namespace chesscore;
 

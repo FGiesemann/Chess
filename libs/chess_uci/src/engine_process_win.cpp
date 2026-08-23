@@ -3,8 +3,8 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/engine_process_win.h"
-#include "chessuci/protocol.h"
+#include "chess_uci/engine_process_win.h"
+#include "chess_uci/protocol.h"
 
 namespace chessuci {
 

@@ -5,8 +5,8 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chessengine/test_engine.h"
-#include "chessengine/uci_adapter.h"
+#include "chess_engine/test_engine.h"
+#include "chess_engine/uci_adapter.h"
 
 using namespace chessengine;
 using namespace chesscore;

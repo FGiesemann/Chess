@@ -3,13 +3,13 @@
  * Benchmarking tool for performance measurement                              *
  * ************************************************************************** */
 
-#include <chessengine/types.h>
+#include <chess_engine/types.h>
 #include <cstring>
 #include <ctime>
 #include <fstream>
 #include <iostream>
 
-#include <chessengine/chess_engine.h>
+#include <chess_engine/chess_engine.h>
 
 #include "benchmark.h"
 #include "engine_benchmark.h"
@@ -88,8 +88,7 @@ auto Benchmark::run() -> void {
         print_result(fen_str.str(), stats);
     }
 
-    double final_mnps =
-        (static_cast<double>(grand_total_nodes) / static_cast<double>(grand_total_time.count())) / 1'000.0;
+    double final_mnps = (static_cast<double>(grand_total_nodes) / static_cast<double>(grand_total_time.count())) / 1'000.0;
     std::cout << std::string(test_column_width + 50, '-') << '\n';
     std::cout << "Summary: " << std::fixed << std::setprecision(3) << final_mnps << " MNPS\n";
 }
@@ -105,8 +104,7 @@ auto Benchmark::benchmark_position(chesscore::Position position) const -> Search
 
     const auto search_stats = engine.search_stats();
 
-    return SearchStats{
-        .depth = search_stats.depth.value, .nodes = search_stats.nodes, .time = search_stats.elapsed_time};
+    return SearchStats{.depth = search_stats.depth.value, .nodes = search_stats.nodes, .time = search_stats.elapsed_time};
 }
 
 auto Benchmark::read_test_suite(const std::filesystem::path &epd_file) -> void {
@@ -121,15 +119,14 @@ auto Benchmark::read_test_suite(const std::filesystem::path &epd_file) -> void {
 auto Benchmark::print_result(const std::string &name, const SearchStats &stats) -> void {
     if (stats.time.count() > 0) {
         double mnps = (static_cast<double>(stats.nodes) / static_cast<double>(stats.time.count())) / 1'000.0;
-        std::cout << std::left << std::setw(test_column_width) << name << std::right << std::setw(5) << stats.depth
-                  << std::setw(15) << stats.nodes << std::setw(15) << std::fixed << std::setprecision(4)
-                  << stats.time.count() << std::setw(15) << std::fixed << std::setprecision(3) << mnps << '\n';
+        std::cout << std::left << std::setw(test_column_width) << name << std::right << std::setw(5) << stats.depth << std::setw(15) << stats.nodes << std::setw(15) << std::fixed
+                  << std::setprecision(4) << stats.time.count() << std::setw(15) << std::fixed << std::setprecision(3) << mnps << '\n';
     }
 }
 
 auto Benchmark::print_header() -> void {
-    std::cout << std::left << std::setw(test_column_width) << "Position" << std::right << std::setw(5) << "Depth"
-              << std::setw(15) << "Total Nodes" << std::setw(15) << "Time (ms)" << std::setw(15) << "MNPS" << '\n';
+    std::cout << std::left << std::setw(test_column_width) << "Position" << std::right << std::setw(5) << "Depth" << std::setw(15) << "Total Nodes" << std::setw(15) << "Time (ms)"
+              << std::setw(15) << "MNPS" << '\n';
     std::cout << std::string(test_column_width + 50, '-') << '\n';
 }
 

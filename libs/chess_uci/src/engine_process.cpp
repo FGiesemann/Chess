@@ -3,4 +3,4 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/engine_process.h"
+#include "chess_uci/engine_process.h"

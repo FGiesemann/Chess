@@ -5,7 +5,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chessgame/pgn.h"
+#include "chess_game/pgn.h"
 
 #include <catch2/catch_test_macros.hpp>
 #include <string>

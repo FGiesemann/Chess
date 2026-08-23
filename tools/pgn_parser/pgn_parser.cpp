@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "chessgame/pgn.h"
+#include "chess_game/pgn.h"
 
 int main(int argc, const char *argv[]) {
     if (argc < 2) {

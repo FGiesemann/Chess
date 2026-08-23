@@ -3,9 +3,9 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#include "chessgui/MoveTreeModel.h"
+#include "chess_gui/MoveTreeModel.h"
 
-#include <chessgame/san.h>
+#include <chess_game/san.h>
 
 #include <utility>
 

@@ -3,4 +3,4 @@
  * Representation of a single game of chess                                   *
  * ************************************************************************** */
 
-#include "chessgame/cursor.h"
+#include "chess_game/cursor.h"

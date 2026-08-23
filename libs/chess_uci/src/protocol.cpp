@@ -3,7 +3,7 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/protocol.h"
+#include "chess_uci/protocol.h"
 
 #include <sstream>
 

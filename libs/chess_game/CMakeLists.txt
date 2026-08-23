@@ -8,13 +8,13 @@ target_sources(chess_game
         FILE_SET HEADERS
             BASE_DIRS include
             FILES
-                include/chessgame/cursor.h
-                include/chessgame/game.h
-                include/chessgame/metadata.h
-                include/chessgame/pgn.h
-                include/chessgame/san.h
-                include/chessgame/tree.h
-                include/chessgame/types.h
+                include/chess_game/cursor.h
+                include/chess_game/game.h
+                include/chess_game/metadata.h
+                include/chess_game/pgn.h
+                include/chess_game/san.h
+                include/chess_game/tree.h
+                include/chess_game/types.h
     PRIVATE
         src/cursor.cpp
         src/game.cpp
@@ -35,7 +35,7 @@ install(TARGETS chess_game
     EXPORT ChessTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chess_game
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     COMPONENT chess_game
 )
 

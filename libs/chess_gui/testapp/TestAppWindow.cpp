@@ -6,7 +6,7 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 
-#include <chessgame/pgn.h>
+#include <chess_game/pgn.h>
 
 TestAppWindow::TestAppWindow(QWidget *parent)
     : QMainWindow(parent), m_chessboard_widget(new chessgui::ChessboardWidget(this)), m_chessboard_controller(new chessgui::ChessboardController(m_chessboard_widget, this)),

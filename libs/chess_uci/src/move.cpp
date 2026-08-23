@@ -3,7 +3,7 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/move.h"
+#include "chess_uci/move.h"
 
 #include <ranges>
 

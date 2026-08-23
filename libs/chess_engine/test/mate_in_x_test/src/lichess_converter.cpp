@@ -5,8 +5,8 @@
 
 #include "lichess_converter.h"
 
-#include <chessgame/san.h>
-#include <chessuci/move.h>
+#include <chess_game/san.h>
+#include <chess_uci/move.h>
 
 #include <iostream>
 

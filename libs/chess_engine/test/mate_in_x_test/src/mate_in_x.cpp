@@ -5,8 +5,8 @@
 
 #include "mate_in_x.h"
 
-#include <chessengine/chess_engine.h>
-#include <chessgame/san.h>
+#include <chess_engine/chess_engine.h>
+#include <chess_game/san.h>
 
 #include <cmath>
 #include <future>

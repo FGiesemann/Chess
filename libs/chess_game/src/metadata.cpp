@@ -3,7 +3,7 @@
  * Representation of a single game of chess                                   *
  * ************************************************************************** */
 
-#include "chessgame/metadata.h"
+#include "chess_game/metadata.h"
 
 #include <algorithm>
 

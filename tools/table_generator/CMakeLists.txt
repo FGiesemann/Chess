@@ -15,3 +15,8 @@ target_link_libraries(table_generator
 )
 
 add_optimization_settings(table_generator)
+
+install(TARGETS table_generator
+    EXPORT ChessTargets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

@@ -3,7 +3,7 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/engine_process_win.h"
+#include "chess_uci/engine_process_win.h"
 #include <catch2/catch_test_macros.hpp>
 
 using namespace chessuci;

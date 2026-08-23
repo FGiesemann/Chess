@@ -6,10 +6,10 @@
 #ifndef CHESSENGINE_MATE_IN_X_H
 #define CHESSENGINE_MATE_IN_X_H
 
-#include <chesscore/epd.h>
-#include <chessengine/config.h>
-#include <chessengine/logger.h>
-#include <chessengine/types.h>
+#include <chess_core/epd.h>
+#include <chess_engine/config.h>
+#include <chess_engine/logger.h>
+#include <chess_engine/types.h>
 
 #include <fstream>
 #include <mutex>

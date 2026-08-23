@@ -3,12 +3,11 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/engine_process_unix.h"
+#include "chess_uci/engine_process_unix.h"
 
 #include <cstring>
 #include <fcntl.h>
 #include <sys/wait.h>
-
 
 namespace chessuci {
 

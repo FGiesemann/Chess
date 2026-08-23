@@ -16,3 +16,8 @@ target_link_libraries(benchmark
 
 add_optimization_settings(benchmark)
 add_compiler_warnings(benchmark)
+
+install(TARGETS benchmark
+    EXPORT ChessTargets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

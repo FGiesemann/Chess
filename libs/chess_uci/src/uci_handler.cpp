@@ -3,7 +3,7 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/uci_handler.h"
+#include "chess_uci/uci_handler.h"
 
 #include <ranges>
 #include <sstream>

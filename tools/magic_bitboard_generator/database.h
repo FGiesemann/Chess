@@ -6,8 +6,8 @@
 #ifndef MAGIC_BITBOARD_GENERATOR_DATABASE_H
 #define MAGIC_BITBOARD_GENERATOR_DATABASE_H
 
-#include <chesscore/piece.h>
-#include <chesscore/square.h>
+#include <chess_core/piece.h>
+#include <chess_core/square.h>
 
 #include "magic_bitboard.h"
 

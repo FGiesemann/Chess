@@ -24,7 +24,7 @@ auto HeaderFile::write_header() -> void {
 #ifndef CHESSCORE_MAGIC_BITBOARD_DATA_H
 #define CHESSCORE_MAGIC_BITBOARD_DATA_H
 
-#include "chesscore/magic.h"
+#include "chess_core/magic.h"
 
 namespace chesscore {
 
@@ -44,8 +44,8 @@ auto HeaderFile::start_data_set(const std::string &piece_name) -> void {
 }
 
 auto HeaderFile::write_record(const Record &record) -> void {
-    m_file << "\tMagicData{.magic_number = " << std::format("0x{:016x}", record.magics().magic_number)
-           << ", .max_index = " << record.stats().max_index << ", .shift = " << record.magics().shift << "},\n";
+    m_file << "\tMagicData{.magic_number = " << std::format("0x{:016x}", record.magics().magic_number) << ", .max_index = " << record.stats().max_index
+           << ", .shift = " << record.magics().shift << "},\n";
 }
 
 auto HeaderFile::end_data_set() -> void {

@@ -5,7 +5,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/perft.h"
+#include "chess_core/perft.h"
 
 using namespace chesscore;
 

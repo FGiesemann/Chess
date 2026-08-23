@@ -8,9 +8,9 @@
 
 #include "magic_prng.h"
 
-#include <chesscore/bitmap.h>
-#include <chesscore/piece.h>
-#include <chesscore/square.h>
+#include <chess_core/bitmap.h>
+#include <chess_core/piece.h>
+#include <chess_core/square.h>
 
 #include <functional>
 #include <optional>

@@ -3,10 +3,10 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/engine_handler.h"
-#include "chessuci/uci_handler.h"
+#include "chess_uci/engine_handler.h"
+#include "chess_uci/uci_handler.h"
 #include <catch2/catch_test_macros.hpp>
-#include <chesscore/fen.h>
+#include <chess_core/fen.h>
 
 using namespace chessuci;
 

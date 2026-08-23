@@ -5,7 +5,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chessengine/types.h"
+#include "chess_engine/types.h"
 using namespace chessengine;
 
 TEST_CASE("Engine.Score.Mate in X", "[score]") {

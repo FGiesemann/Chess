@@ -8,15 +8,15 @@ target_sources(chess_uci
         FILE_SET HEADERS
             BASE_DIRS include
             FILES
-                include/chessuci/engine_handler.h
-                include/chessuci/engine_process_unix.h
-                include/chessuci/engine_process_win.h
-                include/chessuci/engine_process.h
-                include/chessuci/gui_handler.h
-                include/chessuci/move.h
-                include/chessuci/process_factory.h
-                include/chessuci/protocol.h
-                include/chessuci/uci_handler.h
+                include/chess_uci/engine_handler.h
+                include/chess_uci/engine_process_unix.h
+                include/chess_uci/engine_process_win.h
+                include/chess_uci/engine_process.h
+                include/chess_uci/gui_handler.h
+                include/chess_uci/move.h
+                include/chess_uci/process_factory.h
+                include/chess_uci/protocol.h
+                include/chess_uci/uci_handler.h
     PRIVATE
         src/engine_handler.cpp
         src/engine_process.cpp
@@ -57,7 +57,7 @@ install(TARGETS chess_uci
     EXPORT ChessTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/chessuci
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     COMPONENT chess_uci
 )
 

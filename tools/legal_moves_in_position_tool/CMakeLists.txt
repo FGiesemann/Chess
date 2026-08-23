@@ -14,3 +14,8 @@ target_link_libraries(all_legal_moves
 enable_utf8_output(all_legal_moves)
 
 add_optimization_settings(all_legal_moves)
+
+install(TARGETS all_legal_moves
+    EXPORT ChessTargets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

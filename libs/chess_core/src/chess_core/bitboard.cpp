@@ -1,0 +1,480 @@
+/* ************************************************************************** *
+ * Chess Core                                                                 *
+ * Data structures and algorithms for chess                                   *
+ * ************************************************************************** */
+
+#include "chess_core/bitboard.h"
+#include "chess_core/magic.h"
+#include "chess_core/move.h"
+#include "chess_core/piece.h"
+
+#include "bitboard_tables.h"
+
+namespace chesscore {
+
+namespace {
+
+auto step_pawns(Bitmap pawn, Color side_to_move) -> Bitmap {
+    return side_to_move == Color::White ? pawn << File::count : pawn >> File::count;
+}
+
+auto shift_left(Bitmap bitmap) -> Bitmap {
+    // we remove pieces from the a-file, so they don't "wrap around" when shifting
+    return (bitmap & ~bitmaps::file_table[0]) >> 1;
+}
+
+auto shift_right(Bitmap bitmap) -> Bitmap {
+    // we remove pieces from the h-file, so they don't "wrap around" when shifting
+    return (bitmap & ~bitmaps::file_table[File::count - 1]) << 1;
+}
+
+} // namespace
+
+auto Bitboard::generate_pawn_move(
+    Square source, Square target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
+) const -> void {
+    store_move_if_legal(
+        Move{
+            .from = source,
+            .to = target,
+            .piece = Piece{PieceType::Pawn, state.side_to_move},
+            .captured = captured,
+            .capturing_en_passant = en_passant,
+            .promoted = promoted,
+            .halfmove_clock_before = state.halfmove_clock,
+            .castling_rights_before = state.castling_rights,
+            .en_passant_target_before = state.en_passant_target
+        },
+        moves
+    );
+}
+
+auto Bitboard::generate_pawn_moves(Square source, Square target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void {
+    if (target.rank().rank == 0 || target.rank().rank == (Rank::count - 1)) {
+        const auto color = state.side_to_move;
+        for (const auto &type : all_promotion_piece_types) {
+            generate_pawn_move(source, target, captured, en_passant, Piece{type, color}, state, moves);
+        }
+    } else {
+        generate_pawn_move(source, target, captured, en_passant, std::nullopt, state, moves);
+    }
+}
+
+Bitboard::Bitboard(const FenString &fen) {
+    const auto &placements{fen.piece_placement()};
+    for (auto square = Square::A1; square.valid(); ++square) {
+        const auto piece{placements[square.index()]};
+        set_piece(piece, square);
+    }
+}
+
+auto Bitboard::empty() const -> bool {
+    return m_all_pieces.empty();
+}
+
+auto Bitboard::has_piece(PieceType piece_type) const -> bool {
+    return !(bitmap(Piece{piece_type, Color::White}) | bitmap(Piece{piece_type, Color::Black})).empty();
+}
+
+auto Bitboard::has_piece(Piece piece) const -> bool {
+    return !bitmap(piece).empty();
+}
+
+auto Bitboard::has_piece(const Color &color) const -> bool {
+    return !bitmap(color).empty();
+}
+
+auto Bitboard::has_piece(Square square) const -> bool {
+    return m_all_pieces.get(square);
+}
+
+auto Bitboard::set_piece(Piece piece, Square square) -> void {
+    clear_square(square);
+    if (piece.is_piece()) {
+        bitmap(piece).set(square);
+        m_all_pieces.set(square);
+        bitmap(piece.color()).set(square);
+    }
+}
+
+auto Bitboard::toggle_piece(Piece piece, Square square) -> void {
+    const auto mask = Bitmap{square};
+    bitmap(piece) ^= mask;
+    bitmap(piece.color()) ^= mask;
+    m_all_pieces ^= mask;
+}
+
+auto Bitboard::get_piece(Square square) const -> std::optional<Piece> {
+    if (!m_all_pieces.get(square)) {
+        return {};
+    }
+    const auto piece_color = m_white_pieces.get(square) ? Color::White : Color::Black;
+    for (auto type : all_piece_types) {
+        const auto piece = Piece{type, piece_color};
+        if (bitmap(piece).get(square)) {
+            return piece;
+        }
+    }
+    return {};
+}
+
+auto Bitboard::clear_square(Square square) -> void {
+    const auto remove_from_square = ~Bitmap{square};
+
+    for (auto &bitmap : m_bitmaps) {
+        bitmap &= remove_from_square;
+    }
+
+    m_white_pieces &= remove_from_square;
+    m_black_pieces &= remove_from_square;
+    m_all_pieces &= remove_from_square;
+}
+
+auto Bitboard::piece_count(Piece piece) const -> int {
+    return bitmap(piece).count();
+}
+
+auto Bitboard::make_move(const Move &move) -> void {
+    toggle_piece(move.piece, move.from);
+    if (move.captured.has_value()) {
+        const auto captured_square = move.capturing_en_passant ? Square{move.to.file(), move.from.rank()} : move.to;
+        toggle_piece(move.captured.value(), captured_square);
+    }
+    const auto target_piece = (move.promoted.has_value()) ? move.promoted.value() : move.piece;
+    toggle_piece(target_piece, move.to);
+
+    if (move.is_castling()) {
+        move_castling_rook(move);
+    }
+}
+
+void Bitboard::move_castling_rook(const Move &move) {
+    const auto moving_rook = Piece{PieceType::Rook, move.piece.color()};
+    if (move.from.file().file < move.to.file().file) {
+        // Kingside castling
+        toggle_piece(moving_rook, Square{File{'H'}, move.to.rank()}); // remove rook
+        toggle_piece(moving_rook, Square{File{'F'}, move.to.rank()}); // place rook on f-file
+    } else {
+        // Queenside castling
+        toggle_piece(moving_rook, Square{File{'A'}, move.to.rank()}); // remove rook
+        toggle_piece(moving_rook, Square{File{'D'}, move.to.rank()}); // place rook on d-file
+    }
+}
+
+auto Bitboard::unmake_move(const Move &move) -> void {
+    toggle_piece(move.piece, move.from);
+    if (move.captured.has_value()) {
+        const auto captured_square = move.capturing_en_passant ? Square{move.to.file(), move.from.rank()} : move.to;
+        toggle_piece(move.captured.value(), captured_square);
+    }
+    const auto target_piece = (move.promoted.has_value()) ? move.promoted.value() : move.piece;
+    toggle_piece(target_piece, move.to);
+
+    if (move.is_castling()) {
+        reset_castling_rook(move);
+    }
+}
+
+auto Bitboard::reset_castling_rook(const Move &move) -> void {
+    const auto moving_rook = Piece{PieceType::Rook, move.piece.color()};
+    if (move.from.file().file < move.to.file().file) {
+        // Kingside castling
+        toggle_piece(moving_rook, Square{File{'F'}, move.from.rank()}); // remove rook
+        toggle_piece(moving_rook, Square{File{'H'}, move.from.rank()}); // place rook on h-file
+    } else {
+        // Queenside castling
+        toggle_piece(moving_rook, Square{File{'D'}, move.from.rank()}); // remove rook
+        toggle_piece(moving_rook, Square{File{'A'}, move.from.rank()}); // place rook on a-file
+    }
+}
+
+auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
+    MoveList moves{};
+    moves.reserve(move_list_initial_size);
+    all_knight_moves(moves, state);
+    all_king_moves(moves, state);
+    all_sliding_moves(moves, state);
+    all_pawn_moves(moves, state);
+    return moves;
+}
+
+auto Bitboard::capture_moves(const PositionState &state) const -> MoveList {
+    MoveList moves = all_legal_moves(state);
+    std::erase_if(moves, [](const Move &move) -> bool { return !move.captured.has_value(); });
+    return moves;
+}
+
+auto Bitboard::all_stepping_moves(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
+    const auto piece = Piece{piece_type, state.side_to_move};
+    Bitmap pieces{bitmap(piece)};
+
+    while (!pieces.empty()) {
+        const auto shift = pieces.empty_squares_before();
+        const auto pos = Square::A1 + shift;
+
+        auto targets = bitmaps::get_target_table(piece_type)[pos] & ~bitmap(state.side_to_move);
+        extract_moves(targets, pos, piece, state, moves);
+
+        pieces.clear_lowest_bit();
+    }
+}
+
+auto Bitboard::all_knight_moves(MoveList &moves, const PositionState &state) const -> void {
+    all_stepping_moves(PieceType::Knight, moves, state);
+}
+
+auto Bitboard::all_king_moves(MoveList &moves, const PositionState &state) const -> void {
+    all_stepping_moves(PieceType::King, moves, state);
+    generate_castling_moves(moves, state);
+}
+
+auto Bitboard::all_sliding_moves(MoveList &moves, const PositionState &state) const -> void {
+    sliding_moves_for_type(PieceType::Rook, moves, state);
+    sliding_moves_for_type(PieceType::Bishop, moves, state);
+    sliding_moves_for_type(PieceType::Queen, moves, state);
+}
+
+auto Bitboard::sliding_moves_for_type(PieceType piece_type, MoveList &moves, const PositionState &state) const -> void {
+    const auto piece = Piece{piece_type, state.side_to_move};
+    auto squares = bitmap(piece);
+    while (!squares.empty()) {
+        const auto shift = squares.empty_squares_before();
+        const auto square = Square::A1 + shift;
+        all_sliding_moves(piece, square, moves, state);
+        squares.clear_lowest_bit();
+    }
+}
+
+auto Bitboard::get_attack_map(Piece piece, Square start) const -> Bitmap {
+    switch (piece.type()) {
+    case PieceType::Rook:
+        return get_magic_rook_bitboard().attacks(start, *this) & ~bitmap(piece.color());
+    case PieceType::Bishop:
+        return get_magic_bishop_bitboard().attacks(start, *this) & ~bitmap(piece.color());
+    case PieceType::Queen:
+        return (get_magic_rook_bitboard().attacks(start, *this) | get_magic_bishop_bitboard().attacks(start, *this)) & ~bitmap(piece.color());
+    default:
+        return Bitmap{};
+    }
+}
+
+auto Bitboard::all_sliding_moves(Piece moving_piece, Square start, MoveList &moves, const PositionState &state) const -> void {
+    const auto targets = get_attack_map(moving_piece, start);
+    extract_moves(targets, start, moving_piece, state, moves);
+}
+
+auto Bitboard::remove_occupied_squares(Bitmap bitmap) const -> Bitmap {
+    return bitmap & ~m_all_pieces;
+}
+
+auto Bitboard::all_pawn_moves(MoveList &moves, const PositionState &state) const -> void {
+    const auto pawns = bitmap(Piece{PieceType::Pawn, state.side_to_move});
+    const auto pawns_advance1 = step_pawns(pawns, state.side_to_move);
+    const auto pawns_step1 = remove_occupied_squares(pawns_advance1);
+    extract_pawn_moves(pawns_step1, 1, state, moves);
+
+    const auto double_step_mask = // pawns have already advanced one step, therefore we use the incremented/decremented ranks here
+        state.side_to_move == Color::White ? bitmaps::rank_table[Rank{Rank::white_pawn_double_step_rank + 1}] : bitmaps::rank_table[Rank{Rank::black_pawn_double_step_rank - 1}];
+    const auto pawns_double_candidates = pawns_step1 & double_step_mask;
+    const auto pawns_advance2 = step_pawns(pawns_double_candidates, state.side_to_move);
+    const auto pawns_step2 = remove_occupied_squares(pawns_advance2);
+    extract_pawn_moves(pawns_step2, 2, state, moves);
+
+    const auto captureable_pieces =
+        state.en_passant_target.valid() ? bitmap(other_color(state.side_to_move)) | Bitmap{state.en_passant_target} : bitmap(other_color(state.side_to_move));
+    const auto pawns_W = shift_left(pawns_advance1);
+    const auto pawns_capture_W = pawns_W & captureable_pieces;
+    extract_pawn_captures(pawns_capture_W, PawnCaptureDirection::West, state, moves);
+    const auto pawns_E = shift_right(pawns_advance1);
+    const auto pawns_capture_E = pawns_E & captureable_pieces;
+    extract_pawn_captures(pawns_capture_E, PawnCaptureDirection::East, state, moves);
+}
+
+auto Bitboard::is_attacked(Square square, Color attacker_color) const -> bool {
+    return king_attacks(square, attacker_color) || pawn_attacks(square, attacker_color) || knight_attacks(square, attacker_color) || sliding_piece_attacks(square, attacker_color);
+}
+
+auto Bitboard::would_be_attacked(Square square, Color attacker_color, const Move &move) const -> bool {
+    Bitboard test_board{*this};
+    test_board.make_move(move);
+    return test_board.is_attacked(square, attacker_color);
+}
+
+auto Bitboard::pawn_attacks(Square square, Color pawn_color) const -> bool {
+    const auto pawns = bitmap(Piece{PieceType::Pawn, pawn_color});
+    const auto stepped_pawns = step_pawns(pawns, pawn_color);
+    const auto attacked_squares = shift_left(stepped_pawns) | shift_right(stepped_pawns);
+    return attacked_squares.get(square);
+}
+
+auto Bitboard::knight_attacks(Square square, Color knight_color) const -> bool {
+    const auto knights = bitmap(Piece{PieceType::Knight, knight_color});
+    const auto attackers = bitmaps::get_target_table(PieceType::Knight)[square] & knights;
+    return !attackers.empty();
+}
+
+auto Bitboard::king_attacks(Square square, Color king_color) const -> bool {
+    const auto king = bitmap(Piece{PieceType::King, king_color});
+    const auto attackers = bitmaps::get_target_table(PieceType::King)[square] & king;
+    return !attackers.empty();
+}
+
+auto Bitboard::sliding_piece_attacks(Square square, Color attacker_color) const -> bool {
+    const auto attacks1 = get_attack_map(Piece{PieceType::Rook, other_color(attacker_color)}, square);
+    if (!(attacks1 & bitmap(Piece{PieceType::Rook, attacker_color})).empty()) {
+        return true;
+    }
+    if (!(attacks1 & bitmap(Piece{PieceType::Queen, attacker_color})).empty()) {
+        return true;
+    }
+    const auto attacks2 = get_attack_map(Piece{PieceType::Bishop, other_color(attacker_color)}, square);
+    if (!(attacks2 & bitmap(Piece{PieceType::Bishop, attacker_color})).empty()) {
+        return true;
+    }
+    if (!(attacks2 & bitmap(Piece{PieceType::Queen, attacker_color})).empty()) {
+        return true;
+    }
+    return false;
+}
+
+auto Bitboard::extract_moves(Bitmap targets, Square from, Piece piece, const PositionState &state, MoveList &moves) const -> void {
+    while (!targets.empty()) {
+        const auto shift = targets.empty_squares_before();
+        const auto target_square = Square::A1 + shift;
+        store_move_if_legal(
+            Move{
+                .from = from,
+                .to = target_square,
+                .piece = piece,
+                .captured = get_piece(target_square),
+                .capturing_en_passant = false,
+                .promoted = {},
+                .halfmove_clock_before = state.halfmove_clock,
+                .castling_rights_before = state.castling_rights,
+                .en_passant_target_before = state.en_passant_target
+            },
+            moves
+        );
+        targets.clear_lowest_bit();
+    }
+}
+
+auto Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) const -> void {
+    while (!targets.empty()) {
+        const auto shift = targets.empty_squares_before();
+        const auto target_square = Square::A1 + shift;
+        const auto source_square = state.side_to_move == Color::White ? (target_square - File::count * step_size) : (target_square + File::count * step_size);
+        generate_pawn_moves(source_square, target_square, std::nullopt, false, state, moves);
+        targets.clear_lowest_bit();
+    }
+}
+
+auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void {
+    while (!targets.empty()) {
+        const auto shift = targets.empty_squares_before();
+        const auto target_square = Square::A1 + shift;
+        const auto source_square = Square{
+            File{direction == PawnCaptureDirection::East ? target_square.file().file - 1 : target_square.file().file + 1},
+            Rank{state.side_to_move == Color::White ? target_square.rank().rank - 1 : target_square.rank().rank + 1},
+        };
+        const auto captured = get_piece(target_square);
+        generate_pawn_moves(source_square, target_square, captured.value_or(Piece{PieceType::Pawn, other_color(state.side_to_move)}), !captured.has_value(), state, moves);
+        targets.clear_lowest_bit();
+    }
+}
+
+auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &state) const -> void {
+    if (state.side_to_move == Color::White) {
+        if (state.castling_rights.can_white_king() && !is_attacked(Square::E1, Color::Black) && !has_piece(Square::F1) && !is_attacked(Square::F1, Color::Black) &&
+            !has_piece(Square::G1) && !is_attacked(Square::G1, Color::Black)) {
+            moves.push_back(
+                Move{
+                    .from = Square::E1,
+                    .to = Square::G1,
+                    .piece = Piece{PieceType::King, Color::White},
+                    .captured = {},
+                    .capturing_en_passant = false,
+                    .promoted = {},
+                    .halfmove_clock_before = state.halfmove_clock,
+                    .castling_rights_before = state.castling_rights,
+                    .en_passant_target_before = state.en_passant_target
+                }
+            );
+        }
+        if (state.castling_rights.can_white_queen() && !is_attacked(Square::E1, Color::Black) && !has_piece(Square::D1) && !is_attacked(Square::D1, Color::Black) &&
+            !has_piece(Square::C1) && !is_attacked(Square::C1, Color::Black) && !has_piece(Square::B1)) {
+            moves.push_back(
+                Move{
+                    .from = Square::E1,
+                    .to = Square::C1,
+                    .piece = Piece{PieceType::King, Color::White},
+                    .captured = {},
+                    .capturing_en_passant = false,
+                    .promoted = {},
+                    .halfmove_clock_before = state.halfmove_clock,
+                    .castling_rights_before = state.castling_rights,
+                    .en_passant_target_before = state.en_passant_target
+                }
+            );
+        }
+    } else {
+        if (state.castling_rights.can_black_king() && !is_attacked(Square::E8, Color::White) && !has_piece(Square::F8) && !is_attacked(Square::F8, Color::White) &&
+            !has_piece(Square::G8) && !is_attacked(Square::G8, Color::White)) {
+            moves.push_back(
+                Move{
+                    .from = Square::E8,
+                    .to = Square::G8,
+                    .piece = Piece{PieceType::King, Color::Black},
+                    .captured = {},
+                    .capturing_en_passant = false,
+                    .promoted = {},
+                    .halfmove_clock_before = state.halfmove_clock,
+                    .castling_rights_before = state.castling_rights,
+                    .en_passant_target_before = state.en_passant_target
+                }
+            );
+        }
+        if (state.castling_rights.can_black_queen() && !is_attacked(Square::E8, Color::White) && !has_piece(Square::D8) && !is_attacked(Square::D8, Color::White) &&
+            !has_piece(Square::C8) && !is_attacked(Square::C8, Color::White) && !has_piece(Square::B8)) {
+            moves.push_back(
+                Move{
+                    .from = Square::E8,
+                    .to = Square::C8,
+                    .piece = Piece{PieceType::King, Color::Black},
+                    .captured = {},
+                    .capturing_en_passant = false,
+                    .promoted = {},
+                    .halfmove_clock_before = state.halfmove_clock,
+                    .castling_rights_before = state.castling_rights,
+                    .en_passant_target_before = state.en_passant_target
+                }
+            );
+        }
+    }
+}
+
+auto Bitboard::store_move_if_legal(const Move &move, MoveList &moves) const -> void {
+    Color color = move.piece.color();
+    const auto king_square = move.piece.type() == PieceType::King ? move.to : find_king(color);
+    if (king_square.valid()) {
+        if (would_be_attacked(king_square, other_color(color), move)) {
+            return;
+        }
+    }
+    moves.push_back(move);
+}
+
+auto Bitboard::find_king(Color color) const -> Square {
+    const auto map = bitmap(Piece{PieceType::King, color});
+    if (!map.empty()) {
+        const auto shift = map.empty_squares_before();
+        return Square::A1 + shift;
+    }
+    return {};
+}
+
+auto Bitboard::operator==(const Bitboard &rhs) const -> bool {
+    return m_bitmaps == rhs.m_bitmaps;
+}
+
+} // namespace chesscore

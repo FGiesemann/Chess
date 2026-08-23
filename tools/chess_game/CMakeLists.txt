@@ -17,3 +17,8 @@ target_link_libraries(chess_game_tool
 enable_utf8_output(chess_game_tool)
 
 add_optimization_settings(chess_game_tool)
+
+install(TARGETS chess_game_tool
+    EXPORT ChessTargets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

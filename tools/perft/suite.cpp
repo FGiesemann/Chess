@@ -7,7 +7,7 @@
 #include "suite.h"
 #include "perft.h"
 
-#include <chesscore/epd.h>
+#include <chess_core/epd.h>
 
 #include <fstream>
 #include <iostream>

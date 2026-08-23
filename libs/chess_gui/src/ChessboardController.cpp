@@ -3,7 +3,7 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#include "chessgui/ChessboardController.h"
+#include "chess_gui/ChessboardController.h"
 
 namespace chessgui {
 

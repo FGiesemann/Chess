@@ -5,10 +5,10 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chesscore/bitboard.h"
-#include "chesscore/fen.h"
-#include "chesscore/move.h"
-#include "chesscore/position.h"
+#include "chess_core/bitboard.h"
+#include "chess_core/fen.h"
+#include "chess_core/move.h"
+#include "chess_core/position.h"
 
 using namespace chesscore;
 

@@ -3,8 +3,8 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#include "chessgui/PieceSet.h"
-#include "chessgui/ChessboardError.h"
+#include "chess_gui/PieceSet.h"
+#include "chess_gui/ChessboardError.h"
 
 #include <set>
 

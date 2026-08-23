@@ -992,8 +992,8 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/include \
-                         @CMAKE_CURRENT_SOURCE_DIR@/src/chesscore \
-                         @CMAKE_CURRENT_SOURCE_DIR@/src/chesscore_io
+                         @CMAKE_CURRENT_SOURCE_DIR@/src/chess_core \
+                         @CMAKE_CURRENT_SOURCE_DIR@/src/chess_core_io
 
 # This tag can be used to specify the character encoding of the source files
 # that Doxygen parses. Internally Doxygen uses the UTF-8 encoding. Doxygen uses

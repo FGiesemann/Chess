@@ -3,10 +3,10 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#include "chessuci/move.h"
+#include "chess_uci/move.h"
 #include <catch2/catch_test_macros.hpp>
 
-#include <chesscore_io/move_io.h>
+#include <chess_core_io/move_io.h>
 
 using namespace chessuci;
 using namespace chesscore;

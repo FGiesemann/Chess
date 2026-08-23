@@ -3,11 +3,11 @@
 
 #include <QMainWindow>
 
-#include <chessgame/game.h>
+#include <chess_game/game.h>
 
-#include "chessgui/ChessboardController.h"
-#include "chessgui/ChessboardWidget.h"
-#include "chessgui/MoveTreeWidget.h"
+#include "chess_gui/ChessboardController.h"
+#include "chess_gui/ChessboardWidget.h"
+#include "chess_gui/MoveTreeWidget.h"
 
 /**
  * @brief Hauptfenster zur reinen visuellen Anordnung von Schachbrett und Zugbaum.
