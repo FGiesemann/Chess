@@ -16,13 +16,13 @@ target_sources(chess_engine
                 include/chess_engine/types.h
                 include/chess_engine/uci_adapter.h
     PRIVATE
-        src/chess_engine/chess_engine.cpp
-        src/chess_engine/config.cpp
-        src/chess_engine/evaluation.cpp
-        src/chess_engine/logger.cpp
-        src/chess_engine/test_engine.cpp
-        src/chess_engine/types.cpp
-        src/chess_engine/uci_adapter.cpp
+        src/chess_engine.cpp
+        src/config.cpp
+        src/evaluation.cpp
+        src/logger.cpp
+        src/test_engine.cpp
+        src/types.cpp
+        src/uci_adapter.cpp
 )
 add_compiler_warnings(chess_engine)
 add_optimization_settings(chess_engine)
@@ -39,21 +39,6 @@ install(TARGETS chess_engine
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
     FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    COMPONENT chess_engine
-)
-
-add_executable(maat
-    src/app/main.cpp
-)
-add_compiler_warnings(maat)
-add_optimization_settings(maat)
-target_compile_features(maat PUBLIC cxx_std_23)
-target_link_libraries(maat PRIVATE chess_engine)
-enable_exception_handling(maat)
-
-install(TARGETS maat
-    EXPORT ChessTargets
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT chess_engine
 )
 

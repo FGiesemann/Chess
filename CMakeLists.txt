@@ -34,6 +34,8 @@ if (WITH_CHESS_GUI)
     add_subdirectory(libs/chess_gui)
 endif()
 
+add_subdirectory(apps/maat)
+
 add_subdirectory(tools/benchmark)
 add_subdirectory(tools/bitmap_tool)
 add_subdirectory(tools/chess_game)
