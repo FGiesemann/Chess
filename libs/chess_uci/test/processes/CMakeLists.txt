@@ -11,6 +11,7 @@ function(add_test_binary TARGET_NAME SOURCE_FILE)
         PRIVATE
             "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>"
     )
+    target_compile_features(${TARGET_NAME} PRIVATE cxx_std_23)
     enable_exception_handling(${TARGET_NAME})
 endfunction()
 

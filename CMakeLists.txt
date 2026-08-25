@@ -10,7 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
 
-option(WITH_CHESS_GUI "Build chess gui" OFF)
+option(WITH_CHESS_GUI "Build chess gui" ON)
 
 if (BUILD_TESTING)
     find_package(Catch2 3 REQUIRED)
