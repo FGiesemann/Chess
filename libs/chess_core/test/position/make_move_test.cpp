@@ -17,8 +17,8 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
         .from = Square::E2,
         .to = Square::E4,
         .piece = Piece::WhitePawn,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -35,8 +35,8 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
         .from = Square::D7,
         .to = Square::D5,
         .piece = Piece::BlackPawn,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -53,8 +53,8 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
         .from = Square::F1,
         .to = Square::C4,
         .piece = Piece::WhiteBishop,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -71,8 +71,8 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
         .from = Square::E8,
         .to = Square::D7,
         .piece = Piece::BlackKing,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -92,8 +92,8 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
         .from = Square::G1,
         .to = Square::F3,
         .piece = Piece::WhiteKnight,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -114,8 +114,8 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
         .to = Square::C4,
         .piece = Piece::BlackPawn,
         .captured{Piece::WhiteBishop},
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -135,8 +135,8 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
         .from = Square::E1,
         .to = Square::G1,
         .piece = Piece::WhiteKing,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -163,8 +163,8 @@ TEST_CASE("Core.Position.MakeMove.Castling Rights", "[Position][MakeMove]") {
         .to = Square::H8,
         .piece = Piece::WhiteBishop,
         .captured = Piece::BlackRook,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -179,8 +179,8 @@ TEST_CASE("Core.Position.MakeMove.Castling Rights", "[Position][MakeMove]") {
         .to = Square::H1,
         .piece = Piece::BlackKnight,
         .captured = Piece::WhiteRook,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 
@@ -195,8 +195,8 @@ TEST_CASE("Core.Position.MakeMove.Castling Rights", "[Position][MakeMove]") {
         .to = Square::A8,
         .piece = Piece::WhiteRook,
         .captured = Piece::BlackRook,
-        .halfmove_clock_before = position.halfmove_clock(),
         .castling_rights_before{position.castling_rights()},
+        .halfmove_clock_before = position.halfmove_clock(),
         .en_passant_target_before = position.en_passant_target(),
     };
 

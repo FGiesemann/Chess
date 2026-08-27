@@ -170,9 +170,9 @@ public:
     }
 private:
     const MagicDataSet *m_data_set;    ///< Reference to the data set for initialization. (non-owning)
+    PieceType m_piece;                 ///< The piece type.
     std::vector<Bitmap> m_attack_maps; ///< The list of attack maps.
     MagicTable m_magics;               ///< The list of magic parameters.
-    PieceType m_piece;                 ///< The piece type.
 
     /**
      * \brief Fill the attack map.
@@ -191,9 +191,6 @@ private:
 #include "magic_data.h"
 
 namespace chesscore {
-
-// inline const MagicBitboard magic_rook_bitboard{PieceType::Rook, magic_rook_data};
-// inline const MagicBitboard magic_bishop_bitboard{PieceType::Bishop, magic_bishop_data};
 
 inline auto get_magic_rook_bitboard() -> const MagicBitboard & {
     static const MagicBitboard *const magic_rook_bitboard = new MagicBitboard{PieceType::Rook, magic_rook_data};

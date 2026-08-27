@@ -41,8 +41,8 @@ auto Bitboard::generate_pawn_move(
             .captured = captured,
             .capturing_en_passant = en_passant,
             .promoted = promoted,
-            .halfmove_clock_before = state.halfmove_clock,
             .castling_rights_before = state.castling_rights,
+            .halfmove_clock_before = state.halfmove_clock,
             .en_passant_target_before = state.en_passant_target
         },
         moves
@@ -349,8 +349,8 @@ auto Bitboard::extract_moves(Bitmap targets, Square from, Piece piece, const Pos
                 .captured = get_piece(target_square),
                 .capturing_en_passant = false,
                 .promoted = {},
-                .halfmove_clock_before = state.halfmove_clock,
                 .castling_rights_before = state.castling_rights,
+                .halfmove_clock_before = state.halfmove_clock,
                 .en_passant_target_before = state.en_passant_target
             },
             moves
@@ -395,8 +395,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
-                    .halfmove_clock_before = state.halfmove_clock,
                     .castling_rights_before = state.castling_rights,
+                    .halfmove_clock_before = state.halfmove_clock,
                     .en_passant_target_before = state.en_passant_target
                 }
             );
@@ -411,8 +411,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
-                    .halfmove_clock_before = state.halfmove_clock,
                     .castling_rights_before = state.castling_rights,
+                    .halfmove_clock_before = state.halfmove_clock,
                     .en_passant_target_before = state.en_passant_target
                 }
             );
@@ -428,8 +428,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
-                    .halfmove_clock_before = state.halfmove_clock,
                     .castling_rights_before = state.castling_rights,
+                    .halfmove_clock_before = state.halfmove_clock,
                     .en_passant_target_before = state.en_passant_target
                 }
             );
@@ -444,8 +444,8 @@ auto Bitboard::generate_castling_moves(MoveList &moves, const PositionState &sta
                     .captured = {},
                     .capturing_en_passant = false,
                     .promoted = {},
-                    .halfmove_clock_before = state.halfmove_clock,
                     .castling_rights_before = state.castling_rights,
+                    .halfmove_clock_before = state.halfmove_clock,
                     .en_passant_target_before = state.en_passant_target
                 }
             );

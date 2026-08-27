@@ -18,8 +18,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::E2,
         .to = Square::E4,
         .piece = Piece::WhitePawn,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     board.make_move(m1);
 
@@ -30,8 +30,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::D7,
         .to = Square::D5,
         .piece = Piece::BlackPawn,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
         .en_passant_target_before = Square::E3,
     };
     board.make_move(m2);
@@ -42,8 +42,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::F1,
         .to = Square::C4,
         .piece = Piece::WhiteBishop,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     board.make_move(m3);
     CHECK_FALSE(board.get_piece(Square::F1).has_value());
@@ -53,8 +53,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::E8,
         .to = Square::D7,
         .piece = Piece::BlackKing,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     board.make_move(m4);
     CHECK_FALSE(board.get_piece(Square::E8).has_value());
@@ -64,8 +64,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::G1,
         .to = Square::F3,
         .piece = Piece::WhiteKnight,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     board.make_move(m5);
     CHECK_FALSE(board.get_piece(Square::G1).has_value());
@@ -76,8 +76,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .to = Square::C4,
         .piece = Piece::BlackPawn,
         .captured{Piece::WhiteBishop},
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     board.make_move(m6);
     CHECK_FALSE(board.get_piece(Square::D5).has_value());
@@ -87,8 +87,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
         .from = Square::E1,
         .to = Square::G1,
         .piece = Piece::WhiteKing,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     board.make_move(m7);
     CHECK_FALSE(board.get_piece(Square::E1).has_value());
@@ -105,8 +105,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.Promotion", "[Bitboard][MakeMove]") {
         .to = Square::F8,
         .piece = Piece::WhitePawn,
         .promoted{Piece::WhiteQueen},
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::none()},
+        .halfmove_clock_before = 0,
     };
     board.make_move(m);
     CHECK_FALSE(board.get_piece(Square::F7).has_value());
@@ -124,29 +124,29 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.Castling", "[Bitboard][MakeMove]") {
         .from = Square::E1,
         .to = Square::G1,
         .piece = Piece::WhiteKing,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     Move white_queenside_castling{
         .from = Square::E1,
         .to = Square::C1,
         .piece = Piece::WhiteKing,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     Move black_kingside_castling{
         .from = Square::E8,
         .to = Square::G8,
         .piece = Piece::BlackKing,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     Move black_queenside_castling{
         .from = Square::E8,
         .to = Square::C8,
         .piece = Piece::BlackKing,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
 
     board1.make_move(white_kingside_castling);
@@ -183,8 +183,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
         .piece = Piece::BlackPawn,
         .captured{Piece::WhitePawn},
         .capturing_en_passant = true,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::none()},
+        .halfmove_clock_before = 0,
         .en_passant_target_before = Square::E3
     };
     board1.make_move(b_capture_en_passant);
@@ -199,8 +199,8 @@ TEST_CASE("Core.Bitboard.Bitboard.MakeMove.EnPassant", "[Bitboard][MakeMove]") {
         .piece = Piece::WhitePawn,
         .captured{Piece::BlackPawn},
         .capturing_en_passant = true,
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::none()},
+        .halfmove_clock_before = 0,
         .en_passant_target_before = Square::B6
     };
     board2.make_move(w_capture_en_passant);

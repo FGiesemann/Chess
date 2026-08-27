@@ -132,11 +132,11 @@ private:
     std::string m_fen_string;
 
     PiecePlacement m_piece_placement;
-    int m_halfmove_clock;
-    int m_fullmove_number;
     Color m_side_to_move;
     CastlingRights m_castling_rights;
     Square m_en_passant;
+    int m_halfmove_clock;
+    int m_fullmove_number;
 };
 
 namespace detail {

@@ -33,8 +33,8 @@ struct Move {
     bool capturing_en_passant{false};            ///< If this move is capturing en passant
     std::optional<Piece> promoted{std::nullopt}; ///< If the move promotes a piece, this is the promoted piece.
 
-    int halfmove_clock_before{};                                   ///< Halfmove clock before the move.
     CastlingRights castling_rights_before{CastlingRights::none()}; ///< Castling rights before the move.
+    int halfmove_clock_before{};                                   ///< Halfmove clock before the move.
     Square en_passant_target_before{Square::None};                 ///< En passant target square before the move.
 
     /**

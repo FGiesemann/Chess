@@ -17,8 +17,8 @@ TEST_CASE("Core.Data.Move.Comparison", "[Move][Compare]") {
         .captured{},
         .capturing_en_passant{false},
         .promoted{},
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
         .en_passant_target_before{}
     };
     Move m1_p{
@@ -28,8 +28,8 @@ TEST_CASE("Core.Data.Move.Comparison", "[Move][Compare]") {
         .captured{},
         .capturing_en_passant{false},
         .promoted{},
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
         .en_passant_target_before{}
     };
     Move m2{
@@ -39,8 +39,8 @@ TEST_CASE("Core.Data.Move.Comparison", "[Move][Compare]") {
         .captured{},
         .capturing_en_passant{false},
         .promoted{},
-        .halfmove_clock_before = 0,
         .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
         .en_passant_target_before{}
     };
 

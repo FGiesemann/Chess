@@ -31,8 +31,8 @@ FenString::FenString(const std::string &fen_string) : m_fen_string{fen_string} {
 }
 
 FenString::FenString(const PiecePlacement &piece_placement, Color side_to_move, const CastlingRights &castling_rights, Square en_passant, int halfmove_clock, int fullmove_number)
-    : m_piece_placement{piece_placement}, m_halfmove_clock{halfmove_clock}, m_fullmove_number{fullmove_number}, m_side_to_move{side_to_move}, m_castling_rights{castling_rights},
-      m_en_passant{en_passant} {
+    : m_piece_placement{piece_placement}, m_side_to_move{side_to_move}, m_castling_rights{castling_rights}, m_en_passant{en_passant}, m_halfmove_clock{halfmove_clock},
+      m_fullmove_number{fullmove_number} {
     m_fen_string = detail::placement_to_string(m_piece_placement) + " " + (m_side_to_move == Color::White ? "w" : "b") + " ";
     if (m_castling_rights != CastlingRights::none()) {
         m_fen_string += detail::castling_rights_to_string(m_castling_rights);
