@@ -4,15 +4,15 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSGAME_GAME_METADATA_H
-#define CHESSGAME_GAME_METADATA_H
+#ifndef CHESS_GAME_GAME_METADATA_H
+#define CHESS_GAME_GAME_METADATA_H
 
 #include <array>
 #include <optional>
 #include <string>
 #include <vector>
 
-namespace chessgame {
+namespace chess_game {
 
 /**
  * \brief A metadata tag.
@@ -81,6 +81,6 @@ private:
     std::vector<metadata_tag> m_tags{}; ///< Collection of metadata tags.
 };
 
-} // namespace chessgame
+} // namespace chess_game
 
 #endif

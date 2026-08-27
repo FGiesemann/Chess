@@ -5,20 +5,20 @@
 
 #include "chess_uci/process_factory.h"
 
-#if defined(CHESSUCI_WINDOWS)
+#if defined(CHESS_UCI_WINDOWS)
 #include "chess_uci/engine_process_win.h"
-using LocalEngineProcess = chessuci::EngineProcessWin;
-#elif defined(CHESSUCI_UNIX)
+using LocalEngineProcess = chess_uci::EngineProcessWin;
+#elif defined(CHESS_UCI_UNIX)
 #include "chess_uci/engine_process_unix.h"
-using LocalEngineProcess = chessuci::EngineProcessUnix;
+using LocalEngineProcess = chess_uci::EngineProcessUnix;
 #else
 #error "Platform not configured in CMake"
 #endif
 
-namespace chessuci {
+namespace chess_uci {
 
 auto ProcessFactory::create_local() -> std::unique_ptr<EngineProcess> {
     return std::make_unique<LocalEngineProcess>();
 }
 
-} // namespace chessuci
+} // namespace chess_uci

@@ -8,7 +8,7 @@
 #include "chess_core/bitboard.h"
 #include "chess_core/fen.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Bitboard.Bitboard.IsAttacked.PawnAttacks", "[Bitboard][Attacks]") {
     Bitboard board{FenString{"r1N5/1Ppp4/5p2/2N3b1/pP3P1R/4rPP1/1p1P4/b7 w - - 0 1"}};

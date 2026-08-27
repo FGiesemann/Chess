@@ -9,7 +9,7 @@
 #include "table_gen.h"
 
 auto main(int argc, const char *argv[]) -> int {
-    using namespace chesscore::table_gen;
+    using namespace chess_core::table_gen;
 
     std::unordered_map<std::string, const Pattern &> patterns{
         {"knight", knight_pattern},

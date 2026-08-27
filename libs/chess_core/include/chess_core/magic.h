@@ -4,15 +4,15 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_MAGIC_H
-#define CHESSCORE_MAGIC_H
+#ifndef CHESS_CORE_MAGIC_H
+#define CHESS_CORE_MAGIC_H
 
 #include "chess_core/bitboard.h"
 #include "chess_core/bitmap.h"
 #include "chess_core/position.h"
 #include "chess_core/table.h"
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief Compute the magic index.
@@ -186,11 +186,11 @@ private:
     auto fill_table(const Magics &magics, Square square, std::uint32_t offset) -> void;
 };
 
-} // namespace chesscore
+} // namespace chess_core
 
 #include "magic_data.h"
 
-namespace chesscore {
+namespace chess_core {
 
 inline auto get_magic_rook_bitboard() -> const MagicBitboard & {
     static const MagicBitboard *const magic_rook_bitboard = new MagicBitboard{PieceType::Rook, magic_rook_data};
@@ -201,6 +201,6 @@ inline auto get_magic_bishop_bitboard() -> const MagicBitboard & {
     return *magic_bishop_bitboard;
 }
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

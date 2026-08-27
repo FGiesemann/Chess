@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSGAME_MOVETREE_H
-#define CHESSGAME_MOVETREE_H
+#ifndef CHESS_GAME_MOVETREE_H
+#define CHESS_GAME_MOVETREE_H
 
 #include <memory>
 #include <vector>
@@ -14,7 +14,7 @@
 
 #include "chess_core/move.h"
 
-namespace chessgame {
+namespace chess_game {
 
 /**
  * \brief Identifier for a move in a game.
@@ -77,7 +77,7 @@ public:
      * \param move The move that led to this node.
      * \param parent The parent node.
      */
-    explicit GameNode(NodeId node_id, chesscore::Move move = {}, const std::shared_ptr<GameNode> &parent = nullptr) : m_id(node_id), m_move(move), m_parent(parent) {}
+    explicit GameNode(NodeId node_id, chess_core::Move move = {}, const std::shared_ptr<GameNode> &parent = nullptr) : m_id(node_id), m_move(move), m_parent(parent) {}
 
     /**
      * \brief Get the id of the node.
@@ -92,7 +92,7 @@ public:
      * Returns the move that lead to this game node.
      * \return The move.
      */
-    [[nodiscard]] auto move() const -> const chesscore::Move & { return m_move; }
+    [[nodiscard]] auto move() const -> const chess_core::Move & { return m_move; }
 
     /**
      * \brief Get the parent node.
@@ -216,14 +216,14 @@ public:
      *
      * \return The position.
      */
-    [[nodiscard]] auto position() const -> const std::optional<chesscore::Position> & { return m_position; }
+    [[nodiscard]] auto position() const -> const std::optional<chess_core::Position> & { return m_position; }
 
     /**
      * \brief Set the position of the game node.
      *
      * \param position The position.
      */
-    auto set_position(const chesscore::Position &position) -> void { m_position = position; }
+    auto set_position(const chess_core::Position &position) -> void { m_position = position; }
 
     /**
      * \brief Calculate the position of this game node.
@@ -233,7 +233,7 @@ public:
      * computed position is not stored in the node. Use setPosition to do that.
      * \return The position represented by this node.
      */
-    [[nodiscard]] auto calculate_position() const -> chesscore::Position;
+    [[nodiscard]] auto calculate_position() const -> chess_core::Position;
 
     auto nags() const -> const std::vector<int> & { return m_nags; }
     auto nags() -> std::vector<int> & { return m_nags; }
@@ -241,15 +241,15 @@ public:
     auto add_nag(int num) -> void { m_nags.push_back(num); }
 private:
     NodeId m_id;                                       ///< The id of this node.
-    chesscore::Move m_move;                            ///< The move that led to this node (from the parent node).
+    chess_core::Move m_move;                           ///< The move that led to this node (from the parent node).
     std::weak_ptr<GameNode> m_parent;                  ///< Pointer to the parent node.
     std::vector<std::shared_ptr<GameNode>> m_children; ///< List of child nodes. The first entry represetns the "main line".
     std::string m_comment;                             ///< A comment of the position or move.
     std::string m_premove_comment;                     ///< A comment on this game line, given before the move.
     std::vector<int> m_nags;                           ///< Numeric annotation glyphs describing the move or position.
-    std::optional<chesscore::Position> m_position;     ///< The position described by this node.
+    std::optional<chess_core::Position> m_position;    ///< The position described by this node.
 };
 
-} // namespace chessgame
+} // namespace chess_game
 
 #endif

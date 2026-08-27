@@ -4,15 +4,15 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSGAME_GAME_TYPES_H
-#define CHESSGAME_GAME_TYPES_H
+#ifndef CHESS_GAME_GAME_TYPES_H
+#define CHESS_GAME_GAME_TYPES_H
 
 #include <exception>
 
 #include "chess_core/bitboard.h"
 #include "chess_core/position.h"
 
-namespace chessgame {
+namespace chess_game {
 
 /**
  * \brief A general exception type for errors relating to chess game.
@@ -38,6 +38,6 @@ private:
     std::string m_message;
 };
 
-} // namespace chessgame
+} // namespace chess_game
 
 #endif

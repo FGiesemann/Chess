@@ -7,7 +7,7 @@
 
 #include "chess_core/square.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Data.Coords.Coordinates Checks", "[Square]") {
     SECTION("File from character (lower case)") {

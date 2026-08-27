@@ -6,7 +6,7 @@
 #include "chess_game/tree.h"
 #include "chess_game/types.h"
 
-namespace chessgame {
+namespace chess_game {
 
 const NodeId NodeId::Invalid{0};
 
@@ -19,7 +19,7 @@ auto GameNode::append_child(const std::shared_ptr<GameNode> &child) -> std::shar
     return *iterator;
 }
 
-auto GameNode::calculate_position() const -> chesscore::Position {
+auto GameNode::calculate_position() const -> chess_core::Position {
     if (m_position.has_value()) {
         return *m_position;
     }
@@ -40,4 +40,4 @@ auto GameNode::get_child_number(const std::shared_ptr<GameNode> &child) const ->
     return -1;
 }
 
-} // namespace chessgame
+} // namespace chess_game

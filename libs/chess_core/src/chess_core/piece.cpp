@@ -4,11 +4,11 @@
  * ************************************************************************** */
 
 #include "chess_core/piece.h"
-#include "chess_core/chesscore.h"
+#include "chess_core/chess_core.h"
 
 #include <cctype>
 
-namespace chesscore {
+namespace chess_core {
 
 auto to_string(PieceType type) -> std::string {
     switch (type) {
@@ -90,4 +90,4 @@ const PieceDirections piece_ray_directions{
     std::uint8_t{0b0000'0000}, // King
 };
 
-} // namespace chesscore
+} // namespace chess_core

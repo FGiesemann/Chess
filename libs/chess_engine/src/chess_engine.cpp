@@ -6,7 +6,7 @@
 #include "chess_engine/chess_engine.h"
 #include "chess_engine/logger.h"
 
-namespace chessengine {
+namespace chess_engine {
 
 const char ChessEngine::identifier[] = "Maat v0.1";
 const char ChessEngine::author[] = "Florian Giesemann";
@@ -22,7 +22,7 @@ ChessEngine::~ChessEngine() {
 auto ChessEngine::search(const StopParameters &stop_params) -> EvaluatedMove {
     log_search_stream() << "Searching position:";
     if (Logger::instance().is_enabled()) {
-        const auto fen = chesscore::FenString{m_position.piece_placement(), m_position.state()}.str();
+        const auto fen = chess_core::FenString{m_position.piece_placement(), m_position.state()}.str();
         log_search_stream() << "  fen = " << fen;
         log_search_stream() << "  stopping criteria: " << to_string(stop_params);
     }
@@ -150,7 +150,7 @@ auto ChessEngine::search_position(Depth depth, Bounds bounds) -> Score {
     return best_value;
 }
 
-auto ChessEngine::moves_to_search(bool search_principal_variation_first) const -> chesscore::MoveList {
+auto ChessEngine::moves_to_search(bool search_principal_variation_first) const -> chess_core::MoveList {
     auto moves = m_position.all_legal_moves();
     if (m_config.minimax_config.use_move_ordering) {
         sort_moves(moves);
@@ -165,8 +165,8 @@ auto ChessEngine::moves_to_search(bool search_principal_variation_first) const -
     return moves;
 }
 
-auto ChessEngine::sort_moves(chesscore::MoveList &moves) const -> void {
-    std::ranges::sort(moves, [this](const chesscore::Move &lhs, const chesscore::Move &rhs) -> bool { return m_evaluator.evaluate(lhs) > m_evaluator.evaluate(rhs); });
+auto ChessEngine::sort_moves(chess_core::MoveList &moves) const -> void {
+    std::ranges::sort(moves, [this](const chess_core::Move &lhs, const chess_core::Move &rhs) -> bool { return m_evaluator.evaluate(lhs) > m_evaluator.evaluate(rhs); });
 }
 
 auto ChessEngine::search_stats() const -> const SearchStats & {
@@ -174,7 +174,7 @@ auto ChessEngine::search_stats() const -> const SearchStats & {
 }
 
 auto ChessEngine::new_game() -> void {
-    m_position = chesscore::Position{chesscore::FenString::starting_position()};
+    m_position = chess_core::Position{chess_core::FenString::starting_position()};
 }
 
 auto ChessEngine::start_search(const StopParameters &stop_params) -> void {
@@ -193,11 +193,11 @@ auto ChessEngine::stop_search() -> void {
     m_stop_requested = true;
 }
 
-auto ChessEngine::set_position(const chesscore::Position &position) -> void {
+auto ChessEngine::set_position(const chess_core::Position &position) -> void {
     m_position = position;
 }
 
-auto ChessEngine::play_move(const chesscore::Move &move) -> void {
+auto ChessEngine::play_move(const chess_core::Move &move) -> void {
     m_position.make_move(move);
 }
 
@@ -239,4 +239,4 @@ auto ChessEngine::check_stop() const -> void {
     }
 }
 
-} // namespace chessengine
+} // namespace chess_engine

@@ -7,7 +7,7 @@
 
 #include "chess_core/perft.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Position.Perft.Initial Pos", "[Position][Perft]") {
     Position position{FenString::starting_position()};

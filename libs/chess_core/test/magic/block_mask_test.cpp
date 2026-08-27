@@ -7,7 +7,7 @@
 
 #include "chess_core/magic.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Magic.Blocker.Mask.Non Sliding", "[magic]") {
     CHECK(blocker_mask(PieceType::King, Square::A5).empty());

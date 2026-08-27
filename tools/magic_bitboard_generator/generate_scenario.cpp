@@ -26,7 +26,7 @@ auto HeaderFile::write_header() -> void {
 
 #include "chess_core/magic.h"
 
-namespace chesscore {
+namespace chess_core {
 
 )";
 }
@@ -54,7 +54,7 @@ auto HeaderFile::end_data_set() -> void {
 
 auto HeaderFile::write_footer() -> void {
     m_file << R"(
-} // namespace chesscore
+} // namespace chess_core
 
 #endif
 )";

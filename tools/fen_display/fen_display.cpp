@@ -15,7 +15,7 @@ auto main(int argc, const char *argv[]) -> int {
         return 1;
     }
 
-    const auto bitboard = chesscore::Bitboard{chesscore::FenString{argv[1]}};
+    const auto bitboard = chess_core::Bitboard{chess_core::FenString{argv[1]}};
     std::cout << bitboard;
 
     return 0;

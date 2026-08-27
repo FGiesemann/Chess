@@ -8,8 +8,8 @@
 
 #include <chess_core_io/move_io.h>
 
-using namespace chessuci;
-using namespace chesscore;
+using namespace chess_uci;
+using namespace chess_core;
 
 namespace {
 

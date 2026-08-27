@@ -5,7 +5,7 @@
 
 #include "chess_core/position_types.h"
 
-namespace chesscore {
+namespace chess_core {
 
 auto check_state_symbol(CheckState state) -> std::string {
     if (state == CheckState::Check) {
@@ -22,4 +22,4 @@ auto PositionState::operator==(const PositionState &rhs) const -> bool {
            en_passant_target == rhs.en_passant_target;
 }
 
-} // namespace chesscore
+} // namespace chess_core

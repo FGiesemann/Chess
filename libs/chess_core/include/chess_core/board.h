@@ -4,13 +4,13 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_BOARD_H
-#define CHESSCORE_BOARD_H
+#ifndef CHESS_CORE_BOARD_H
+#define CHESS_CORE_BOARD_H
 
 #include <array>
 #include <cstdint>
 
-namespace chesscore {
+namespace chess_core {
 
 class Square;
 enum class PieceType : std::int8_t;
@@ -61,6 +61,6 @@ auto operator&(std::uint8_t mask, RayDirection direction) -> bool;
 
 auto is_negative_direction(RayDirection direction) -> bool;
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

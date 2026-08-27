@@ -19,14 +19,14 @@
 #include <unordered_map>
 #include <vector>
 
-namespace chessengine::mate_in_x {
+namespace chess_engine::mate_in_x {
 
 struct MateInXPuzzle {
     std::string id;
-    chesscore::Position position;
-    chesscore::MoveList moves;
+    chess_core::Position position;
+    chess_core::MoveList moves;
 
-    [[nodiscard]] auto best_move() const -> const chesscore::Move & { return moves.front(); }
+    [[nodiscard]] auto best_move() const -> const chess_core::Move & { return moves.front(); }
     [[nodiscard]] auto mate_plys() const -> size_t { return moves.size(); }
 };
 
@@ -46,13 +46,13 @@ public:
 
     auto set_output(const fs::path &output) -> void { m_output = output; }
     auto output() const -> const fs::path & { return m_output; }
-    auto setup_multi_solution_finder(const chessuci::ProcessParams &params) -> void;
+    auto setup_multi_solution_finder(const chess_uci::ProcessParams &params) -> void;
 
     auto process(const fs::path &input) -> void;
 private:
     std::ifstream m_input_file;
     fs::path m_output;
-    chesscore::EpdSuite m_puzzles;
+    chess_core::EpdSuite m_puzzles;
     std::unordered_map<int, int> m_puzzle_distrib;
     std::unique_ptr<MultiSolutionFinder> m_multi_solution_finder{};
 
@@ -61,7 +61,7 @@ private:
     auto read_puzzles() -> void;
     auto is_mate_puzzle(std::string_view theme) -> bool;
     auto extract_puzzle(const std::vector<std::string> &fields) -> MateInXPuzzle;
-    auto convert_to_epd(const MateInXPuzzle &puzzle) -> chesscore::EpdRecord;
+    auto convert_to_epd(const MateInXPuzzle &puzzle) -> chess_core::EpdRecord;
     auto print_puzzle_distrib() -> void;
     auto sort_puzzles() -> void;
     auto write_puzzles() -> void;
@@ -70,6 +70,6 @@ private:
     auto write_puzzle_files() -> void;
 };
 
-} // namespace chessengine::mate_in_x
+} // namespace chess_engine::mate_in_x
 
 #endif

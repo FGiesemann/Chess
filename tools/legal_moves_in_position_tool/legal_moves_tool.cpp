@@ -4,7 +4,7 @@
  * ************************************************************************** */
 
 #include "chess_core/position.h"
-#include "chess_core_io/chesscore_io.h"
+#include "chess_core_io/chess_core_io.h"
 
 #include <cstring>
 #include <iostream>
@@ -19,7 +19,7 @@ auto main(int argc, const char *argv[]) -> int {
         constructor_output = true;
     }
 
-    const auto position = chesscore::Position{chesscore::FenString{argv[1]}};
+    const auto position = chess_core::Position{chess_core::FenString{argv[1]}};
     const auto moves = position.all_legal_moves();
     if (constructor_output) {
         for (const auto &move : moves) {

@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-namespace chesscore::table_gen {
+namespace chess_core::table_gen {
 
 auto generate_table(const std::string &name, const Pattern &pattern, std::ostream &os) -> void {
     const char row_name[] = "12345678";
@@ -28,4 +28,4 @@ auto generate_table(const std::string &name, const Pattern &pattern, std::ostrea
     os << "};\n";
 }
 
-} // namespace chesscore::table_gen
+} // namespace chess_core::table_gen

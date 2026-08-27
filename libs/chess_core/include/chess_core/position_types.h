@@ -4,14 +4,14 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_POSITION_TYPES_H
-#define CHESSCORE_POSITION_TYPES_H
+#ifndef CHESS_CORE_POSITION_TYPES_H
+#define CHESS_CORE_POSITION_TYPES_H
 
-#include "chess_core/chesscore.h"
+#include "chess_core/chess_core.h"
 #include "chess_core/piece.h"
 #include "chess_core/square.h"
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief Describes the availability of castling for each player.
@@ -132,6 +132,6 @@ struct PositionState {
     auto operator==(const PositionState &rhs) const -> bool;
 };
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

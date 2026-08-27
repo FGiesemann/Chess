@@ -10,8 +10,8 @@
 #include "chess_core/move.h"
 #include "chess_core/position.h"
 
-using namespace chessgame;
-using namespace chesscore;
+using namespace chess_game;
+using namespace chess_core;
 
 namespace {
 

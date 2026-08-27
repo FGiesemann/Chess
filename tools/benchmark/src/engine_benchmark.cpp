@@ -27,7 +27,7 @@ auto parse_engine_options(std::span<char *> argv) -> Options {
             options.iterative_deepning = true;
         } else if (std::strncmp(argv[i], "--depth", 6) == 0 || std::strncmp(argv[i], "-d", 2) == 0) {
             if (i + 1 < argv.size()) {
-                options.depth = static_cast<chessengine::Depth::value_type>(std::stoi(argv[i + 1]));
+                options.depth = static_cast<chess_engine::Depth::value_type>(std::stoi(argv[i + 1]));
                 ++i;
             }
         } else {
@@ -79,7 +79,7 @@ auto Benchmark::run() -> void {
 
     for (const auto &record : m_test_suite) {
         auto position = record.position;
-        const auto fen_str = chesscore::FenString{position.piece_placement(), position.state()};
+        const auto fen_str = chess_core::FenString{position.piece_placement(), position.state()};
         auto stats = benchmark_position(position);
 
         grand_total_nodes += stats.nodes;
@@ -93,12 +93,12 @@ auto Benchmark::run() -> void {
     std::cout << "Summary: " << std::fixed << std::setprecision(3) << final_mnps << " MNPS\n";
 }
 
-auto Benchmark::benchmark_position(chesscore::Position position) const -> SearchStats {
-    chessengine::Config config{};
+auto Benchmark::benchmark_position(chess_core::Position position) const -> SearchStats {
+    chess_engine::Config config{};
     config.search_config.iterative_deepening = m_options.iterative_deepning;
-    chessengine::StopParameters stop_parameters{.max_search_depth = chessengine::Depth{m_options.depth}};
+    chess_engine::StopParameters stop_parameters{.max_search_depth = chess_engine::Depth{m_options.depth}};
 
-    chessengine::ChessEngine engine{config};
+    chess_engine::ChessEngine engine{config};
     engine.set_position(position);
     engine.search(stop_parameters);
 
@@ -108,12 +108,12 @@ auto Benchmark::benchmark_position(chesscore::Position position) const -> Search
 }
 
 auto Benchmark::read_test_suite(const std::filesystem::path &epd_file) -> void {
-    m_test_suite = chesscore::EpdSuite{};
+    m_test_suite = chess_core::EpdSuite{};
     std::ifstream file(epd_file);
     if (!file.is_open()) {
         throw BenchmarkError{"Unable to open EPD file: " + epd_file.string()};
     }
-    m_test_suite = chesscore::read_epd(file);
+    m_test_suite = chess_core::read_epd(file);
 }
 
 auto Benchmark::print_result(const std::string &name, const SearchStats &stats) -> void {

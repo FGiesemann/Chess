@@ -3,8 +3,8 @@
  * Chess playing engine                                                       *
  * ************************************************************************** */
 
-#ifndef CHESSENGINE_TYPES_H
-#define CHESSENGINE_TYPES_H
+#ifndef CHESS_ENGINE_TYPES_H
+#define CHESS_ENGINE_TYPES_H
 
 #include <chess_core/move.h>
 
@@ -14,7 +14,7 @@
 #include <functional>
 #include <iostream>
 
-namespace chessengine {
+namespace chess_engine {
 
 /**
  * \brief Base implementation for a strong (integral) type.
@@ -236,7 +236,7 @@ constexpr auto ply_to_mate(Score score) -> Depth {
  * \brief A move combined with a score.
  */
 struct EvaluatedMove {
-    chesscore::Move move;            ///< The move.
+    chess_core::Move move;           ///< The move.
     Score score{Score::NegInfinity}; ///< Score for the move.
 };
 
@@ -280,6 +280,6 @@ struct StopParameters {
 
 auto to_string(const StopParameters &params) -> std::string;
 
-} // namespace chessengine
+} // namespace chess_engine
 
 #endif

@@ -5,19 +5,19 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chess_core_io/chesscore_io.h"
+#include "chess_core_io/chess_core_io.h"
 #include "chess_game/pgn.h"
 
 #include <algorithm>
 #include <sstream>
 #include <string>
 
-using namespace chessgame;
-using namespace chesscore;
+using namespace chess_game;
+using namespace chess_core;
 
 namespace {
 
-auto count_ply_on_mainline(const chessgame::Game &game) -> int {
+auto count_ply_on_mainline(const chess_game::Game &game) -> int {
     const auto cursor = game.cursor();
     int child_count{0};
     auto next_cursor = cursor.child(0);
@@ -61,7 +61,7 @@ auto var(std::size_t index) -> GamePath {
     return GamePath{{index}};
 }
 
-auto get_node(const chessgame::Game &game, const GamePath &path) -> std::shared_ptr<const chessgame::GameNode> {
+auto get_node(const chess_game::Game &game, const GamePath &path) -> std::shared_ptr<const chess_game::GameNode> {
     auto cursor = game.cursor();
     for (std::size_t index = 0U; index < path.size(); ++index) {
         const auto child_cursor = cursor.child(path[index]);
@@ -72,18 +72,18 @@ auto get_node(const chessgame::Game &game, const GamePath &path) -> std::shared_
     return cursor.node();
 }
 
-auto get_move(const chessgame::Game &game, const GamePath &path) -> Move {
+auto get_move(const chess_game::Game &game, const GamePath &path) -> Move {
     return get_node(game, path)->move();
 }
 
-auto check_move(const chessgame::Game &game, const GamePath &path, const Move &expected_move) -> void {
+auto check_move(const chess_game::Game &game, const GamePath &path, const Move &expected_move) -> void {
     CAPTURE(path);
     const auto &move = get_move(game, path);
     CAPTURE(move);
     CHECK(move == expected_move);
 }
 
-auto has_no_following_move(const chessgame::Game &game, const GamePath &path) -> bool {
+auto has_no_following_move(const chess_game::Game &game, const GamePath &path) -> bool {
     CAPTURE(path);
     const auto &node = get_node(game, path);
     return node->child_count() == 0;
@@ -100,7 +100,7 @@ TEST_CASE("Game.PGN.Parser.Simple Linear Game", "[pgn]") {
 
 1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 1-0)";
     std::istringstream pgn_data{game_data};
-    auto parser = chessgame::PGNParser{pgn_data};
+    auto parser = chess_game::PGNParser{pgn_data};
     auto opt_game = parser.read_game();
     REQUIRE(opt_game.has_value());
     const auto &game = opt_game.value();
@@ -129,7 +129,7 @@ Black of the opportunity to play dxc4 when the diagonal b7-g2 would be open for
 his Queen Bishop.} 8...exd5 9. Bd3 Bb7 10. O-O c5 1-0)";
 
     std::istringstream pgn_data{game_data};
-    auto parser = chessgame::PGNParser{pgn_data};
+    auto parser = chess_game::PGNParser{pgn_data};
     auto opt_game = parser.read_game();
     REQUIRE(opt_game.has_value());
     const auto &game = opt_game.value();
@@ -161,7 +161,7 @@ is in his favour (as he can immediately occupy it) - Alekhine} 1-0
 )";
 
     std::istringstream pgn_data{game_data};
-    auto parser = chessgame::PGNParser{pgn_data};
+    auto parser = chess_game::PGNParser{pgn_data};
     auto opt_game = parser.read_game();
     REQUIRE(opt_game.has_value());
     const auto &game = opt_game.value();
@@ -187,7 +187,7 @@ TEST_CASE("Game.PGN.Parser.Alternative Start", "[pgn]") {
 1. Re1 Rfd8 2. Bd2 Qf5 3. Rc1 Ne5 $1 4. Qc2 Nd3 5. Rf1 1-0)";
 
     std::istringstream pgn_data{game_data};
-    auto parser = chessgame::PGNParser{pgn_data};
+    auto parser = chess_game::PGNParser{pgn_data};
     auto opt_game = parser.read_game();
     REQUIRE(opt_game.has_value());
     const auto &game = opt_game.value();
@@ -223,7 +223,7 @@ TEST_CASE("Game.PGN.Parser.Game with RAV", "[pgn]") {
 19. Be4 Nxe3 1/2-1/2)";
 
     std::istringstream pgn_data{game_data};
-    auto parser = chessgame::PGNParser{pgn_data};
+    auto parser = chess_game::PGNParser{pgn_data};
     auto opt_game = parser.read_game();
     REQUIRE(opt_game.has_value());
     const auto &game = opt_game.value();
@@ -276,7 +276,7 @@ is in his favour (as he can immediately occupy it) - Alekhine} 1-0
 )";
 
     std::istringstream pgn_data{game_data};
-    auto parser = chessgame::PGNParser{pgn_data};
+    auto parser = chess_game::PGNParser{pgn_data};
     auto opt_game = parser.read_game();
     REQUIRE(opt_game.has_value());
     const auto &game = opt_game.value();
@@ -318,7 +318,7 @@ Nf6xd5 {Comment 5} 9. Bxe7, Qxe7 10. Nxd5, e6xd5) 9. Bd3 {Comment 6} Bb7 1-0
 )";
 
     std::istringstream pgn_data{game_data};
-    auto parser = chessgame::PGNParser{pgn_data};
+    auto parser = chess_game::PGNParser{pgn_data};
     auto opt_game = parser.read_game();
     REQUIRE(opt_game.has_value());
     const auto &game = opt_game.value();

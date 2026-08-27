@@ -7,7 +7,7 @@
 
 #include "chess_core/bitmap.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Bitboard.Bitmap.Empty", "[Bitmap][Basic]") {
     Bitmap bitmap{};

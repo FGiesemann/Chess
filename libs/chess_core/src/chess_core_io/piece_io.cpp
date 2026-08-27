@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-namespace chesscore {
+namespace chess_core {
 
 auto operator<<(std::ostream &os, PieceType type) -> std::ostream & {
     switch (type) {
@@ -66,4 +66,4 @@ auto operator<<(std::ostream &os, Color color) -> std::ostream & {
     return os << color_name(color);
 }
 
-} // namespace chesscore
+} // namespace chess_core

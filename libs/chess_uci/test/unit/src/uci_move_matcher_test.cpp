@@ -6,8 +6,8 @@
 #include "chess_uci/move.h"
 #include <catch2/catch_test_macros.hpp>
 
-using namespace chessuci;
-using namespace chesscore;
+using namespace chess_uci;
+using namespace chess_core;
 
 TEST_CASE("UCI.Move.Matcher.Simple", "[move_matcher]") {
     CHECK(uci_move_matches(UCIMove{Square::E2, Square::E4}, Move{.from = Square::E2, .to = Square::E4, .piece = Piece::WhitePawn}));

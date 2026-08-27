@@ -70,12 +70,12 @@ auto run_benchmark(const Options &options) -> void {
 }
 
 Benchmark::Benchmark(const Options &options) {
-    m_test_suite = chesscore::EpdSuite{};
+    m_test_suite = chess_core::EpdSuite{};
     std::ifstream file(options.epd_file);
     if (!file.is_open()) {
         throw BenchmarkError{"Unable to open EPD file: " + options.epd_file.string()};
     }
-    m_test_suite = chesscore::read_epd(file);
+    m_test_suite = chess_core::read_epd(file);
     m_iterations = options.iterations;
     m_max_depth = options.max_depth.has_value() ? *options.max_depth : 0;
 }
@@ -89,7 +89,7 @@ auto Benchmark::run() -> void {
 
     for (const auto &record : m_test_suite) {
         auto position = record.position;
-        const auto fen_str = chesscore::FenString{position.piece_placement(), position.state()};
+        const auto fen_str = chess_core::FenString{position.piece_placement(), position.state()};
 
         warmup(position);
 
@@ -133,15 +133,15 @@ auto Benchmark::run() -> void {
     std::cout << "Summary: " << std::fixed << std::setprecision(3) << final_mnps << " MNPS (Average of Medians)\n";
 }
 
-auto Benchmark::warmup(chesscore::Position position) -> void {
-    chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
-    chesscore::perft<chesscore::PerftMode::Benchmark>(position, 3, counter);
+auto Benchmark::warmup(chess_core::Position position) -> void {
+    chess_core::PerftCounter<chess_core::PerftMode::Benchmark> counter;
+    chess_core::perft<chess_core::PerftMode::Benchmark>(position, 3, counter);
 }
 
-auto Benchmark::measure_single_perft(chesscore::Position position, int depth) -> std::tuple<std::uint64_t, std::uint64_t, double> {
+auto Benchmark::measure_single_perft(chess_core::Position position, int depth) -> std::tuple<std::uint64_t, std::uint64_t, double> {
     auto start = std::chrono::high_resolution_clock::now();
-    chesscore::PerftCounter<chesscore::PerftMode::Benchmark> counter;
-    chesscore::perft<chesscore::PerftMode::Benchmark>(position, depth, counter);
+    chess_core::PerftCounter<chess_core::PerftMode::Benchmark> counter;
+    chess_core::perft<chess_core::PerftMode::Benchmark>(position, depth, counter);
     auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> diff = end - start;

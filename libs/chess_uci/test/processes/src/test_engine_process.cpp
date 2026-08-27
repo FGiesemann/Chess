@@ -17,7 +17,7 @@ inline auto get_test_binary_path(const std::string &name) -> std::string {
 }
 
 TEST_CASE("UCI.ProcessTests.Process can be started", "[process][basic]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
     REQUIRE(process);
 
     auto binary = get_test_binary_path("test_echo");
@@ -27,7 +27,7 @@ TEST_CASE("UCI.ProcessTests.Process can be started", "[process][basic]") {
 }
 
 TEST_CASE("UCI.ProcessTests.Process exits immediately", "[process][exit]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_immediate_exit");
     process->start({.executable = binary, .arguments = {"42"}}); // non-zero exit code signifies error
@@ -40,7 +40,7 @@ TEST_CASE("UCI.ProcessTests.Process exits immediately", "[process][exit]") {
 }
 
 TEST_CASE("UCI.ProcessTests.Process start failure is detected", "[process][error]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     REQUIRE_FALSE(process->start({"/nonexistent/binary"}));
 
@@ -49,7 +49,7 @@ TEST_CASE("UCI.ProcessTests.Process start failure is detected", "[process][error
 }
 
 TEST_CASE("UCI.ProcessTests.Can write to process stdin", "[process][io]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_line_echo");
     REQUIRE(process->start({binary}));
@@ -65,7 +65,7 @@ TEST_CASE("UCI.ProcessTests.Can write to process stdin", "[process][io]") {
 }
 
 TEST_CASE("UCI.ProcessTests.Can read multiple lines", "[process][io]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_line_echo");
     REQUIRE(process->start({binary}));
@@ -89,7 +89,7 @@ TEST_CASE("UCI.ProcessTests.Can read multiple lines", "[process][io]") {
 }
 
 TEST_CASE("UCI.ProcessTests.Handle large output", "[process][io][stress]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_output_flood");
     REQUIRE(process->start({binary, {"1000"}}));
@@ -108,7 +108,7 @@ TEST_CASE("UCI.ProcessTests.Handle large output", "[process][io][stress]") {
 }
 
 TEST_CASE("UCI.ProcessTests.Graceful termination with quit", "[process][terminate]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_line_echo");
     REQUIRE(process->start({binary}));
@@ -119,7 +119,7 @@ TEST_CASE("UCI.ProcessTests.Graceful termination with quit", "[process][terminat
 }
 
 TEST_CASE("UCI.ProcessTests.Force kill hanging process", "[process][kill]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_hang");
     REQUIRE(process->start({binary}));
@@ -133,7 +133,7 @@ TEST_CASE("UCI.ProcessTests.Force kill hanging process", "[process][kill]") {
 }
 
 TEST_CASE("UCI.ProcessTests.Detect crashed process", "[process][crash]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_crash");
     REQUIRE(process->start({binary, {"500"}})); // Crash after 500ms
@@ -150,7 +150,7 @@ TEST_CASE("UCI.ProcessTests.Detect crashed process", "[process][crash]") {
 }
 
 TEST_CASE("UCI.ProcessTests.Working directory is set correctly", "[process][workdir]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_working_dir");
 
@@ -168,7 +168,7 @@ TEST_CASE("UCI.ProcessTests.Working directory is set correctly", "[process][work
 
 #ifdef __unix__
 TEST_CASE("UCI.ProcessTests.Handle zombie process (Unix)", "[process][unix][zombie]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_zombie");
     REQUIRE(process->start({binary}));
@@ -182,7 +182,7 @@ TEST_CASE("UCI.ProcessTests.Handle zombie process (Unix)", "[process][unix][zomb
 #endif
 
 TEST_CASE("UCI.ProcessTests.Wait with timeout", "[process][timeout]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
 
     auto binary = get_test_binary_path("test_hang");
     REQUIRE(process->start({binary}));
@@ -196,7 +196,7 @@ TEST_CASE("UCI.ProcessTests.Wait with timeout", "[process][timeout]") {
 }
 
 TEST_CASE("UCI.ProcessTests.can_read() detects available data", "[process][io]") {
-    auto process = chessuci::ProcessFactory::create_local();
+    auto process = chess_uci::ProcessFactory::create_local();
     auto binary = get_test_binary_path("test_line_echo");
     REQUIRE(process->start({binary}));
 

@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-namespace chessuci {
+namespace chess_uci {
 
 EngineProcessUnix::~EngineProcessUnix() {
     if (is_running()) {
@@ -348,4 +348,4 @@ auto EngineProcessUnix::create_child_process(const ProcessParams &params) -> boo
     return true;
 }
 
-} // namespace chessuci
+} // namespace chess_uci

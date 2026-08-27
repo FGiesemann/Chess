@@ -7,7 +7,7 @@
 
 #include "chess_core/bitboard.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Bitboard.Bitboard.Empty", "[Bitboard][Init]") {
     Bitboard bitboard{};

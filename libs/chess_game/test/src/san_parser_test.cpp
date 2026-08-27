@@ -10,15 +10,15 @@
 
 #include "chess_game/san.h"
 
-using namespace chessgame;
-using namespace chesscore;
+using namespace chess_game;
+using namespace chess_core;
 
 using ParseRes = std::expected<SANMove, SANParserError>;
 
 namespace {
 
 auto check_move(
-    const ParseRes &parse_res, Piece piece, Square target_square, bool capturing, std::optional<chesscore::Piece> promotion, CheckState check_state,
+    const ParseRes &parse_res, Piece piece, Square target_square, bool capturing, std::optional<chess_core::Piece> promotion, CheckState check_state,
     std::optional<SuffixAnnotation> suffix_annotation
 ) -> bool {
     if (!parse_res.has_value()) {
@@ -30,7 +30,7 @@ auto check_move(
 }
 
 auto check_move(
-    const ParseRes &parse_res, Piece piece, Square target_square, bool capturing, std::optional<chesscore::Piece> promotion, CheckState check_state, File from_file,
+    const ParseRes &parse_res, Piece piece, Square target_square, bool capturing, std::optional<chess_core::Piece> promotion, CheckState check_state, File from_file,
     std::optional<SuffixAnnotation> suffix_annotation
 ) -> bool {
     return check_move(parse_res, piece, target_square, capturing, promotion, check_state, suffix_annotation) && parse_res.value().disambiguation_file == from_file &&
@@ -38,7 +38,7 @@ auto check_move(
 }
 
 auto check_move(
-    const ParseRes &parse_res, Piece piece, Square target_square, bool capturing, std::optional<chesscore::Piece> promotion, CheckState check_state, Rank from_rank,
+    const ParseRes &parse_res, Piece piece, Square target_square, bool capturing, std::optional<chess_core::Piece> promotion, CheckState check_state, Rank from_rank,
     std::optional<SuffixAnnotation> suffix_annotation
 ) -> bool {
     return check_move(parse_res, piece, target_square, capturing, promotion, check_state, suffix_annotation) && parse_res.value().disambiguation_rank == from_rank &&
@@ -46,8 +46,8 @@ auto check_move(
 }
 
 auto check_move(
-    const ParseRes &parse_res, Piece piece, Square target_square, bool capturing, std::optional<chesscore::Piece> promotion, CheckState check_state, File from_file, Rank from_rank,
-    std::optional<SuffixAnnotation> suffix_annotation
+    const ParseRes &parse_res, Piece piece, Square target_square, bool capturing, std::optional<chess_core::Piece> promotion, CheckState check_state, File from_file,
+    Rank from_rank, std::optional<SuffixAnnotation> suffix_annotation
 ) -> bool {
     return check_move(parse_res, piece, target_square, capturing, promotion, check_state, suffix_annotation) && parse_res.value().disambiguation_file == from_file &&
            parse_res.value().disambiguation_rank == from_rank;

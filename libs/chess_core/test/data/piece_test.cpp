@@ -7,7 +7,7 @@
 
 #include "chess_core/piece.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Data.Piece.Type from Index", "[Piece]") {
     CHECK(piece_type_from_index(0) == PieceType::Pawn);

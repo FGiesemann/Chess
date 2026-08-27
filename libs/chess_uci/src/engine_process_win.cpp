@@ -6,7 +6,7 @@
 #include "chess_uci/engine_process_win.h"
 #include "chess_uci/protocol.h"
 
-namespace chessuci {
+namespace chess_uci {
 
 auto EngineProcessWin::utf8_to_wide(const std::string &utf8) -> std::wstring {
     if (utf8.empty()) {
@@ -367,4 +367,4 @@ auto EngineProcessWin::Pipe::create(SECURITY_ATTRIBUTES *attributes, bool inheri
     return true;
 }
 
-} // namespace chessuci
+} // namespace chess_uci

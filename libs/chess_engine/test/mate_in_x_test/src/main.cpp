@@ -43,7 +43,7 @@ auto main(int argc, const char *argv[]) -> int {
 
     Parameters params = read_arguments(argc, argv);
 
-    chessengine::Config config{
+    chess_engine::Config config{
         .minimax_config =
             {
                 .use_alpha_beta_pruning = true,
@@ -56,7 +56,7 @@ auto main(int argc, const char *argv[]) -> int {
             },
         .evaluator_config = {},
     };
-    chessengine::mate_in_x::MateInXTest test_runner;
+    chess_engine::mate_in_x::MateInXTest test_runner;
     test_runner.set_config(config);
     if (!params.log_file.empty()) {
         test_runner.set_log(params.log_file);

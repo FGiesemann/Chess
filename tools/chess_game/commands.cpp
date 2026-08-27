@@ -5,41 +5,41 @@
 
 #include "commands.h"
 
-#include "chess_core_io/chesscore_io.h"
+#include "chess_core_io/chess_core_io.h"
 #include "chess_game/san.h"
 #include <iostream>
 #include <sstream>
 
 auto reset_game(Context &context) -> void {
-    context.game = chessgame::Game{};
+    context.game = chess_game::Game{};
     context.mainline = context.game.cursor();
 }
 
 auto print_game_status(const Context &context) -> void {
     std::cout << '\n' << context.mainline.position();
-    std::cout << "White in check: " << context.mainline.position().is_king_in_check(chesscore::Color::White)
-              << " | Black in check: " << context.mainline.position().is_king_in_check(chesscore::Color::Black) << '\n';
-    const auto fen_str = chesscore::FenString{context.mainline.position().piece_placement(), context.mainline.position().state()};
+    std::cout << "White in check: " << context.mainline.position().is_king_in_check(chess_core::Color::White)
+              << " | Black in check: " << context.mainline.position().is_king_in_check(chess_core::Color::Black) << '\n';
+    const auto fen_str = chess_core::FenString{context.mainline.position().piece_placement(), context.mainline.position().state()};
     std::cout << "FEN: " << fen_str.str() << '\n';
 }
 
 auto set_fen(std::string &input, Context &context) -> void {
-    chessgame::GameMetadata metadata;
+    chess_game::GameMetadata metadata;
     metadata.add("FEN", input.substr(4));
-    context.game = chessgame::Game{metadata};
+    context.game = chess_game::Game{metadata};
     context.mainline = context.game.cursor();
 }
 
 auto apply_san_move(const std::string &san_str, Context &context) -> bool {
     const auto &position = context.mainline.position();
-    const auto opt_san_move = chessgame::parse_san(san_str, position.side_to_move());
+    const auto opt_san_move = chess_game::parse_san(san_str, position.side_to_move());
     if (!opt_san_move) {
         std::cout << "The SAN could not be parsed: " << to_string(opt_san_move.error().error_type) << '\n';
         return false;
     }
     const auto &san_move = *opt_san_move;
     const auto legal_moves = position.all_legal_moves();
-    const auto matched_moves = chessgame::match_move(san_move, legal_moves);
+    const auto matched_moves = chess_game::match_move(san_move, legal_moves);
 
     if (matched_moves.empty()) {
         std::cout << "The move is not allowed in this position!\n";
@@ -58,13 +58,13 @@ auto apply_san_move(const std::string &san_str, Context &context) -> bool {
 
 auto test_san_move(const std::string &san_str, Context &context) -> void {
     const auto &position = context.mainline.position();
-    const auto opt_san_move = chessgame::parse_san(san_str, position.side_to_move());
+    const auto opt_san_move = chess_game::parse_san(san_str, position.side_to_move());
     if (!opt_san_move) {
         std::cout << "The SAN could not be parsed: " << to_string(opt_san_move.error().error_type) << '\n';
     }
     const auto &san_move = *opt_san_move;
     const auto legal_moves = position.all_legal_moves();
-    const auto matched_moves = chessgame::match_move(san_move, legal_moves);
+    const auto matched_moves = chess_game::match_move(san_move, legal_moves);
 
     if (matched_moves.empty()) {
         std::cout << "The move is not allowed in this position!\n";
@@ -86,7 +86,7 @@ auto list_legal_moves(Context &context) -> void {
 }
 
 auto parses_as_san(const std::string &str, const Context &context) -> bool {
-    const auto san_move = chessgame::parse_san(str, context.mainline.position().side_to_move());
+    const auto san_move = chess_game::parse_san(str, context.mainline.position().side_to_move());
     return san_move.has_value();
 }
 
@@ -104,7 +104,7 @@ auto play_moves(const std::string &movetext, Context &context) -> void {
         if (token.empty()) {
             continue;
         }
-        const auto opt_san_move = chessgame::parse_san(token, context.mainline.position().side_to_move());
+        const auto opt_san_move = chess_game::parse_san(token, context.mainline.position().side_to_move());
         if (opt_san_move.has_value()) {
             std::cout << "\nPlaying move '" << token << "'\n";
             if (apply_san_move(token, context)) {

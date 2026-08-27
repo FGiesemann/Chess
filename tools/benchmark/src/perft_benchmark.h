@@ -30,12 +30,12 @@ public:
     auto run() -> void;
 private:
     static constexpr int test_column_width = 80;
-    chesscore::EpdSuite m_test_suite;
+    chess_core::EpdSuite m_test_suite;
     int m_max_depth = 0;
     int m_iterations = 5;
 
-    static auto warmup(chesscore::Position position) -> void;
-    static auto measure_single_perft(chesscore::Position position, int depth) -> std::tuple<std::uint64_t, std::uint64_t, double>;
+    static auto warmup(chess_core::Position position) -> void;
+    static auto measure_single_perft(chess_core::Position position, int depth) -> std::tuple<std::uint64_t, std::uint64_t, double>;
 
     static auto print_header() -> void;
     static auto print_result(const std::string &name, uint64_t nodes, double time) -> void;

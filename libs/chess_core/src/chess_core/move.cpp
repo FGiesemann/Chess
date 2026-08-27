@@ -9,7 +9,7 @@
 #include <ranges>
 #include <sstream>
 
-namespace chesscore {
+namespace chess_core {
 
 auto Move::operator==(const Move &rhs) const -> bool {
     return from == rhs.from && to == rhs.to && piece == rhs.piece && captured == rhs.captured && capturing_en_passant == rhs.capturing_en_passant && promoted == rhs.promoted;
@@ -72,4 +72,4 @@ auto to_string(const MoveList &moves) -> std::string {
            std::ranges::to<std::string>();
 }
 
-} // namespace chesscore
+} // namespace chess_core

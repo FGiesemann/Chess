@@ -3,8 +3,8 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_ENGINE_PROCESS_MOCK_H
-#define CHESSUCI_ENGINE_PROCESS_MOCK_H
+#ifndef CHESS_UCI_ENGINE_PROCESS_MOCK_H
+#define CHESS_UCI_ENGINE_PROCESS_MOCK_H
 
 #include "chess_uci/engine_process.h"
 
@@ -16,9 +16,9 @@
 #include <unordered_map>
 #include <vector>
 
-namespace chessuci::test {
+namespace chess_uci::test {
 
-class EngineProcessMock : public chessuci::EngineProcess {
+class EngineProcessMock : public chess_uci::EngineProcess {
 public:
     using ResponseFunction = std::function<std::vector<std::string>(const std::string &)>;
 
@@ -54,6 +54,6 @@ private:
     std::string m_last_error{};
 };
 
-} // namespace chessuci::test
+} // namespace chess_uci::test
 
 #endif

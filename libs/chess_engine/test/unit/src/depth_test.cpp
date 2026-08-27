@@ -6,7 +6,7 @@
 #include <catch2/catch_all.hpp>
 
 #include "chess_engine/types.h"
-using namespace chessengine;
+using namespace chess_engine;
 
 TEST_CASE("Engine.Depth.Constants", "[depth]") {
     CHECK(Depth::Zero.value == 0);

@@ -8,12 +8,12 @@
 
 #include <cstddef>
 
-namespace chesscore::table_gen {
+namespace chess_core::table_gen {
 
 static constexpr std::size_t board_width{8};
 static constexpr std::size_t overhang{board_width - 1};
 static constexpr std::size_t bigmap_width{2 * overhang + board_width};
 
-} // namespace chesscore::table_gen
+} // namespace chess_core::table_gen
 
 #endif

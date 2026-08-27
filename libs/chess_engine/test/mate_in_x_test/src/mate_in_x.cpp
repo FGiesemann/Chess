@@ -19,13 +19,13 @@
 
 namespace {
 
-auto convert_from_san(const std::string &san, const chesscore::Position &position) -> chesscore::Move {
-    const auto opt_san_move = chessgame::parse_san(san, position.side_to_move());
+auto convert_from_san(const std::string &san, const chess_core::Position &position) -> chess_core::Move {
+    const auto opt_san_move = chess_game::parse_san(san, position.side_to_move());
     if (!opt_san_move.has_value()) {
         throw std::runtime_error{"Failed to parse SAN"};
     }
     const auto legal_moves = position.all_legal_moves();
-    const auto matched_moves = chessgame::match_move(opt_san_move.value(), legal_moves);
+    const auto matched_moves = chess_game::match_move(opt_san_move.value(), legal_moves);
     if (matched_moves.size() != 1) {
         throw std::runtime_error{"Failed to find move"};
     }
@@ -34,7 +34,7 @@ auto convert_from_san(const std::string &san, const chesscore::Position &positio
 
 } // namespace
 
-namespace chessengine::mate_in_x {
+namespace chess_engine::mate_in_x {
 
 auto MateInXTest::run_tests(const std::string &file_path, const std::string &first_test_id) -> void {
     reset_stats();
@@ -84,16 +84,16 @@ auto MateInXTest::process_tests(const std::string &first_test_id) -> void {
     print_summary();
 }
 
-auto MateInXTest::perform_test(const chesscore::EpdRecord &test) -> MateInXResult {
+auto MateInXTest::perform_test(const chess_core::EpdRecord &test) -> MateInXResult {
     MateInXResult test_result{};
     test_result.test_id = test.id.value_or("N/A");
-    test_result.expected_depth = chessengine::Depth{static_cast<chessengine::Depth::value_type>(test.pv.size())};
-    test_result.expected_moves = std::views::transform(test.bm, [&](const auto &move) { return convert_from_san(move, test.position); }) | std::ranges::to<chesscore::MoveList>();
+    test_result.expected_depth = chess_engine::Depth{static_cast<chess_engine::Depth::value_type>(test.pv.size())};
+    test_result.expected_moves = std::views::transform(test.bm, [&](const auto &move) { return convert_from_san(move, test.position); }) | std::ranges::to<chess_core::MoveList>();
 
-    chessengine::ChessEngine engine{};
+    chess_engine::ChessEngine engine{};
     engine.set_config(m_base_config);
     engine.set_position(test.position);
-    chessengine::StopParameters stop_params{.max_search_depth = chessengine::Depth{test_result.expected_depth + chessengine::Depth::Step}};
+    chess_engine::StopParameters stop_params{.max_search_depth = chess_engine::Depth{test_result.expected_depth + chess_engine::Depth::Step}};
     const auto result = engine.search(stop_params);
     test_result.search_stats = engine.search_stats();
     test_result.found_move = result.move;
@@ -113,7 +113,7 @@ auto MateInXTest::log_result(const MateInXResult &result) -> void {
         log_message << "NO MATE\n";
     } else {
         log_message << std::format("{:>9} @ {:>2} ", to_string(result.found_move), result.found_depth.value);
-        if (!chesscore::move_list_contains(result.expected_moves, result.found_move)) {
+        if (!chess_core::move_list_contains(result.expected_moves, result.found_move)) {
             log_message << "!! Unexpected move! Expected: "
                         << (result.expected_moves | std::views::transform([&](const auto &move) { return to_string(move); }) | std::views::join_with(std::string{", "}) |
                             std::ranges::to<std::string>());
@@ -142,7 +142,7 @@ auto MateInXTest::load_tests(const std::string &test_file_path) -> void {
         throw std::runtime_error{"Unable to open test file: " + test_file_path};
     }
 
-    m_tests = chesscore::read_epd(test_file);
+    m_tests = chess_core::read_epd(test_file);
 }
 
 auto MateInXTest::set_log(const std::string &log_file_path) -> void {
@@ -169,4 +169,4 @@ auto MateInXTest::calculate_places() -> void {
     m_places = static_cast<int>(std::floor(std::log(m_tests.size()) / std::log(10))) + 1;
 }
 
-} // namespace chessengine::mate_in_x
+} // namespace chess_engine::mate_in_x

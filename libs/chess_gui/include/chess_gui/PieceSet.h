@@ -3,8 +3,8 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#ifndef CHESSGUI_PIECESET_H
-#define CHESSGUI_PIECESET_H
+#ifndef CHESS_GUI_PIECESET_H
+#define CHESS_GUI_PIECESET_H
 
 #include <QMap>
 #include <QString>
@@ -15,7 +15,7 @@
 
 #include <chess_core/piece.h>
 
-namespace chessgui {
+namespace chess_gui {
 
 class PieceSet {
 public:
@@ -23,11 +23,11 @@ public:
     PieceSet(const PieceSet &) = delete;
     PieceSet &operator=(const PieceSet &) = delete;
 
-    auto renderer(chesscore::Piece piece) const -> const QSvgRenderer *;
+    auto renderer(chess_core::Piece piece) const -> const QSvgRenderer *;
 private:
-    std::array<std::unique_ptr<QSvgRenderer>, 2 * chesscore::piece_type_count> m_renderers{};
+    std::array<std::unique_ptr<QSvgRenderer>, 2 * chess_core::piece_type_count> m_renderers{};
 };
 
-} // namespace chessgui
+} // namespace chess_gui
 
 #endif

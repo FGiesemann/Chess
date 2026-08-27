@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_IO_CHESSCORE_IO_H
-#define CHESSCORE_IO_CHESSCORE_IO_H
+#ifndef CHESS_CORE_IO_CHESSCORE_IO_H
+#define CHESS_CORE_IO_CHESSCORE_IO_H
 
 #include "chess_core_io/bitboard_io.h"
 #include "chess_core_io/bitmap_io.h"

@@ -3,8 +3,8 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#ifndef CHESSGUI_CHESSBOARDWIDGET_H
-#define CHESSGUI_CHESSBOARDWIDGET_H
+#ifndef CHESS_GUI_CHESSBOARDWIDGET_H
+#define CHESS_GUI_CHESSBOARDWIDGET_H
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -18,7 +18,7 @@
 #include "chess_gui/GraphicsItems.h"
 #include "chess_gui/PieceSet.h"
 
-namespace chessgui {
+namespace chess_gui {
 
 class ChessboardWidget : public QGraphicsView {
     Q_OBJECT
@@ -33,20 +33,20 @@ public:
     auto operator=(ChessboardWidget &&) -> ChessboardWidget & = default;
     ~ChessboardWidget() = default;
 
-    auto showPosition(const chesscore::Position &position) -> void;
+    auto showPosition(const chess_core::Position &position) -> void;
 
-    auto markSquare(const chesscore::Square &square) -> void;
-    auto unmarkSquare(const chesscore::Square &square) -> void;
+    auto markSquare(const chess_core::Square &square) -> void;
+    auto unmarkSquare(const chess_core::Square &square) -> void;
     auto clearMarkedSquares() -> void;
 
     auto pieceSet() const -> const PieceSet & { return m_piece_set; }
 
-    auto setGhostPiece(chesscore::Piece piece, chesscore::Square square) -> void;
+    auto setGhostPiece(chess_core::Piece piece, chess_core::Square square) -> void;
     auto clearGhostPiece() -> void;
-    auto hidePiece(chesscore::Square square) -> void;
-    auto showPiece(chesscore::Square square) -> void;
+    auto hidePiece(chess_core::Square square) -> void;
+    auto showPiece(chess_core::Square square) -> void;
 
-    auto showPromotionSelection(chesscore::Color color, chesscore::Square target_square) -> void;
+    auto showPromotionSelection(chess_core::Color color, chess_core::Square target_square) -> void;
     auto cancelPromotionPieceSelection() -> void;
 protected:
     auto resizeEvent(QResizeEvent *event) -> void override;
@@ -55,10 +55,10 @@ protected:
     auto mouseReleaseEvent(QMouseEvent *event) -> void override;
     auto keyPressEvent(QKeyEvent *event) -> void override;
 signals:
-    auto mousePressed(const chesscore::Square &square) -> void;
-    auto mouseReleased(const chesscore::Square &square) -> void;
+    auto mousePressed(const chess_core::Square &square) -> void;
+    auto mouseReleased(const chess_core::Square &square) -> void;
     auto cancelRequested() -> void;
-    auto promotionPieceSelected(chesscore::PieceType type) -> void;
+    auto promotionPieceSelected(chess_core::PieceType type) -> void;
 private:
     static constexpr qreal half = 0.5F;
     static constexpr qreal minimal_boundary = 0.01F;
@@ -73,25 +73,25 @@ private:
     static constexpr qreal promotion_piece_padding{0.05F};
 
     auto drawBoard() -> void;
-    auto placePieces(const chesscore::Position &position) -> void;
-    auto create_piece_item(chesscore::Piece piece, qreal piece_size, QPointF pos) -> ChessPiece *;
+    auto placePieces(const chess_core::Position &position) -> void;
+    auto create_piece_item(chess_core::Piece piece, qreal piece_size, QPointF pos) -> ChessPiece *;
     auto clearPieces() -> void;
-    auto findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *>;
-    auto squareAt(const QPoint &pos) -> std::optional<chesscore::Square>;
+    auto findSquareMarker(const chess_core::Square &square) -> std::optional<QGraphicsRectItem *>;
+    auto squareAt(const QPoint &pos) -> std::optional<chess_core::Square>;
     auto cleanupPromotionOverlay() -> void;
-    static auto create_promotion_piece_selection_rect(qreal item_x, qreal selection_item_size, chesscore::PieceType &piece_type) -> QGraphicsRectItem *;
-    static auto calculate_overlay_pos(chesscore::Square target_square, QSizeF overlay_size) -> QPointF;
+    static auto create_promotion_piece_selection_rect(qreal item_x, qreal selection_item_size, chess_core::PieceType &piece_type) -> QGraphicsRectItem *;
+    static auto calculate_overlay_pos(chess_core::Square target_square, QSizeF overlay_size) -> QPointF;
 
     static const qreal cell_size;
     QGraphicsScene m_scene;
     PieceSet m_piece_set;
-    std::array<ChessPiece *, chesscore::File::count * chesscore::Rank::count> m_pieces{};
-    QList<QPair<chesscore::Square, QGraphicsRectItem *>> m_markedSquares;
+    std::array<ChessPiece *, chess_core::File::count * chess_core::Rank::count> m_pieces{};
+    QList<QPair<chess_core::Square, QGraphicsRectItem *>> m_markedSquares;
     State m_state{State::Normal};
     ChessPiece *m_ghost_piece{};
     QGraphicsItemGroup *m_promotion_overlay_group{};
 };
 
-} // namespace chessgui
+} // namespace chess_gui
 
 #endif

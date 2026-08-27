@@ -8,7 +8,7 @@
 #include <future>
 #include <sstream>
 
-using namespace chessuci;
+using namespace chess_uci;
 
 TEST_CASE("UCI.EngineHandler.Callback.No Callbacks", "[engine_handler]") {
     std::stringstream sstr{"quit\n"};

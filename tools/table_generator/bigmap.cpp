@@ -8,7 +8,7 @@
 
 #include "bigmap.h"
 
-namespace chesscore::table_gen {
+namespace chess_core::table_gen {
 
 Bigmap::Bigmap(const Pattern &pattern) {
     for (std::size_t row = 0; row < pattern_width; ++row) {
@@ -71,4 +71,4 @@ auto operator<<(std::ostream &os, const Bigmap &bigmap) -> std::ostream & {
     return os;
 }
 
-} // namespace chesscore::table_gen
+} // namespace chess_core::table_gen

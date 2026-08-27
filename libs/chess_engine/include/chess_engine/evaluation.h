@@ -3,15 +3,15 @@
  * Chess playing engine                                                       *
  * ************************************************************************** */
 
-#ifndef CHESSENGINE_EVALUATION_H
-#define CHESSENGINE_EVALUATION_H
+#ifndef CHESS_ENGINE_EVALUATION_H
+#define CHESS_ENGINE_EVALUATION_H
 
 #include <chess_core/position.h>
 
 #include "chess_engine/config.h"
 #include "chess_engine/types.h"
 
-namespace chessengine {
+namespace chess_engine {
 
 class Evaluator {
 public:
@@ -26,7 +26,7 @@ public:
      * \param color The player whose perspective is used for evaluation.
      * \return The position's score.
      */
-    auto evaluate(const chesscore::Position &position, chesscore::Color color) const -> Score;
+    auto evaluate(const chess_core::Position &position, chess_core::Color color) const -> Score;
 
     /**
      * \brief Evaluation of a single move.
@@ -37,7 +37,7 @@ public:
      * \param move The move to evaluate.
      * \return The score for the move.
      */
-    auto evaluate(const chesscore::Move &move) const -> Score;
+    auto evaluate(const chess_core::Move &move) const -> Score;
 
     /**
      * \brief Checks if the position is mate.
@@ -46,7 +46,7 @@ public:
      * \param position The position.
      * \return If the active polayer is checkmate or not.
      */
-    static auto is_mate(const chesscore::Position &position) -> bool;
+    static auto is_mate(const chess_core::Position &position) -> bool;
 
     /**
      * \brief Calculate the material score for a player.
@@ -57,7 +57,7 @@ public:
      * \param color The color for which to evaluate.
      * \return The calculated score.
      */
-    auto countup_material(const chesscore::Position &position, chesscore::Color color) const -> Score;
+    auto countup_material(const chess_core::Position &position, chess_core::Color color) const -> Score;
 
     /**
      * \brief Accumulate the scores for pieces on squares.
@@ -67,7 +67,7 @@ public:
      * \param color The color for which to evaluate.
      * \return The caculated score.
      */
-    auto evaluate_pieces_on_squares(const chesscore::Position &position, chesscore::Color color) const -> Score;
+    auto evaluate_pieces_on_squares(const chess_core::Position &position, chess_core::Color color) const -> Score;
 
     /**
      * \brief Get the score for a capturing move.
@@ -77,7 +77,7 @@ public:
      * \param move The move to evaluate.
      * \return The capturing score.
      */
-    auto get_capture_score(const chesscore::Move &move) const -> Score;
+    auto get_capture_score(const chess_core::Move &move) const -> Score;
 
     /**
      * \brief Get the score for a promoting pawn.
@@ -88,13 +88,13 @@ public:
      * \param move The move to evaluate.
      * \return The promotion score.
      */
-    auto get_promotion_score(const chesscore::Move &move) const -> Score;
+    auto get_promotion_score(const chess_core::Move &move) const -> Score;
 
-    auto get_piece_movement_score(const chesscore::Move &move) const -> Score;
+    auto get_piece_movement_score(const chess_core::Move &move) const -> Score;
 private:
     EvaluatorConfig m_config{};
 };
 
-} // namespace chessengine
+} // namespace chess_engine
 
 #endif

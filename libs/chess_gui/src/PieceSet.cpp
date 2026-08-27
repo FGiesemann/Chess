@@ -19,13 +19,13 @@ public:
 
 static PieceResourceInit pieceResourceInit;
 
-namespace chessgui {
+namespace chess_gui {
 
 PieceSet::PieceSet(const QString &folder) {
-    for (auto color : {chesscore::Color::White, chesscore::Color::Black}) {
-        for (auto type : chesscore::all_piece_types) {
-            const auto piece = chesscore::Piece{type, color};
-            QString colorName = (color == chesscore::Color::White) ? "w" : "b";
+    for (auto color : {chess_core::Color::White, chess_core::Color::Black}) {
+        for (auto type : chess_core::all_piece_types) {
+            const auto piece = chess_core::Piece{type, color};
+            QString colorName = (color == chess_core::Color::White) ? "w" : "b";
             QString fileName = QString("%1/%2%3.svg").arg(folder, colorName, QString{piece.piece_char_colorless()}.toLower());
             if (!QFile::exists(fileName)) {
                 throw ChessboardError{QString{"Piece file %1 does not exist"}.arg(fileName)};
@@ -43,8 +43,8 @@ PieceSet::PieceSet(const QString &folder) {
     }
 }
 
-auto PieceSet::renderer(chesscore::Piece piece) const -> const QSvgRenderer * {
+auto PieceSet::renderer(chess_core::Piece piece) const -> const QSvgRenderer * {
     return m_renderers[piece.dense_index()].get();
 }
 
-} // namespace chessgui
+} // namespace chess_gui

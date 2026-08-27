@@ -4,15 +4,15 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSGAME_CURSOR_H
-#define CHESSGAME_CURSOR_H
+#ifndef CHESS_GAME_CURSOR_H
+#define CHESS_GAME_CURSOR_H
 
 #include <cstddef>
 #include <optional>
 
 #include "chess_game/tree.h"
 
-namespace chessgame {
+namespace chess_game {
 
 class Game;
 
@@ -130,7 +130,7 @@ public:
      * ancestor that stores a position.
      * \return The position of this game node.
      */
-    [[nodiscard]] auto position() const -> chesscore::Position { return m_node.lock()->calculate_position(); }
+    [[nodiscard]] auto position() const -> chess_core::Position { return m_node.lock()->calculate_position(); }
 
     /**
      * \brief Play a move at the current cursor position.
@@ -139,7 +139,7 @@ public:
      * \param move The move to apply.
      * \return A cursor pointing to the new position.
      */
-    [[nodiscard]] auto play_move(const chesscore::Move &move) -> BaseCursor
+    [[nodiscard]] auto play_move(const chess_core::Move &move) -> BaseCursor
     requires(!std::is_const_v<GameType>)
     {
         const auto node_ptr = m_game->add_node(m_node.lock(), move);
@@ -155,7 +155,7 @@ public:
      * \param move The move that starts the variation.
      * \return A cursor pointing to the new line.
      */
-    [[nodiscard]] auto add_variation(const chesscore::Move &move) -> std::optional<BaseCursor>
+    [[nodiscard]] auto add_variation(const chess_core::Move &move) -> std::optional<BaseCursor>
     requires(!std::is_const_v<GameType>)
     {
         const auto parent_cursor = parent();
@@ -271,7 +271,7 @@ public:
      * The move that lead to this position is returned.
      * \return Move that lead to this position.
      */
-    auto move() const -> const chesscore::Move & { return m_node.lock()->move(); }
+    auto move() const -> const chess_core::Move & { return m_node.lock()->move(); }
 
     /**
      * \brief The player that is to move in this position.
@@ -280,7 +280,7 @@ public:
      * by this cursor.
      * \return Color of the player to move next.
      */
-    auto side_to_move() const -> chesscore::Color { return other_color(move().piece.color); }
+    auto side_to_move() const -> chess_core::Color { return other_color(move().piece.color); }
 
     /**
      * \brief The player that created this position.
@@ -289,7 +289,7 @@ public:
      * referenced by this cursor.
      * \return Color of the player that created this position.
      */
-    auto player_color() const -> chesscore::Color { return move().piece.color(); }
+    auto player_color() const -> chess_core::Color { return move().piece.color(); }
 
     /**
      * \brief Equality comparison of cursors.
@@ -319,6 +319,6 @@ using Cursor = BaseCursor<Game, GameNode>;
  */
 using ConstCursor = BaseCursor<const Game, const GameNode>;
 
-} // namespace chessgame
+} // namespace chess_game
 
 #endif

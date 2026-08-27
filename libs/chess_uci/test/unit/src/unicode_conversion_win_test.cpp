@@ -6,7 +6,7 @@
 #include "chess_uci/engine_process_win.h"
 #include <catch2/catch_test_macros.hpp>
 
-using namespace chessuci;
+using namespace chess_uci;
 
 TEST_CASE("UCI.Unicode.utf8 to wstr", "[unicode]") {
     std::string str = "Hello, 🌍♔";

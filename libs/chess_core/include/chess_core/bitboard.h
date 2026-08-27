@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_BITBOARD_H
-#define CHESSCORE_BITBOARD_H
+#ifndef CHESS_CORE_BITBOARD_H
+#define CHESS_CORE_BITBOARD_H
 
 #include <array>
 
@@ -16,7 +16,7 @@
 #include "chess_core/piece.h"
 #include "chess_core/square.h"
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief A bitboard stores the placement of pieces on the board.
@@ -347,6 +347,6 @@ private:
     auto store_move_if_legal(const Move &move, MoveList &moves) const -> void;
 };
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

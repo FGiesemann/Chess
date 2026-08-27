@@ -4,12 +4,12 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_TABLE_H
-#define CHESSCORE_TABLE_H
+#ifndef CHESS_CORE_TABLE_H
+#define CHESS_CORE_TABLE_H
 
 #include <array>
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief A type that can be used to index a table.
@@ -124,6 +124,6 @@ private:
     std::array<ElementT, Size> m_data;
 };
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

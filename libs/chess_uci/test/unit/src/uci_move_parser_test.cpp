@@ -6,8 +6,8 @@
 #include "chess_uci/move.h"
 #include <catch2/catch_test_macros.hpp>
 
-using namespace chessuci;
-using namespace chesscore;
+using namespace chess_uci;
+using namespace chess_core;
 
 TEST_CASE("UCI.Move.Parser", "[move_parser]") {
     CHECK(parse_uci_move("e2e4") == UCIMove{Square::E2, Square::E4});

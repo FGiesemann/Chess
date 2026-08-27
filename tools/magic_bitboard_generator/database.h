@@ -25,10 +25,10 @@ struct TableStats {
 
 class Record {
 public:
-    Record(chesscore::PieceType piece, chesscore::Square square) : m_piece(piece), m_square(square) {}
+    Record(chess_core::PieceType piece, chess_core::Square square) : m_piece(piece), m_square(square) {}
 
-    [[nodiscard]] auto piece() const -> chesscore::PieceType { return m_piece; }
-    [[nodiscard]] auto square() const -> chesscore::Square { return m_square; }
+    [[nodiscard]] auto piece() const -> chess_core::PieceType { return m_piece; }
+    [[nodiscard]] auto square() const -> chess_core::Square { return m_square; }
     [[nodiscard]] auto has_magics() const -> bool { return m_magics_found; }
     [[nodiscard]] auto magics() const -> const Magics & { return m_magics; }
     [[nodiscard]] auto stats() const -> const TableStats & { return m_stats; }
@@ -36,8 +36,8 @@ public:
     auto set_magics(const Magics &magics, const TableStats &stats) -> void;
     auto update_magics(const Magics &magics, const TableStats &stats) -> bool;
 private:
-    chesscore::PieceType m_piece;
-    chesscore::Square m_square;
+    chess_core::PieceType m_piece;
+    chess_core::Square m_square;
     bool m_magics_found{false};
 
     Magics m_magics{};
@@ -58,8 +58,8 @@ class Database {
 public:
     Database();
 
-    [[nodiscard]] auto record(chesscore::PieceType piece, const chesscore::Square &square) const -> const Record &;
-    [[nodiscard]] auto record(chesscore::PieceType piece, const chesscore::Square &square) -> Record &;
+    [[nodiscard]] auto record(chess_core::PieceType piece, const chess_core::Square &square) const -> const Record &;
+    [[nodiscard]] auto record(chess_core::PieceType piece, const chess_core::Square &square) -> Record &;
 
     [[nodiscard]] auto rook_records() const -> const std::vector<Record> & { return m_rook_records; }
     auto rook_records() -> std::vector<Record> & { return m_rook_records; }

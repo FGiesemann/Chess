@@ -7,7 +7,7 @@
 
 #include <thread>
 
-namespace chessuci::test {
+namespace chess_uci::test {
 
 auto EngineProcessMock::when_receives(const std::string &input, ResponseFunction response) -> void {
     m_responses[input] = std::move(response);
@@ -47,4 +47,4 @@ auto EngineProcessMock::read_line(std::string &line) -> bool {
     return true;
 }
 
-} // namespace chessuci::test
+} // namespace chess_uci::test

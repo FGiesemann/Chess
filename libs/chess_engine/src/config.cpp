@@ -5,10 +5,10 @@
 
 #include "chess_engine/config.h"
 
-namespace chessengine {
+namespace chess_engine {
 
 auto Config::from_file([[maybe_unused]] const std::filesystem::path &filename) -> Config {
     return {};
 }
 
-} // namespace chessengine
+} // namespace chess_engine

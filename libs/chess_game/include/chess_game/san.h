@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSGAME_SAN_H
-#define CHESSGAME_SAN_H
+#ifndef CHESS_GAME_SAN_H
+#define CHESS_GAME_SAN_H
 
 #include <expected>
 #include <optional>
@@ -15,7 +15,7 @@
 #include "chess_core/piece.h"
 #include "chess_core/square.h"
 
-namespace chessgame {
+namespace chess_game {
 
 /**
  * \brief The possible suffix annotations for a move.
@@ -42,18 +42,18 @@ auto convert_to_nag(SuffixAnnotation annotation) -> int;
  * the SAN string.
  */
 struct SANMove {
-    std::string san_string;                                           ///< The original string representation of the move.
-    chesscore::Piece moving_piece;                                    ///< The moving piece.
-    chesscore::Square target_square;                                  ///< Target square of the move.
-    bool capturing{false};                                            ///< If the move is capturing.
-    std::optional<chesscore::Piece> promotion{std::nullopt};          ///< Promotion piece of the move.
-    chesscore::CheckState check_state{chesscore::CheckState::None};   ///< Check state of the move.
-    std::optional<chesscore::File> disambiguation_file{std::nullopt}; ///< Disambiguation file information.
-    std::optional<chesscore::Rank> disambiguation_rank{std::nullopt}; ///< Disambiguation rank information.
-    std::optional<SuffixAnnotation> suffix_annotation{std::nullopt};  ///< Suffix annotation of the move.
+    std::string san_string;                                            ///< The original string representation of the move.
+    chess_core::Piece moving_piece;                                    ///< The moving piece.
+    chess_core::Square target_square;                                  ///< Target square of the move.
+    bool capturing{false};                                             ///< If the move is capturing.
+    std::optional<chess_core::Piece> promotion{std::nullopt};          ///< Promotion piece of the move.
+    chess_core::CheckState check_state{chess_core::CheckState::None};  ///< Check state of the move.
+    std::optional<chess_core::File> disambiguation_file{std::nullopt}; ///< Disambiguation file information.
+    std::optional<chess_core::Rank> disambiguation_rank{std::nullopt}; ///< Disambiguation rank information.
+    std::optional<SuffixAnnotation> suffix_annotation{std::nullopt};   ///< Suffix annotation of the move.
 
-    chesscore::File target_file{'a'};
-    chesscore::Rank target_rank{1};
+    chess_core::File target_file{'a'};
+    chess_core::Rank target_rank{1};
     bool possible_disambiguation{false};
 
     /**
@@ -95,7 +95,7 @@ struct SANParserError {
  * \param side_to_move The side to move.
  * \return The parsed SANMove.
  */
-auto parse_san(const std::string &san, chesscore::Color side_to_move) -> std::expected<SANMove, SANParserError>;
+auto parse_san(const std::string &san, chess_core::Color side_to_move) -> std::expected<SANMove, SANParserError>;
 
 /**
  * \brief Check, if a SAN move matches a move.
@@ -105,7 +105,7 @@ auto parse_san(const std::string &san, chesscore::Color side_to_move) -> std::ex
  * \param move The move.
  * \return If the move can be described by the SAN move.
  */
-auto san_move_matches(const SANMove &san_move, const chesscore::Move &move) -> bool;
+auto san_move_matches(const SANMove &san_move, const chess_core::Move &move) -> bool;
 
 /**
  * \brief Match a move list against a SAN move.
@@ -115,7 +115,7 @@ auto san_move_matches(const SANMove &san_move, const chesscore::Move &move) -> b
  * \param moves The move list.
  * \return List of all matching moves.
  */
-auto match_move(const SANMove &san_move, const chesscore::MoveList &moves) -> chesscore::MoveList;
+auto match_move(const SANMove &san_move, const chess_core::MoveList &moves) -> chess_core::MoveList;
 
 /**
  * \brief Match a move list against a SAN move, ignoring the piece type.
@@ -125,7 +125,7 @@ auto match_move(const SANMove &san_move, const chesscore::MoveList &moves) -> ch
  * \param moves The move list.
  * \return List of all matching moves.
  */
-auto match_san_move_wildcard_piece_type(const SANMove &san_move, const chesscore::MoveList &moves) -> chesscore::MoveList;
+auto match_san_move_wildcard_piece_type(const SANMove &san_move, const chess_core::MoveList &moves) -> chess_core::MoveList;
 
 /**
  * \brief Convert a move to a SAN move.
@@ -137,8 +137,8 @@ auto match_san_move_wildcard_piece_type(const SANMove &san_move, const chesscore
  * \param moves A list of possible moves (where move should be included).
  * \return A SANMove describing the move.
  */
-auto generate_san_move(const chesscore::Move &move, const chesscore::MoveList &moves) -> std::optional<SANMove>;
+auto generate_san_move(const chess_core::Move &move, const chess_core::MoveList &moves) -> std::optional<SANMove>;
 
-} // namespace chessgame
+} // namespace chess_game
 
 #endif

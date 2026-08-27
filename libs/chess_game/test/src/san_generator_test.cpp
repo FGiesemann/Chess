@@ -7,12 +7,12 @@
 
 #include "chess_core/fen.h"
 #include "chess_core/position.h"
-#include "chess_core_io/chesscore_io.h"
+#include "chess_core_io/chess_core_io.h"
 
 #include "chess_game/san.h"
 
-using namespace chessgame;
-using namespace chesscore;
+using namespace chess_game;
+using namespace chess_core;
 
 namespace {
 

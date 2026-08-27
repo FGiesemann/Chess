@@ -9,7 +9,7 @@
 #include "chess_core/fen.h"
 #include "chess_core/move.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Bitboard.Bitboard.MakeMove.General", "[Bitboard][MakeMove]") {
     Bitboard board{FenString::starting_position()};

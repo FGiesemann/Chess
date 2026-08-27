@@ -5,7 +5,7 @@
 
 #include "patterns.h"
 
-namespace chesscore::table_gen {
+namespace chess_core::table_gen {
 
 const Pattern knight_pattern{"000000000000000"
                              "000000000000000"
@@ -215,4 +215,4 @@ const Pattern northeast_ray_pattern{"100000000000000"
                                     "000000000000000"
                                     "000000000000000"};
 
-} // namespace chesscore::table_gen
+} // namespace chess_core::table_gen

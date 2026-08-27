@@ -4,13 +4,13 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_CHESSCORE_H
-#define CHESSCORE_CHESSCORE_H
+#ifndef CHESS_CORE_CHESS_CORE_H
+#define CHESS_CORE_CHESS_CORE_H
 
 #include <exception>
 #include <string>
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief A general exception thrown by the chess core.
@@ -47,6 +47,6 @@ public:
     OutOfRange(const std::string &message) : ChessException{message} {}
 };
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

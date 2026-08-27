@@ -31,7 +31,7 @@ if(WIN32)
     target_sources(chess_uci PRIVATE src/engine_process_win.cpp)
     target_compile_definitions(chess_uci
         PUBLIC
-            CHESSUCI_WINDOWS
+            CHESS_UCI_WINDOWS
             UNICODE
             _UNICODE
             WIN32_LEAN_AND_MEAN
@@ -40,10 +40,10 @@ if(WIN32)
     target_compile_options(chess_uci PUBLIC "/utf-8")
 elseif(APPLE)
     target_sources(chess_uci PRIVATE src/engine_process_unix.cpp)
-    target_compile_definitions(chess_uci PUCLIC CHESSUCI_MACOS CHESSUCI_UNIX)
+    target_compile_definitions(chess_uci PUCLIC CHESS_UCI_MACOS CHESS_UCI_UNIX)
 elseif(UNIX)
     target_sources(chess_uci PRIVATE src/engine_process_unix.cpp)
-    target_compile_definitions(chess_uci PUBLIC CHESSUCI_LINUX CHESSUCI_UNIX)
+    target_compile_definitions(chess_uci PUBLIC CHESS_UCI_LINUX CHESS_UCI_UNIX)
 else()
     message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
 endif()

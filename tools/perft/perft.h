@@ -21,7 +21,7 @@ struct PerftResult {
 };
 
 struct DivideEntry {
-    chesscore::Move move;
+    chess_core::Move move;
     std::uint64_t node_count;
 };
 
@@ -32,9 +32,9 @@ struct DivideResult {
     std::chrono::microseconds duration{};
 };
 
-auto perft(chesscore::Position &pos, int depth) -> PerftResult;
-auto perft_count(chesscore::Position &pos, int depth) -> std::uint64_t;
-auto divide(chesscore::Position &pos, int depth) -> DivideResult;
+auto perft(chess_core::Position &pos, int depth) -> PerftResult;
+auto perft_count(chess_core::Position &pos, int depth) -> std::uint64_t;
+auto divide(chess_core::Position &pos, int depth) -> DivideResult;
 
 } // namespace chesstools::perft
 

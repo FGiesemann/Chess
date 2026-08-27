@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_ZOBRIST_H
-#define CHESSCORE_ZOBRIST_H
+#ifndef CHESS_CORE_ZOBRIST_H
+#define CHESS_CORE_ZOBRIST_H
 
 #include "chess_core/piece.h"
 #include "chess_core/position_types.h"
@@ -16,7 +16,7 @@
 #include <optional>
 #include <random>
 
-namespace chesscore {
+namespace chess_core {
 
 class Position;
 
@@ -135,6 +135,6 @@ private:
     static std::optional<key_t> m_starting_position_hash;
 };
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

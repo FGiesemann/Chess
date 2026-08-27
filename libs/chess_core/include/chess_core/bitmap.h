@@ -4,15 +4,15 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_BITMAP_H
-#define CHESSCORE_BITMAP_H
+#ifndef CHESS_CORE_BITMAP_H
+#define CHESS_CORE_BITMAP_H
 
 #include <bit>
 #include <cstdint>
 
 #include "chess_core/square.h"
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief A bit map describing a set of positions on a chess board.
@@ -286,6 +286,6 @@ constexpr auto operator~(Bitmap bitmap) -> Bitmap {
     return result;
 }
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

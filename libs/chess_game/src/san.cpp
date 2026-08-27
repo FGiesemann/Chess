@@ -11,7 +11,7 @@
 #include <sstream>
 #include <string_view>
 
-namespace chessgame {
+namespace chess_game {
 
 namespace {
 
@@ -86,8 +86,8 @@ auto get_token(std::string_view san_str) -> SANToken {
     }
 }
 
-auto extract_rank(std::string_view str) -> chesscore::Rank {
-    return chesscore::Rank{str[0] - '1'};
+auto extract_rank(std::string_view str) -> chess_core::Rank {
+    return chess_core::Rank{str[0] - '1'};
 }
 
 auto get_suffix_annotation(std::string_view str) -> std::expected<SuffixAnnotation, SANParserError> {
@@ -114,23 +114,23 @@ auto get_suffix_annotation(std::string_view str) -> std::expected<SuffixAnnotati
 
 auto parse_suffixes(const std::string &san, SANMove &move, std::string_view &san_str, SANToken &token) -> std::optional<SANParserError> {
     if (token.type == TokenType::Check) {
-        move.check_state = chesscore::CheckState::Check;
+        move.check_state = chess_core::CheckState::Check;
         san_str = san_str.substr(1);
         token = get_token(san_str);
     }
     if (token.type == TokenType::Checkmate) {
-        if (move.check_state != chesscore::CheckState::None) {
+        if (move.check_state != chess_core::CheckState::None) {
             return SANParserError{.error_type = SANParserErrorType::CheckAndCheckmate, .san = san};
         }
-        move.check_state = chesscore::CheckState::Checkmate;
+        move.check_state = chess_core::CheckState::Checkmate;
         san_str = san_str.substr(1);
         token = get_token(san_str);
     }
     if (token.type == TokenType::Check) {
-        if (move.check_state != chesscore::CheckState::None) {
+        if (move.check_state != chess_core::CheckState::None) {
             return SANParserError{.error_type = SANParserErrorType::CheckAndCheckmate, .san = san};
         }
-        move.check_state = chesscore::CheckState::Check;
+        move.check_state = chess_core::CheckState::Check;
         san_str = san_str.substr(1);
         token = get_token(san_str);
     }
@@ -145,27 +145,27 @@ auto parse_suffixes(const std::string &san, SANMove &move, std::string_view &san
     return std::nullopt;
 }
 
-auto parse_promotions(const std::string &san, chesscore::Color &side_to_move, SANMove &move, std::string_view &san_str, SANToken &token) -> std::optional<SANParserError> {
+auto parse_promotions(const std::string &san, chess_core::Color &side_to_move, SANMove &move, std::string_view &san_str, SANToken &token) -> std::optional<SANParserError> {
     if (token.type == TokenType::Promotion) {
         san_str = san_str.substr(1);
         token = get_token(san_str);
         if (token.type != TokenType::PieceType) {
             return SANParserError{.error_type = SANParserErrorType::MissingPieceType, .san = san};
         }
-        move.promotion = chesscore::Piece{chesscore::piece_type_from_char(token.value[0]), side_to_move};
+        move.promotion = chess_core::Piece{chess_core::piece_type_from_char(token.value[0]), side_to_move};
         san_str = san_str.substr(1);
         token = get_token(san_str);
     }
     return std::nullopt;
 }
 
-auto parse_piece_type(chesscore::Color &side_to_move, SANMove &move, std::string_view &san_str, SANToken &token) -> void {
+auto parse_piece_type(chess_core::Color &side_to_move, SANMove &move, std::string_view &san_str, SANToken &token) -> void {
     if (token.type == TokenType::PieceType) {
-        move.moving_piece = chesscore::Piece{chesscore::piece_type_from_char(token.value[0]), side_to_move};
+        move.moving_piece = chess_core::Piece{chess_core::piece_type_from_char(token.value[0]), side_to_move};
         san_str = san_str.substr(1);
         token = get_token(san_str);
     } else {
-        move.moving_piece = chesscore::Piece{chesscore::PieceType::Pawn, side_to_move};
+        move.moving_piece = chess_core::Piece{chess_core::PieceType::Pawn, side_to_move};
     }
 }
 
@@ -173,11 +173,11 @@ auto parse_disambiguation_chars(SANMove &move, std::string_view &san_str, SANTok
     if (token.type == TokenType::File) {
         const auto next_token = get_token(san_str.substr(1));
         if (next_token.type != TokenType::Rank) {
-            move.disambiguation_file = chesscore::File{token.value[0]};
+            move.disambiguation_file = chess_core::File{token.value[0]};
             san_str = san_str.substr(1);
             token = get_token(san_str);
         } else {
-            move.target_file = chesscore::File{token.value[0]};
+            move.target_file = chess_core::File{token.value[0]};
             move.target_rank = extract_rank(next_token.value);
             move.possible_disambiguation = true;
             san_str = san_str.substr(2);
@@ -205,7 +205,7 @@ auto parse_capture(SANMove &move, std::string_view &san_str, SANToken &token) ->
 
 auto parse_target_square(const std::string &san, SANMove &move, std::string_view &san_str, SANToken &token) -> std::optional<SANParserError> {
     if (token.type == TokenType::File) {
-        chesscore::File to_file{token.value[0]};
+        chess_core::File to_file{token.value[0]};
         const auto rank_token = get_token(san_str.substr(1));
         if (rank_token.type == TokenType::Rank) {
             if (move.possible_disambiguation) {
@@ -213,7 +213,7 @@ auto parse_target_square(const std::string &san, SANMove &move, std::string_view
                 move.disambiguation_rank = move.target_rank;
                 move.possible_disambiguation = false;
             }
-            move.target_square = chesscore::Square{to_file, extract_rank(rank_token.value)};
+            move.target_square = chess_core::Square{to_file, extract_rank(rank_token.value)};
             san_str = san_str.substr(2);
             token = get_token(san_str);
         } else {
@@ -221,7 +221,7 @@ auto parse_target_square(const std::string &san, SANMove &move, std::string_view
         }
     } else {
         if (move.possible_disambiguation) {
-            move.target_square = chesscore::Square{move.target_file, move.target_rank};
+            move.target_square = chess_core::Square{move.target_file, move.target_rank};
             move.possible_disambiguation = false;
         } else {
             return SANParserError{.error_type = SANParserErrorType::MissingFile, .san = san};
@@ -233,15 +233,15 @@ auto parse_target_square(const std::string &san, SANMove &move, std::string_view
 const std::string long_castling{"O-O-O"};
 const std::string short_castling{"O-O"};
 
-auto parse_castling_move(const std::string &san, chesscore::Color side_to_move, SANMove &move, std::string_view san_str) -> std::optional<SANParserError> {
-    move.moving_piece = chesscore::Piece{chesscore::PieceType::King, side_to_move};
-    chesscore::Square target_square;
+auto parse_castling_move(const std::string &san, chess_core::Color side_to_move, SANMove &move, std::string_view san_str) -> std::optional<SANParserError> {
+    move.moving_piece = chess_core::Piece{chess_core::PieceType::King, side_to_move};
+    chess_core::Square target_square;
     SANToken token;
     if (san_str.starts_with(long_castling)) {
-        target_square = side_to_move == chesscore::Color::White ? chesscore::Square::C1 : chesscore::Square::C8;
+        target_square = side_to_move == chess_core::Color::White ? chess_core::Square::C1 : chess_core::Square::C8;
         san_str = san_str.substr(long_castling.length());
     } else {
-        target_square = side_to_move == chesscore::Color::White ? chesscore::Square::G1 : chesscore::Square::G8;
+        target_square = side_to_move == chess_core::Color::White ? chess_core::Square::G1 : chess_core::Square::G8;
         san_str = san_str.substr(short_castling.length());
     }
     token = get_token(san_str);
@@ -250,7 +250,7 @@ auto parse_castling_move(const std::string &san, chesscore::Color side_to_move, 
     return suffix_err;
 }
 
-auto san_move_matches_any_piece_type(const SANMove &san_move, const chesscore::Move &move) -> bool {
+auto san_move_matches_any_piece_type(const SANMove &san_move, const chess_core::Move &move) -> bool {
     if (san_move.target_square != move.to) {
         return false;
     }
@@ -267,15 +267,16 @@ auto san_move_matches_any_piece_type(const SANMove &san_move, const chesscore::M
     return true;
 }
 
-auto find_piece_moves_to_target(chesscore::Piece piece, chesscore::Square target, const chesscore::MoveList &moves) -> chesscore::MoveList {
-    return moves | std::views::filter([&piece, &target](const chesscore::Move &move) { return move.piece == piece && move.to == target; }) | std::ranges::to<chesscore::MoveList>();
+auto find_piece_moves_to_target(chess_core::Piece piece, chess_core::Square target, const chess_core::MoveList &moves) -> chess_core::MoveList {
+    return moves | std::views::filter([&piece, &target](const chess_core::Move &move) { return move.piece == piece && move.to == target; }) |
+           std::ranges::to<chess_core::MoveList>();
 }
 
-using Disambiguation = std::pair<std::optional<chesscore::File>, std::optional<chesscore::Rank>>;
+using Disambiguation = std::pair<std::optional<chess_core::File>, std::optional<chess_core::Rank>>;
 
-auto determine_disambiguation(const chesscore::Move &move, const chesscore::MoveList &moves) -> Disambiguation {
-    std::set<chesscore::File> files{};
-    std::set<chesscore::Rank> ranks{};
+auto determine_disambiguation(const chess_core::Move &move, const chess_core::MoveList &moves) -> Disambiguation {
+    std::set<chess_core::File> files{};
+    std::set<chess_core::Rank> ranks{};
 
     for (const auto &other_move : moves) {
         files.insert(other_move.from.file());
@@ -333,7 +334,7 @@ auto to_string(SANParserErrorType type) -> std::string {
     return "UNKNOWN ERROR TYPE";
 }
 
-auto parse_san(const std::string &san, chesscore::Color side_to_move) -> std::expected<SANMove, SANParserError> {
+auto parse_san(const std::string &san, chess_core::Color side_to_move) -> std::expected<SANMove, SANParserError> {
     SANMove move;
     move.san_string = san;
     std::string_view san_str{san};
@@ -373,29 +374,29 @@ auto parse_san(const std::string &san, chesscore::Color side_to_move) -> std::ex
     return move;
 }
 
-auto san_move_matches(const SANMove &san_move, const chesscore::Move &move) -> bool {
+auto san_move_matches(const SANMove &san_move, const chess_core::Move &move) -> bool {
     if (san_move.moving_piece != move.piece) {
         return false;
     }
     return san_move_matches_any_piece_type(san_move, move);
 }
 
-auto match_move(const SANMove &san_move, const chesscore::MoveList &moves) -> chesscore::MoveList {
-    return moves | std::views::filter([&san_move](const chesscore::Move &move) { return san_move_matches(san_move, move); }) | std::ranges::to<chesscore::MoveList>();
+auto match_move(const SANMove &san_move, const chess_core::MoveList &moves) -> chess_core::MoveList {
+    return moves | std::views::filter([&san_move](const chess_core::Move &move) { return san_move_matches(san_move, move); }) | std::ranges::to<chess_core::MoveList>();
 }
 
-auto match_san_move_wildcard_piece_type(const SANMove &san_move, const chesscore::MoveList &moves) -> chesscore::MoveList {
-    return moves | std::views::filter([&san_move](const chesscore::Move &move) { return san_move_matches_any_piece_type(san_move, move); }) |
-           std::ranges::to<chesscore::MoveList>();
+auto match_san_move_wildcard_piece_type(const SANMove &san_move, const chess_core::MoveList &moves) -> chess_core::MoveList {
+    return moves | std::views::filter([&san_move](const chess_core::Move &move) { return san_move_matches_any_piece_type(san_move, move); }) |
+           std::ranges::to<chess_core::MoveList>();
 }
 
-auto generate_san_move(const chesscore::Move &move, const chesscore::MoveList &moves) -> std::optional<SANMove> {
+auto generate_san_move(const chess_core::Move &move, const chess_core::MoveList &moves) -> std::optional<SANMove> {
     std::stringstream san_string;
-    if (!chesscore::move_list_contains(moves, move, chesscore::FullMoveCompare{})) {
+    if (!chess_core::move_list_contains(moves, move, chess_core::FullMoveCompare{})) {
         return std::nullopt;
     }
     if (move.is_castling()) {
-        return SANMove{.san_string = (move.to.file() == chesscore::File{'c'}) ? "O-O-O" : "O-O", .moving_piece = move.piece, .target_square = move.to};
+        return SANMove{.san_string = (move.to.file() == chess_core::File{'c'}) ? "O-O-O" : "O-O", .moving_piece = move.piece, .target_square = move.to};
     }
     const auto matching_moves = find_piece_moves_to_target(move.piece, move.to, moves);
     if (matching_moves.empty()) {
@@ -403,10 +404,10 @@ auto generate_san_move(const chesscore::Move &move, const chesscore::MoveList &m
     }
     Disambiguation disambiguation{};
 
-    if (move.piece.type() != chesscore::PieceType::Pawn) {
+    if (move.piece.type() != chess_core::PieceType::Pawn) {
         san_string << move.piece.piece_char_colorless();
     }
-    if (move.piece.type() == chesscore::PieceType::Pawn) {
+    if (move.piece.type() == chess_core::PieceType::Pawn) {
         if (move.captured.has_value()) {
             san_string << move.from.file().name();
         }
@@ -437,4 +438,4 @@ auto generate_san_move(const chesscore::Move &move, const chesscore::MoveList &m
     };
 }
 
-} // namespace chessgame
+} // namespace chess_game

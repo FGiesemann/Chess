@@ -7,7 +7,7 @@
 #include "chess_core/zobrist.h"
 #include "chess_core/position.h"
 
-namespace chesscore {
+namespace chess_core {
 
 bool ZobristKeys::m_initialized{false};
 std::array<ZobristKeys::key_t, 2 * piece_type_count * Square::count> ZobristKeys::m_piece_keys{};
@@ -46,4 +46,4 @@ auto ZobristHash::starting_position_hash() -> ZobristHash {
     return ZobristHash{m_starting_position_hash.value()};
 }
 
-} // namespace chesscore
+} // namespace chess_core

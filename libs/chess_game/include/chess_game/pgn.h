@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSGAME_GAME_PGN_H
-#define CHESSGAME_GAME_PGN_H
+#ifndef CHESS_GAME_GAME_PGN_H
+#define CHESS_GAME_GAME_PGN_H
 
 #include <iosfwd>
 #include <optional>
@@ -18,7 +18,7 @@
 #include "chess_game/san.h"
 #include "chess_game/types.h"
 
-namespace chessgame {
+namespace chess_game {
 
 /**
  * \brief Type of a PGN error.
@@ -210,7 +210,7 @@ private:
 
     auto process_move() -> void;
     [[nodiscard]] auto parse_san_move(const std::string &san_str) const -> SANMove;
-    [[nodiscard]] auto find_legal_move(const SANMove &san_move) const -> chesscore::Move;
+    [[nodiscard]] auto find_legal_move(const SANMove &san_move) const -> chess_core::Move;
 
     auto check_token_type(PGNLexer::TokenType expected_type, const std::string &error_message) const -> void;
     auto expect_token(PGNLexer::TokenType expected_type, const std::string &error_message) -> void;
@@ -290,6 +290,6 @@ private:
     bool m_write_black_move_number{false};
 };
 
-} // namespace chessgame
+} // namespace chess_game
 
 #endif

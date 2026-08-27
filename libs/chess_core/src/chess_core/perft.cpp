@@ -5,7 +5,7 @@
 
 #include "chess_core/perft.h"
 
-namespace chesscore {
+namespace chess_core {
 
 auto perft(Position &pos, int depth) -> std::uint64_t {
     PerftCounter<PerftMode::Verify> counter;
@@ -13,4 +13,4 @@ auto perft(Position &pos, int depth) -> std::uint64_t {
     return counter.leaf_nodes;
 };
 
-} // namespace chesscore
+} // namespace chess_core

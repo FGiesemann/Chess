@@ -9,7 +9,7 @@
 
 #include <utility>
 
-namespace chessgui {
+namespace chess_gui {
 
 MoveTreeModel::MoveTreeModel(QObject *parent) : QAbstractItemModel(parent), m_root(std::make_shared<MoveTreeNode>()) {}
 
@@ -46,8 +46,8 @@ auto MoveTreeModel::build_tree() -> void {
     }
 }
 
-auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::Cursor &move, int move_number, bool is_main_line) -> void {
-    if (const auto is_white_move = move.player_color() == chesscore::Color::White; is_white_move) {
+auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chess_game::Cursor &move, int move_number, bool is_main_line) -> void {
+    if (const auto is_white_move = move.player_color() == chess_core::Color::White; is_white_move) {
         auto move_node = make_model_node(parent_node, move, move_number, is_main_line);
         parent_node->children.push_back(move_node);
         create_variations(move, move_node, move_number);
@@ -60,10 +60,10 @@ auto MoveTreeModel::build_subtree(const NodePtr &parent_node, const chessgame::C
     }
 }
 
-auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Cursor &cursor, int move_number, bool is_main_line, bool is_black_variation) -> NodePtr {
+auto MoveTreeModel::make_model_node(const NodePtr &parent, const chess_game::Cursor &cursor, int move_number, bool is_main_line, bool is_black_variation) -> NodePtr {
     auto model_node = std::make_shared<MoveTreeNode>();
     model_node->parent = parent;
-    if (cursor.player_color() == chesscore::Color::White) {
+    if (cursor.player_color() == chess_core::Color::White) {
         model_node->white_cursor = cursor;
     } else {
         model_node->black_cursor = cursor;
@@ -74,13 +74,13 @@ auto MoveTreeModel::make_model_node(const NodePtr &parent, const chessgame::Curs
     return model_node;
 }
 
-auto MoveTreeModel::continue_white_main_line(const chessgame::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void {
+auto MoveTreeModel::continue_white_main_line(const chess_game::Cursor &black_move, const NodePtr &parent_node, int move_number, bool is_main_line) -> void {
     if (auto white_continuation = black_move.child(0); white_continuation.has_value()) {
         build_subtree(parent_node, white_continuation.value(), move_number, is_main_line);
     }
 }
 
-auto MoveTreeModel::create_variations(const chessgame::Cursor &move, const NodePtr &parent_node, int move_number) -> void {
+auto MoveTreeModel::create_variations(const chess_game::Cursor &move, const NodePtr &parent_node, int move_number) -> void {
     for (size_t i = 1; i < move.child_count(); ++i) {
         if (auto variation = move.child(i); variation.has_value()) {
             build_subtree(parent_node, variation.value(), move_number, false);
@@ -88,7 +88,7 @@ auto MoveTreeModel::create_variations(const chessgame::Cursor &move, const NodeP
     }
 }
 
-auto MoveTreeModel::collect_black_continuation(const chessgame::Cursor &white_move, const NodePtr &current_node, int move_number, bool is_main_line) -> void {
+auto MoveTreeModel::collect_black_continuation(const chess_game::Cursor &white_move, const NodePtr &current_node, int move_number, bool is_main_line) -> void {
     if (auto black_continuation = white_move.child(0); black_continuation.has_value()) {
         const auto &black_move = black_continuation.value();
         current_node->black_cursor = black_move;
@@ -97,7 +97,7 @@ auto MoveTreeModel::collect_black_continuation(const chessgame::Cursor &white_mo
     }
 }
 
-auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parent_cursor, size_t child_index) -> void {
+auto MoveTreeModel::onMoveAdded(const chess_game::Cursor &parent_cursor, size_t child_index) -> void {
     if (m_game == nullptr) {
         return;
     }
@@ -122,7 +122,7 @@ auto MoveTreeModel::onMoveAdded(const chessgame::Cursor &parent_cursor, size_t c
     }
 }
 
-auto MoveTreeModel::handle_black_move_added(const NodePtr &model_node, const chessgame::Cursor &black_move, size_t child_index) -> void {
+auto MoveTreeModel::handle_black_move_added(const NodePtr &model_node, const chess_game::Cursor &black_move, size_t child_index) -> void {
     if (child_index == 0) {
         model_node->black_cursor = black_move;
         auto idx = index_from_model_node(model_node);
@@ -137,7 +137,7 @@ auto MoveTreeModel::handle_black_move_added(const NodePtr &model_node, const che
     }
 }
 
-auto MoveTreeModel::handle_white_move_added(const NodePtr &model_node, const chessgame::Cursor &white_move, size_t child_index) -> void {
+auto MoveTreeModel::handle_white_move_added(const NodePtr &model_node, const chess_game::Cursor &white_move, size_t child_index) -> void {
     auto parent_node = model_node->parent.lock();
     if (!parent_node) {
         // This shouldn't happen, but handle gracefully
@@ -170,7 +170,7 @@ auto MoveTreeModel::handle_white_move_added(const NodePtr &model_node, const che
     }
 }
 
-auto MoveTreeModel::onNodeDataChanged(const chessgame::Cursor &cursor) -> void {
+auto MoveTreeModel::onNodeDataChanged(const chess_game::Cursor &cursor) -> void {
     auto model_node = model_node_by_cursor(cursor);
 
     if (!model_node) {
@@ -183,7 +183,7 @@ auto MoveTreeModel::onNodeDataChanged(const chessgame::Cursor &cursor) -> void {
     }
 }
 
-auto MoveTreeModel::search_for_cursor(const chessgame::Cursor &cursor, const NodePtr &node) -> NodePtr {
+auto MoveTreeModel::search_for_cursor(const chess_game::Cursor &cursor, const NodePtr &node) -> NodePtr {
     if (node == nullptr) {
         return nullptr;
     }
@@ -198,7 +198,7 @@ auto MoveTreeModel::search_for_cursor(const chessgame::Cursor &cursor, const Nod
     return nullptr;
 }
 
-auto MoveTreeModel::model_node_by_cursor(const chessgame::Cursor &cursor) const -> NodePtr {
+auto MoveTreeModel::model_node_by_cursor(const chess_game::Cursor &cursor) const -> NodePtr {
     if (!cursor.node()) {
         return nullptr;
     }
@@ -366,7 +366,7 @@ auto MoveTreeModel::flags(const QModelIndex &index) const -> Qt::ItemFlags {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-auto MoveTreeModel::cursor_from_index(const QModelIndex &index) const -> std::optional<chessgame::Cursor> {
+auto MoveTreeModel::cursor_from_index(const QModelIndex &index) const -> std::optional<chess_game::Cursor> {
     if (!index.isValid()) {
         return std::nullopt;
     }
@@ -414,7 +414,7 @@ auto MoveTreeModel::model_node_from_index(const QModelIndex &index) const -> Nod
     return find_node(m_root, ptr);
 }
 
-auto MoveTreeModel::move_text(const chessgame::Cursor &cursor) -> QString {
+auto MoveTreeModel::move_text(const chess_game::Cursor &cursor) -> QString {
     const auto parent = cursor.parent();
     if (!parent) {
         return QString{"No Parent"};
@@ -425,7 +425,7 @@ auto MoveTreeModel::move_text(const chessgame::Cursor &cursor) -> QString {
     const auto parent_position = parent->position();
     const auto all_moves = parent_position.all_legal_moves();
     const auto &move = cursor.move();
-    const auto opt_san = chessgame::generate_san_move(move, all_moves);
+    const auto opt_san = chess_game::generate_san_move(move, all_moves);
     if (opt_san.has_value()) {
         return QString::fromStdString(opt_san.value().san_string) + check_marker;
     }
@@ -455,4 +455,4 @@ auto MoveTreeModel::move_number_text(const NodePtr &node, int column) -> QString
     return prefix + move_number;
 }
 
-} // namespace chessgui
+} // namespace chess_gui

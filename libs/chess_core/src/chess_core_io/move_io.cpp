@@ -11,7 +11,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace chesscore {
+namespace chess_core {
 
 namespace {
 
@@ -57,4 +57,4 @@ auto operator<<(std::ostream &os, const MoveList &moves) -> std::ostream & {
     return os;
 }
 
-} // namespace chesscore
+} // namespace chess_core

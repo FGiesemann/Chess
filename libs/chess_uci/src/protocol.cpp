@@ -7,7 +7,7 @@
 
 #include <sstream>
 
-namespace chessuci {
+namespace chess_uci {
 
 namespace {
 
@@ -168,4 +168,4 @@ auto Option::type_from_string(const std::string &str) -> Type {
     throw UCIError("unknown option type: " + str);
 }
 
-} // namespace chessuci
+} // namespace chess_uci

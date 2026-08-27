@@ -8,7 +8,7 @@
 #include "chess_core/bitboard.h"
 #include "chess_core/position.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     Position position{FenString::starting_position()};

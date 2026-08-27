@@ -10,7 +10,7 @@
 
 #include <future>
 
-using namespace chessuci;
+using namespace chess_uci;
 
 namespace fs = std::filesystem;
 

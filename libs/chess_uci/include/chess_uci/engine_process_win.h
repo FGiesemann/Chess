@@ -3,14 +3,14 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_ENGINE_PROCESS_WIN_H
-#define CHESSUCI_ENGINE_PROCESS_WIN_H
+#ifndef CHESS_UCI_ENGINE_PROCESS_WIN_H
+#define CHESS_UCI_ENGINE_PROCESS_WIN_H
 
 #include "chess_uci/engine_process.h"
 
 #include <Windows.h>
 
-namespace chessuci {
+namespace chess_uci {
 
 class EngineProcessWin : public EngineProcess {
 public:
@@ -104,6 +104,6 @@ private:
     static auto format_windows_error(DWORD error_code) -> std::string;
 };
 
-} // namespace chessuci
+} // namespace chess_uci
 
 #endif

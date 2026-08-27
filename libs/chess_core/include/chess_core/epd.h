@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_EPD_H
-#define CHESSCORE_EPD_H
+#ifndef CHESS_CORE_EPD_H
+#define CHESS_CORE_EPD_H
 
 #include <iosfwd>
 #include <optional>
@@ -14,7 +14,7 @@
 
 #include "chess_core/position.h"
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief Exception thrown when an invalid EPD record is encountered.
@@ -88,6 +88,6 @@ auto parse_epd_line(const std::string &line) -> EpdRecord;
 auto read_epd(std::istream &input) -> EpdSuite;
 auto write_epd_record(std::ostream &output, const EpdRecord &record) -> void;
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

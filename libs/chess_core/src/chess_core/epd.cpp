@@ -8,7 +8,7 @@
 #include <istream>
 #include <unordered_map>
 
-namespace chesscore {
+namespace chess_core {
 
 namespace {
 
@@ -465,9 +465,9 @@ auto read_epd(std::istream &input) -> EpdSuite {
 }
 
 auto write_epd_record(std::ostream &output, const EpdRecord &record) -> void {
-    output << chesscore::detail::placement_to_string(record.position.piece_placement()) << ' ';
+    output << chess_core::detail::placement_to_string(record.position.piece_placement()) << ' ';
     output << (record.position.side_to_move() == Color::White ? 'w' : 'b') << ' ';
-    output << chesscore::detail::castling_rights_to_string(record.position.castling_rights()) << ' ';
+    output << chess_core::detail::castling_rights_to_string(record.position.castling_rights()) << ' ';
     if (record.position.en_passant_target().valid()) {
         output << to_string(record.position.en_passant_target());
     } else {
@@ -508,4 +508,4 @@ auto write_epd_record(std::ostream &output, const EpdRecord &record) -> void {
     output << '\n';
 }
 
-} // namespace chesscore
+} // namespace chess_core

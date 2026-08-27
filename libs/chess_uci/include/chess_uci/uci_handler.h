@@ -3,8 +3,8 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_UCI_HANDLER_H
-#define CHESSUCI_UCI_HANDLER_H
+#ifndef CHESS_UCI_UCI_HANDLER_H
+#define CHESS_UCI_UCI_HANDLER_H
 
 #include <atomic>
 #include <functional>
@@ -16,7 +16,7 @@
 
 #include "chess_uci/protocol.h"
 
-namespace chessuci {
+namespace chess_uci {
 
 class UCIHandler {
 public:
@@ -52,6 +52,6 @@ protected:
     }
 };
 
-} // namespace chessuci
+} // namespace chess_uci
 
 #endif

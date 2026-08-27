@@ -7,7 +7,7 @@
 
 #include "chess_core/magic.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Magic.Blocker.Iteration.Single Bit", "[magic]") {
     const Bitmap mask{0x0000000000000001ULL};

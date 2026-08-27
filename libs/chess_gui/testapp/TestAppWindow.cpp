@@ -9,16 +9,16 @@
 #include <chess_game/pgn.h>
 
 TestAppWindow::TestAppWindow(QWidget *parent)
-    : QMainWindow(parent), m_chessboard_widget(new chessgui::ChessboardWidget(this)), m_chessboard_controller(new chessgui::ChessboardController(m_chessboard_widget, this)),
-      m_move_tree_model{new chessgui::MoveTreeModel(m_game, this)}, m_move_tree_view(new chessgui::MoveTreeWidget(this)) {
+    : QMainWindow(parent), m_chessboard_widget(new chess_gui::ChessboardWidget(this)), m_chessboard_controller(new chess_gui::ChessboardController(m_chessboard_widget, this)),
+      m_move_tree_model{new chess_gui::MoveTreeModel(m_game, this)}, m_move_tree_view(new chess_gui::MoveTreeWidget(this)) {
     m_move_tree_view->setModel(m_move_tree_model);
     setupUi();
 
-    connect(m_chessboard_controller, &chessgui::ChessboardController::move_made, this, &TestAppWindow::move_made);
+    connect(m_chessboard_controller, &chess_gui::ChessboardController::move_made, this, &TestAppWindow::move_made);
 
-    connect(m_move_tree_view, &chessgui::MoveTreeWidget::moveClicked, this, &TestAppWindow::move_clicked);
-    connect(m_move_tree_view, &chessgui::MoveTreeWidget::moveDoubleClicked, this, &TestAppWindow::move_double_clicked);
-    connect(m_move_tree_view, &chessgui::MoveTreeWidget::moveSelected, this, &TestAppWindow::move_selected);
+    connect(m_move_tree_view, &chess_gui::MoveTreeWidget::moveClicked, this, &TestAppWindow::move_clicked);
+    connect(m_move_tree_view, &chess_gui::MoveTreeWidget::moveDoubleClicked, this, &TestAppWindow::move_double_clicked);
+    connect(m_move_tree_view, &chess_gui::MoveTreeWidget::moveSelected, this, &TestAppWindow::move_selected);
 
     const std::string game_data = R"([Event "Test Event"]
 [Site "Test Site"]
@@ -52,16 +52,16 @@ TestAppWindow::TestAppWindow(QWidget *parent)
 19. Be4 Nxe3 1/2-1/2)";
 
     std::istringstream pgn_data{game_data};
-    auto parser = chessgame::PGNParser{pgn_data};
+    auto parser = chess_game::PGNParser{pgn_data};
     auto opt_game = parser.read_game();
     if (opt_game.has_value()) {
-        m_move_tree_model->setGame(std::make_shared<chessgame::Game>(opt_game.value()));
+        m_move_tree_model->setGame(std::make_shared<chess_game::Game>(opt_game.value()));
         m_mainline = opt_game.value().current_mainline();
         m_chessboard_controller->set_position(m_mainline.position());
     }
 }
 
-auto TestAppWindow::move_made(const chesscore::Move &move) -> void {
+auto TestAppWindow::move_made(const chess_core::Move &move) -> void {
     auto new_cursor = m_mainline.play_move(move);
     m_move_tree_model->onMoveAdded(m_mainline, m_mainline.child_count() - 1);
     m_mainline = new_cursor;
@@ -102,15 +102,15 @@ void TestAppWindow::setupUi() {
     resize(700 + fixedWidth, 700);
 }
 
-auto TestAppWindow::move_clicked(chessgame::Cursor cursor) -> void {
+auto TestAppWindow::move_clicked(chess_game::Cursor cursor) -> void {
     qDebug() << "Move clicked: " << to_string(cursor.move());
 }
 
-auto TestAppWindow::move_double_clicked(chessgame::Cursor cursor) -> void {
+auto TestAppWindow::move_double_clicked(chess_game::Cursor cursor) -> void {
     m_mainline = cursor;
     m_chessboard_controller->set_position(m_mainline.position());
 }
 
-auto TestAppWindow::move_selected(chessgame::Cursor cursor) -> void {
+auto TestAppWindow::move_selected(chess_game::Cursor cursor) -> void {
     qDebug() << "Move selected: " << to_string(cursor.move());
 }

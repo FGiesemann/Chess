@@ -7,7 +7,7 @@
 
 #include "chess_core/position.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 namespace {
 

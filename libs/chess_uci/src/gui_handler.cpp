@@ -7,7 +7,7 @@
 
 #include "string_conversion.h"
 
-namespace chessuci {
+namespace chess_uci {
 
 UCIGuiHandler::UCIGuiHandler() : m_process{ProcessFactory::create_local()} {
     setup_uci_commands();
@@ -351,4 +351,4 @@ auto UCIGuiHandler::collect_string(const TokenList &tokens, size_t index) -> std
     return oss.str();
 }
 
-} // namespace chessuci
+} // namespace chess_uci

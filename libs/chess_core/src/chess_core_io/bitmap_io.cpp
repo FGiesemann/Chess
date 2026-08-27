@@ -9,14 +9,14 @@
 #include <iostream>
 #include <sstream>
 
-namespace chesscore {
+namespace chess_core {
 
 auto operator<<(std::ostream &os, Bitmap bitmap) -> std::ostream & {
     os << "  a b c d e f g h\n";
-    for (int rank = chesscore::Rank::count - 1; rank >= 0; --rank) {
+    for (int rank = chess_core::Rank::count - 1; rank >= 0; --rank) {
         os << (rank + 1) << ' ';
-        for (int file = 0; file < chesscore::File::count; ++file) {
-            const chesscore::Square square{file, rank};
+        for (int file = 0; file < chess_core::File::count; ++file) {
+            const chess_core::Square square{file, rank};
             if (bitmap.get(square)) {
                 os << 'X';
             } else {
@@ -57,7 +57,7 @@ auto as_grouped_bits(Bitmap bitmap) -> std::string {
     static constexpr int square_count = 64;
 
     for (int i = 0; i < square_count; ++i) {
-        if (i > 0 && i % chesscore::File::count == 0) {
+        if (i > 0 && i % chess_core::File::count == 0) {
             oss << '\'';
         }
         oss << ((bitmap.bits() >> (square_count - 1 - i)) & 1);
@@ -66,4 +66,4 @@ auto as_grouped_bits(Bitmap bitmap) -> std::string {
     return oss.str();
 }
 
-} // namespace chesscore
+} // namespace chess_core

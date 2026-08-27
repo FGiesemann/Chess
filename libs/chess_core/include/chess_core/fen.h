@@ -4,17 +4,17 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_FEN_H
-#define CHESSCORE_FEN_H
+#ifndef CHESS_CORE_FEN_H
+#define CHESS_CORE_FEN_H
 
-#include "chess_core/chesscore.h"
+#include "chess_core/chess_core.h"
 #include "chess_core/piece.h"
 #include "chess_core/position_types.h"
 #include "chess_core/square.h"
 
 #include <string>
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief Exception thrown when an invalid FEN string is encountered.
@@ -153,6 +153,6 @@ auto castling_rights_to_string(const CastlingRights &castling_rights) -> std::st
 
 } // namespace detail
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

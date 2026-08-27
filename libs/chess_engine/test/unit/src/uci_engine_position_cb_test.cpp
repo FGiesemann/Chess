@@ -8,9 +8,9 @@
 #include "chess_engine/test_engine.h"
 #include "chess_engine/uci_adapter.h"
 
-using namespace chessengine;
-using namespace chesscore;
-using namespace chessuci;
+using namespace chess_engine;
+using namespace chess_core;
+using namespace chess_uci;
 
 namespace {
 

@@ -3,8 +3,8 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_GUI_HANDLER_H
-#define CHESSUCI_GUI_HANDLER_H
+#ifndef CHESS_UCI_GUI_HANDLER_H
+#define CHESS_UCI_GUI_HANDLER_H
 
 #include <memory>
 #include <thread>
@@ -14,7 +14,7 @@
 #include "chess_uci/protocol.h"
 #include "chess_uci/uci_handler.h"
 
-namespace chessuci {
+namespace chess_uci {
 
 class UCIGuiHandler : public UCIHandler {
 public:
@@ -81,6 +81,6 @@ private:
     auto read_loop() -> void;
 };
 
-} // namespace chessuci
+} // namespace chess_uci
 
 #endif

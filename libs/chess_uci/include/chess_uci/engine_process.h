@@ -3,14 +3,14 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_ENGINE_PROCESS_H
-#define CHESSUCI_ENGINE_PROCESS_H
+#ifndef CHESS_UCI_ENGINE_PROCESS_H
+#define CHESS_UCI_ENGINE_PROCESS_H
 
 #include <filesystem>
 #include <optional>
 #include <vector>
 
-namespace chessuci {
+namespace chess_uci {
 
 using optional_path = std::optional<std::filesystem::path>;
 
@@ -121,6 +121,6 @@ public:
     virtual auto last_error() const -> const std::string & = 0;
 };
 
-} // namespace chessuci
+} // namespace chess_uci
 
 #endif

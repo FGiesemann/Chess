@@ -35,8 +35,8 @@ auto scenario(const std::string &name) -> Scenario;
 
 struct Args {
     Scenario scenario{Scenario::Unknown};
-    std::vector<chesscore::PieceType> piece_types;
-    std::vector<chesscore::Square> squares;
+    std::vector<chess_core::PieceType> piece_types;
+    std::vector<chess_core::Square> squares;
     std::uint64_t magic_number{};
     std::vector<std::uint8_t> shifts;
     std::string database;
@@ -47,8 +47,8 @@ struct Args {
 auto print_usage() -> void;
 auto convert_args(std::span<const char *> args) -> std::vector<std::string>;
 auto parse_arguments(const std::vector<std::string> &args) -> Args;
-auto parse_piece_types(const std::string &piece_types) -> std::vector<chesscore::PieceType>;
-auto parse_squares(const std::string &squares) -> std::vector<chesscore::Square>;
+auto parse_piece_types(const std::string &piece_types) -> std::vector<chess_core::PieceType>;
+auto parse_squares(const std::string &squares) -> std::vector<chess_core::Square>;
 auto parse_shifts(const std::string &shifts) -> std::vector<std::uint8_t>;
 
 } // namespace magic_bitboard_generator

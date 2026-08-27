@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_POSITION_H
-#define CHESSCORE_POSITION_H
+#ifndef CHESS_CORE_POSITION_H
+#define CHESS_CORE_POSITION_H
 
 #include "chess_core/bitboard.h"
 #include "chess_core/board.h"
@@ -13,7 +13,7 @@
 #include "chess_core/position_types.h"
 #include "chess_core/zobrist.h"
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief The current state of a chess game.
@@ -209,6 +209,6 @@ private:
     auto resetCastlingRights(const Move &move) -> void;
 };
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

@@ -3,14 +3,14 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_STRING_CONVERSION_H
-#define CHESSUCI_STRING_CONVERSION_H
+#ifndef CHESS_UCI_STRING_CONVERSION_H
+#define CHESS_UCI_STRING_CONVERSION_H
 
 #include <optional>
 #include <sstream>
 #include <string_view>
 
-namespace chessuci {
+namespace chess_uci {
 
 template<typename T>
 requires std::integral<T>
@@ -35,6 +35,6 @@ auto str_to_inttype(std::string_view str) -> std::optional<T> {
     return std::nullopt;
 }
 
-} // namespace chessuci
+} // namespace chess_uci
 
 #endif

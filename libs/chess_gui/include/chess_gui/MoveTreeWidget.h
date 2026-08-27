@@ -3,8 +3,8 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#ifndef CHESSGUI_MOVETREEWIDGET_H
-#define CHESSGUI_MOVETREEWIDGET_H
+#ifndef CHESS_GUI_MOVETREEWIDGET_H
+#define CHESS_GUI_MOVETREEWIDGET_H
 
 #include <QPainter>
 #include <QStyledItemDelegate>
@@ -12,7 +12,7 @@
 
 #include "chess_gui/MoveTreeModel.h"
 
-namespace chessgui {
+namespace chess_gui {
 
 class MoveTreeDelegate : public QStyledItemDelegate {
     Q_OBJECT
@@ -33,9 +33,9 @@ public:
     auto setModel(MoveTreeModel *model) -> void;
     auto model() const -> MoveTreeModel * { return m_model; }
 signals:
-    auto moveClicked(chessgame::Cursor cursor) -> void;
-    auto moveDoubleClicked(chessgame::Cursor cursor) -> void;
-    auto moveSelected(chessgame::Cursor cursor) -> void;
+    auto moveClicked(chess_game::Cursor cursor) -> void;
+    auto moveDoubleClicked(chess_game::Cursor cursor) -> void;
+    auto moveSelected(chess_game::Cursor cursor) -> void;
     auto selectionCleared() -> void;
 private slots:
     auto onItemClicked(const QModelIndex &index) -> void;
@@ -47,6 +47,6 @@ private:
     auto setupUI() -> void;
 };
 
-} // namespace chessgui
+} // namespace chess_gui
 
 #endif

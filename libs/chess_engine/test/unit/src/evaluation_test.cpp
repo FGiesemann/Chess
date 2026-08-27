@@ -6,8 +6,8 @@
 #include <catch2/catch_all.hpp>
 
 #include "chess_engine/evaluation.h"
-using namespace chessengine;
-using namespace chesscore;
+using namespace chess_engine;
+using namespace chess_core;
 
 namespace {
 auto get_default_config() -> EvaluatorConfig;

@@ -5,7 +5,7 @@
 
 #include "chess_core/position.h"
 
-namespace chesscore {
+namespace chess_core {
 
 auto Position::make_move(const Move &move) -> void {
     move_piece_hash(move);
@@ -219,4 +219,4 @@ auto Position::operator==(const Position &rhs) const -> bool {
     return m_board == rhs.m_board && m_state == rhs.m_state;
 }
 
-} // namespace chesscore
+} // namespace chess_core

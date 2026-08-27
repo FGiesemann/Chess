@@ -11,7 +11,7 @@ target_sources(chess_core
             include/chess_core/bitboard.h
             include/chess_core/bitmap.h
             include/chess_core/board.h
-            include/chess_core/chesscore.h
+            include/chess_core/chess_core.h
             include/chess_core/epd.h
             include/chess_core/fen.h
             include/chess_core/magic.h
@@ -28,7 +28,7 @@ target_sources(chess_core
         src/chess_core/bitboard.cpp
         src/chess_core/bitmap.cpp
         src/chess_core/board.cpp
-        src/chess_core/chesscore.cpp
+        src/chess_core/chess_core.cpp
         src/chess_core/epd.cpp
         src/chess_core/fen.cpp
         src/chess_core/magic.cpp
@@ -66,6 +66,7 @@ target_sources(chess_core_io
         FILES
             include/chess_core_io/bitboard_io.h
             include/chess_core_io/bitmap_io.h
+            include/chess_core_io/chess_core_io.h
             include/chess_core_io/move_io.h
             include/chess_core_io/piece_io.h
             include/chess_core_io/position_io.h

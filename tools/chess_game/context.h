@@ -9,8 +9,8 @@
 #include <chess_game/game.h>
 
 struct Context {
-    chessgame::Game game{};
-    chessgame::Cursor mainline{game.cursor()};
+    chess_game::Game game{};
+    chess_game::Cursor mainline{game.cursor()};
 
     bool running{true};
 };

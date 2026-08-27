@@ -8,7 +8,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <chess_core/fen.h>
 
-using namespace chessuci;
+using namespace chess_uci;
 
 namespace {
 
@@ -67,7 +67,7 @@ TEST_CASE("UCI.EngineHandler.Parser.Position", "[engine_handler]") {
     CHECK(to_string(command2.moves[1]) == "e7e5");
 
     const auto command3 = parse_position("position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 moves e2e4 e7e5");
-    CHECK(command3.fen == chesscore::FenString::starting_position().str());
+    CHECK(command3.fen == chess_core::FenString::starting_position().str());
     REQUIRE(command3.moves.size() == 2);
     CHECK(to_string(command3.moves[0]) == "e2e4");
     CHECK(to_string(command3.moves[1]) == "e7e5");

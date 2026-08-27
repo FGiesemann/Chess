@@ -10,7 +10,7 @@
 #include "chess_core/move.h"
 #include "chess_core/position.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Bitboard.Bitboard.CaptureMoveGeneration.Starting Position", "[Bitboard][MoveGeneration]") {
     Position position{FenString::starting_position()};

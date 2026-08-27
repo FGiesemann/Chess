@@ -9,7 +9,7 @@
 #include <array>
 #include <cctype>
 
-namespace chesscore {
+namespace chess_core {
 
 constexpr std::string_view empty_fen = "8/8/8/8/8/8/8/8 w - - 0 1";                                            ///< FEN string for an empy board.
 constexpr std::string_view starting_position_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; ///< FEN string for the starting configuration of a chess game.
@@ -295,4 +295,4 @@ auto castling_rights_to_string(const CastlingRights &castling_rights) -> std::st
 
 } // namespace detail
 
-} // namespace chesscore
+} // namespace chess_core

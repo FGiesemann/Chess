@@ -7,7 +7,7 @@
 
 #include "chess_core/epd.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Data.EPD.Parse.Positions.Starting", "[EPD]") {
     const auto record = parse_epd_line("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -");

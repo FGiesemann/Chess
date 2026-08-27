@@ -7,7 +7,7 @@
 
 #include "chess_core/magic.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Magic.Attack Map.Rook", "[magic]") {
     const auto blockers1 = Bitmap{0x0004000022000000ULL};

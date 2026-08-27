@@ -9,7 +9,7 @@
 #include "chess_core/position.h"
 #include "chess_core/zobrist.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Data.Zobrist.ZobristKeys.Initialization", "[zobrist]") {
     ZobristKeys::initialize();

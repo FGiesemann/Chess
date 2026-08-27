@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_BITBOARD_TABLES_H
-#define CHESSCORE_BITBOARD_TABLES_H
+#ifndef CHESS_CORE_BITBOARD_TABLES_H
+#define CHESS_CORE_BITBOARD_TABLES_H
 
 #include "chess_core/bitmap.h"
 #include "chess_core/board.h"
@@ -13,7 +13,7 @@
 #include "chess_core/square.h"
 #include "chess_core/table.h"
 
-namespace chesscore::bitmaps {
+namespace chess_core::bitmaps {
 
 using TargetTable = Table<Bitmap, Square::count, Square>;
 
@@ -468,6 +468,6 @@ inline constexpr FileTable file_table{
 
 inline constexpr Bitmap board_border{0xFF818181818181FFULL};
 
-} // namespace chesscore::bitmaps
+} // namespace chess_core::bitmaps
 
 #endif

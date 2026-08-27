@@ -10,7 +10,7 @@
 #include "chess_core/move.h"
 #include "chess_core/position.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Bitboard.Bitboard.MoveGeneration.Knight (no check)", "[Bitboard][MoveGeneration]") {
     Position position1{FenString{"2k1n3/6N1/8/1P1b1r2/3P4/2N5/4q3/KP6 w - - 0 1"}};

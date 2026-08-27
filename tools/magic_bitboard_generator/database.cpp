@@ -4,7 +4,7 @@
  * ************************************************************************** */
 
 #include "database.h"
-#include <chess_core/chesscore.h>
+#include <chess_core/chess_core.h>
 #include <chess_core/piece.h>
 #include <chess_core/square.h>
 
@@ -32,7 +32,7 @@ auto Record::update_magics(const Magics &magics, const TableStats &stats) -> boo
 }
 
 auto RecordWriter::write(const Record &record, std::ostream &ostream) -> void {
-    ostream << std::format("{:c} {} {:1d}", chesscore::Piece{record.piece(), chesscore::Color::White}.piece_char(), to_string(record.square()), record.has_magics() ? 1 : 0);
+    ostream << std::format("{:c} {} {:1d}", chess_core::Piece{record.piece(), chess_core::Color::White}.piece_char(), to_string(record.square()), record.has_magics() ? 1 : 0);
     if (record.has_magics()) {
         ostream << std::format(
             " {:016x} {} {} {} {}", record.magics().magic_number, record.magics().shift, record.stats().max_index, record.stats().blocker_configs,
@@ -46,17 +46,17 @@ auto RecordReader::read(std::istream &istream) -> Record {
     unsigned char piece_char{};
     istream >> piece_char;
     if (piece_char != 'R' && piece_char != 'B') {
-        throw chesscore::ChessException{"Invalid piece type"};
+        throw chess_core::ChessException{"Invalid piece type"};
     }
 
-    const auto piece = piece_char == 'R' ? chesscore::PieceType::Rook : chesscore::PieceType::Bishop;
+    const auto piece = piece_char == 'R' ? chess_core::PieceType::Rook : chess_core::PieceType::Bishop;
     istream >> std::skipws;
 
     char file_char{};
     istream >> file_char;
     int rank{};
     istream >> rank;
-    const chesscore::Square square{chesscore::File{file_char}, chesscore::Rank{rank}};
+    const chess_core::Square square{chess_core::File{file_char}, chess_core::Rank{rank}};
 
     Record record{piece, square};
     int has_magics{};
@@ -81,32 +81,32 @@ auto RecordReader::read(std::istream &istream) -> Record {
 Database::Database() {
     m_rook_records.reserve(64);
     m_bishop_records.reserve(64);
-    for (chesscore::Square square = chesscore::Square::A1; square != chesscore::Square::H8; square += 1) {
-        m_rook_records.emplace_back(chesscore::PieceType::Rook, square);
-        m_bishop_records.emplace_back(chesscore::PieceType::Bishop, square);
+    for (chess_core::Square square = chess_core::Square::A1; square != chess_core::Square::H8; square += 1) {
+        m_rook_records.emplace_back(chess_core::PieceType::Rook, square);
+        m_bishop_records.emplace_back(chess_core::PieceType::Bishop, square);
     }
-    m_rook_records.emplace_back(chesscore::PieceType::Rook, chesscore::Square::H8);
-    m_bishop_records.emplace_back(chesscore::PieceType::Bishop, chesscore::Square::H8);
+    m_rook_records.emplace_back(chess_core::PieceType::Rook, chess_core::Square::H8);
+    m_bishop_records.emplace_back(chess_core::PieceType::Bishop, chess_core::Square::H8);
 }
 
-auto Database::record(chesscore::PieceType piece, const chesscore::Square &square) const -> const Record & {
-    if (piece == chesscore::PieceType::Rook) {
+auto Database::record(chess_core::PieceType piece, const chess_core::Square &square) const -> const Record & {
+    if (piece == chess_core::PieceType::Rook) {
         return m_rook_records[square.index()];
     }
-    if (piece == chesscore::PieceType::Bishop) {
+    if (piece == chess_core::PieceType::Bishop) {
         return m_bishop_records[square.index()];
     }
-    throw chesscore::ChessException{"Invalid piece type"};
+    throw chess_core::ChessException{"Invalid piece type"};
 }
 
-auto Database::record(chesscore::PieceType piece, const chesscore::Square &square) -> Record & {
-    if (piece == chesscore::PieceType::Rook) {
+auto Database::record(chess_core::PieceType piece, const chess_core::Square &square) -> Record & {
+    if (piece == chess_core::PieceType::Rook) {
         return m_rook_records[square.index()];
     }
-    if (piece == chesscore::PieceType::Bishop) {
+    if (piece == chess_core::PieceType::Bishop) {
         return m_bishop_records[square.index()];
     }
-    throw chesscore::ChessException{"Invalid piece type"};
+    throw chess_core::ChessException{"Invalid piece type"};
 }
 
 auto DatabaseWriter::write(const Database &database) -> void {

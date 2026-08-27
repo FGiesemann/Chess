@@ -8,7 +8,7 @@
 #include <limits>
 #include <sstream>
 
-namespace chessengine {
+namespace chess_engine {
 
 const Score Score::Infinity{32700};
 const Score Score::NegInfinity{-Infinity};
@@ -25,4 +25,4 @@ auto to_string(const StopParameters &params) -> std::string {
     return sstr.str();
 }
 
-} // namespace chessengine
+} // namespace chess_engine

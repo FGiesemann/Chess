@@ -10,7 +10,7 @@
 
 #include "bitboard_tables.h"
 
-namespace chesscore {
+namespace chess_core {
 
 namespace {
 
@@ -477,4 +477,4 @@ auto Bitboard::operator==(const Bitboard &rhs) const -> bool {
     return m_bitmaps == rhs.m_bitmaps;
 }
 
-} // namespace chesscore
+} // namespace chess_core

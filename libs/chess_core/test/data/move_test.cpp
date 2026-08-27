@@ -7,7 +7,7 @@
 
 #include "chess_core/move.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Data.Move.Comparison", "[Move][Compare]") {
     Move m1{

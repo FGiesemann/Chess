@@ -6,7 +6,7 @@
 #include <catch2/catch_all.hpp>
 
 #include "chess_engine/types.h"
-using namespace chessengine;
+using namespace chess_engine;
 
 TEST_CASE("Engine.Score.Mate in X", "[score]") {
     CHECK(ply_to_mate(Score::Mate - Depth{3}) == Depth{3});

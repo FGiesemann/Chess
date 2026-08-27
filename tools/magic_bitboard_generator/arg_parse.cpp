@@ -12,7 +12,7 @@ namespace magic_bitboard_generator {
 
 namespace {
 
-auto read_square(const std::string &squares, std::size_t index) -> std::pair<chesscore::Square, std::size_t> {
+auto read_square(const std::string &squares, std::size_t index) -> std::pair<chess_core::Square, std::size_t> {
     const auto &character = squares[index];
     if (character >= 'a' && character <= 'h') {
         const char file = character;
@@ -23,7 +23,7 @@ auto read_square(const std::string &squares, std::size_t index) -> std::pair<che
         const auto &second_character = squares[index];
         if (second_character >= '1' && second_character <= '8') {
             const char rank = second_character;
-            return std::make_pair(chesscore::Square{chesscore::File{file}, chesscore::Rank{rank - '1'}}, index + 1);
+            return std::make_pair(chess_core::Square{chess_core::File{file}, chess_core::Rank{rank - '1'}}, index + 1);
         }
     }
     throw ArgError("Invalid square: " + squares);
@@ -159,13 +159,13 @@ auto parse_arguments(const std::vector<std::string> &args) -> Args {
     return result;
 }
 
-auto parse_piece_types(const std::string &piece_types) -> std::vector<chesscore::PieceType> {
-    std::vector<chesscore::PieceType> result{};
+auto parse_piece_types(const std::string &piece_types) -> std::vector<chess_core::PieceType> {
+    std::vector<chess_core::PieceType> result{};
     for (const auto &piece_type : piece_types) {
         if (piece_type == 'R') {
-            result.emplace_back(chesscore::PieceType::Rook);
+            result.emplace_back(chess_core::PieceType::Rook);
         } else if (piece_type == 'B') {
-            result.emplace_back(chesscore::PieceType::Bishop);
+            result.emplace_back(chess_core::PieceType::Bishop);
         } else {
             throw ArgError("Invalid piece type: " + std::string{piece_type});
         }
@@ -173,8 +173,8 @@ auto parse_piece_types(const std::string &piece_types) -> std::vector<chesscore:
     return result;
 }
 
-auto parse_squares(const std::string &squares) -> std::vector<chesscore::Square> {
-    std::vector<chesscore::Square> result{};
+auto parse_squares(const std::string &squares) -> std::vector<chess_core::Square> {
+    std::vector<chess_core::Square> result{};
     // squares can be a single square (a1), a list of squares (a1,b4,c5), a range (a1-c4) or a combination of those
     for (std::size_t i = 0; i < squares.length(); ++i) {
         const auto &character = squares[i];
@@ -186,7 +186,7 @@ auto parse_squares(const std::string &squares) -> std::vector<chesscore::Square>
                 throw ArgError("Invalid range of sqaures: " + squares);
             }
             const auto [end_square, index] = read_square(squares, i + 1);
-            for (chesscore::Square square = result.back() + 1; square != end_square; square += 1) {
+            for (chess_core::Square square = result.back() + 1; square != end_square; square += 1) {
                 result.emplace_back(square);
             }
             result.emplace_back(end_square);

@@ -10,9 +10,9 @@
 #include <fstream>
 #include <iostream>
 
-namespace chessengine::mate_in_x {
+namespace chess_engine::mate_in_x {
 
-MultiSolutionFinder::MultiSolutionFinder(const chessuci::ProcessParams &params) {
+MultiSolutionFinder::MultiSolutionFinder(const chess_uci::ProcessParams &params) {
     m_uci_handler.on_readyok(std::bind(&MultiSolutionFinder::readyok, this));
     m_uci_handler.on_info(std::bind(&MultiSolutionFinder::search_info, this, std::placeholders::_1));
     m_uci_handler.on_bestmove(std::bind(&MultiSolutionFinder::bestmove, this, std::placeholders::_1));
@@ -25,10 +25,10 @@ MultiSolutionFinder::~MultiSolutionFinder() {
     m_uci_handler.stop();
 }
 
-auto MultiSolutionFinder::process(chesscore::EpdRecord &record) -> void {
+auto MultiSolutionFinder::process(chess_core::EpdRecord &record) -> void {
     m_current_record = &record;
     auto expected_depth = record.pv.size();
-    std::string position_fen = chesscore::FenString{record.position.piece_placement(), record.position.state()}.str();
+    std::string position_fen = chess_core::FenString{record.position.piece_placement(), record.position.state()}.str();
     std::size_t max_variants = 5;
 
     m_received_callback = Callback::None;
@@ -58,7 +58,7 @@ auto MultiSolutionFinder::readyok() -> void {
     m_condvar.notify_one();
 }
 
-auto MultiSolutionFinder::search_info(const chessuci::search_info &info) -> void {
+auto MultiSolutionFinder::search_info(const chess_uci::search_info &info) -> void {
     std::scoped_lock lock{m_info_mutex};
     if (m_current_record == nullptr) {
         // shouldn't happen
@@ -72,7 +72,7 @@ auto MultiSolutionFinder::search_info(const chessuci::search_info &info) -> void
                 return;
             }
             const auto all_moves = m_current_record->position.all_legal_moves();
-            const auto san_move = chessgame::generate_san_move(move.value(), all_moves);
+            const auto san_move = chess_game::generate_san_move(move.value(), all_moves);
             if (san_move.has_value()) {
                 const auto san_str = to_string(san_move.value());
                 if (std::ranges::find(m_current_record->bm, san_str) == m_current_record->bm.end()) {
@@ -83,7 +83,7 @@ auto MultiSolutionFinder::search_info(const chessuci::search_info &info) -> void
     }
 }
 
-auto MultiSolutionFinder::bestmove(const chessuci::bestmove_info &info) -> void {
+auto MultiSolutionFinder::bestmove(const chess_uci::bestmove_info &info) -> void {
     std::ignore = info;
     {
         std::scoped_lock lock{m_mutex};
@@ -92,4 +92,4 @@ auto MultiSolutionFinder::bestmove(const chessuci::bestmove_info &info) -> void 
     m_condvar.notify_one();
 }
 
-} // namespace chessengine::mate_in_x
+} // namespace chess_engine::mate_in_x

@@ -13,7 +13,7 @@
 #include <sstream>
 #include <string>
 
-namespace chessengine {
+namespace chess_engine {
 
 class Logger {
 public:
@@ -141,68 +141,68 @@ private:
 };
 
 inline auto log_indent() -> void {
-    chessengine::Logger::instance().indent();
+    chess_engine::Logger::instance().indent();
 }
 
 inline auto log_unindent() -> void {
-    chessengine::Logger::instance().unindent();
+    chess_engine::Logger::instance().unindent();
 }
 
 inline auto log_uci_in(const std::string &in) -> void {
-    chessengine::Logger::instance().log_uci_in(in);
+    chess_engine::Logger::instance().log_uci_in(in);
 }
 inline auto log_uci_out(const std::string &out) -> void {
-    chessengine::Logger::instance().log_uci_out(out);
+    chess_engine::Logger::instance().log_uci_out(out);
 }
 
 inline auto log_info(const std::string &msg) -> void {
-    chessengine::Logger::instance().log_info(msg);
+    chess_engine::Logger::instance().log_info(msg);
 }
 
 inline auto log_error(const std::string &msg) -> void {
-    chessengine::Logger::instance().log_error(msg);
+    chess_engine::Logger::instance().log_error(msg);
 }
 
 inline auto log_debug(const std::string &msg) -> void {
-    chessengine::Logger::instance().log_debug(msg);
+    chess_engine::Logger::instance().log_debug(msg);
 }
 
 inline auto log_search(const std::string &msg) -> void {
-    chessengine::Logger::instance().log_search(msg);
+    chess_engine::Logger::instance().log_search(msg);
 }
 
 inline auto log_evaluation(const std::string &msg) -> void {
-    chessengine::Logger::instance().log_evaluation(msg);
+    chess_engine::Logger::instance().log_evaluation(msg);
 }
 
-inline auto log_debug_stream() -> chessengine::LogStream {
-    return chessengine::LogStream(&chessengine::Logger::log_debug);
+inline auto log_debug_stream() -> chess_engine::LogStream {
+    return chess_engine::LogStream(&chess_engine::Logger::log_debug);
 }
 
-inline auto log_info_stream() -> chessengine::LogStream {
-    return chessengine::LogStream(&chessengine::Logger::log_info);
+inline auto log_info_stream() -> chess_engine::LogStream {
+    return chess_engine::LogStream(&chess_engine::Logger::log_info);
 }
 
-inline auto log_error_stream() -> chessengine::LogStream {
-    return chessengine::LogStream(&chessengine::Logger::log_error);
+inline auto log_error_stream() -> chess_engine::LogStream {
+    return chess_engine::LogStream(&chess_engine::Logger::log_error);
 }
 
-inline auto log_uci_in_stream() -> chessengine::LogStream {
-    return chessengine::LogStream(&chessengine::Logger::log_uci_in);
+inline auto log_uci_in_stream() -> chess_engine::LogStream {
+    return chess_engine::LogStream(&chess_engine::Logger::log_uci_in);
 }
 
-inline auto log_uci_out_stream() -> chessengine::LogStream {
-    return chessengine::LogStream(&chessengine::Logger::log_uci_out);
+inline auto log_uci_out_stream() -> chess_engine::LogStream {
+    return chess_engine::LogStream(&chess_engine::Logger::log_uci_out);
 }
 
-inline auto log_search_stream() -> chessengine::LogStream {
-    return chessengine::LogStream(&chessengine::Logger::log_search);
+inline auto log_search_stream() -> chess_engine::LogStream {
+    return chess_engine::LogStream(&chess_engine::Logger::log_search);
 }
 
-inline auto log_evaluation_stream() -> chessengine::LogStream {
-    return chessengine::LogStream(&chessengine::Logger::log_evaluation);
+inline auto log_evaluation_stream() -> chess_engine::LogStream {
+    return chess_engine::LogStream(&chess_engine::Logger::log_evaluation);
 }
 
-} // namespace chessengine
+} // namespace chess_engine
 
 #endif

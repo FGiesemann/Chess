@@ -10,7 +10,7 @@
 #include "chess_core_io/bitmap_io.h"
 
 auto main() -> int {
-    chesscore::Bitmap bitmap{};
+    chess_core::Bitmap bitmap{};
 
     bool running = true;
     while (running) {
@@ -36,14 +36,14 @@ auto main() -> int {
         } else if (input == "q" || input == "Q") {
             running = false;
         } else if (input == "c" || input == "C") {
-            bitmap = chesscore::Bitmap{};
+            bitmap = chess_core::Bitmap{};
         } else if (input.starts_with("0x")) {
             std::string hex_input = input.substr(2);
-            bitmap = chesscore::Bitmap{std::stoull(hex_input, nullptr, 16)};
+            bitmap = chess_core::Bitmap{std::stoull(hex_input, nullptr, 16)};
         }
         if (input.starts_with("=")) {
             std::string dec_input = input.substr(1);
-            bitmap = chesscore::Bitmap{std::stoull(dec_input, nullptr, 10)};
+            bitmap = chess_core::Bitmap{std::stoull(dec_input, nullptr, 10)};
         } else if (input.starts_with("<")) {
             std::string num_str = input.substr(1);
             try {
@@ -64,7 +64,7 @@ auto main() -> int {
             if (input.length() == 2 && input[0] >= 'a' && input[0] <= 'h' && input[1] >= '1' && input[1] <= '8') {
                 int file = input[0] - 'a';
                 int rank = input[1] - '1';
-                chesscore::Square square{file, rank};
+                chess_core::Square square{file, rank};
                 bitmap.toggle(square);
             } else {
                 std::cout << "Invalid input. Enter a square (e.g., e4), 'c' to clear, or 'q' to quit.\n";

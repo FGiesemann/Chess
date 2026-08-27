@@ -17,15 +17,15 @@ auto MagicBitboardGenerator::fill_table(const Magics &magics) const -> Generator
     result.table.resize(table_size);
     std::vector<bool> occupied(table_size, false);
 
-    const auto blocker_mask = chesscore::blocker_mask(m_spec.piece, m_spec.square);
-    result.expected_entries = chesscore::blocker_config_count(blocker_mask);
+    const auto blocker_mask = chess_core::blocker_mask(m_spec.piece, m_spec.square);
+    result.expected_entries = chess_core::blocker_config_count(blocker_mask);
 
-    chesscore::Bitmap blockers{};
+    chess_core::Bitmap blockers{};
     do { // NOLINT(cppcoreguidelines-avoid-do-while)
-        const auto index = chesscore::magic_index(blockers, magics.magic_number, magics.shift);
+        const auto index = chess_core::magic_index(blockers, magics.magic_number, magics.shift);
         result.max_index = std::max(result.max_index, index);
 
-        const auto attack_map = chesscore::attack_bitmap(m_spec.piece, m_spec.square, blockers);
+        const auto attack_map = chess_core::attack_bitmap(m_spec.piece, m_spec.square, blockers);
 
         if (occupied[index]) {
             if (result.table[index] != attack_map) {
@@ -38,7 +38,7 @@ auto MagicBitboardGenerator::fill_table(const Magics &magics) const -> Generator
             result.stored_entries++;
             result.table[index] = attack_map;
         }
-        blockers = chesscore::next_blocker_config(blockers, blocker_mask);
+        blockers = chess_core::next_blocker_config(blockers, blocker_mask);
     } while (!blockers.empty());
 
     return result;

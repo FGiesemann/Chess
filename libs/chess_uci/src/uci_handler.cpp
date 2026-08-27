@@ -8,7 +8,7 @@
 #include <ranges>
 #include <sstream>
 
-namespace chessuci {
+namespace chess_uci {
 
 auto UCIHandler::register_command(const std::string &command, CustomCommandCallback callback) -> void {
     std::lock_guard<std::mutex> lock{m_custom_commands_mutex};
@@ -60,4 +60,4 @@ auto UCIHandler::tokenize(const std::string &line) -> std::vector<std::string> {
     return tokens;
 }
 
-} // namespace chessuci
+} // namespace chess_uci

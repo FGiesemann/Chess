@@ -49,7 +49,7 @@ class ChessRecipe(ConanFile):
             test_folder = os.path.join("test")
             if self.settings.os == "Windows":
                 test_folder = os.path.join("test", str(self.settings.build_type))
-            self.run(os.path.join(test_folder, "chesscore_tests"))
+            self.run(os.path.join(test_folder, "chess_core_tests"))
 
     def package(self):
         cmake = CMake(self)

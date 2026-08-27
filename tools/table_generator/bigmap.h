@@ -13,7 +13,7 @@
 #include "dimensions.h"
 #include "patterns.h"
 
-namespace chesscore::table_gen {
+namespace chess_core::table_gen {
 
 enum class ShiftDirection { North, South, East, West };
 
@@ -39,6 +39,6 @@ private:
 
 auto operator<<(std::ostream &os, const Bigmap &bigmap) -> std::ostream &;
 
-} // namespace chesscore::table_gen
+} // namespace chess_core::table_gen
 
 #endif

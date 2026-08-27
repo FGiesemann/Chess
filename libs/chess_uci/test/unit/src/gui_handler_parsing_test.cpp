@@ -7,7 +7,7 @@
 #include "chess_uci/uci_handler.h"
 #include <catch2/catch_test_macros.hpp>
 
-using namespace chessuci;
+using namespace chess_uci;
 
 namespace {
 

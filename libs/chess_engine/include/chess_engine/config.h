@@ -3,15 +3,15 @@
  * Chess playing engine                                                       *
  * ************************************************************************** */
 
-#ifndef CHESSENGINE_CONFIG_H
-#define CHESSENGINE_CONFIG_H
+#ifndef CHESS_ENGINE_CONFIG_H
+#define CHESS_ENGINE_CONFIG_H
 
 #include <array>
 #include <filesystem>
 
 #include "chess_engine/types.h"
 
-namespace chessengine {
+namespace chess_engine {
 
 /**
  * \brief Configuration parameters for the search algorithm.
@@ -36,10 +36,10 @@ struct PieceSquareTable {
     /**
      * \brief Values for a piece on the squares of the board.
      *
-     * The values are indexed according to chesscore::Square::index, i.e., entry
+     * The values are indexed according to chess_core::Square::index, i.e., entry
      * `values[0]` is for square a1, `values[1]` for square b1, and so on.
      */
-    std::array<Score, chesscore::Square::count> values;
+    std::array<Score, chess_core::Square::count> values;
 
     /**
      * \brief Get the value for a given square.
@@ -47,7 +47,7 @@ struct PieceSquareTable {
      * \param square The square.
      * \return The value for that square.
      */
-    auto value(const chesscore::Square &square) const -> const Score & { return values[square.index()]; }
+    auto value(const chess_core::Square &square) const -> const Score & { return values[square.index()]; }
 
     /**
      * \brief Get the value for a given square.
@@ -56,7 +56,7 @@ struct PieceSquareTable {
      * \param square The square.
      * \return The value for that square.
      */
-    auto value(const chesscore::Square &square) -> Score & { return values[square.index()]; }
+    auto value(const chess_core::Square &square) -> Score & { return values[square.index()]; }
 };
 
 /**
@@ -76,7 +76,7 @@ public:
      * \brief The scores for each piece type.
      *
      * The values have to be given in the same order as the piece types in the
-     * chesscore::PieceType enumeration.
+     * chess_core::PieceType enumeration.
      */
     Score piece_values[6]{Score{100}, Score{300}, Score{300}, Score{500}, Score{900}, Score{0}};
 
@@ -176,7 +176,7 @@ public:
      * \param piece_type Type of the piece.
      * \return Value for a piece of the given type.
      */
-    auto piece_value(chesscore::PieceType piece_type) const -> Score { return piece_values[get_index(piece_type)]; }
+    auto piece_value(chess_core::PieceType piece_type) const -> Score { return piece_values[get_index(piece_type)]; }
 
     /**
      * \brief Gives the value for a piece on a square.
@@ -188,8 +188,8 @@ public:
      * \param square The square.
      * \return The value for the given piece on the given square.
      */
-    auto piece_on_square_value(chesscore::Piece piece, const chesscore::Square &square) const -> Score {
-        const auto lookup_square = (piece.color() == chesscore::Color::White) ? square : square.mirrored();
+    auto piece_on_square_value(chess_core::Piece piece, const chess_core::Square &square) const -> Score {
+        const auto lookup_square = (piece.color() == chess_core::Color::White) ? square : square.mirrored();
         return piece_square_tables[get_index(piece.type())].value(lookup_square);
     }
 
@@ -206,8 +206,8 @@ public:
      * \param middlegame_factor Factor for weighting the middle game table vs. end game table (1.0 -> middle game; 0.0 -> end game).
      * \return Value for the king on the given square.
      */
-    auto king_on_square_value(const chesscore::Square &square, chesscore::Color color, float middlegame_factor = 1.0F) const -> Score {
-        const auto lookup_square = color == chesscore::Color::White ? square : square.mirrored();
+    auto king_on_square_value(const chess_core::Square &square, chess_core::Color color, float middlegame_factor = 1.0F) const -> Score {
+        const auto lookup_square = color == chess_core::Color::White ? square : square.mirrored();
         const auto middlegame_value = piece_square_tables[6].value(lookup_square).value;
         const auto endgame_value = piece_square_tables[7].value(lookup_square).value;
         return Score{static_cast<Score::value_type>(middlegame_value * middlegame_factor + endgame_value * (1.0F - middlegame_factor))};
@@ -215,12 +215,12 @@ public:
 
     auto empty_board_value() const -> Score { return Score{0}; }
 
-    static_assert(get_index(chesscore::PieceType::Pawn) == 0);
-    static_assert(get_index(chesscore::PieceType::Knight) == 1);
-    static_assert(get_index(chesscore::PieceType::Bishop) == 2);
-    static_assert(get_index(chesscore::PieceType::Rook) == 3);
-    static_assert(get_index(chesscore::PieceType::Queen) == 4);
-    static_assert(get_index(chesscore::PieceType::King) == 5);
+    static_assert(get_index(chess_core::PieceType::Pawn) == 0);
+    static_assert(get_index(chess_core::PieceType::Knight) == 1);
+    static_assert(get_index(chess_core::PieceType::Bishop) == 2);
+    static_assert(get_index(chess_core::PieceType::Rook) == 3);
+    static_assert(get_index(chess_core::PieceType::Queen) == 4);
+    static_assert(get_index(chess_core::PieceType::King) == 5);
 };
 
 /**
@@ -243,6 +243,6 @@ struct Config {
     static auto from_file(const std::filesystem::path &filename) -> Config;
 };
 
-} // namespace chessengine
+} // namespace chess_engine
 
 #endif

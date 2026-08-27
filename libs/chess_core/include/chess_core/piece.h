@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_PIECE_H
-#define CHESSCORE_PIECE_H
+#ifndef CHESS_CORE_PIECE_H
+#define CHESS_CORE_PIECE_H
 
 #include "chess_core/square.h"
 #include "chess_core/table.h"
@@ -14,7 +14,7 @@
 #include <cstdint>
 #include <string>
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief Type of a piece.
@@ -278,6 +278,6 @@ using PieceDirections = Table<std::uint8_t, piece_type_count, PieceType>;
  */
 extern const PieceDirections piece_ray_directions;
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

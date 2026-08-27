@@ -23,10 +23,10 @@ auto perform_perft_suite(const std::string &path, Reporter &reporter) -> void {
     if (!suite_input) {
         throw std::runtime_error{"Failed to open suite file: " + path};
     }
-    const auto records = chesscore::read_epd(suite_input);
+    const auto records = chess_core::read_epd(suite_input);
     for (const auto &record : records) {
         auto position = record.position;
-        const auto fen_str = chesscore::FenString{position.piece_placement(), position.state()};
+        const auto fen_str = chess_core::FenString{position.piece_placement(), position.state()};
         reporter << fen_str.str() << '\n';
         positions_count += 1;
         const auto &test_cases = record.unknown_commands;

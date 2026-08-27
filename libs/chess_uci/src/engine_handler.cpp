@@ -11,7 +11,7 @@
 #include <ranges>
 #include <sstream>
 
-namespace chessuci {
+namespace chess_uci {
 
 UCIEngineHandler::UCIEngineHandler(std::istream &input, std::ostream &output) : m_input(input), m_output(output) {
     setup_uci_commands();
@@ -301,4 +301,4 @@ auto UCIEngineHandler::parse_go_command(const TokenList &tokens) -> go_command {
     return command;
 }
 
-} // namespace chessuci
+} // namespace chess_uci

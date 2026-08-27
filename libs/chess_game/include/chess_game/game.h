@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSGAME_GAME_H
-#define CHESSGAME_GAME_H
+#ifndef CHESS_GAME_GAME_H
+#define CHESS_GAME_GAME_H
 
 #include "chess_game/cursor.h"
 #include "chess_game/metadata.h"
@@ -13,7 +13,7 @@
 
 #include "chess_core/fen.h"
 
-namespace chessgame {
+namespace chess_game {
 
 /**
  * \brief A game of chess.
@@ -58,7 +58,7 @@ public:
      * \param move The move that leads from the parent to the new node.
      * \return The new node.
      */
-    auto add_node(const std::shared_ptr<GameNode> &parent, const chesscore::Move &move) -> std::shared_ptr<GameNode>;
+    auto add_node(const std::shared_ptr<GameNode> &parent, const chess_core::Move &move) -> std::shared_ptr<GameNode>;
 
     /**
      * \brief Get a cursor to the beginning of the game.
@@ -121,6 +121,6 @@ private:
     }
 };
 
-} // namespace chessgame
+} // namespace chess_game
 
 #endif

@@ -4,12 +4,12 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_PERFT_H
-#define CHESSCORE_PERFT_H
+#ifndef CHESS_CORE_PERFT_H
+#define CHESS_CORE_PERFT_H
 
 #include "chess_core/position.h"
 
-namespace chesscore {
+namespace chess_core {
 
 auto perft(Position &pos, int depth) -> std::uint64_t;
 
@@ -66,6 +66,6 @@ auto perft(Position &position, int depth, PerftCounter<Mode> &counter) -> void {
     }
 }
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

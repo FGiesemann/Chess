@@ -17,7 +17,7 @@
 #include <mutex>
 #include <thread>
 
-namespace chessengine {
+namespace chess_engine {
 
 class SearchAborted : public std::runtime_error {
 public:
@@ -26,11 +26,11 @@ public:
 
 class MoveScope {
 public:
-    explicit MoveScope(chesscore::Position &position, const chesscore::Move &move) : m_position{position}, m_move{move} { m_position.make_move(move); }
+    explicit MoveScope(chess_core::Position &position, const chess_core::Move &move) : m_position{position}, m_move{move} { m_position.make_move(move); }
     ~MoveScope() { m_position.unmake_move(m_move); }
 private:
-    chesscore::Position &m_position;
-    const chesscore::Move &m_move;
+    chess_core::Position &m_position;
+    const chess_core::Move &m_move;
 };
 
 class ChessEngine {
@@ -88,14 +88,14 @@ public:
      * should be searched, call new_game() before setting the new position.
      * \param position The position.
      */
-    auto set_position(const chesscore::Position &position) -> void;
+    auto set_position(const chess_core::Position &position) -> void;
 
     /**
      * \brief The current position of the game.
      *
      * \return The current position.
      */
-    auto position() const -> const chesscore::Position & { return m_position; }
+    auto position() const -> const chess_core::Position & { return m_position; }
 
     /**
      * \brief Play a move in the game.
@@ -103,7 +103,7 @@ public:
      * Update the internal position with the given move.
      * \param move The move.
      */
-    auto play_move(const chesscore::Move &move) -> void;
+    auto play_move(const chess_core::Move &move) -> void;
 
     /**
      * \brief Swith debugging on or off.
@@ -174,7 +174,7 @@ public:
 private:
     Config m_config{};                                    ///< The engine configuration (search, evaluation, ...)
     Evaluator m_evaluator{m_config.evaluator_config};     ///< Evaluation of positions.
-    chesscore::Position m_position;                       ///< The current position.
+    chess_core::Position m_position;                      ///< The current position.
     bool m_debugging{false};                              ///< Debugging mode.
     std::atomic<bool> m_search_running{false};            ///< If a search is running.
     std::atomic<bool> m_stop_requested{false};            ///< If the search should be stopped.
@@ -201,11 +201,11 @@ private:
 
     auto search_position(Depth depth) -> EvaluatedMove;
     auto search_position(Depth depth, Bounds bounds) -> Score;
-    auto moves_to_search(bool search_principal_variation_first = false) const -> chesscore::MoveList;
+    auto moves_to_search(bool search_principal_variation_first = false) const -> chess_core::MoveList;
 
-    auto sort_moves(chesscore::MoveList &moves) const -> void;
+    auto sort_moves(chess_core::MoveList &moves) const -> void;
 };
 
-} // namespace chessengine
+} // namespace chess_engine
 
 #endif

@@ -3,8 +3,8 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_MOVE_H
-#define CHESSUCI_MOVE_H
+#ifndef CHESS_UCI_MOVE_H
+#define CHESS_UCI_MOVE_H
 
 #include <expected>
 #include <optional>
@@ -12,7 +12,7 @@
 #include <chess_core/move.h>
 #include <chess_core/position.h>
 
-namespace chessuci {
+namespace chess_uci {
 
 /**
  * \brief Representation of a move in long algebraic notation.
@@ -20,35 +20,35 @@ namespace chessuci {
  * Describes a chess move in long algebraic notation as used in UCI.
  */
 struct UCIMove {
-    chesscore::Square from;                                            ///< The starting square of the move.
-    chesscore::Square to;                                              ///< The target square of the move.
-    std::optional<chesscore::PieceType> promotion_piece{std::nullopt}; ///< Type of piece that the moving piece promotes to, if any.
+    chess_core::Square from;                                            ///< The starting square of the move.
+    chess_core::Square to;                                              ///< The target square of the move.
+    std::optional<chess_core::PieceType> promotion_piece{std::nullopt}; ///< Type of piece that the moving piece promotes to, if any.
 
     UCIMove() = default;
-    UCIMove(const chesscore::Square &from_sq, const chesscore::Square &to_sq, const std::optional<chesscore::PieceType> &prom_piece = std::nullopt)
+    UCIMove(const chess_core::Square &from_sq, const chess_core::Square &to_sq, const std::optional<chess_core::PieceType> &prom_piece = std::nullopt)
         : from{from_sq}, to{to_sq}, promotion_piece{prom_piece} {}
-    explicit UCIMove(const chesscore::Move &move)
-        : from{move.from}, to{move.to}, promotion_piece{move.promoted.has_value() ? std::optional<chesscore::PieceType>{move.promoted.value().type()} : std::nullopt} {}
+    explicit UCIMove(const chess_core::Move &move)
+        : from{move.from}, to{move.to}, promotion_piece{move.promoted.has_value() ? std::optional<chess_core::PieceType>{move.promoted.value().type()} : std::nullopt} {}
 
     auto operator==(const UCIMove &rhs) const -> bool { return from == rhs.from && to == rhs.to && promotion_piece == rhs.promotion_piece; }
 };
 
 /**
- * \brief Convert an UCIMove to a chesscore::Move.
+ * \brief Convert an UCIMove to a chess_core::Move.
  *
- * An UCIMove does not contain all the information that a chesscore::Move
- * carries. This function tries to find the chesscore::Move that is described by
+ * An UCIMove does not contain all the information that a chess_core::Move
+ * carries. This function tries to find the chess_core::Move that is described by
  * the UCIMove in the given position. Only legal moves can be converted.
  * \param move The UCIMove to convert.
  * \param position The position to which the move applies.
  * \return The converted move, if it is legal.
  */
-auto convert_move(const UCIMove &move, const chesscore::Position &position) -> std::optional<chesscore::Move>;
+auto convert_move(const UCIMove &move, const chess_core::Position &position) -> std::optional<chess_core::Move>;
 
 /**
- * \brief Convert a legal UCIMove to a chesscore::Move.
+ * \brief Convert a legal UCIMove to a chess_core::Move.
  *
- * Converts the UCIMove to a chesscore::Move without legality check, which
+ * Converts the UCIMove to a chess_core::Move without legality check, which
  * should be faster than using convert_move().
  * This conversion should only be used when the move is known to be legal. Some
  * basic checks are made (e.g., move from an empty square), but pieces could be
@@ -57,7 +57,7 @@ auto convert_move(const UCIMove &move, const chesscore::Position &position) -> s
  * \param position The position to which the move applies.
  * \return The converted move.
  */
-auto convert_legal_move(const UCIMove &move, const chesscore::Position &position) -> std::optional<chesscore::Move>;
+auto convert_legal_move(const UCIMove &move, const chess_core::Position &position) -> std::optional<chess_core::Move>;
 
 /**
  * \brief Convert a UCIMove to a string.
@@ -106,7 +106,7 @@ auto parse_uci_move(const std::string &uci_str) -> std::expected<UCIMove, UCIPar
  * \param move The move.
  * \return If the move can be described by the UCI move.
  */
-auto uci_move_matches(const UCIMove &uci_move, const chesscore::Move &move) -> bool;
+auto uci_move_matches(const UCIMove &uci_move, const chess_core::Move &move) -> bool;
 
 /**
  * \brief Match a move list against a UCI move.
@@ -116,8 +116,8 @@ auto uci_move_matches(const UCIMove &uci_move, const chesscore::Move &move) -> b
  * \param moves The move list.
  * \return List of all matching moves.
  */
-auto match_move(const UCIMove &move, const chesscore::MoveList &moves) -> chesscore::MoveList;
+auto match_move(const UCIMove &move, const chess_core::MoveList &moves) -> chess_core::MoveList;
 
-} // namespace chessuci
+} // namespace chess_uci
 
 #endif

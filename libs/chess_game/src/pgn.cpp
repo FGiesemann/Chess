@@ -12,7 +12,7 @@
 #include <ranges>
 #include <set>
 
-namespace chessgame {
+namespace chess_game {
 
 namespace {
 
@@ -436,7 +436,7 @@ auto PGNParser::parse_san_move(const std::string &san_str) const -> SANMove {
     throw PGNError{PGNErrorType::InvalidMove, m_token.line, san_exp.error().san};
 }
 
-auto PGNParser::find_legal_move(const SANMove &san_move) const -> chesscore::Move {
+auto PGNParser::find_legal_move(const SANMove &san_move) const -> chess_core::Move {
     const auto legal_moves = current_game_line().position().all_legal_moves();
     if (legal_moves.empty()) {
         throw PGNError{PGNErrorType::IllegalMove, m_token.line, san_move.san_string};
@@ -558,19 +558,19 @@ auto PGNWriter::write_move(const GameNode &node) -> void {
             m_output.write_comment(node.premove_comment());
         }
 
-        if (position.side_to_move() == chesscore::Color::White) {
+        if (position.side_to_move() == chess_core::Color::White) {
             m_output.write(PGNTokenOutput::OutToken::MoveNumber, position.fullmove_number(), ".");
         }
-        if (position.side_to_move() == chesscore::Color::Black && m_write_black_move_number) {
+        if (position.side_to_move() == chess_core::Color::Black && m_write_black_move_number) {
             m_output.write(PGNTokenOutput::OutToken::MoveNumber, position.fullmove_number(), "...");
         }
         m_write_black_move_number = false;
         const auto achieved_position = node.calculate_position();
         const auto check_state = achieved_position.check_state();
         std::string check_state_indicator;
-        if (check_state == chesscore::CheckState::Check) {
+        if (check_state == chess_core::CheckState::Check) {
             check_state_indicator = "+";
-        } else if (check_state == chesscore::CheckState::Checkmate) {
+        } else if (check_state == chess_core::CheckState::Checkmate) {
             check_state_indicator = "#";
         }
         m_output.write(PGNTokenOutput::OutToken::Move, possible_san_move.value().san_string, check_state_indicator);
@@ -699,4 +699,4 @@ auto PGNTokenOutput::needs_whitespace(OutToken type) const -> bool {
     return false;
 }
 
-} // namespace chessgame
+} // namespace chess_game

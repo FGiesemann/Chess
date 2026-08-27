@@ -7,7 +7,7 @@
 
 #include <algorithm>
 
-namespace chessgame {
+namespace chess_game {
 
 const std::array<std::string, 7> GameMetadata::str_tags{"Event", "Site", "Date", "Round", "White", "Black", "Result"};
 
@@ -27,4 +27,4 @@ auto GameMetadata::get(const std::string &name) const -> std::optional<std::stri
     return tag->value;
 }
 
-} // namespace chessgame
+} // namespace chess_game

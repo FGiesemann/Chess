@@ -8,7 +8,7 @@
 #include "chess_core/bitboard.h"
 #include "chess_core/position.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Position.Bitboard.Init.Empty", "[Position][Init]") {
     Position position{};

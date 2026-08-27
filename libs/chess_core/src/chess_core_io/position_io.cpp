@@ -8,7 +8,7 @@
 #include "chess_core_io/piece_io.h"
 #include "chess_core_io/square_io.h"
 
-namespace chesscore {
+namespace chess_core {
 
 auto operator<<(std::ostream &os, const CastlingRights &rights) -> std::ostream & {
     bool found_one{false};
@@ -48,4 +48,4 @@ auto operator<<(std::ostream &os, const Position &position) -> std::ostream & {
     return os;
 }
 
-} // namespace chesscore
+} // namespace chess_core

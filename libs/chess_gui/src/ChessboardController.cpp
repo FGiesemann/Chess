@@ -5,10 +5,10 @@
 
 #include "chess_gui/ChessboardController.h"
 
-namespace chessgui {
+namespace chess_gui {
 
 ChessboardController::ChessboardController(ChessboardWidget *board_widget, QObject *parent)
-    : QObject(parent), m_board_widget{board_widget}, m_current_position{chesscore::FenString::starting_position()} {
+    : QObject(parent), m_board_widget{board_widget}, m_current_position{chess_core::FenString::starting_position()} {
 
     connect(m_board_widget, &ChessboardWidget::mousePressed, this, &ChessboardController::on_square_clicked);
     connect(m_board_widget, &ChessboardWidget::mouseReleased, this, &ChessboardController::on_square_released);
@@ -17,7 +17,7 @@ ChessboardController::ChessboardController(ChessboardWidget *board_widget, QObje
     m_board_widget->showPosition(m_current_position);
 }
 
-auto ChessboardController::on_square_clicked(const chesscore::Square &square) -> void {
+auto ChessboardController::on_square_clicked(const chess_core::Square &square) -> void {
     if (!m_user_interaction_enabled) {
         return;
     }
@@ -36,7 +36,7 @@ auto ChessboardController::on_square_clicked(const chesscore::Square &square) ->
     }
 }
 
-auto ChessboardController::on_square_released(const chesscore::Square &square) -> void {
+auto ChessboardController::on_square_released(const chess_core::Square &square) -> void {
     if (!m_user_interaction_enabled) {
         return;
     }
@@ -54,19 +54,19 @@ auto ChessboardController::on_cancel_requested() -> void {
     cancel_move();
 }
 
-auto ChessboardController::on_promotion_piece_selected(chesscore::PieceType type) -> void {
+auto ChessboardController::on_promotion_piece_selected(chess_core::PieceType type) -> void {
     if (!m_user_interaction_enabled) {
         return;
     }
 
     if (m_promotion_move.promoted.has_value()) {
         const auto color = m_promotion_move.promoted.value().color();
-        m_promotion_move.promoted = chesscore::Piece{type, color};
+        m_promotion_move.promoted = chess_core::Piece{type, color};
     }
     perform_move(m_promotion_move);
 }
 
-auto ChessboardController::start_possible_move(chesscore::Square square, chesscore::Piece piece) -> void {
+auto ChessboardController::start_possible_move(chess_core::Square square, chess_core::Piece piece) -> void {
     emit piece_selected(square, piece);
     m_selected_square = square;
     m_board_widget->clearMarkedSquares();
@@ -75,8 +75,8 @@ auto ChessboardController::start_possible_move(chesscore::Square square, chessco
     compute_piece_moves(square);
 }
 
-auto ChessboardController::try_move(chesscore::Square square) -> void {
-    const auto iter = std::ranges::find_if(m_legal_moves, [&](const chesscore::Move &move) { return move.to == square; });
+auto ChessboardController::try_move(chess_core::Square square) -> void {
+    const auto iter = std::ranges::find_if(m_legal_moves, [&](const chess_core::Move &move) { return move.to == square; });
     if (iter != m_legal_moves.end()) {
         const auto move = *iter;
         if (move.is_pawn_promotion()) {
@@ -90,7 +90,7 @@ auto ChessboardController::try_move(chesscore::Square square) -> void {
     }
 }
 
-auto ChessboardController::perform_move(const chesscore::Move &move) -> void {
+auto ChessboardController::perform_move(const chess_core::Move &move) -> void {
     emit move_made(move);
     m_current_position.make_move(move);
     m_board_widget->showPosition(m_current_position);
@@ -112,7 +112,7 @@ auto ChessboardController::cancel_move() -> void {
     m_legal_moves.clear();
 }
 
-auto ChessboardController::compute_piece_moves(chesscore::Square square) -> void {
+auto ChessboardController::compute_piece_moves(chess_core::Square square) -> void {
     m_legal_moves.clear();
     const auto all_legal_moves = m_current_position.all_legal_moves();
     for (const auto &move : all_legal_moves) {
@@ -125,14 +125,14 @@ auto ChessboardController::compute_piece_moves(chesscore::Square square) -> void
     }
 }
 
-auto ChessboardController::make_move(const chesscore::Move &move) -> void {
+auto ChessboardController::make_move(const chess_core::Move &move) -> void {
     m_current_position.make_move(move);
     m_board_widget->showPosition(m_current_position);
 }
 
-auto ChessboardController::set_position(const chesscore::Position &position) -> void {
+auto ChessboardController::set_position(const chess_core::Position &position) -> void {
     m_current_position = position;
     m_board_widget->showPosition(m_current_position);
 }
 
-} // namespace chessgui
+} // namespace chess_gui

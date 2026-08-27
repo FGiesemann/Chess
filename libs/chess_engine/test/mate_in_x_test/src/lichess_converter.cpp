@@ -27,48 +27,48 @@ auto split_fields(std::string_view line, std::string_view separator = ",") -> st
     return fields;
 }
 
-auto uci_move_to_move(const std::string &uci_str, const chesscore::Position &position) -> chesscore::Move {
-    const auto exp_move = chessuci::parse_uci_move(uci_str);
+auto uci_move_to_move(const std::string &uci_str, const chess_core::Position &position) -> chess_core::Move {
+    const auto exp_move = chess_uci::parse_uci_move(uci_str);
     if (!exp_move.has_value()) {
-        throw chessengine::mate_in_x::Error{std::string{"Failed to parse move "} + uci_str};
+        throw chess_engine::mate_in_x::Error{std::string{"Failed to parse move "} + uci_str};
     }
 
-    const auto moves = chessuci::match_move(exp_move.value(), position.all_legal_moves());
+    const auto moves = chess_uci::match_move(exp_move.value(), position.all_legal_moves());
     if (moves.size() != 1) {
-        throw chessengine::mate_in_x::Error{std::string{"Failed to find move "} + uci_str};
+        throw chess_engine::mate_in_x::Error{std::string{"Failed to find move "} + uci_str};
     }
     return moves.front();
 }
 
-auto convert_to_san_move(const chesscore::Move &move, const chesscore::Position &position) -> std::string {
+auto convert_to_san_move(const chess_core::Move &move, const chess_core::Position &position) -> std::string {
     const auto legal_moves = position.all_legal_moves();
-    const auto opt_san = chessgame::generate_san_move(move, legal_moves);
+    const auto opt_san = chess_game::generate_san_move(move, legal_moves);
     if (opt_san.has_value()) {
         return opt_san.value().san_string;
     }
-    throw chessengine::mate_in_x::Error{"Failed to convert move to SAN"};
+    throw chess_engine::mate_in_x::Error{"Failed to convert move to SAN"};
 }
 
-auto convert_to_san_moves(const chesscore::MoveList &moves, chesscore::Position position, chesscore::EpdRecord::move_list &list) -> void {
+auto convert_to_san_moves(const chess_core::MoveList &moves, chess_core::Position position, chess_core::EpdRecord::move_list &list) -> void {
     for (const auto &move : moves) {
         const auto legal_moves = position.all_legal_moves();
-        const auto opt_san = chessgame::generate_san_move(move, legal_moves);
+        const auto opt_san = chess_game::generate_san_move(move, legal_moves);
         if (opt_san.has_value()) {
             list.push_back(opt_san.value().san_string);
             position.make_move(move);
         } else {
-            throw chessengine::mate_in_x::Error{"Failed to convert move to SAN"};
+            throw chess_engine::mate_in_x::Error{"Failed to convert move to SAN"};
         }
     }
 }
 
 } // namespace
 
-namespace chessengine::mate_in_x {
+namespace chess_engine::mate_in_x {
 
 const std::string LichessConverter::ExpectedCSVHeader{"PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags"};
 
-auto LichessConverter::setup_multi_solution_finder(const chessuci::ProcessParams &params) -> void {
+auto LichessConverter::setup_multi_solution_finder(const chess_uci::ProcessParams &params) -> void {
     m_multi_solution_finder = std::make_unique<MultiSolutionFinder>(params);
 }
 
@@ -132,11 +132,11 @@ auto LichessConverter::is_mate_puzzle(std::string_view theme) -> bool {
 
 auto LichessConverter::extract_puzzle(const std::vector<std::string> &fields) -> MateInXPuzzle {
     const auto solution = split_fields(fields[2], " ");
-    auto position = chesscore::Position{chesscore::FenString{fields[1]}};
+    auto position = chess_core::Position{chess_core::FenString{fields[1]}};
     const auto setup_move = uci_move_to_move(solution.front(), position);
     position.make_move(setup_move);
 
-    chesscore::MoveList moves{};
+    chess_core::MoveList moves{};
     auto test_position{position};
     for (size_t index = 1; index < solution.size(); ++index) {
         const auto move = uci_move_to_move(solution[index], test_position);
@@ -147,8 +147,8 @@ auto LichessConverter::extract_puzzle(const std::vector<std::string> &fields) ->
     return MateInXPuzzle(fields[0], position, moves);
 }
 
-auto LichessConverter::convert_to_epd(const MateInXPuzzle &puzzle) -> chesscore::EpdRecord {
-    chesscore::EpdRecord record{};
+auto LichessConverter::convert_to_epd(const MateInXPuzzle &puzzle) -> chess_core::EpdRecord {
+    chess_core::EpdRecord record{};
     record.id = puzzle.id;
     record.position = puzzle.position;
     record.bm.push_back(convert_to_san_move(puzzle.best_move(), puzzle.position));
@@ -172,7 +172,7 @@ auto LichessConverter::print_puzzle_distrib() -> void {
 }
 
 auto LichessConverter::sort_puzzles() -> void {
-    std::ranges::sort(m_puzzles, [](const chesscore::EpdRecord &a, const chesscore::EpdRecord &b) { return a.pv.size() < b.pv.size(); });
+    std::ranges::sort(m_puzzles, [](const chess_core::EpdRecord &a, const chess_core::EpdRecord &b) { return a.pv.size() < b.pv.size(); });
 }
 
 auto LichessConverter::write_puzzles() -> void {
@@ -204,7 +204,7 @@ auto LichessConverter::write_puzzle_files() -> void {
     }
 }
 
-} // namespace chessengine::mate_in_x
+} // namespace chess_engine::mate_in_x
 
 namespace fs = std::filesystem;
 
@@ -242,7 +242,7 @@ auto main(int argc, char *argv[]) -> int {
 
     Params params = process_args(argc, argv);
 
-    chessengine::mate_in_x::LichessConverter converter{};
+    chess_engine::mate_in_x::LichessConverter converter{};
     converter.set_output(params.m_output);
     if (!params.m_stockfish_path.empty()) {
         converter.setup_multi_solution_finder({.executable = params.m_stockfish_path});

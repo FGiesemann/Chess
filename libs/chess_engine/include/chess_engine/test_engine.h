@@ -16,7 +16,7 @@
 
 #include <chess_core/position.h>
 
-namespace chessengine {
+namespace chess_engine {
 
 /**
  * \brief A test double for the ChessEngine.
@@ -28,11 +28,11 @@ public:
         bool debugging;
     };
     struct set_position_call {
-        chesscore::Position position;
+        chess_core::Position position;
     };
     struct position_call {};
     struct play_move_call {
-        chesscore::Move move;
+        chess_core::Move move;
     };
     struct start_search_call {};
     struct stop_search_call {};
@@ -42,8 +42,8 @@ public:
 
     auto new_game() -> void { m_call_log.emplace_back(new_game_call{}); }
     auto set_debugging(bool debugging) -> void { m_call_log.emplace_back(set_debugging_call{debugging}); }
-    auto set_position(const chesscore::Position &position) -> void { m_call_log.emplace_back(set_position_call{position}); }
-    auto position() const -> const chesscore::Position & {
+    auto set_position(const chess_core::Position &position) -> void { m_call_log.emplace_back(set_position_call{position}); }
+    auto position() const -> const chess_core::Position & {
         m_call_log.emplace_back(position_call{});
         if (m_position_return_values.empty()) {
             throw std::runtime_error("position() called more times than expected");
@@ -52,7 +52,7 @@ public:
         m_position_return_values.pop();
         return m_position;
     }
-    auto play_move(const chesscore::Move &move) -> void { m_call_log.emplace_back(play_move_call{move}); }
+    auto play_move(const chess_core::Move &move) -> void { m_call_log.emplace_back(play_move_call{move}); }
     auto start_search(const StopParameters &) -> void { m_call_log.emplace_back(start_search_call{}); }
     auto stop_search() -> void { m_call_log.emplace_back(stop_search_call{}); }
     auto best_move() const -> EvaluatedMove {
@@ -61,7 +61,7 @@ public:
     }
 
     auto call_log() const -> const CallLog & { return m_call_log; }
-    auto set_position_returns(const std::vector<chesscore::Position> &positions) -> void { set_queue(m_position_return_values, positions); }
+    auto set_position_returns(const std::vector<chess_core::Position> &positions) -> void { set_queue(m_position_return_values, positions); }
     auto on_search_ended(SearchEndedCallback) -> void {}
     auto on_search_progress(SearchProgressCalback) -> void {}
 
@@ -69,8 +69,8 @@ public:
     auto set_config(const Config &config) -> void { m_config = config; }
 private:
     mutable CallLog m_call_log;
-    mutable std::queue<chesscore::Position> m_position_return_values{};
-    mutable chesscore::Position m_position;
+    mutable std::queue<chess_core::Position> m_position_return_values{};
+    mutable chess_core::Position m_position;
     mutable Config m_config;
 
     template<typename T>
@@ -92,6 +92,6 @@ private:
     }
 };
 
-} // namespace chessengine
+} // namespace chess_engine
 
 #endif

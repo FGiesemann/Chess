@@ -4,13 +4,13 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_SQUARE_H
-#define CHESSCORE_SQUARE_H
+#ifndef CHESS_CORE_SQUARE_H
+#define CHESS_CORE_SQUARE_H
 
 #include <cstdint>
 #include <string>
 
-namespace chesscore {
+namespace chess_core {
 
 namespace detail {
 
@@ -487,6 +487,6 @@ static_assert(sizeof(Square) == 1, "Square must be 1 byte");
     return std::string{square.file().name()} + std::to_string(square.rank().rank + 1);
 }
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

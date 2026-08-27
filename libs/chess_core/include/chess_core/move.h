@@ -4,8 +4,8 @@
  * ************************************************************************** */
 /** \file */
 
-#ifndef CHESSCORE_MOVE_H
-#define CHESSCORE_MOVE_H
+#ifndef CHESS_CORE_MOVE_H
+#define CHESS_CORE_MOVE_H
 
 #include "chess_core/piece.h"
 #include "chess_core/position_types.h"
@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-namespace chesscore {
+namespace chess_core {
 
 /**
  * \brief Describes the move of a piece.
@@ -194,6 +194,6 @@ auto move_list_contains(const MoveList &list, const Move &move, BinaryPred pred 
  */
 auto move_list_contains_promotions(const MoveList &list, const Move &move) -> bool;
 
-} // namespace chesscore
+} // namespace chess_core
 
 #endif

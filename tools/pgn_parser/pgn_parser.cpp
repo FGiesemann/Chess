@@ -15,7 +15,7 @@ int main(int argc, const char *argv[]) {
         return 1;
     }
 
-    chessgame::PGNParser parser{pgn_file};
+    chess_game::PGNParser parser{pgn_file};
     std::uint64_t count{0};
     bool parsing = true;
     bool need_to_skip = false;
@@ -36,10 +36,10 @@ int main(int argc, const char *argv[]) {
                     std::cout << "  (line " << warning.line << ") " << to_string(warning.type) << ": " << warning.description << '\n';
                 }
             }
-        } catch (const chessgame::PGNError &e) {
+        } catch (const chess_game::PGNError &e) {
             std::cout << "(game " << count << "): Error reading PGN file: " << to_string(e.type()) << " at line " << e.line() << ": " << e.what() << '\n';
             need_to_skip = true;
-        } catch (const chesscore::InvalidFen &e) {
+        } catch (const chess_core::InvalidFen &e) {
             std::cout << "(game " << count << "): Error interpreting FEN: " << e.what() << '\n';
             need_to_skip = true;
         }

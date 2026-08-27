@@ -10,7 +10,7 @@
 #include <QResizeEvent>
 #include <QtGlobal>
 
-namespace chessgui {
+namespace chess_gui {
 
 const qreal ChessboardWidget::cell_size{1.0};
 
@@ -21,7 +21,7 @@ ChessboardWidget::ChessboardWidget(const QString &piece_folder, QWidget *parent)
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setMouseTracking(true);
 
-    m_scene.setSceneRect(0, 0, chesscore::File::count, chesscore::Rank::count);
+    m_scene.setSceneRect(0, 0, chess_core::File::count, chess_core::Rank::count);
     std::ranges::fill(m_pieces, nullptr);
 }
 
@@ -35,9 +35,9 @@ auto ChessboardWidget::drawBoard() -> void {
         }
     }
 
-    for (int rank = 0; rank < chesscore::Rank::count; ++rank) {
-        for (int file = 0; file < chesscore::File::count; ++file) {
-            auto *square = new QGraphicsRectItem(file - 1, chesscore::Rank::count - rank, cell_size, cell_size);
+    for (int rank = 0; rank < chess_core::Rank::count; ++rank) {
+        for (int file = 0; file < chess_core::File::count; ++file) {
+            auto *square = new QGraphicsRectItem(file - 1, chess_core::Rank::count - rank, cell_size, cell_size);
             if ((rank + file) % 2 == 1) {
                 square->setBrush(QBrush(bright_square_color));
                 square->setPen(QPen(Qt::NoPen));
@@ -50,7 +50,7 @@ auto ChessboardWidget::drawBoard() -> void {
     }
 }
 
-auto ChessboardWidget::showPosition(const chesscore::Position &position) -> void {
+auto ChessboardWidget::showPosition(const chess_core::Position &position) -> void {
     clearPieces();
     placePieces(position);
 }
@@ -65,7 +65,7 @@ auto ChessboardWidget::clearPieces() -> void {
     }
 }
 
-auto ChessboardWidget::create_piece_item(chesscore::Piece piece, qreal piece_size, QPointF pos) -> ChessPiece * {
+auto ChessboardWidget::create_piece_item(chess_core::Piece piece, qreal piece_size, QPointF pos) -> ChessPiece * {
     const auto *renderer = m_piece_set.renderer(piece);
     auto *piece_item = new ChessPiece(renderer);
     QSizeF native_size = renderer->defaultSize();
@@ -76,13 +76,13 @@ auto ChessboardWidget::create_piece_item(chesscore::Piece piece, qreal piece_siz
     return piece_item;
 }
 
-auto ChessboardWidget::placePieces(const chesscore::Position &position) -> void {
-    for (int rank = 0; rank < chesscore::Rank::count; ++rank) {
-        for (int file = 0; file < chesscore::File::count; ++file) {
-            const auto square = chesscore::Square{file, rank};
+auto ChessboardWidget::placePieces(const chess_core::Position &position) -> void {
+    for (int rank = 0; rank < chess_core::Rank::count; ++rank) {
+        for (int file = 0; file < chess_core::File::count; ++file) {
+            const auto square = chess_core::Square{file, rank};
             const auto piece_at_square = position.board().get_piece(square);
             if (piece_at_square.has_value()) {
-                QPointF piece_pos = QPointF(file - 1, chesscore::Rank::count - rank);
+                QPointF piece_pos = QPointF(file - 1, chess_core::Rank::count - rank);
                 auto *piece = create_piece_item(piece_at_square.value(), cell_size, piece_pos);
                 m_scene.addItem(piece);
                 m_pieces[square.index()] = piece;
@@ -91,20 +91,20 @@ auto ChessboardWidget::placePieces(const chesscore::Position &position) -> void 
     }
 }
 
-auto ChessboardWidget::markSquare(const chesscore::Square &square) -> void {
+auto ChessboardWidget::markSquare(const chess_core::Square &square) -> void {
     const auto opt_marker = findSquareMarker(square);
     if (opt_marker.has_value()) {
         return;
     }
 
-    auto *marker = new QGraphicsRectItem(square.file().file - 1, chesscore::Rank::count - 1 - square.rank().rank, cell_size, cell_size);
+    auto *marker = new QGraphicsRectItem(square.file().file - 1, chess_core::Rank::count - 1 - square.rank().rank, cell_size, cell_size);
     marker->setBrush(target_highlight_color);
     marker->setPen(Qt::NoPen);
     m_markedSquares.append({square, marker});
     m_scene.addItem(marker);
 }
 
-auto ChessboardWidget::findSquareMarker(const chesscore::Square &square) -> std::optional<QGraphicsRectItem *> {
+auto ChessboardWidget::findSquareMarker(const chess_core::Square &square) -> std::optional<QGraphicsRectItem *> {
     for (const auto &marker : m_markedSquares) {
         if (marker.first == square) {
             return marker.second;
@@ -113,7 +113,7 @@ auto ChessboardWidget::findSquareMarker(const chesscore::Square &square) -> std:
     return {};
 }
 
-auto ChessboardWidget::unmarkSquare(const chesscore::Square &square) -> void {
+auto ChessboardWidget::unmarkSquare(const chess_core::Square &square) -> void {
     auto opt_marker = findSquareMarker(square);
     if (opt_marker.has_value()) {
         m_scene.removeItem(opt_marker.value());
@@ -130,10 +130,10 @@ auto ChessboardWidget::clearMarkedSquares() -> void {
     m_markedSquares.clear();
 }
 
-auto ChessboardWidget::setGhostPiece(chesscore::Piece piece, chesscore::Square square) -> void {
+auto ChessboardWidget::setGhostPiece(chess_core::Piece piece, chess_core::Square square) -> void {
     clearGhostPiece();
 
-    QPointF piece_pos = QPointF(square.file().file - 1, chesscore::Rank::count - 1 - square.rank().rank);
+    QPointF piece_pos = QPointF(square.file().file - 1, chess_core::Rank::count - 1 - square.rank().rank);
     m_ghost_piece = create_piece_item(piece, cell_size, piece_pos);
     m_scene.addItem(m_ghost_piece);
 }
@@ -146,7 +146,7 @@ auto ChessboardWidget::clearGhostPiece() -> void {
     }
 }
 
-auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore::Square target_square) -> void {
+auto ChessboardWidget::showPromotionSelection(chess_core::Color color, chess_core::Square target_square) -> void {
     if (m_promotion_overlay_group != nullptr) {
         cleanupPromotionOverlay();
     }
@@ -166,12 +166,12 @@ auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore:
     background->setPen(QPen(Qt::black, minimal_boundary));
     m_promotion_overlay_group->addToGroup(background);
 
-    for (size_t piece_index = 0; piece_index < chesscore::all_promotion_piece_types.size(); ++piece_index) {
-        chesscore::PieceType piece_type = chesscore::all_promotion_piece_types[piece_index];
+    for (size_t piece_index = 0; piece_index < chess_core::all_promotion_piece_types.size(); ++piece_index) {
+        chess_core::PieceType piece_type = chess_core::all_promotion_piece_types[piece_index];
         qreal item_x = static_cast<qreal>(piece_index) * selection_item_size;
         m_promotion_overlay_group->addToGroup(create_promotion_piece_selection_rect(item_x, selection_item_size, piece_type));
         QPointF piece_pos = QPointF(item_x + promotion_piece_padding, 0);
-        m_promotion_overlay_group->addToGroup(create_piece_item(chesscore::Piece{piece_type, color}, piece_size, piece_pos));
+        m_promotion_overlay_group->addToGroup(create_piece_item(chess_core::Piece{piece_type, color}, piece_size, piece_pos));
     }
 
     m_promotion_overlay_group->setPos(calculate_overlay_pos(target_square, overlay_size));
@@ -180,14 +180,14 @@ auto ChessboardWidget::showPromotionSelection(chesscore::Color color, chesscore:
     viewport()->update();
 }
 
-auto ChessboardWidget::calculate_overlay_pos(chesscore::Square target_square, QSizeF overlay_size) -> QPointF {
-    QPointF center_pos = QPointF(target_square.file().file - 1, chesscore::Rank::count - 1 - target_square.rank().rank) + QPointF{half, half};
+auto ChessboardWidget::calculate_overlay_pos(chess_core::Square target_square, QSizeF overlay_size) -> QPointF {
+    QPointF center_pos = QPointF(target_square.file().file - 1, chess_core::Rank::count - 1 - target_square.rank().rank) + QPointF{half, half};
     QPointF ideal_pos = center_pos - QPointF{overlay_size.width(), overlay_size.height()} * half;
-    qreal board_width = cell_size * chesscore::File::count;
+    qreal board_width = cell_size * chess_core::File::count;
     return QPointF{std::clamp(ideal_pos.x(), 0.0, board_width - overlay_size.width()), std::clamp(ideal_pos.y(), 0.0, board_width - overlay_size.height())};
 }
 
-auto ChessboardWidget::create_promotion_piece_selection_rect(qreal item_x, qreal selection_item_size, chesscore::PieceType &piece_type) -> QGraphicsRectItem * {
+auto ChessboardWidget::create_promotion_piece_selection_rect(qreal item_x, qreal selection_item_size, chess_core::PieceType &piece_type) -> QGraphicsRectItem * {
     auto *selection_rect = new QGraphicsRectItem(item_x, 0, selection_item_size, selection_item_size);
     selection_rect->setBrush(QBrush(promotion_piece_selection_rect_color));
     selection_rect->setPen(Qt::NoPen);
@@ -209,25 +209,25 @@ auto ChessboardWidget::cleanupPromotionOverlay() -> void {
     viewport()->update();
 }
 
-auto ChessboardWidget::hidePiece(chesscore::Square square) -> void {
+auto ChessboardWidget::hidePiece(chess_core::Square square) -> void {
     if (m_pieces[square.index()] != nullptr) {
         m_pieces[square.index()]->setVisible(false);
     }
 }
 
-auto ChessboardWidget::showPiece(chesscore::Square square) -> void {
+auto ChessboardWidget::showPiece(chess_core::Square square) -> void {
     if (m_pieces[square.index()] != nullptr) {
         m_pieces[square.index()]->setVisible(true);
     }
 }
 
-auto ChessboardWidget::squareAt(const QPoint &pos) -> std::optional<chesscore::Square> {
+auto ChessboardWidget::squareAt(const QPoint &pos) -> std::optional<chess_core::Square> {
     QPointF pos_in_scene = mapToScene(pos);
     int file = qFloor(pos_in_scene.x()) + 1;
-    int rank = chesscore::Rank::count - qFloor(pos_in_scene.y());
+    int rank = chess_core::Rank::count - qFloor(pos_in_scene.y());
 
-    if (file >= 0 && file < chesscore::File::count && rank >= 0 && rank < chesscore::Rank::count) {
-        return chesscore::Square{file, rank};
+    if (file >= 0 && file < chess_core::File::count && rank >= 0 && rank < chess_core::Rank::count) {
+        return chess_core::Square{file, rank};
     }
     return {};
 }
@@ -249,18 +249,18 @@ auto ChessboardWidget::mousePressEvent(QMouseEvent *event) -> void {
         } else if (m_state == State::SelectingPromotionPiece) {
             QPointF posInScene = mapToScene(event->pos());
             QList<QGraphicsItem *> clickedItems = m_scene.items(posInScene);
-            chesscore::PieceType type = chesscore::PieceType::Pawn;
+            chess_core::PieceType type = chess_core::PieceType::Pawn;
             for (QGraphicsItem *item : clickedItems) {
                 if (item->group() == m_promotion_overlay_group) {
                     QVariant item_data = item->data(0);
                     if (item_data.isValid()) {
-                        type = chesscore::piece_type_from_index(item_data.toInt());
+                        type = chess_core::piece_type_from_index(item_data.toInt());
                         break;
                     }
                 }
             }
 
-            if (type != chesscore::PieceType::Pawn) {
+            if (type != chess_core::PieceType::Pawn) {
                 emit promotionPieceSelected(type);
                 cleanupPromotionOverlay();
             }
@@ -293,4 +293,4 @@ auto ChessboardWidget::keyPressEvent(QKeyEvent *event) -> void {
     }
 }
 
-} // namespace chessgui
+} // namespace chess_gui

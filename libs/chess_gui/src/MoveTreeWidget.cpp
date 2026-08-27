@@ -8,7 +8,7 @@
 #include <QApplication>
 #include <QHeaderView>
 
-namespace chessgui {
+namespace chess_gui {
 
 MoveTreeDelegate::MoveTreeDelegate(QObject *parent) : QStyledItemDelegate(parent) {}
 
@@ -151,4 +151,4 @@ auto MoveTreeWidget::onSelectionChanged(const QItemSelection &selected, const QI
     }
 }
 
-} // namespace chessgui
+} // namespace chess_gui

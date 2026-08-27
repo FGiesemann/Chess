@@ -5,12 +5,12 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "chess_core_io/chesscore_io.h"
+#include "chess_core_io/chess_core_io.h"
 #include "chess_game/pgn.h"
 
 #include <sstream>
 
-using namespace chessgame;
+using namespace chess_game;
 
 TEST_CASE("Game.PGN.Writer.Metadata", "[pgn]") {
     GameMetadata metadata{};

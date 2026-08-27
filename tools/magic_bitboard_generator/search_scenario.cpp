@@ -23,7 +23,9 @@ auto print_search_status(Database &database, const Args &args, const std::string
     if (stats.successful()) {
         Magics magics = result.magics;
         TableStats table_stats{
-            .blocker_configs = result.generator_result.expected_entries, .max_index = result.generator_result.max_index, .constructive_collisions = result.generator_result.constructive_collisions
+            .blocker_configs = result.generator_result.expected_entries,
+            .max_index = result.generator_result.max_index,
+            .constructive_collisions = result.generator_result.constructive_collisions
         };
         bool better_result{false};
         if (database.record(table.piece, table.square).update_magics(magics, table_stats)) {
@@ -62,7 +64,7 @@ auto search_magic(const Args &args) -> void {
     for (const auto piece : args.piece_types) {
         for (const auto &square : args.squares) {
             TableSpec table_spec{.piece = piece, .square = square};
-            std::cout << "Magic Bitboard Generator for " << chesscore::to_string(table_spec.piece) << " at " << to_string(table_spec.square) << '\n';
+            std::cout << "Magic Bitboard Generator for " << chess_core::to_string(table_spec.piece) << " at " << to_string(table_spec.square) << '\n';
 
             MagicBitboardGenerator generator{table_spec};
             generator.set_progress_callback([&](const SearchResult &result) -> void { print_search_status(database, args, database_path, table_spec, result); });

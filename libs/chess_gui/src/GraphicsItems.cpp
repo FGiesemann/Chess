@@ -5,7 +5,7 @@
 
 #include "chess_gui/GraphicsItems.h"
 
-namespace chessgui {
+namespace chess_gui {
 
 ChessPiece::ChessPiece(const QSvgRenderer *renderer) {
     if (renderer != nullptr) {
@@ -16,4 +16,4 @@ ChessPiece::ChessPiece(const QSvgRenderer *renderer) {
     setZValue(1);
 }
 
-} // namespace chessgui
+} // namespace chess_gui

@@ -3,14 +3,14 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_ENGINE_PROCESS_UNIX_H
-#define CHESSUCI_ENGINE_PROCESS_UNIX_H
+#ifndef CHESS_UCI_ENGINE_PROCESS_UNIX_H
+#define CHESS_UCI_ENGINE_PROCESS_UNIX_H
 
 #include "chess_uci/engine_process.h"
 #include <atomic>
 #include <unistd.h>
 
-namespace chessuci {
+namespace chess_uci {
 
 class EngineProcessUnix : public EngineProcess {
 public:
@@ -92,6 +92,6 @@ private:
     auto set_error(const std::string &message) -> void { m_last_error = message; }
 };
 
-} // namespace chessuci
+} // namespace chess_uci
 
 #endif

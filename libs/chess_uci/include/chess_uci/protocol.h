@@ -3,8 +3,8 @@
  * Universal Chess Interface for Chess Engines                                *
  * ************************************************************************** */
 
-#ifndef CHESSUCI_PROTOCOL_H
-#define CHESSUCI_PROTOCOL_H
+#ifndef CHESS_UCI_PROTOCOL_H
+#define CHESS_UCI_PROTOCOL_H
 
 #include <optional>
 #include <stdexcept>
@@ -12,7 +12,7 @@
 
 #include "chess_uci/move.h"
 
-namespace chessuci {
+namespace chess_uci {
 
 class UCIError : public std::runtime_error {
     using std::runtime_error::runtime_error;
@@ -120,6 +120,6 @@ struct Option {
 
 using TokenList = std::vector<std::string>;
 
-} // namespace chessuci
+} // namespace chess_uci
 
 #endif

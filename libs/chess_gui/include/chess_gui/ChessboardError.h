@@ -3,13 +3,13 @@
  * Graphical user interface components for chess games                        *
  * ************************************************************************** */
 
-#ifndef CHESSGUI_CHESSBOARD_ERROR_H
-#define CHESSGUI_CHESSBOARD_ERROR_H
+#ifndef CHESS_GUI_CHESSBOARD_ERROR_H
+#define CHESS_GUI_CHESSBOARD_ERROR_H
 
 #include <QException>
 #include <QString>
 
-namespace chessgui {
+namespace chess_gui {
 
 class ChessboardError : public QException {
 public:
@@ -23,6 +23,6 @@ private:
     QString m_message;
 };
 
-} // namespace chessgui
+} // namespace chess_gui
 
 #endif

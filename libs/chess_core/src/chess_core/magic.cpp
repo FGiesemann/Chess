@@ -9,7 +9,7 @@
 
 #include <numeric>
 
-namespace chesscore {
+namespace chess_core {
 
 auto blocker_mask(PieceType piece_type, Square square) -> Bitmap {
     if (piece_type == PieceType::Bishop) {
@@ -75,13 +75,13 @@ auto MagicBitboard::init() -> void {
 }
 
 auto MagicBitboard::fill_table(const Magics &magics, Square square, std::uint32_t offset) -> void {
-    chesscore::Bitmap blockers{};
+    chess_core::Bitmap blockers{};
     do { // NOLINT(cppcoreguidelines-avoid-do-while)
         const auto index = magic_index(blockers, magics.magic_number, magics.shift);
         const auto attack_map = attack_bitmap(m_piece, square, blockers);
         m_attack_maps[offset + index] = attack_map;
-        blockers = chesscore::next_blocker_config(blockers, magics.blocker_mask);
+        blockers = chess_core::next_blocker_config(blockers, magics.blocker_mask);
     } while (!blockers.empty());
 }
 
-} // namespace chesscore
+} // namespace chess_core

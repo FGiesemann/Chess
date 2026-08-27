@@ -26,8 +26,8 @@ namespace magic_bitboard_generator {
  * (either rook or bishop) and the square on which the piece is placed.
  */
 struct TableSpec {
-    chesscore::PieceType piece{}; ///< The type of the sliding piece.
-    chesscore::Square square;     ///< The square on which the piece is placed.
+    chess_core::PieceType piece{}; ///< The type of the sliding piece.
+    chess_core::Square square;     ///< The square on which the piece is placed.
 };
 
 /**
@@ -45,7 +45,7 @@ struct Magics {
  *
  * The search result is a table of magic bitboards.
  */
-using Table = std::vector<chesscore::Bitmap>;
+using Table = std::vector<chess_core::Bitmap>;
 
 /**
  * \brief Results and statistics from a magic bitboard generator run.

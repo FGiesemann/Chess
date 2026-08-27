@@ -9,7 +9,7 @@
 #include "chess_core/move.h"
 #include "chess_core/position.h"
 
-using namespace chesscore;
+using namespace chess_core;
 
 TEST_CASE("Core.Position.Bitboard.MoveGeneration (1)", "[Position][MoveGeneration]") {
     Position position{FenString{"2k2r2/3bp1q1/1bN5/8/8/4P1NQ/8/r2R2K1 w - - 0 1"}};

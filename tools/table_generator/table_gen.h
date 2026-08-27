@@ -11,7 +11,7 @@
 
 #include "bigmap.h"
 
-namespace chesscore::table_gen {
+namespace chess_core::table_gen {
 
 auto generate_table(const std::string &name, const Pattern &pattern, std::ostream &os) -> void;
 

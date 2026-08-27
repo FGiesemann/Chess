@@ -10,7 +10,7 @@
 
 #include <bitset>
 
-namespace chesscore::table_gen {
+namespace chess_core::table_gen {
 
 static constexpr std::size_t pattern_width{overhang + board_width};
 
@@ -31,6 +31,6 @@ extern const Pattern southwest_ray_pattern;
 extern const Pattern west_ray_pattern;
 extern const Pattern northwest_ray_pattern;
 
-} // namespace chesscore::table_gen
+} // namespace chess_core::table_gen
 
 #endif
