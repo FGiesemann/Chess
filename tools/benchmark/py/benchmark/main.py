@@ -55,7 +55,6 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     run_parser.add_argument(
-        "-h",
         "--hash",
         default=None,
         help="Commit hash to run benchmarks on",
@@ -90,7 +89,10 @@ def main():
 
     temp_args, _ = arg_parser.parse_known_args()
     config = load_config(temp_args.config)
-    run_parser.set_defaults(**config)
+    if temp_args.command == "status":
+        status_parser.set_defaults(**config)
+    elif temp_args.command == "run":
+        run_parser.set_defaults(**config)
 
     args = arg_parser.parse_args()
     check_required_args(args)
