@@ -1,0 +1,5 @@
+[machine]
+id = "Maschine Identifier"
+
+[benchmark]
+default_config = "build config name"
