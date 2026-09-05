@@ -55,6 +55,12 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     run_parser.add_argument(
+        "-h",
+        "--hash",
+        default=None,
+        help="Commit hash to run benchmarks on",
+    )
+    run_parser.add_argument(
         "-b",
         "--benchmarks",
         action="append",
@@ -143,6 +149,7 @@ def print_environment(_, env: Environment):
 
 
 def run_and_report_benchmarks(args, env: Environment):
+    # TODO if commit-hash is not HEAD, create worktree, build project and run benchmarks
     if not args.allow_uncommitted and env.repo_state.uncommited_changes:
         print(
             "Uncommited changes detected. Use --allow_uncommitted to run benchmarks anyway"

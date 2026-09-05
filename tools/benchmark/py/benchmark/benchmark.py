@@ -1,5 +1,6 @@
 import subprocess
 import sys
+from pathlib import Path
 
 from .benchmark_types import Benchmark, BenchmarkResult
 from .environment import get_build_folder, get_repo_base_path
@@ -76,3 +77,76 @@ def run_benchmark(benchmark: Benchmark, args) -> BenchmarkResult:
             text=True,
         )
     )
+
+
+class BenchmarkDB:
+    WORKTREE_DIR = get_repo_base_path() / ".benchmark-results"
+    BRANCH = "benchmark-results"
+
+    def __init__(self) -> None:
+        self.ensure_worktree()
+
+    def save_results(self, result: BenchmarkResult, auto_push: bool = True) -> None:
+        # TODO
+
+        # Read result file for the host, if exists
+
+        # add new result data
+
+        # re-write results file
+
+        # commit results file
+        ## rel_path = target_file.relative_to(self.worktree_dir)
+        ## self._run_git(["add", str(rel_path)], cwd=self.worktree_dir)
+        ## commit_msg = f"Add benchmark run for {commit_hash[:8]} from {hostname}"
+        ## self._run_git(
+        ##     ["commit", "-m", commit_msg], cwd=self.worktree_dir, check=False
+        ## )
+
+        # push changes, if enabled
+        ## if auto_push:
+        ##     self.push()
+
+        pass
+
+    def ensure_worktree(self) -> None:
+        """Prüft, ob der Worktree existiert, und legt ihn andernfalls an."""
+        if self.WORKTREE_DIR.exists() and (self.WORKTREE_DIR / ".git").exists():
+            return
+
+        self._run_git(["fetch", "origin", BenchmarkDB.BRANCH], check=False)
+        try:
+            self._run_git(
+                ["worktree", "add", str(BenchmarkDB.WORKTREE_DIR), BenchmarkDB.BRANCH]
+            )
+        except subprocess.CalledProcessError as err:
+            raise RuntimeError(
+                f"Worktree konnte nicht erstellt werden. "
+                f"Existiert der Branch '{BenchmarkDB.BRANCH}' bereits lokal oder remote?\n"
+                f"Git-Fehler: {err.stderr}"
+            ) from err
+
+    def pull(self) -> None:
+        """Holt die neuesten Benchmark-Daten vom Remote-Repository."""
+        try:
+            self._run_git(
+                ["pull", "--rebase", "origin", BenchmarkDB.BRANCH],
+            )
+        except subprocess.CalledProcessError as err:
+            print(f"Hinweis: Pull nicht erfolgreich ({err.stderr.strip()}).")
+
+    def push(self) -> None:
+        """Pusht lokale Benchmark-Commits zum Remote-Repository."""
+        self._run_git(["push", "origin", BenchmarkDB.BRANCH], check=True)
+
+    def _run_git(
+        self, args: list[str], cwd: Path | None = None, check: bool = True
+    ) -> subprocess.CompletedProcess[str]:
+        target_dir = cwd if cwd else BenchmarkDB.WORKTREE_DIR
+        return subprocess.run(
+            ["git"] + args,
+            cwd=target_dir,
+            check=check,
+            capture_output=True,
+            text=True,
+        )
