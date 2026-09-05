@@ -13,17 +13,23 @@ class RepoState:
     uncommited_changes: bool
 
 
+@dataclass
+class Environment:
+    machine_id: str
+    repo_state: RepoState
+
+
 def get_repo_base_path() -> Path:
     return Path(__file__).parent.parent.parent.parent.parent
+
+
+def get_build_folder(config: str) -> Path:
+    return get_repo_base_path() / "build" / config
 
 
 def list_configurations() -> list[str]:
     build_path = get_repo_base_path() / "build"
     return [f.name for f in build_path.iterdir() if f.is_dir()]
-
-
-def get_build_folder(config: str) -> Path:
-    return get_repo_base_path() / "build" / config
 
 
 def collect_repo_state() -> RepoState:

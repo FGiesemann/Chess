@@ -39,9 +39,6 @@ def check_requested_benchmarks(benchmarks: list[str]):
 
 
 def run_benchmarks(args) -> list[tuple[Benchmark, BenchmarkResult]]:
-    if not check_requested_benchmarks(args.benchmarks):
-        sys.exit(1)
-
     benchmarks = (
         BENCHMARKS
         if len(args.benchmarks) == 0
@@ -51,14 +48,14 @@ def run_benchmarks(args) -> list[tuple[Benchmark, BenchmarkResult]]:
     return results
 
 
-def subsititue_vars(arg, args):
+def subsititue_vars(arg):
     return arg.replace("$REPO", str(get_repo_base_path()))
 
 
 def run_benchmark(benchmark: Benchmark, args) -> BenchmarkResult:
     print(f"Running Benchmark {benchmark.name}")
 
-    build_folder = get_build_folder(args.config)
+    build_folder = get_build_folder(args.build_config)
     benchmark_file = build_folder.joinpath(*benchmark.command)
 
     if sys.platform == "win32":
@@ -68,14 +65,14 @@ def run_benchmark(benchmark: Benchmark, args) -> BenchmarkResult:
         print(f"Could not find benchmark file: {benchmark_file}")
         sys.exit(1)
 
-    benchmark_args = [subsititue_vars(a, args) for a in benchmark.args]
+    benchmark_args = [subsititue_vars(a) for a in benchmark.args]
 
     cmd = [str(benchmark_file)] + benchmark_args
 
     return benchmark.parser(
         subprocess.check_output(
             cmd,
-            cwd=get_build_folder(args.config),
+            cwd=build_folder,
             text=True,
         )
     )
