@@ -2,8 +2,8 @@ import subprocess
 import sys
 
 from .benchmark_types import Benchmark, BenchmarkResult
+from .environment import get_build_folder, get_repo_base_path
 from .perft_benchmark import parse_perft_benchmark
-from .repo import get_build_folder, get_repo_base_path
 
 BENCHMARKS = [
     Benchmark(

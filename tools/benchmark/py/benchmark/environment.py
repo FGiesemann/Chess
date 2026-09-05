@@ -32,10 +32,3 @@ def collect_repo_state() -> RepoState:
     status_cmd = ["git", "status", "--porcelain"]
     dirty = len(subprocess.check_output(status_cmd, text=True).strip()) > 0
     return RepoState(commit_hash, dirty)
-
-
-def print_repo_state(state: RepoState):
-    print(f"Commit hash: {state.commit_hash}")
-    print(f"Uncommited changes: {state.uncommited_changes}")
-    print(f"Available configurations:\n  {'\n  '.join(list_configurations())}")
-    print()

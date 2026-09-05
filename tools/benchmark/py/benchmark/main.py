@@ -1,14 +1,18 @@
 import argparse
+import socket
 import sys
 
 from .benchmark import Benchmark, BenchmarkResult, list_benchmarks, run_benchmarks
-from .repo import collect_repo_state, print_repo_state
+from .environment import collect_repo_state, list_configurations
 
 
 def main():
     arg_parser = argparse.ArgumentParser(
         description="Run benchmark tools",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    arg_parser.add_argument(
+        "-m", "--machine", default=socket.gethostname(), help="Machine identification"
     )
     subparsers = arg_parser.add_subparsers(dest="command", required=True)
 
@@ -21,10 +25,10 @@ def main():
 
     status_parser = subparsers.add_parser(
         "status",
-        help="Show repo status and available build configurations",
+        help="Show environment status and available build configurations",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    status_parser.set_defaults(func=lambda args: print_repo_state(collect_repo_state()))
+    status_parser.set_defaults(func=lambda args: print_environment(args))
 
     run_parser = subparsers.add_parser(
         "run",
@@ -57,6 +61,17 @@ def main():
 
     args = arg_parser.parse_args()
     args.func(args)
+
+
+def print_environment(args):
+    print("Machine information:")
+    print(f"  Machine-Id: {args.machine}")
+    repo_state = collect_repo_state()
+    print("Repository state:")
+    print(f"  Commit hash       : {repo_state.commit_hash}")
+    print(f"  Uncommited changes: {repo_state.uncommited_changes}")
+    print("Available configurations:")
+    print("  " + "\n  ".join(list_configurations()))
 
 
 def run_and_report_benchmarks(args):
