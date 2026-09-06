@@ -1,9 +1,15 @@
+# ##############################################################################
+# Chess Project benchmarking script
+# ##############################################################################
+
+import argparse
 import subprocess
 import sys
 from pathlib import Path
 
 from .benchmark_types import Benchmark, BenchmarkResult
-from .environment import get_build_folder, get_repo_base_path
+from .environment import Environment, RepoState, get_build_folder, get_repo_base_path
+from .git import run_git
 from .perft_benchmark import parse_perft_benchmark
 
 BENCHMARKS = [
@@ -39,13 +45,32 @@ def check_requested_benchmarks(benchmarks: list[str]):
     return ok
 
 
-def run_benchmarks(args) -> list[tuple[Benchmark, BenchmarkResult]]:
+def run_and_report_benchmarks(args, env: Environment):
+    print("####################")
+    print("# Running benchmarks\n")
+    results = run_benchmarks(args, env)
+    print("\n#################")
+    print("Benchmark results\n")
+    record_results(results, args, env)
+
+
+def run_benchmarks(
+    args, env: Environment
+) -> list[tuple[Benchmark, str, BenchmarkResult]]:
+    if not args.allow_uncommitted and env.repo_state.uncommited_changes:
+        print(
+            "Uncommited changes detected. Use --allow_uncommitted to run benchmarks anyway"
+        )
+        sys.exit(1)
     benchmarks = (
         BENCHMARKS
         if len(args.benchmarks) == 0
         else [b for b in BENCHMARKS if b.id in args.benchmarks]
     )
-    results = [(b, run_benchmark(b, args)) for b in benchmarks]
+    results = [
+        (b, args.build_config, run_benchmark(b, args.build_config, env.repo_path))
+        for b in benchmarks
+    ]
     return results
 
 
@@ -53,10 +78,12 @@ def subsititue_vars(arg):
     return arg.replace("$REPO", str(get_repo_base_path()))
 
 
-def run_benchmark(benchmark: Benchmark, args) -> BenchmarkResult:
-    print(f"Running Benchmark {benchmark.name}")
+def run_benchmark(
+    benchmark: Benchmark, build_config: str, repo_path: Path
+) -> BenchmarkResult:
+    print(f"Running Benchmark {benchmark.name} [{build_config}]")
 
-    build_folder = get_build_folder(args.build_config)
+    build_folder = get_build_folder(repo_path, build_config)
     benchmark_file = build_folder.joinpath(*benchmark.command)
 
     if sys.platform == "win32":
@@ -79,6 +106,21 @@ def run_benchmark(benchmark: Benchmark, args) -> BenchmarkResult:
     )
 
 
+def record_results(
+    results: list[tuple[Benchmark, str, BenchmarkResult]],
+    args,
+    env: Environment,
+):
+    results_db = BenchmarkDB()
+    for res in results:
+        print(
+            f"{res[0].name} [{res[1]}] @ {env.repo_state.commit_hash} x {env.machine_id}:"
+        )
+        for k, v in res[2].items():
+            print(f"  {k}: {v}")
+        results_db.save_results(res[0], res[1], env, res[2], False)
+
+
 class BenchmarkDB:
     WORKTREE_DIR = get_repo_base_path() / ".benchmark-results"
     BRANCH = "benchmark-results"
@@ -86,7 +128,14 @@ class BenchmarkDB:
     def __init__(self) -> None:
         self.ensure_worktree()
 
-    def save_results(self, result: BenchmarkResult, auto_push: bool = True) -> None:
+    def save_results(
+        self,
+        benchmark: Benchmark,
+        build_config: str,
+        env: Environment,
+        result: BenchmarkResult,
+        auto_push: bool = True,
+    ) -> None:
         # TODO
 
         # Read result file for the host, if exists
@@ -114,10 +163,15 @@ class BenchmarkDB:
         if self.WORKTREE_DIR.exists() and (self.WORKTREE_DIR / ".git").exists():
             return
 
-        self._run_git(["fetch", "origin", BenchmarkDB.BRANCH], check=False)
+        run_git(
+            ["fetch", "origin", BenchmarkDB.BRANCH],
+            cwd=get_repo_base_path(),
+            check=False,
+        )
         try:
-            self._run_git(
-                ["worktree", "add", str(BenchmarkDB.WORKTREE_DIR), BenchmarkDB.BRANCH]
+            run_git(
+                ["worktree", "add", str(BenchmarkDB.WORKTREE_DIR), BenchmarkDB.BRANCH],
+                cwd=get_repo_base_path(),
             )
         except subprocess.CalledProcessError as err:
             raise RuntimeError(
@@ -129,24 +183,17 @@ class BenchmarkDB:
     def pull(self) -> None:
         """Holt die neuesten Benchmark-Daten vom Remote-Repository."""
         try:
-            self._run_git(
+            run_git(
                 ["pull", "--rebase", "origin", BenchmarkDB.BRANCH],
+                cwd=BenchmarkDB.WORKTREE_DIR,
             )
         except subprocess.CalledProcessError as err:
             print(f"Hinweis: Pull nicht erfolgreich ({err.stderr.strip()}).")
 
     def push(self) -> None:
         """Pusht lokale Benchmark-Commits zum Remote-Repository."""
-        self._run_git(["push", "origin", BenchmarkDB.BRANCH], check=True)
-
-    def _run_git(
-        self, args: list[str], cwd: Path | None = None, check: bool = True
-    ) -> subprocess.CompletedProcess[str]:
-        target_dir = cwd if cwd else BenchmarkDB.WORKTREE_DIR
-        return subprocess.run(
-            ["git"] + args,
-            cwd=target_dir,
-            check=check,
-            capture_output=True,
-            text=True,
+        run_git(
+            ["push", "origin", BenchmarkDB.BRANCH],
+            cwd=BenchmarkDB.WORKTREE_DIR,
+            check=True,
         )
