@@ -5,7 +5,6 @@
 import socket
 
 from .arguments import check_required_args, create_argparser
-from .benchmark import Benchmark, BenchmarkResult
 from .config import load_config
 from .environment import Environment, collect_repo_state, resolve_repo_path
 

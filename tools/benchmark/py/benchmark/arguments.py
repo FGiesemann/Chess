@@ -78,9 +78,10 @@ def create_argparser() -> tuple[
     )
     run_parser.add_argument(
         "-C",
-        "--build-config",
-        default=None,
-        help="Build configuration to use",
+        "--build-configs",
+        action="append",
+        default=[],
+        help="Build configurations to use",
     )
     run_parser.add_argument(
         "-m",
@@ -96,8 +97,8 @@ def create_argparser() -> tuple[
 
 def check_required_args(args):
     if args.command == "run":
-        if not hasattr(args, "build_config") or args.build_config is None:
-            print("Missing required argument: --build_config")
+        if not hasattr(args, "build_configs") or len(args.build_configs) == 0:
+            print("Specify the build configurations to benchmark!")
             sys.exit(1)
         if not check_requested_benchmarks(args.benchmarks):
             sys.exit(1)

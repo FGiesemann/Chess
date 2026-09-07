@@ -68,8 +68,9 @@ def run_benchmarks(
         else [b for b in BENCHMARKS if b.id in args.benchmarks]
     )
     results = [
-        (b, args.build_config, run_benchmark(b, args.build_config, env.repo_path))
+        (b, build_config, run_benchmark(b, build_config, env.repo_path))
         for b in benchmarks
+        for build_config in args.build_configs
     ]
     return results
 

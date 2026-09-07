@@ -35,7 +35,7 @@ def load_config(config_path: Path) -> dict:
             configuration["machine"] = machine_data["id"]
     if "benchmark" in config_data:
         benchmark_data = config_data["benchmark"]
-        if "default_config" in benchmark_data:
-            configuration["build_config"] = benchmark_data["default_config"]
+        if "configs" in benchmark_data:
+            configuration["build_configs"] = benchmark_data["configs"]
 
     return configuration
