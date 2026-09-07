@@ -2,6 +2,7 @@
 # Chess Project benchmarking script
 # ##############################################################################
 
+import argparse
 import json
 import subprocess
 import sys
@@ -113,13 +114,13 @@ def record_results(
     env: Environment,
 ):
     results_db = BenchmarkDB()
+    results_db.save_result(results, args, env)
     for res in results:
         print(
             f"{res[0].name} [{res[1]}] @ {env.repo_state.commit_hash} x {env.machine_id}:"
         )
         for k, v in res[2].items():
             print(f"  {k}: {v}")
-        results_db.save_result(res[0], res[1], env, res[2])
 
 
 class BenchmarkDB:
@@ -131,44 +132,23 @@ class BenchmarkDB:
 
     def save_result(
         self,
-        benchmark: Benchmark,
-        build_config: str,
+        results: list[tuple[Benchmark, str, BenchmarkResult]],
+        args: argparse.Namespace,
         env: Environment,
-        result: BenchmarkResult,
     ) -> None:
         self.pull()
 
-        results_path = self.get_results_file(env.machine_id)
-        if results_path.exists():
-            results = json.loads(results_path.read_text())
-        else:
-            results = {}
-
+        data = self._get_result_data(env.machine_id)
         commit_indicator = env.repo_state.commit_hash + (
             "-dirty" if env.repo_state.uncommited_changes else ""
         )
+        for run in results:
+            self._add_benchmark_run(data, commit_indicator, run)
+        self._write_result_data(env.machine_id, data)
 
-        benchmark_run = {
-            "benchmark": benchmark.id,
-            "build_config": build_config,
-            "results": result,
-        }
-
-        if commit_indicator in results:
-            runs = results[commit_indicator]
-            for run in runs:
-                if (
-                    run["benchmark"] == benchmark.id
-                    and run["build_config"] == build_config
-                ):
-                    run["results"] = result
-                    break
-            else:
-                runs.append(benchmark_run)
-        else:
-            results[commit_indicator] = [benchmark_run]
-
-        results_path.write_text(json.dumps(results, indent=4))
+        if not args.no_commit:
+            self._commit_results_file(env.machine_id)
+            self.push()
 
     def ensure_worktree(self) -> None:
         """Prüft, ob der Worktree existiert, und legt ihn andernfalls an."""
@@ -212,3 +192,49 @@ class BenchmarkDB:
 
     def get_results_file(self, machine_id: str) -> Path:
         return BenchmarkDB.WORKTREE_DIR / "results" / f"{machine_id}.json"
+
+    def _get_result_data(self, machine_id: str) -> dict:
+        results_path = self.get_results_file(machine_id)
+        if results_path.exists():
+            return json.loads(results_path.read_text())
+        else:
+            return {}
+
+    def _write_result_data(self, machine_id: str, data: dict):
+        results_path = self.get_results_file(machine_id)
+        results_path.write_text(json.dumps(data, indent=4))
+
+    def _add_benchmark_run(self, data, commit_indicator, run):
+        benchmark, build_config, result = run
+
+        benchmark_run = {
+            "benchmark": benchmark.id,
+            "build_config": build_config,
+            "results": result,
+        }
+
+        if commit_indicator in data:
+            stored_runs = data[commit_indicator]
+            for stored_run in stored_runs:
+                if (
+                    stored_run["benchmark"] == benchmark.id
+                    and stored_run["build_config"] == build_config
+                ):
+                    stored_run["results"] = result
+                    break
+            else:
+                stored_runs.append(benchmark_run)
+        else:
+            data[commit_indicator] = [benchmark_run]
+
+    def _commit_results_file(self, machine_id: str) -> None:
+        run_git(
+            ["add", str(self.get_results_file(machine_id))],
+            cwd=BenchmarkDB.WORKTREE_DIR,
+            check=True,
+        )
+        run_git(
+            ["commit", "-m", f"Update results for {machine_id}"],
+            cwd=BenchmarkDB.WORKTREE_DIR,
+            check=True,
+        )

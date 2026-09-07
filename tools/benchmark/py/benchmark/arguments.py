@@ -89,6 +89,13 @@ def create_argparser() -> tuple[
         default=socket.gethostname(),
         help="Machine to run benchmarks on",
     )
+    run_parser.add_argument(
+        "-n",
+        "--no-commit",
+        action="store_true",
+        default=False,
+        help="Do not automatically commit benchmark results",
+    )
     run_parser.set_defaults(func=lambda args, env: run_and_report_benchmarks(args, env))
     subparser_dict["run"] = run_parser
 
