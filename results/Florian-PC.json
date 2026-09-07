@@ -1,0 +1,18 @@
+{
+    "b9ca007d75d26c5e13c1d5114600234bed7e47db": [
+        {
+            "benchmark": "perft-10",
+            "build_config": "msvc-195-release",
+            "results": {
+                "mnps": 11.516
+            }
+        },
+        {
+            "benchmark": "perft-10",
+            "build_config": "clang-22-release",
+            "results": {
+                "mnps": 13.493
+            }
+        }
+    ]
+}
