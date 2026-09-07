@@ -2,13 +2,13 @@
 # Chess Project benchmarking script
 # ##############################################################################
 
-import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
 
 from .benchmark_types import Benchmark, BenchmarkResult
-from .environment import Environment, RepoState, get_build_folder, get_repo_base_path
+from .environment import Environment, get_build_folder, get_repo_base_path
 from .git import run_git
 from .perft_benchmark import parse_perft_benchmark
 
@@ -118,7 +118,7 @@ def record_results(
         )
         for k, v in res[2].items():
             print(f"  {k}: {v}")
-        results_db.save_results(res[0], res[1], env, res[2], False)
+        results_db.save_result(res[0], res[1], env, res[2])
 
 
 class BenchmarkDB:
@@ -128,35 +128,46 @@ class BenchmarkDB:
     def __init__(self) -> None:
         self.ensure_worktree()
 
-    def save_results(
+    def save_result(
         self,
         benchmark: Benchmark,
         build_config: str,
         env: Environment,
         result: BenchmarkResult,
-        auto_push: bool = True,
     ) -> None:
-        # TODO
+        self.pull()
 
-        # Read result file for the host, if exists
+        results_path = self.get_results_file(env.machine_id)
+        if results_path.exists():
+            results = json.loads(results_path.read_text())
+        else:
+            results = {}
 
-        # add new result data
+        commit_indicator = env.repo_state.commit_hash + (
+            "-dirty" if env.repo_state.uncommited_changes else ""
+        )
 
-        # re-write results file
+        benchmark_run = {
+            "benchmark": benchmark.id,
+            "build_config": build_config,
+            "results": result,
+        }
 
-        # commit results file
-        ## rel_path = target_file.relative_to(self.worktree_dir)
-        ## self._run_git(["add", str(rel_path)], cwd=self.worktree_dir)
-        ## commit_msg = f"Add benchmark run for {commit_hash[:8]} from {hostname}"
-        ## self._run_git(
-        ##     ["commit", "-m", commit_msg], cwd=self.worktree_dir, check=False
-        ## )
+        if commit_indicator in results:
+            runs = results[commit_indicator]
+            for run in runs:
+                if (
+                    run["benchmark"] == benchmark.id
+                    and run["build_config"] == build_config
+                ):
+                    run["results"] = result
+                    break
+            else:
+                runs.append(benchmark_run)
+        else:
+            results[commit_indicator] = [benchmark_run]
 
-        # push changes, if enabled
-        ## if auto_push:
-        ##     self.push()
-
-        pass
+        results_path.write_text(json.dumps(results, indent=4))
 
     def ensure_worktree(self) -> None:
         """Prüft, ob der Worktree existiert, und legt ihn andernfalls an."""
@@ -197,3 +208,6 @@ class BenchmarkDB:
             cwd=BenchmarkDB.WORKTREE_DIR,
             check=True,
         )
+
+    def get_results_file(self, machine_id: str) -> Path:
+        return BenchmarkDB.WORKTREE_DIR / "results" / f"{machine_id}.json"
