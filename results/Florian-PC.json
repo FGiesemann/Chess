@@ -30,5 +30,21 @@
                 "mnps": 12.936
             }
         }
+    ],
+    "d8b0421f48ca7e3c255035afa6ed9a06090e541f": [
+        {
+            "benchmark": "perft-10",
+            "build_config": "msvc-195-release",
+            "results": {
+                "mnps": 11.706
+            }
+        },
+        {
+            "benchmark": "perft-10",
+            "build_config": "clang-22-release",
+            "results": {
+                "mnps": 13.806
+            }
+        }
     ]
 }
