@@ -29,7 +29,12 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Capture", "[Bitboard][UnmakeMove]")
     Bitboard board{FenString{"8/8/8/3p4/2B1P3/8/8/8 b - - 0 1"}};
 
     Move m{
-        .from = Square::D5, .to = Square::C4, .piece = Piece::BlackPawn, .captured{Piece::WhiteBishop}, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0
+        .from = Square::D5,
+        .to = Square::C4,
+        .piece = Piece::BlackPawn,
+        .captured{Piece::WhiteBishop},
+        .castling_rights_before{CastlingRights::all()},
+        .halfmove_clock_before = 0,
     };
     board.make_move(m);
     board.unmake_move(m);
