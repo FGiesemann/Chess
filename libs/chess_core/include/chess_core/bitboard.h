@@ -26,7 +26,12 @@ namespace chess_core {
  */
 class Bitboard {
 public:
-    Bitboard() = default;
+    /**
+     * \brief Create an empty board.
+     *
+     * The board is empty, i.e., there are no pieces on it.
+     */
+    Bitboard() { m_pieces.fill(Piece::None); }
 
     /**
      * \brief Create a board with pieces described by a FEN string.
@@ -316,6 +321,7 @@ private:
     Bitmap m_white_pieces;
     Bitmap m_black_pieces;
     Bitmap m_all_pieces;
+    std::array<Piece, Square::count> m_pieces{};
 
     enum class PawnCaptureDirection { West, East };
 

@@ -90,6 +90,7 @@ auto Bitboard::has_piece(Square square) const -> bool {
 
 auto Bitboard::set_piece(Piece piece, Square square) -> void {
     clear_square(square);
+    m_pieces[square.index()] = piece;
     if (piece.is_piece()) {
         bitmap(piece).set(square);
         m_all_pieces.set(square);
@@ -102,20 +103,12 @@ auto Bitboard::toggle_piece(Piece piece, Square square) -> void {
     bitmap(piece) ^= mask;
     bitmap(piece.color()) ^= mask;
     m_all_pieces ^= mask;
+    m_pieces[square.index()] = m_pieces[square.index()] == Piece::None ? piece : Piece::None;
 }
 
 auto Bitboard::get_piece(Square square) const -> std::optional<Piece> {
-    if (!m_all_pieces.get(square)) {
-        return {};
-    }
-    const auto piece_color = m_white_pieces.get(square) ? Color::White : Color::Black;
-    for (auto type : all_piece_types) {
-        const auto piece = Piece{type, piece_color};
-        if (bitmap(piece).get(square)) {
-            return piece;
-        }
-    }
-    return {};
+    // TODO: Change return Type to Piece and give Piece::None if no piece is there
+    return (m_pieces[square.index()] != Piece::None) ? std::optional<Piece>(m_pieces[square.index()]) : std::nullopt;
 }
 
 auto Bitboard::clear_square(Square square) -> void {
@@ -128,6 +121,7 @@ auto Bitboard::clear_square(Square square) -> void {
     m_white_pieces &= remove_from_square;
     m_black_pieces &= remove_from_square;
     m_all_pieces &= remove_from_square;
+    m_pieces[square.index()] = Piece::None;
 }
 
 auto Bitboard::piece_count(Piece piece) const -> int {
@@ -163,13 +157,12 @@ void Bitboard::move_castling_rook(const Move &move) {
 
 auto Bitboard::unmake_move(const Move &move) -> void {
     toggle_piece(move.piece, move.from);
+    const auto target_piece = move.promoted.has_value() ? move.promoted.value() : move.piece;
+    toggle_piece(target_piece, move.to);
     if (move.captured.has_value()) {
         const auto captured_square = move.capturing_en_passant ? Square{move.to.file(), move.from.rank()} : move.to;
         toggle_piece(move.captured.value(), captured_square);
     }
-    const auto target_piece = (move.promoted.has_value()) ? move.promoted.value() : move.piece;
-    toggle_piece(target_piece, move.to);
-
     if (move.is_castling()) {
         reset_castling_rook(move);
     }
