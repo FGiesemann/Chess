@@ -38,8 +38,8 @@ auto write_move_constructor(std::ostream &os, const Move &move) -> std::ostream 
     sstr << move.to;
     os << ".to = Square::" << to_uppercase(sstr.str()) << ", ";
     os << ".piece = Piece::" << symbolic_name(move.piece);
-    if (move.captured) {
-        os << ", .captured = Piece::" << symbolic_name(move.captured.value());
+    if (move.captured != Piece::None) {
+        os << ", .captured = Piece::" << symbolic_name(move.captured);
     }
     if (move.promoted) {
         os << ", .promoted = Piece::" << symbolic_name(move.promoted.value());

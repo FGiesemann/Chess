@@ -21,9 +21,9 @@ auto Position::make_move(const Move &move) -> void {
 auto Position::move_piece_hash(const Move &move) -> void {
     if (move.is_capture()) {
         if (move.capturing_en_passant) {
-            m_hash.clear_piece(move.captured.value(), Square{move.to.file(), move.from.rank()});
+            m_hash.clear_piece(move.captured, Square{move.to.file(), move.from.rank()});
         } else {
-            m_hash.clear_piece(move.captured.value(), move.to);
+            m_hash.clear_piece(move.captured, move.to);
         }
     }
     if (move.promoted) {
@@ -130,9 +130,9 @@ auto Position::unmove_piece_hash(const Move &move) -> void {
     }
     if (move.is_capture()) {
         if (move.capturing_en_passant) {
-            m_hash.set_piece(move.captured.value(), Square{move.to.file(), move.from.rank()});
+            m_hash.set_piece(move.captured, Square{move.to.file(), move.from.rank()});
         } else {
-            m_hash.set_piece(move.captured.value(), move.to);
+            m_hash.set_piece(move.captured, move.to);
         }
     }
     if (move.is_castling()) {
@@ -208,9 +208,7 @@ auto Position::piece_placement() const -> PiecePlacement {
     PiecePlacement pieces{};
     for (auto square = Square::A1; square.valid(); ++square) {
         const auto piece = m_board.get_piece(square);
-        if (piece) {
-            pieces[square.index()] = piece.value();
-        }
+        pieces[square.index()] = piece;
     }
     return pieces;
 }

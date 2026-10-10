@@ -81,9 +81,9 @@ auto ChessboardWidget::placePieces(const chess_core::Position &position) -> void
         for (int file = 0; file < chess_core::File::count; ++file) {
             const auto square = chess_core::Square{file, rank};
             const auto piece_at_square = position.board().get_piece(square);
-            if (piece_at_square.has_value()) {
+            if (piece_at_square != chess_core::Piece::None) {
                 QPointF piece_pos = QPointF(file - 1, chess_core::Rank::count - rank);
-                auto *piece = create_piece_item(piece_at_square.value(), cell_size, piece_pos);
+                auto *piece = create_piece_item(piece_at_square, cell_size, piece_pos);
                 m_scene.addItem(piece);
                 m_pieces[square.index()] = piece;
             }

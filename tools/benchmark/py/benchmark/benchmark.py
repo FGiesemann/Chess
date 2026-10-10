@@ -113,8 +113,9 @@ def record_results(
     args,
     env: Environment,
 ):
-    results_db = BenchmarkDB()
-    results_db.save_result(results, args, env)
+    if args.no_commit == False:
+        results_db = BenchmarkDB()
+        results_db.save_result(results, args, env)
     for res in results:
         print(
             f"{res[0].name} [{res[1]}] @ {env.repo_state.commit_hash} x {env.machine_id}:"

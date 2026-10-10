@@ -117,7 +117,7 @@ public:
      * \param square The square to get the piece from.
      * \return The piece on the square or an empty optional.
      */
-    [[nodiscard]] auto get_piece(Square square) const -> std::optional<Piece>;
+    [[nodiscard]] auto get_piece(Square square) const -> Piece;
 
     /**
      * \brief Remove a piece from the board.
@@ -344,10 +344,9 @@ private:
     auto extract_moves(Bitmap targets, Square from, Piece piece, const PositionState &state, MoveList &moves) const -> void;
     auto extract_pawn_moves(Bitmap targets, int step_size, const PositionState &state, MoveList &moves) const -> void;
     auto extract_pawn_captures(Bitmap targets, PawnCaptureDirection direction, const PositionState &state, MoveList &moves) const -> void;
-    auto generate_pawn_moves(Square source, Square target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void;
-    auto generate_pawn_move(
-        Square source, Square target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
-    ) const -> void;
+    auto generate_pawn_moves(Square source, Square target, Piece captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void;
+    auto generate_pawn_move(Square source, Square target, Piece captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves) const
+        -> void;
     auto generate_castling_moves(MoveList &moves, const PositionState &state) const -> void;
 
     auto store_move_if_legal(const Move &move, MoveList &moves) const -> void;

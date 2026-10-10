@@ -39,21 +39,21 @@ auto convert_legal_move(const UCIMove &move, const chess_core::Position &positio
     chess_core::Move result{};
     const auto &board = position.board();
     const auto piece = board.get_piece(move.from);
-    if (!piece.has_value()) {
+    if (piece == chess_core::Piece::None) {
         return {};
     }
     result.from = move.from;
-    result.piece = piece.value();
+    result.piece = piece;
     result.to = move.to;
     if (move.promotion_piece.has_value()) {
         result.promoted = chess_core::Piece{move.promotion_piece.value(), position.side_to_move()};
     }
     const auto captured_piece = board.get_piece(move.to);
-    if (captured_piece.has_value()) {
-        result.captured = captured_piece.value();
+    if (captured_piece != chess_core::Piece::None) {
+        result.captured = captured_piece;
     }
     if (result.piece.type() == chess_core::PieceType::Pawn) {
-        if (move.from.file() != move.to.file() && !captured_piece.has_value()) {
+        if (move.from.file() != move.to.file() && captured_piece == chess_core::Piece::None) {
             result.capturing_en_passant = true;
             result.captured = board.get_piece(chess_core::Square{move.to.file(), move.from.rank()});
         }

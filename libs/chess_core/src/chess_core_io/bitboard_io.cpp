@@ -17,8 +17,8 @@ auto operator<<(std::ostream &os, const Bitboard &bitboard) -> std::ostream & {
         for (int file = 0; file < chess_core::File::count; ++file) {
             const chess_core::Square square{file, rank};
             const auto piece = bitboard.get_piece(square);
-            if (piece) {
-                os << piece.value();
+            if (piece != Piece::None) {
+                os << piece;
             } else {
                 os << "·";
             }

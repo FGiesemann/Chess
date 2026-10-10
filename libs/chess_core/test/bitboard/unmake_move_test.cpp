@@ -17,12 +17,12 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.SingleMove", "[Bitboard][UnmakeMove
     Move m{.from = Square::E2, .to = Square::E4, .piece = Piece::WhitePawn, .castling_rights_before{CastlingRights::all()}, .halfmove_clock_before = 0};
     board.make_move(m);
 
-    CHECK_FALSE(board.get_piece(Square::E2).has_value());
+    CHECK(board.get_piece(Square::E2) == Piece::None);
     CHECK(board.get_piece(Square::E4) == Piece::WhitePawn);
 
     board.unmake_move(m);
     CHECK(board.get_piece(Square::E2) == Piece::WhitePawn);
-    CHECK_FALSE(board.get_piece(Square::E4).has_value());
+    CHECK(board.get_piece(Square::E4) == Piece::None);
 }
 
 TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Capture", "[Bitboard][UnmakeMove]") {
@@ -55,14 +55,14 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.EnPassant", "[Bitboard][UnmakeMove]
         .halfmove_clock_before = 0,
     };
     board.make_move(m);
-    CHECK_FALSE(board.get_piece(Square::F4).has_value());
+    CHECK(board.get_piece(Square::F4) == Piece::None);
     CHECK(board.get_piece(Square::E3) == Piece::BlackPawn);
-    CHECK_FALSE(board.get_piece(Square::E4).has_value());
+    CHECK(board.get_piece(Square::E4) == Piece::None);
 
     board.unmake_move(m);
     CHECK(board.get_piece(Square::F4) == Piece::BlackPawn);
     CHECK(board.get_piece(Square::E4) == Piece::WhitePawn);
-    CHECK_FALSE(board.get_piece(Square::E3).has_value());
+    CHECK(board.get_piece(Square::E3) == Piece::None);
 }
 
 TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Castling", "[Bitboard][UnmakeMove]") {
@@ -104,30 +104,30 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Castling", "[Bitboard][UnmakeMove]"
     board1.make_move(white_kingside_castling);
     board1.unmake_move(white_kingside_castling);
     CHECK(board1.get_piece(Square::E1) == Piece::WhiteKing);
-    CHECK_FALSE(board1.get_piece(Square::G1).has_value());
+    CHECK(board1.get_piece(Square::G1) == Piece::None);
     CHECK(board1.get_piece(Square::H1) == Piece::WhiteRook);
-    CHECK_FALSE(board1.get_piece(Square::F1).has_value());
+    CHECK(board1.get_piece(Square::F1) == Piece::None);
 
     board2.make_move(white_queenside_castling);
     board2.unmake_move(white_queenside_castling);
     CHECK(board2.get_piece(Square::E1) == Piece::WhiteKing);
-    CHECK_FALSE(board2.get_piece(Square::C1).has_value());
+    CHECK(board2.get_piece(Square::C1) == Piece::None);
     CHECK(board2.get_piece(Square::A1) == Piece::WhiteRook);
-    CHECK_FALSE(board2.get_piece(Square::D1).has_value());
+    CHECK(board2.get_piece(Square::D1) == Piece::None);
 
     board3.make_move(black_kingside_castling);
     board3.unmake_move(black_kingside_castling);
     CHECK(board3.get_piece(Square::E8) == Piece::BlackKing);
-    CHECK_FALSE(board3.get_piece(Square::G8).has_value());
+    CHECK(board3.get_piece(Square::G8) == Piece::None);
     CHECK(board3.get_piece(Square::H8) == Piece::BlackRook);
-    CHECK_FALSE(board3.get_piece(Square::F8).has_value());
+    CHECK(board3.get_piece(Square::F8) == Piece::None);
 
     board4.make_move(black_queenside_castling);
     board4.unmake_move(black_queenside_castling);
     CHECK(board4.get_piece(Square::E8) == Piece::BlackKing);
-    CHECK_FALSE(board4.get_piece(Square::C8).has_value());
+    CHECK(board4.get_piece(Square::C8) == Piece::None);
     CHECK(board4.get_piece(Square::A8) == Piece::BlackRook);
-    CHECK_FALSE(board4.get_piece(Square::D8).has_value());
+    CHECK(board4.get_piece(Square::D8) == Piece::None);
 }
 
 TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Promotion", "[Bitboard][UnmakeMove]") {
@@ -146,7 +146,7 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Promotion", "[Bitboard][UnmakeMove]
     board1.make_move(m1);
     board1.unmake_move(m1);
     CHECK(board1.get_piece(Square::E7) == Piece::WhitePawn);
-    CHECK_FALSE(board1.get_piece(Square::E8).has_value());
+    CHECK(board1.get_piece(Square::E8) == Piece::None);
 
     Move m2{
         .from = Square::E7,
@@ -159,12 +159,12 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Promotion", "[Bitboard][UnmakeMove]
     };
     board2.make_move(m2);
     CHECK(board2.get_piece(Square::F8) == Piece::WhiteQueen);
-    CHECK_FALSE(board2.get_piece(Square::E7).has_value());
-    CHECK_FALSE(board2.get_piece(Square::E8).has_value());
+    CHECK(board2.get_piece(Square::E7) == Piece::None);
+    CHECK(board2.get_piece(Square::E8) == Piece::None);
     board2.unmake_move(m2);
     CHECK(board2.get_piece(Square::E7) == Piece::WhitePawn);
     CHECK(board2.get_piece(Square::F8) == Piece::BlackRook);
-    CHECK_FALSE(board2.get_piece(Square::E8).has_value());
+    CHECK(board2.get_piece(Square::E8) == Piece::None);
 }
 
 TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Sequence", "[Bitboard][UnmakeMove]") {
@@ -201,38 +201,38 @@ TEST_CASE("Core.Bitboard.Bitboard.UnmakeMove.Sequence", "[Bitboard][UnmakeMove]"
     board.make_move(m6);
     board.make_move(m7);
 
-    CHECK_FALSE(board.get_piece(Square::E1).has_value());
+    CHECK(board.get_piece(Square::E1) == Piece::None);
     CHECK(board.get_piece(Square::G1) == Piece::WhiteKing);
-    CHECK_FALSE(board.get_piece(Square::H1).has_value());
+    CHECK(board.get_piece(Square::H1) == Piece::None);
     CHECK(board.get_piece(Square::F1) == Piece::WhiteRook);
 
     board.unmake_move(m7);
     CHECK(board.get_piece(Square::E1) == Piece::WhiteKing);
-    CHECK_FALSE(board.get_piece(Square::G1).has_value());
+    CHECK(board.get_piece(Square::G1) == Piece::None);
     CHECK(board.get_piece(Square::H1) == Piece::WhiteRook);
-    CHECK_FALSE(board.get_piece(Square::F1).has_value());
+    CHECK(board.get_piece(Square::F1) == Piece::None);
 
     board.unmake_move(m6);
     CHECK(board.get_piece(Square::D5) == Piece::BlackPawn);
     CHECK(board.get_piece(Square::C4) == Piece::WhiteBishop);
 
     board.unmake_move(m5);
-    CHECK_FALSE(board.get_piece(Square::F3).has_value());
+    CHECK(board.get_piece(Square::F3) == Piece::None);
     CHECK(board.get_piece(Square::G1) == Piece::WhiteKnight);
 
     board.unmake_move(m4);
     CHECK(board.get_piece(Square::E8) == Piece::BlackKing);
-    CHECK_FALSE(board.get_piece(Square::D7).has_value());
+    CHECK(board.get_piece(Square::D7) == Piece::None);
 
     board.unmake_move(m3);
     CHECK(board.get_piece(Square::F1) == Piece::WhiteBishop);
-    CHECK_FALSE(board.get_piece(Square::C4).has_value());
+    CHECK(board.get_piece(Square::C4) == Piece::None);
 
     board.unmake_move(m2);
     CHECK(board.get_piece(Square::D7) == Piece::BlackPawn);
-    CHECK_FALSE(board.get_piece(Square::D5).has_value());
+    CHECK(board.get_piece(Square::D5) == Piece::None);
 
     board.unmake_move(m1);
     CHECK(board.get_piece(Square::E2) == Piece::WhitePawn);
-    CHECK_FALSE(board.get_piece(Square::E4).has_value());
+    CHECK(board.get_piece(Square::E4) == Piece::None);
 }

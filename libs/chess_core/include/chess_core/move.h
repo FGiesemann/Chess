@@ -29,7 +29,7 @@ struct Move {
     Square from;                                 ///< From where the piece is moved.
     Square to;                                   ///< To where the piece is moved.
     Piece piece{Piece::None};                    ///< Which piece is moving.
-    std::optional<Piece> captured{std::nullopt}; ///< If the move captures a piece, this is the captured piece.
+    Piece captured{Piece::None};                 ///< If the move captures a piece, this is the captured piece.
     bool capturing_en_passant{false};            ///< If this move is capturing en passant
     std::optional<Piece> promoted{std::nullopt}; ///< If the move promotes a piece, this is the promoted piece.
 
@@ -51,7 +51,7 @@ struct Move {
      * This is a convenience function to check if the move is a capture.
      * \return If the move captures a piece.
      */
-    [[nodiscard]] auto is_capture() const -> bool { return captured.has_value(); }
+    [[nodiscard]] auto is_capture() const -> bool { return captured != Piece::None; }
 
     /**
      * \brief If the move is a promotion.

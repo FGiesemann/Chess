@@ -29,8 +29,8 @@ auto ZobristHash::from_position(const Position &position) -> ZobristHash {
     Square square{Square::A1};
     for (int square_index = 0; square_index < Square::count; ++square_index) {
         const auto piece = position.board().get_piece(square);
-        if (piece) {
-            hash.set_piece(piece.value(), square);
+        if (piece != Piece::None) {
+            hash.set_piece(piece, square);
         }
         square += 1;
     }

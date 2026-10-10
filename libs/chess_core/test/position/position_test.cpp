@@ -73,9 +73,9 @@ TEST_CASE("Core.Position.Bitboard.Init.FEN", "[Position][Init][FEN]") {
     CHECK(position2.fullmove_number() == 1);
     CHECK(position2.halfmove_clock() == 0);
     CHECK(position2.board().get_piece(Square::A1) == Piece::WhiteRook);
-    CHECK_FALSE(position2.board().get_piece(Square::B1).has_value());
+    CHECK(position2.board().get_piece(Square::B1) == Piece::None);
     CHECK(position2.board().get_piece(Square::E1) == Piece::WhiteKing);
-    CHECK_FALSE(position2.board().get_piece(Square::F1).has_value());
+    CHECK(position2.board().get_piece(Square::F1) == Piece::None);
     CHECK(position2.board().get_piece(Square::G1) == Piece::WhiteKnight);
 }
 

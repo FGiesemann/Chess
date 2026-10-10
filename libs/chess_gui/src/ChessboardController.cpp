@@ -24,8 +24,8 @@ auto ChessboardController::on_square_clicked(const chess_core::Square &square) -
 
     if (!m_selected_square.has_value()) {
         const auto opt_piece = m_current_position.board().get_piece(square);
-        if (opt_piece.has_value() && opt_piece.value().color() == m_current_position.side_to_move()) {
-            start_possible_move(square, opt_piece.value());
+        if (opt_piece != chess_core::Piece::None && opt_piece.color() == m_current_position.side_to_move()) {
+            start_possible_move(square, opt_piece);
         }
     } else {
         if (square == m_selected_square.value()) {

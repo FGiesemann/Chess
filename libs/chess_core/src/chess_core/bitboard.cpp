@@ -30,9 +30,8 @@ auto shift_right(Bitmap bitmap) -> Bitmap {
 
 } // namespace
 
-auto Bitboard::generate_pawn_move(
-    Square source, Square target, std::optional<Piece> captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves
-) const -> void {
+auto Bitboard::generate_pawn_move(Square source, Square target, Piece captured, bool en_passant, std::optional<Piece> promoted, const PositionState &state, MoveList &moves) const
+    -> void {
     store_move_if_legal(
         Move{
             .from = source,
@@ -49,7 +48,7 @@ auto Bitboard::generate_pawn_move(
     );
 }
 
-auto Bitboard::generate_pawn_moves(Square source, Square target, std::optional<Piece> captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void {
+auto Bitboard::generate_pawn_moves(Square source, Square target, Piece captured, bool en_passant, const PositionState &state, MoveList &moves) const -> void {
     if (target.rank().rank == 0 || target.rank().rank == (Rank::count - 1)) {
         const auto color = state.side_to_move;
         for (const auto &type : all_promotion_piece_types) {
@@ -106,9 +105,8 @@ auto Bitboard::toggle_piece(Piece piece, Square square) -> void {
     m_pieces[square.index()] = m_pieces[square.index()] == Piece::None ? piece : Piece::None;
 }
 
-auto Bitboard::get_piece(Square square) const -> std::optional<Piece> {
-    // TODO: Change return Type to Piece and give Piece::None if no piece is there
-    return (m_pieces[square.index()] != Piece::None) ? std::optional<Piece>(m_pieces[square.index()]) : std::nullopt;
+auto Bitboard::get_piece(Square square) const -> Piece {
+    return m_pieces[square.index()];
 }
 
 auto Bitboard::clear_square(Square square) -> void {
@@ -130,9 +128,9 @@ auto Bitboard::piece_count(Piece piece) const -> int {
 
 auto Bitboard::make_move(const Move &move) -> void {
     toggle_piece(move.piece, move.from);
-    if (move.captured.has_value()) {
+    if (move.captured != Piece::None) {
         const auto captured_square = move.capturing_en_passant ? Square{move.to.file(), move.from.rank()} : move.to;
-        toggle_piece(move.captured.value(), captured_square);
+        toggle_piece(move.captured, captured_square);
     }
     const auto target_piece = move.promoted.has_value() ? move.promoted.value() : move.piece;
     toggle_piece(target_piece, move.to);
@@ -159,9 +157,9 @@ auto Bitboard::unmake_move(const Move &move) -> void {
     toggle_piece(move.piece, move.from);
     const auto target_piece = move.promoted.has_value() ? move.promoted.value() : move.piece;
     toggle_piece(target_piece, move.to);
-    if (move.captured.has_value()) {
+    if (move.captured != Piece::None) {
         const auto captured_square = move.capturing_en_passant ? Square{move.to.file(), move.from.rank()} : move.to;
-        toggle_piece(move.captured.value(), captured_square);
+        toggle_piece(move.captured, captured_square);
     }
     if (move.is_castling()) {
         reset_castling_rook(move);
@@ -193,7 +191,7 @@ auto Bitboard::all_legal_moves(const PositionState &state) const -> MoveList {
 
 auto Bitboard::capture_moves(const PositionState &state) const -> MoveList {
     MoveList moves = all_legal_moves(state);
-    std::erase_if(moves, [](const Move &move) -> bool { return !move.captured.has_value(); });
+    std::erase_if(moves, [](const Move &move) -> bool { return move.captured == Piece::None; });
     return moves;
 }
 
@@ -357,7 +355,7 @@ auto Bitboard::extract_pawn_moves(Bitmap targets, int step_size, const PositionS
         const auto shift = targets.empty_squares_before();
         const auto target_square = Square::A1 + shift;
         const auto source_square = state.side_to_move == Color::White ? (target_square - File::count * step_size) : (target_square + File::count * step_size);
-        generate_pawn_moves(source_square, target_square, std::nullopt, false, state, moves);
+        generate_pawn_moves(source_square, target_square, Piece::None, false, state, moves);
         targets.clear_lowest_bit();
     }
 }
@@ -370,8 +368,13 @@ auto Bitboard::extract_pawn_captures(Bitmap targets, PawnCaptureDirection direct
             File{direction == PawnCaptureDirection::East ? target_square.file().file - 1 : target_square.file().file + 1},
             Rank{state.side_to_move == Color::White ? target_square.rank().rank - 1 : target_square.rank().rank + 1},
         };
-        const auto captured = get_piece(target_square);
-        generate_pawn_moves(source_square, target_square, captured.value_or(Piece{PieceType::Pawn, other_color(state.side_to_move)}), !captured.has_value(), state, moves);
+        auto captured = get_piece(target_square);
+        bool capturing_en_passant = false;
+        if (captured == Piece::None) {
+            captured = Piece{PieceType::Pawn, other_color(state.side_to_move)};
+            capturing_en_passant = true;
+        }
+        generate_pawn_moves(source_square, target_square, captured, capturing_en_passant, state, moves);
         targets.clear_lowest_bit();
     }
 }

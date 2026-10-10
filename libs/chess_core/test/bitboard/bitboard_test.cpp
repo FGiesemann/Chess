@@ -66,15 +66,15 @@ TEST_CASE("Core.Bitboard.Bitboard.Get", "[Bitboard][Init]") {
     CHECK_FALSE(bitboard.has_piece(Square::H7));
 
     const auto p1 = bitboard.get_piece(Square::E2);
-    REQUIRE(p1.has_value());
+    REQUIRE(p1 != Piece::None);
     CHECK(p1 == Piece::BlackBishop);
 
     const auto p2 = bitboard.get_piece(Square::A1);
-    REQUIRE(p2.has_value());
+    REQUIRE(p2 != Piece::None);
     CHECK(p2 == Piece::WhiteKnight);
 
     const auto p3 = bitboard.get_piece(Square::A2);
-    CHECK_FALSE(p3.has_value());
+    CHECK(p3 == Piece::None);
 
     const auto p4 = bitboard.get_piece(Square::H1);
     CHECK(p4 == Piece::WhiteRook);
@@ -107,8 +107,8 @@ TEST_CASE("Core.Bitboard.Bitboard.Toggle", "[Bitboard][Init]") {
     Bitboard bitboard{FenString::starting_position()};
     bitboard.toggle_piece(Piece::WhiteRook, Square::A1);
     bitboard.toggle_piece(Piece::BlackPawn, Square::E5);
-    CHECK_FALSE(bitboard.get_piece(Square::A1).has_value());
-    CHECK(bitboard.get_piece(Square::E5).value() == Piece::BlackPawn);
+    CHECK(bitboard.get_piece(Square::A1) == Piece::None);
+    CHECK(bitboard.get_piece(Square::E5) == Piece::BlackPawn);
 }
 
 TEST_CASE("Core.Bitboard.Bitboard.Piece Count", "[Bitboard][Basic]") {
@@ -146,10 +146,10 @@ TEST_CASE("Core.Bitboard.Bitboard.FromFEN", "[Bitboard][Init]") {
     CHECK(start_cfg_bitboard.get_piece(Square::C2) == Piece::WhitePawn);
     CHECK(start_cfg_bitboard.get_piece(Square::H2) == Piece::WhitePawn);
 
-    CHECK_FALSE(start_cfg_bitboard.get_piece(Square::A3).has_value());
-    CHECK_FALSE(start_cfg_bitboard.get_piece(Square::B4).has_value());
-    CHECK_FALSE(start_cfg_bitboard.get_piece(Square::D5).has_value());
-    CHECK_FALSE(start_cfg_bitboard.get_piece(Square::F6).has_value());
+    CHECK(start_cfg_bitboard.get_piece(Square::A3) == Piece::None);
+    CHECK(start_cfg_bitboard.get_piece(Square::B4) == Piece::None);
+    CHECK(start_cfg_bitboard.get_piece(Square::D5) == Piece::None);
+    CHECK(start_cfg_bitboard.get_piece(Square::F6) == Piece::None);
 
     CHECK(start_cfg_bitboard.get_piece(Square::A7) == Piece::BlackPawn);
     CHECK(start_cfg_bitboard.get_piece(Square::B7) == Piece::BlackPawn);

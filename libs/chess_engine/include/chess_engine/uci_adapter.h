@@ -32,8 +32,8 @@ static inline auto position_to_string(const chess_core::Position &position) -> s
         for (int file = 0; file < chess_core::File::count; ++file) {
             const chess_core::Square square{file, rank};
             const auto piece = bitboard.get_piece(square);
-            if (piece) {
-                result << piece.value().piece_char();
+            if (piece != chess_core::Piece::None) {
+                result << piece.piece_char();
             } else {
                 result << "·";
             }

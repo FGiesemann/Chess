@@ -258,7 +258,7 @@ auto san_move_matches_any_piece_type(const SANMove &san_move, const chess_core::
         (san_move.disambiguation_rank.has_value() && san_move.disambiguation_rank.value() != move.from.rank())) {
         return false;
     }
-    if ((san_move.capturing && move.captured == std::nullopt) || (!san_move.capturing && move.captured != std::nullopt)) {
+    if ((san_move.capturing && move.captured == chess_core::Piece::None) || (!san_move.capturing && move.captured != chess_core::Piece::None)) {
         return false;
     }
     if (move.promoted != san_move.promotion) {
@@ -408,7 +408,7 @@ auto generate_san_move(const chess_core::Move &move, const chess_core::MoveList 
         san_string << move.piece.piece_char_colorless();
     }
     if (move.piece.type() == chess_core::PieceType::Pawn) {
-        if (move.captured.has_value()) {
+        if (move.captured != chess_core::Piece::None) {
             san_string << move.from.file().name();
         }
     } else if (matching_moves.size() > 1) {
@@ -420,7 +420,7 @@ auto generate_san_move(const chess_core::Move &move, const chess_core::MoveList 
             san_string << std::to_string(disambiguation.second.value().rank + 1);
         }
     }
-    if (move.captured.has_value()) {
+    if (move.captured != chess_core::Piece::None) {
         san_string << 'x';
     }
     san_string << to_string(move.to);
@@ -431,7 +431,7 @@ auto generate_san_move(const chess_core::Move &move, const chess_core::MoveList 
         .san_string = san_string.str(),
         .moving_piece = move.piece,
         .target_square = move.to,
-        .capturing = move.captured.has_value(),
+        .capturing = move.captured != chess_core::Piece::None,
         .promotion = move.promoted,
         .disambiguation_file = disambiguation.first,
         .disambiguation_rank = disambiguation.second

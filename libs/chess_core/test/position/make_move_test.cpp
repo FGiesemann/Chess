@@ -23,7 +23,7 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m1);
-    CHECK_FALSE(position.board().get_piece(Square::E2).has_value());
+    CHECK(position.board().get_piece(Square::E2) == Piece::None);
     CHECK(position.board().get_piece(Square::E4) == Piece::WhitePawn);
     CHECK(position.castling_rights() == CastlingRights::all());
     CHECK(position.side_to_move() == Color::Black);
@@ -41,7 +41,7 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m2);
-    CHECK_FALSE(position.board().get_piece(Square::D7).has_value());
+    CHECK(position.board().get_piece(Square::D7) == Piece::None);
     CHECK(position.board().get_piece(Square::D5) == Piece::BlackPawn);
     CHECK(position.castling_rights() == CastlingRights::all());
     CHECK(position.side_to_move() == Color::White);
@@ -59,7 +59,7 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m3);
-    CHECK_FALSE(position.board().get_piece(Square::F1).has_value());
+    CHECK(position.board().get_piece(Square::F1) == Piece::None);
     CHECK(position.board().get_piece(Square::C4) == Piece::WhiteBishop);
     CHECK(position.castling_rights() == CastlingRights::all());
     CHECK(position.side_to_move() == Color::Black);
@@ -77,7 +77,7 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m4);
-    CHECK_FALSE(position.board().get_piece(Square::E8).has_value());
+    CHECK(position.board().get_piece(Square::E8) == Piece::None);
     CHECK(position.board().get_piece(Square::D7) == Piece::BlackKing);
     CHECK(position.castling_rights()['K']);
     CHECK(position.castling_rights()['Q']);
@@ -98,7 +98,7 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m5);
-    CHECK_FALSE(position.board().get_piece(Square::G1).has_value());
+    CHECK(position.board().get_piece(Square::G1) == Piece::None);
     CHECK(position.board().get_piece(Square::F3) == Piece::WhiteKnight);
     CHECK(position.castling_rights()['K']);
     CHECK(position.castling_rights()['Q']);
@@ -120,7 +120,7 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m6);
-    CHECK_FALSE(position.board().get_piece(Square::D5).has_value());
+    CHECK(position.board().get_piece(Square::D5) == Piece::None);
     CHECK(position.board().get_piece(Square::C4) == Piece::BlackPawn);
     CHECK(position.castling_rights()['K']);
     CHECK(position.castling_rights()['Q']);
@@ -141,9 +141,9 @@ TEST_CASE("Core.Position.MakeMove", "[Position][MakeMove]") {
     };
 
     position.make_move(m7);
-    CHECK_FALSE(position.board().get_piece(Square::E1).has_value());
+    CHECK(position.board().get_piece(Square::E1) == Piece::None);
     CHECK(position.board().get_piece(Square::G1) == Piece::WhiteKing);
-    CHECK_FALSE(position.board().get_piece(Square::H1).has_value());
+    CHECK(position.board().get_piece(Square::H1) == Piece::None);
     CHECK(position.board().get_piece(Square::F1) == Piece::WhiteRook);
     CHECK_FALSE(position.castling_rights()['K']);
     CHECK_FALSE(position.castling_rights()['Q']);

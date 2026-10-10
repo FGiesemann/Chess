@@ -21,8 +21,8 @@ auto to_string(const Move &move) -> std::string {
         sstr << move.piece.piece_char_colorless();
     }
     sstr << move.from.file().name() << move.from.rank().rank;
-    if (move.captured) {
-        sstr << 'x' << move.captured.value().piece_char_colorless();
+    if (move.captured != Piece::None) {
+        sstr << 'x' << move.captured.piece_char_colorless();
     } else {
         sstr << "-";
     }

@@ -52,8 +52,8 @@ auto Evaluator::evaluate_pieces_on_squares(const chess_core::Position &position,
     chess_core::Square square{chess_core::Square::A1};
     for (int i = 0; i < chess_core::Square::count; ++i) {
         const auto piece = position.board().get_piece(square);
-        if (piece.has_value() && piece->color() == color) {
-            score += m_config.piece_on_square_value(piece.value(), square);
+        if (piece != chess_core::Piece::None && piece.color() == color) {
+            score += m_config.piece_on_square_value(piece, square);
         }
         square += 1;
     }
@@ -62,7 +62,7 @@ auto Evaluator::evaluate_pieces_on_squares(const chess_core::Position &position,
 
 auto Evaluator::get_capture_score(const chess_core::Move &move) const -> Score {
     if (move.is_capture()) {
-        return m_config.piece_value(move.captured.value().type());
+        return m_config.piece_value(move.captured.type());
     }
     return Score{0};
 }
